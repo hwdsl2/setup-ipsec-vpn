@@ -6,10 +6,12 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
 # YOUR AMAZON EC2 INSTANCE STARTS!
 #
-# Copyright (C) 2014 Lin Song. Based on the work of Thomas Sarlandie (Copyright 2012)
+# Copyright (C) 2014 Lin Song
+# Based on the work of Thomas Sarlandie (Copyright 2012)
+#
 # For detailed instructions, see my tech blog article:
 # https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
-# Original post at: http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
+# Original post: http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
