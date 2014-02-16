@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Amazon EC2 user-data file for automatic configuration of a VPN
+# Amazon EC2 user-data file for automatic configuration of IPsec/L2TP VPN
 # on a Ubuntu server instance. Tested with 12.04.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
