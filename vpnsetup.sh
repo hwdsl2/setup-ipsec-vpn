@@ -8,8 +8,8 @@
 #
 # Copyright (C) 2014 Lin Song. Based on the work of Thomas Sarlandie (Copyright 2012)
 # For detailed instructions, see my tech blog article:
-# 
-# Also see: http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
+# https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
+# Original post at: http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
