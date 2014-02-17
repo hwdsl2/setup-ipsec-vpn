@@ -164,6 +164,7 @@ net.ipv4.tcp_rmem= 10240 87380 12582912
 net.ipv4.tcp_wmem= 10240 87380 12582912
 EOF
 
+/bin/cp -f /etc/iptables.rules /etc/iptables.rules.old
 cat > /etc/iptables.rules <<EOF
 *filter
 :INPUT ACCEPT [0:0]
