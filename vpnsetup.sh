@@ -218,6 +218,7 @@ cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 exit 0
 EOF
 
+/bin/cp -f /etc/rc.local /etc/rc.local.old
 cat > /etc/rc.local <<EOF
 #!/bin/sh -e
 #
