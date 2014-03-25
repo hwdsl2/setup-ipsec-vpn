@@ -197,13 +197,6 @@ cat > /etc/iptables.rules <<EOF
 -A ZREJ -p udp -j REJECT --reject-with icmp-port-unreachable
 -A ZREJ -j REJECT --reject-with icmp-proto-unreachable
 COMMIT
-*mangle
-:PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
-COMMIT
 *nat
 :PREROUTING ACCEPT [0:0]
 :INPUT ACCEPT [0:0]
