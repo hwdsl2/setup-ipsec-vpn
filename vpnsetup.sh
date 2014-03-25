@@ -235,6 +235,7 @@ cat > /etc/rc.local <<EOF
 # By default this script does nothing.
 /usr/sbin/service ipsec restart
 /usr/sbin/service xl2tpd restart
+echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
 
