@@ -192,7 +192,7 @@ cat > /etc/iptables.rules <<EOF
 -A ICMPALL -p icmp --icmp-type 4 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 8 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 11 -j ACCEPT
--A ICMPALL -j DROP
+-A ICMPALL -p icmp -j DROP
 -A ZREJ -p tcp -j REJECT --reject-with tcp-reset 
 -A ZREJ -p udp -j REJECT --reject-with icmp-port-unreachable
 -A ZREJ -j REJECT --reject-with icmp-proto-unreachable
