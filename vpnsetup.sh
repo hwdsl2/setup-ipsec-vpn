@@ -36,8 +36,8 @@ apt-get install xl2tpd -y
 # Compile and install Libreswan
 mkdir -p /opt/src
 cd /opt/src
-wget -qO- https://download.libreswan.org/libreswan-3.8.tar.gz | tar xvz
-cd libreswan-3.8
+wget -qO- https://download.libreswan.org/libreswan-3.9.tar.gz | tar xvz
+cd libreswan-3.9
 make programs
 make install
 
