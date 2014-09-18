@@ -5,16 +5,16 @@
 # With minor modifications, this script *can also be used* on dedicated servers
 # or any KVM- or XEN-based Virtual Private Server (VPS) from other providers.
 #
+# For detailed instructions, please see:
+# https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
+# Original post by Thomas Sarlandie: 
+# http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
+#
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
 # YOUR AMAZON EC2 INSTANCE STARTS!
 #
 # Copyright (C) 2014 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
-#
-# For detailed instructions, please see:
-# https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
-# Original post by Thomas Sarlandie: 
-# http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -35,7 +35,10 @@ apt-get install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libunbound-dev libnss3-tools wget -y
 apt-get install xl2tpd -y
 
-# Compile and install Libreswan
+# Compile and install Libreswan (https://libreswan.org/)
+# To upgrade Libreswan when a newer version is available, just re-run these
+# six commands with the new download link, and then restart services with
+# "service ipsec restart" and "service xl2tpd restart".
 mkdir -p /opt/src
 cd /opt/src
 wget -qO- https://download.libreswan.org/libreswan-3.9.tar.gz | tar xvz
@@ -126,6 +129,9 @@ lcp-echo-failure 10
 lcp-echo-interval 60
 connect-delay 5000
 EOF
+
+# If you need multiple VPN users with different credentials,
+# please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
