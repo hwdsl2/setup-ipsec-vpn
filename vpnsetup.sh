@@ -5,13 +5,13 @@
 # With minor modifications, this script *can also be used* on dedicated servers
 # or any KVM- or XEN-based Virtual Private Server (VPS) from other providers.
 #
+# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
+# YOUR AMAZON EC2 INSTANCE STARTS!
+#
 # For detailed instructions, please see:
 # https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
 # Original post by Thomas Sarlandie: 
 # http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
-#
-# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
-# YOUR AMAZON EC2 INSTANCE STARTS!
 #
 # Copyright (C) 2014 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -22,10 +22,18 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
+if [[ "`uname`" == "Darwin" ]]; then
+  echo "Do not run this script on your mac! This script should only be run on a newly-created EC2 instance, after you have modified it to set the three variables below."
+  exit 1
+fi
+
 # Please define your own values for those variables
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
+
+# Note: If you need multiple VPN users with different credentials,
+# please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
 # Install necessary packages
 apt-get update
@@ -129,9 +137,6 @@ lcp-echo-failure 10
 lcp-echo-interval 60
 connect-delay 5000
 EOF
-
-# If you need multiple VPN users with different credentials,
-# please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
