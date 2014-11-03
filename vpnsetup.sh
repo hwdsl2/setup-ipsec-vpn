@@ -51,8 +51,8 @@ apt-get install xl2tpd -y
 # "service ipsec restart" and "service xl2tpd restart".
 mkdir -p /opt/src
 cd /opt/src
-wget -qO- https://download.libreswan.org/libreswan-3.9.tar.gz | tar xvz
-cd libreswan-3.9
+wget -qO- https://download.libreswan.org/libreswan-3.11.tar.gz | tar xvz
+cd libreswan-3.11
 make programs
 make install
 
