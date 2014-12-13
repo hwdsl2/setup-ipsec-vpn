@@ -22,7 +22,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
-if [[ "`uname`" == "Darwin" ]]; then
+if [[ "$(uname)" == "Darwin" ]]; then
   echo "DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance"
   echo "or other dedicated server / VPS, after you have modified it to set the three variables below."
   echo "Please see detailed instructions at the URLs in the comments."
@@ -36,6 +36,12 @@ VPN_PASSWORD=your_very_secure_password
 
 # Note: If you need multiple VPN users with different credentials,
 # please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
+
+# In Amazon EC2, those two variables will be found automatically.
+# For all other servers, you MUST replace them with the actual IPs!
+# If your server only has a public IP, use that IP on both lines.
+PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+PUBLIC_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
 
 # Install necessary packages
 apt-get update
@@ -51,14 +57,10 @@ apt-get install xl2tpd -y
 # "service ipsec restart" and "service xl2tpd restart".
 mkdir -p /opt/src
 cd /opt/src
-wget -qO- https://download.libreswan.org/libreswan-3.11.tar.gz | tar xvz
-cd libreswan-3.11
+wget -qO- https://download.libreswan.org/libreswan-3.12.tar.gz | tar xvz
+cd libreswan-3.12
 make programs
 make install
-
-# Those two variables will be found automatically
-PRIVATE_IP=`wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4'`
-PUBLIC_IP=`wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4'`
 
 # Prepare various config files
 cat > /etc/ipsec.conf <<EOF
@@ -147,7 +149,7 @@ cat > /etc/ppp/chap-secrets <<EOF
 $VPN_USER  l2tpd  $VPN_PASSWORD  *
 EOF
 
-/bin/cp -f /etc/sysctl.conf /etc/sysctl.conf.old
+/bin/cp -f /etc/sysctl.conf /etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)
 cat > /etc/sysctl.conf <<EOF
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
@@ -180,14 +182,13 @@ net.ipv4.tcp_rmem= 10240 87380 12582912
 net.ipv4.tcp_wmem= 10240 87380 12582912
 EOF
 
-/bin/cp -f /etc/iptables.rules /etc/iptables.rules.old
+/bin/cp -f /etc/iptables.rules /etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)
 cat > /etc/iptables.rules <<EOF
 *filter
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :ICMPALL - [0:0]
-:ZREJ - [0:0]
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
@@ -197,26 +198,25 @@ cat > /etc/iptables.rules <<EOF
 -A INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT
 -A INPUT -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
 -A INPUT -p udp --dport 1701 -j DROP
--A INPUT -j ZREJ
+-A INPUT -j DROP
+-A FORWARD -m conntrack --ctstate INVALID -j DROP
 -A FORWARD -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
--A FORWARD -j ZREJ
--A ICMPALL -p icmp --fragment -j DROP        
+-A FORWARD -j DROP
+-A ICMPALL -p icmp -f -j DROP        
 -A ICMPALL -p icmp --icmp-type 0 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 3 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 4 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 8 -j ACCEPT
 -A ICMPALL -p icmp --icmp-type 11 -j ACCEPT
 -A ICMPALL -p icmp -j DROP
--A ZREJ -p tcp -j REJECT --reject-with tcp-reset 
--A ZREJ -p udp -j REJECT --reject-with icmp-port-unreachable
--A ZREJ -j REJECT --reject-with icmp-proto-unreachable
 COMMIT
 *nat
 :PREROUTING ACCEPT [0:0]
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s 192.168.42.0/24 -o eth+ -m policy --dir out --pol ipsec -j ACCEPT
 -A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source ${PRIVATE_IP}
 COMMIT
 EOF
@@ -227,7 +227,7 @@ cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 exit 0
 EOF
 
-/bin/cp -f /etc/rc.local /etc/rc.local.old
+/bin/cp -f /etc/rc.local /etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)
 cat > /etc/rc.local <<EOF
 #!/bin/sh -e
 #
