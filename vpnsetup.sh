@@ -22,7 +22,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
-if [[ "$(uname)" == "Darwin" ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   echo "DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance"
   echo "or other dedicated server / VPS, after you have modified it to set the three variables below."
   echo "Please see detailed instructions at the URLs in the comments."
