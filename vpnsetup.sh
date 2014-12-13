@@ -263,6 +263,7 @@ fi
 
 /sbin/sysctl -p
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
+/bin/chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets
 /sbin/iptables-restore < /etc/iptables.rules
 
 /usr/sbin/service ipsec restart
