@@ -24,7 +24,7 @@
 
 if [ "$(uname)" = "Darwin" ]; then
   echo "DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance"
-  echo "or other dedicated server / VPS, after you have modified it to set the three variables below."
+  echo "or other Dedicated Server / VPS, after you have modified it to set the variables below."
   echo "Please see detailed instructions at the URLs in the comments."
   exit 1
 fi
@@ -37,11 +37,19 @@ VPN_PASSWORD=your_very_secure_password
 # Note: If you need multiple VPN users with different credentials,
 # please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
-# In Amazon EC2, those two variables will be found automatically.
+# In Amazon EC2, these two variables will be found automatically
 # For all other servers, you MUST replace them with the actual IPs!
-# If your server only has a public IP, use that IP on both lines.
-PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+# If your server only has a public IP, use that IP on both lines
+# Get public IP:  wget -qO- http://ipecho.net/plain ; echo
+# Get private IP: ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 PUBLIC_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
+PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+
+# Note: iPhone/iOS users may need to replace this line in ipsec.conf
+#  (Source: http://serverfault.com/a/527793)
+# rightprotoport=17/%any
+# with the line below:
+# rightprotoport=17/0
 
 # Install necessary packages
 apt-get update
