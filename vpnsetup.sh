@@ -224,7 +224,6 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o eth+ -m policy --dir out --pol ipsec -j ACCEPT
 -A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source ${PRIVATE_IP}
 COMMIT
 EOF
