@@ -34,8 +34,16 @@ IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
 
-# Note: If you need multiple VPN users with different credentials,
+# If you need multiple VPN users with different credentials,
 # please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
+
+# Important Notes:
+# For Windows users, a registry change is required to allow connections
+# to a VPN server behind NAT. Refer to section "Error 809" on this page:
+# https://kb.meraki.com/knowledge_base/troubleshooting-client-vpn
+
+# iPhone/iOS users may need to replace this line in ipsec.conf:
+# "rightprotoport=17/%any" with "rightprotoport=17/0".
 
 # In Amazon EC2, these two variables will be found automatically
 # For all other servers, you MUST replace them with the actual IPs!
@@ -44,12 +52,6 @@ VPN_PASSWORD=your_very_secure_password
 # Get private IP: ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 PUBLIC_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
-
-# Note: iPhone/iOS users may need to replace this line in ipsec.conf
-#  (Source: http://serverfault.com/a/527793)
-# rightprotoport=17/%any
-# with the line below:
-# rightprotoport=17/0
 
 # Install necessary packages
 apt-get update
