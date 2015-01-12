@@ -45,8 +45,8 @@ VPN_PASSWORD=your_very_secure_password
 # iPhone/iOS users may need to replace this line in ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
-# If using Amazon EC2, these ports must be open in the security group
-# of your VPN server: UDP ports 500 and 4500, and TCP port 22 (for SSH).
+# If using Amazon EC2, these ports must be open in the security group of
+# your VPN server: UDP ports 500 & 4500, and TCP port 22 (optional, for SSH).
 
 # In Amazon EC2, these two variables will be found automatically
 # For all other servers, you MUST replace them with the actual IPs!
