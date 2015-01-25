@@ -51,7 +51,7 @@ VPN_PASSWORD=your_very_secure_password
 # In Amazon EC2, these two variables will be found automatically
 # For all other servers, you MUST replace them with the actual IPs!
 # If your server only has a public IP, use that IP on both lines
-# Get public IP:  wget -qO- http://ipecho.net/plain ; echo
+# Get public IP:  dig +short myip.opendns.com @resolver1.opendns.com
 # Get private IP: ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 PUBLIC_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
