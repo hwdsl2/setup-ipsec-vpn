@@ -10,6 +10,7 @@
 #
 # For detailed instructions, please see:
 # https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
+# CentOS/RHEL version: https://gist.github.com/hwdsl2/e9a78a50e300d12ae195
 # Original post by Thomas Sarlandie: 
 # http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
 #
@@ -23,10 +24,20 @@
 # know how you have improved it! 
 
 if [ "$(uname)" = "Darwin" ]; then
-  echo "DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance"
-  echo "or other Dedicated Server / VPS, after you have modified it to set the variables below."
-  echo "Please see detailed instructions at the URLs in the comments."
-  exit 1
+  echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
+  echo 'or other Dedicated Server / VPS, after you have modified it to set the variables below.'
+  echo 'Please see detailed instructions at the URLs in the comments.'
+  exit
+fi
+
+if [ "$(lsb_release -si)" != "Ubuntu" ]; then
+  echo "Looks like you aren't running this script on a Ubuntu system."
+  exit
+fi
+
+if [ "$(id -u)" != 0 ]; then
+  echo "Sorry, you need to run this script as root."
+  exit
 fi
 
 # Please define your own values for those variables
@@ -48,21 +59,32 @@ VPN_PASSWORD=your_very_secure_password
 # If using Amazon EC2, these ports must be open in the security group of
 # your VPN server: UDP ports 500 & 4500, and TCP port 22 (optional, for SSH).
 
+# Update package index and install wget, dig (dnsutils) and nano
+apt-get -y update
+apt-get -y install wget dnsutils nano
+
+echo 'If the script hangs here, press Ctrl-C to interrupt, then edit it and comment out'
+echo 'the next two lines PUBLIC_IP= and PRIVATE_IP=, OR replace them with the actual IPs.'
+
 # In Amazon EC2, these two variables will be found automatically
-# For all other servers, you MUST replace them with the actual IPs!
+# For all other servers, you may replace them with the actual IPs,
+# or comment out and let the script auto-detect in the next section
 # If your server only has a public IP, use that IP on both lines
-# Get public IP:  dig +short myip.opendns.com @resolver1.opendns.com
-# Get private IP: ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
-PUBLIC_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
-PRIVATE_IP=$(wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+PUBLIC_IP=$(wget --timeout 10 -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
+PRIVATE_IP=$(wget --timeout 10 -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+
+# Attempt to find Public IP and Private IP automatically for non-EC2 servers
+[ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+[ "$PUBLIC_IP" = "" ] && { echo "Could not find Public IP, please edit the script manually."; exit; }
+[ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+[ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the script manually."; exit; }
 
 # Install necessary packages
-apt-get update
-apt-get install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev libgmp3-dev flex bison gcc make \
-        libunbound-dev libnss3-tools wget -y
-apt-get install xl2tpd -y
+        libunbound-dev libnss3-tools
+apt-get -y install xl2tpd
 
 # Compile and install Libreswan (https://libreswan.org/)
 # To upgrade Libreswan when a newer version is available, just re-run these
