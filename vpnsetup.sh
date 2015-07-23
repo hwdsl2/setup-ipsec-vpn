@@ -70,8 +70,8 @@ echo 'the next two lines PUBLIC_IP= and PRIVATE_IP=, OR replace them with the ac
 # For all other servers, you may replace them with the actual IPs,
 # or comment out and let the script auto-detect in the next section
 # If your server only has a public IP, use that IP on both lines
-PUBLIC_IP=$(wget --timeout 10 -q -O - 'http://169.254.169.254/latest/meta-data/public-ipv4')
-PRIVATE_IP=$(wget --timeout 10 -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4')
+PUBLIC_IP=$(wget --retry-connrefused --tries=3 --timeout 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+PRIVATE_IP=$(wget --retry-connrefused --tries=3 --timeout 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Attempt to find Public IP and Private IP automatically for non-EC2 servers
 [ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
@@ -88,14 +88,16 @@ apt-get -y install xl2tpd
 
 # Compile and install Libreswan (https://libreswan.org/)
 # To upgrade Libreswan when a newer version is available, just re-run these
-# six commands with the new download link, and then restart services with
+# eight commands with the new "SWAN_VER", and then restart services with
 # "service ipsec restart" and "service xl2tpd restart".
 mkdir -p /opt/src
 cd /opt/src
-wget -qO- https://download.libreswan.org/libreswan-3.13.tar.gz | tar xvz
-cd libreswan-3.13
-make programs
-make install
+SWAN_VER=3.13
+SWAN_URL=https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz
+wget --retry-connrefused --tries=3 --timeout 15 -qO- $SWAN_URL | tar xvz
+[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve the Libreswan source file. Aborting."; exit; }
+cd libreswan-${SWAN_VER}
+make programs && make install
 
 # Prepare various config files
 cat > /etc/ipsec.conf <<EOF
