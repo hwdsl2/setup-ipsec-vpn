@@ -1,18 +1,12 @@
 #!/bin/sh
 #
 # Amazon EC2 user-data file for automatic configuration of IPsec/L2TP VPN server
-# on a Ubuntu or Debian instance. Tested with Ubuntu 14.04 & 12.04 and Debian 8 & 7.
+# on a Ubuntu or Debian instance. Tested with Ubuntu 14.04 & 12.04 and Debian 8.
 # With minor modifications, this script *can also be used* on dedicated servers
 # or any KVM- or XEN-based Virtual Private Server (VPS) from other providers.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
 # YOUR AMAZON EC2 INSTANCE STARTS!
-#
-# For detailed instructions, please see:
-# https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
-# CentOS/RHEL version: https://gist.github.com/hwdsl2/e9a78a50e300d12ae195
-# Original post by Thomas Sarlandie: 
-# http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md
 #
 # Copyright (C) 2014 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -26,18 +20,17 @@
 if [ "$(uname)" = "Darwin" ]; then
   echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
   echo 'or other Dedicated Server / VPS, after you have modified it to set the variables below.'
-  echo 'Please see detailed instructions at the URLs in the comments.'
-  exit
+  exit 1
 fi
 
 if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
-  exit
+  exit 1
 fi
 
 if [ "$(id -u)" != 0 ]; then
   echo "Sorry, you need to run this script as root."
-  exit
+  exit 1
 fi
 
 # Please define your own values for those variables
@@ -45,57 +38,69 @@ IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
 
+# IMPORTANT NOTES:
+
 # If you need multiple VPN users with different credentials,
 # please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
-# Important Notes:
-# For Windows users, a registry change is required to allow connections
-# to a VPN server behind NAT. Refer to section "Error 809" on this page:
-# https://kb.meraki.com/knowledge_base/troubleshooting-client-vpn
-
-# iPhone/iOS users may need to replace this line in ipsec.conf:
-# "rightprotoport=17/%any" with "rightprotoport=17/0".
+# For Windows users, a one-time registry change is required in order to
+# connect to a VPN server behind NAT (e.g. in Amazon EC2). Please see:
+# https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
 # If using Amazon EC2, these ports must be open in the security group of
 # your VPN server: UDP ports 500 & 4500, and TCP port 22 (optional, for SSH).
 
+# If your server uses a custom SSH port (not 22), or if you wish to allow other services
+# through IPTables, be sure to edit the IPTables rules below before running this script.
+
+# This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/iptables.rules
+# before overwriting them. Backups can be found under the same folder with .old suffix.
+
+# iPhone/iOS users may need to replace this line in ipsec.conf:
+# "rightprotoport=17/%any" with "rightprotoport=17/0".
+
 # Update package index and install wget, dig (dnsutils) and nano
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
 apt-get -y install wget dnsutils nano
 
 echo 'If the script hangs here, press Ctrl-C to interrupt, then edit it and comment out'
 echo 'the next two lines PUBLIC_IP= and PRIVATE_IP=, OR replace them with the actual IPs.'
 
-# In Amazon EC2, these two variables will be found automatically
+# In Amazon EC2, these two variables will be found automatically.
 # For all other servers, you may replace them with the actual IPs,
-# or comment out and let the script auto-detect in the next section
-# If your server only has a public IP, use that IP on both lines
-PUBLIC_IP=$(wget --retry-connrefused --tries=3 --timeout 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
-PRIVATE_IP=$(wget --retry-connrefused --tries=3 --timeout 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
+# or comment out and let the script auto-detect in the next section.
+# If your server only has a public IP, use that IP on both lines.
+PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
-# Attempt to find Public IP and Private IP automatically for non-EC2 servers
+# Attempt to find server IPs automatically for non-EC2 servers
 [ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
-[ "$PUBLIC_IP" = "" ] && { echo "Could not find Public IP, please edit the script manually."; exit; }
+[ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
+[ "$PUBLIC_IP" = "" ] && { echo "Could not find Public IP, please edit the VPN script manually."; exit 1; }
 [ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
-[ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the script manually."; exit; }
+[ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the VPN script manually."; exit 1; }
 
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev libgmp3-dev flex bison gcc make \
-        libunbound-dev libnss3-tools
+        libunbound-dev libnss3-tools libevent-dev
+apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd
 
-# Compile and install Libreswan (https://libreswan.org/)
-# To upgrade Libreswan when a newer version is available, just re-run these
-# eight commands with the new "SWAN_VER", and then restart services with
-# "service ipsec restart" and "service xl2tpd restart".
+# Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src
-SWAN_VER=3.13
+cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
+
+# Compile and install Libreswan (https://libreswan.org/)
+# To upgrade Libreswan when a newer version is available, just re-run
+# these commands with the new "SWAN_VER", and then restart services with
+# "service ipsec restart" and "service xl2tpd restart".
+SWAN_VER=3.16
 SWAN_URL=https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz
-wget --retry-connrefused --tries=3 --timeout 15 -qO- $SWAN_URL | tar xvz
-[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve the Libreswan source file. Aborting."; exit; }
+wget -t 3 -T 30 -qO- $SWAN_URL | tar xvz
+[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve Libreswan source files. Aborting."; exit 1; }
 cd libreswan-${SWAN_VER}
 make programs && make install
 
@@ -186,7 +191,7 @@ cat > /etc/ppp/chap-secrets <<EOF
 $VPN_USER  l2tpd  $VPN_PASSWORD  *
 EOF
 
-/bin/cp -f /etc/sysctl.conf /etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S) 2>/dev/null
+/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/sysctl.conf <<EOF
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
@@ -219,7 +224,7 @@ net.ipv4.tcp_rmem= 10240 87380 12582912
 net.ipv4.tcp_wmem= 10240 87380 12582912
 EOF
 
-/bin/cp -f /etc/iptables.rules /etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S) 2>/dev/null
+/bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/iptables.rules <<EOF
 *filter
 :INPUT ACCEPT [0:0]
@@ -239,6 +244,8 @@ cat > /etc/iptables.rules <<EOF
 -A FORWARD -m conntrack --ctstate INVALID -j DROP
 -A FORWARD -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
+# If you wish to allow traffic between VPN clients themselves, uncomment this line:
+# -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 -A FORWARD -j DROP
 -A ICMPALL -p icmp -f -j DROP
 -A ICMPALL -p icmp --icmp-type 0 -j ACCEPT
@@ -263,7 +270,7 @@ cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 exit 0
 EOF
 
-/bin/cp -f /etc/rc.local /etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S) 2>/dev/null
+/bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/rc.local <<EOF
 #!/bin/sh -e
 #
