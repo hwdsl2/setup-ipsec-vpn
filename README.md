@@ -1,5 +1,9 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
+Note: This repository was created from and replaces these GitHub Gists:
+- https://gist.github.com/hwdsl2/9030462 (224 Stars, 87 Forks)
+- https://gist.github.com/hwdsl2/e9a78a50e300d12ae195 (9 Stars, 5 Forks)
+
 Scripts for automatic setup of an IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. Works on dedicated servers or any KVM- or XEN-based Virtual Private Server (VPS), with **freshly installed** Linux OS.
 
 They can also be used as Amazon EC2 "user-data" with the <a href="https://cloud-images.ubuntu.com/locator/ec2/" target="_blank">Ubuntu 14.04/12.04</a>, <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8</a> or <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7</a> AMIs.
