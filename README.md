@@ -1,8 +1,8 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
 Note: This repository was created from and replaces these GitHub Gists:
-- https://gist.github.com/hwdsl2/9030462 *(224 Stars, 87 Forks)*
-- https://gist.github.com/hwdsl2/e9a78a50e300d12ae195 *(9 Stars, 5 Forks)*
+- <a href="https://gist.github.com/hwdsl2/9030462/2aaaf443855de0275dad8a4e45bea523b5b0f966" target="_blank">gist.github.com/hwdsl2/9030462</a> *(224 Stars, 87 Forks as of 01/08/2016)*
+- <a href="https://gist.github.com/hwdsl2/e9a78a50e300d12ae195/5f68fb260c5c143e10d3cf6b3ce2c2f5426f7c1e" target="_blank">gist.github.com/hwdsl2/e9a78a50e300d12ae195</a> *(9 Stars, 5 Forks)*
 
 Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. All you need to do is provide your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and they will handle the rest. These scripts can also be directly used as the Amazon EC2 "user-data" when creating a new instance.
 
@@ -16,14 +16,15 @@ A newly created Amazon EC2 instance, using these AMIs: (See the link above for u
 - <a href="http://cloud-images.ubuntu.com/trusty/current/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/precise/current/" target="_blank">12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates HVM</a> - Does NOT have cloud-init. Run script manually after creation.
 
 **OR**
 
-A dedicated server or any KVM- or XEN-based Virtual Private Server (VPS), with **freshly installed**:
+A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with **freshly installed**:
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
 - Debian 7 (Wheezy) - A workaround is required. See below.
-- CentOS or Red Hat Enterprise Linux (RHEL) 6 or 7
+- CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
 
