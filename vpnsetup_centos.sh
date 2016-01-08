@@ -70,16 +70,26 @@ VPN_PASSWORD=your_very_secure_password
 # iPhone/iOS users may need to replace this line in ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
+# Create and change to working dir
+mkdir -p /opt/src
+cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
+
 # Install wget, dig (bind-utils) and nano
 yum -y install wget bind-utils nano
 
-echo 'If the script hangs here, press Ctrl-C to interrupt, then edit it and comment out'
-echo 'the next two lines PUBLIC_IP= and PRIVATE_IP=, OR replace them with the actual IPs.'
+echo
+echo 'Please wait... Trying to find Public IP and Private IP of this server.'
+echo
+echo 'If the script hangs here for more than a few minutes, press Ctrl-C to interrupt,'
+echo 'then edit it and comment out the next two lines PUBLIC_IP= and PRIVATE_IP= ,'
+echo 'OR replace them with the actual IPs. If your server only has a public IP,'
+echo 'put that public IP on both lines.'
+echo
 
 # In Amazon EC2, these two variables will be found automatically.
 # For all other servers, you may replace them with the actual IPs,
 # or comment out and let the script auto-detect in the next section.
-# If your server only has a public IP, use that IP on both lines.
+# If your server only has a public IP, put that public IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
@@ -89,10 +99,6 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 [ "$PUBLIC_IP" = "" ] && { echo "Could not find Public IP, please edit the VPN script manually."; exit 1; }
 [ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 [ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the VPN script manually."; exit 1; }
-
-# Create and change to working dir
-mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
 # Add the EPEL repository
 if grep -qs "release 6" /etc/redhat-release; then

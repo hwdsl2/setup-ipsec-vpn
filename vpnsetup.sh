@@ -59,18 +59,28 @@ VPN_PASSWORD=your_very_secure_password
 # iPhone/iOS users may need to replace this line in ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
+# Create and change to working dir
+mkdir -p /opt/src
+cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
+
 # Update package index and install wget, dig (dnsutils) and nano
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
 apt-get -y install wget dnsutils nano
 
-echo 'If the script hangs here, press Ctrl-C to interrupt, then edit it and comment out'
-echo 'the next two lines PUBLIC_IP= and PRIVATE_IP=, OR replace them with the actual IPs.'
+echo
+echo 'Please wait... Trying to find Public IP and Private IP of this server.'
+echo
+echo 'If the script hangs here for more than a few minutes, press Ctrl-C to interrupt,'
+echo 'then edit it and comment out the next two lines PUBLIC_IP= and PRIVATE_IP= ,'
+echo 'OR replace them with the actual IPs. If your server only has a public IP,'
+echo 'put that public IP on both lines.'
+echo
 
 # In Amazon EC2, these two variables will be found automatically.
 # For all other servers, you may replace them with the actual IPs,
 # or comment out and let the script auto-detect in the next section.
-# If your server only has a public IP, use that IP on both lines.
+# If your server only has a public IP, put that public IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
@@ -88,10 +98,6 @@ apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd
-
-# Create and change to working dir
-mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
 # Compile and install Libreswan (https://libreswan.org/)
 # To upgrade Libreswan when a newer version is available, just re-run
