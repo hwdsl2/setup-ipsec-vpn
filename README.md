@@ -1,19 +1,31 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
 Note: This repository was created from and replaces these GitHub Gists:
-- https://gist.github.com/hwdsl2/9030462 (224 Stars, 87 Forks)
-- https://gist.github.com/hwdsl2/e9a78a50e300d12ae195 (9 Stars, 5 Forks)
+- https://gist.github.com/hwdsl2/9030462 *(224 Stars, 87 Forks)*
+- https://gist.github.com/hwdsl2/e9a78a50e300d12ae195 *(9 Stars, 5 Forks)*
 
-Scripts for automatic setup of an IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. Works on dedicated servers or any KVM- or XEN-based Virtual Private Server (VPS), with **freshly installed** Linux OS.
+Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. All you need to do is provide your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and they will handle the rest. These scripts can also be directly used as the Amazon EC2 "user-data" when creating a new instance.
 
-They can also be used as Amazon EC2 "user-data" with the <a href="https://cloud-images.ubuntu.com/locator/ec2/" target="_blank">Ubuntu 14.04/12.04</a>, <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8</a> or <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7</a> AMIs.
+### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">My VPN tutorial with detailed usage instructions</a>  
 
-Do **NOT** run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS.
+## Requirements
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">My VPN tutorial with detailed usage instructions</a>  
-<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">Enable multiple VPN users with different credentials</a>  
-<a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">Workaround for Debian 7 (Wheezy)</a>  
-<a href="http://www.sarfata.org/posts/setting-up-an-amazon-vpn-server.md" target="_blank">Original post by Thomas Sarlandie</a>
+A newly created Amazon EC2 instance, using these AMIs: (See the link above for usage instructions)
+- <a href="http://cloud-images.ubuntu.com/trusty/current/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/precise/current/" target="_blank">12.04 (Precise)</a>
+- <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8 (Jessie) EC2 Images</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
+
+**OR**
+
+A dedicated server or any KVM- or XEN-based Virtual Private Server (VPS), with **freshly installed**:
+- Ubuntu 14.04 (Trusty) or 12.04 (Precise)
+- Debian 8 (Jessie)
+- Debian 7 (Wheezy) - A workaround is required. See below.
+- CentOS or Red Hat Enterprise Linux (RHEL) 6 or 7
+
+OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
+
+##### Note: Do NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
 
 ## Installation
 
@@ -26,9 +38,17 @@ nano -w vpnsetup.sh
 /bin/sh vpnsetup.sh
 ```
 
+Workaround required for Debian 7 (Wheezy) ONLY: (Run these commands first)
+
+```bash
+wget https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90/raw -O vpnsetup-workaround.sh
+/bin/sh vpnsetup-workaround.sh
+```
+
 ### For CentOS and RHEL:
 
 ```bash
+yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
@@ -36,6 +56,8 @@ nano -w vpnsetup_centos.sh
 ```
 
 ## Important Notes
+
+Learn how to <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">enable multiple VPN users</a> with different credentials.  
 
 For Windows users, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required for connections to a VPN server behind NAT (e.g. Amazon EC2).
 
@@ -48,7 +70,7 @@ The scripts will backup /etc/rc.local, /etc/sysctl.conf, /etc/iptables.rules and
 ## Copyright and license
 
 Copyright (C) 2014&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_profile_bluetxt_80x15.png" width="80" height="15" border="0" alt="View my profile on LinkedIn"></a>   
-Based on the work of Thomas Sarlandie (Copyright 2012)
+Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
 
-This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0</a>  
+This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
 Attribution required: please include my name in any derivative and let me know how you have improved it!
