@@ -78,15 +78,17 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 ## Important Notes
 
-Learn how to <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">enable multiple VPN users</a> with different credentials.  
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required for connections to a VPN server behind NAT (e.g. Amazon EC2).
 
-For Windows users, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required for connections to a VPN server behind NAT (e.g. Amazon EC2).
+To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
 
-If using Amazon EC2, these ports must be open in the server's security group: **UDP ports 500 & 4500**, and **TCP port 22** (optional, for SSH).
+Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN connection is active. This setting is controlled by `ms-dns` in `/etc/ppp/options.xl2tpd`.
+
+If using Amazon EC2, these ports must be open in the instance's security group: **UDP ports 500 & 4500**, and **TCP port 22** (optional, for SSH).
 
 If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
 
-The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with .old suffix.
+The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with `.old` suffix.
 
 ## Copyright and license
 
