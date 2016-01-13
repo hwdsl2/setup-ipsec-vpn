@@ -2,9 +2,7 @@
 #
 # Script for automatic configuration of IPsec/L2TP VPN server on 64-bit CentOS/RHEL 6 & 7.
 # Works on dedicated servers or any KVM- or XEN-based Virtual Private Server (VPS).
-# It can also be used as the Amazon EC2 "user-data" with the official CentOS 7 AMI.
-# Note that the CentOS 6 AMI does NOT come with cloud-init, therefore you need to
-# run this script manually after instance creation.
+# It can also be used as the Amazon EC2 "user-data" with the official CentOS 6 and 7 AMIs.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
 # ON YOUR DEDICATED SERVER OR VPS!
