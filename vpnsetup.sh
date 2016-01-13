@@ -40,15 +40,19 @@ VPN_PASSWORD=your_very_secure_password
 
 # IMPORTANT NOTES:
 
-# If you need multiple VPN users with different credentials,
-# please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
-
-# For Windows users, a one-time registry change is required in order to
-# connect to a VPN server behind NAT (e.g. in Amazon EC2). Please see:
+# For **Windows users**, a one-time registry change is required for connections
+# to a VPN server behind NAT (e.g. Amazon EC2). Please see:
 # https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
-# If using Amazon EC2, these ports must be open in the security group of
-# your VPN server: UDP ports 500 & 4500, and TCP port 22 (optional, for SSH).
+# To support multiple VPN users with different credentials, see:
+# https://gist.github.com/hwdsl2/123b886f29f4c689f531
+
+# Clients are configured to use Google Public DNS when the VPN connection is active.
+# This setting is controlled by "ms-dns" in /etc/ppp/options.xl2tpd.
+# https://developers.google.com/speed/public-dns/
+
+# If using Amazon EC2, these ports must be open in the instance's security group:
+# UDP ports 500 & 4500 (for the VPN), and TCP port 22 (optional, for SSH).
 
 # If your server uses a custom SSH port (not 22), or if you wish to allow other services
 # through IPTables, be sure to edit the IPTables rules below before running this script.
@@ -56,7 +60,7 @@ VPN_PASSWORD=your_very_secure_password
 # This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/iptables.rules
 # before overwriting them. Backups can be found under the same folder with .old suffix.
 
-# iPhone/iOS users may need to replace this line in ipsec.conf:
+# iPhone/iOS users: In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
 # Create and change to working dir
@@ -91,6 +95,17 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 [ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 [ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the VPN script manually."; exit 1; }
 
+# Check public/private IPs for correct format
+IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
+  echo "Could not find valid Public IP, please edit the VPN script manually."
+  exit 1
+fi
+if printf %s "$PRIVATE_IP" | grep -vEq "$IP_REGEX"; then
+  echo "Could not find valid Private IP, please edit the VPN script manually."
+  exit 1
+fi
+
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
@@ -99,15 +114,18 @@ apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
 apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd
 
+# Install Fail2Ban to protect SSH server
+apt-get -y install fail2ban
+
 # Compile and install Libreswan (https://libreswan.org/)
-# To upgrade Libreswan when a newer version is available, just re-run
-# these commands with the new "SWAN_VER", and then restart services with
-# "service ipsec restart" and "service xl2tpd restart".
 SWAN_VER=3.16
-SWAN_URL=https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz
-wget -t 3 -T 30 -qO- $SWAN_URL | tar xvz
-[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve Libreswan source files. Aborting."; exit 1; }
-cd libreswan-${SWAN_VER}
+SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
+SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
+wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
+[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
+tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
 # Prepare various config files
@@ -290,8 +308,10 @@ cat > /etc/rc.local <<EOF
 # bits.
 #
 # By default this script does nothing.
-/usr/sbin/service ipsec restart
-/usr/sbin/service xl2tpd restart
+
+/usr/sbin/service fail2ban restart || /bin/true
+/usr/sbin/service ipsec start
+/usr/sbin/service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
@@ -303,9 +323,15 @@ if [ ! -f /etc/ipsec.d/cert8.db ] ; then
 fi
 
 /sbin/sysctl -p
+/bin/chmod +x /etc/rc.local
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
 /bin/chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets
 /sbin/iptables-restore < /etc/iptables.rules
 
-/usr/sbin/service ipsec restart
-/usr/sbin/service xl2tpd restart
+/usr/sbin/service fail2ban stop >/dev/null 2>&1
+/usr/sbin/service ipsec stop >/dev/null 2>&1
+/usr/sbin/service xl2tpd stop >/dev/null 2>&1
+
+/usr/sbin/service fail2ban start
+/usr/sbin/service ipsec start
+/usr/sbin/service xl2tpd start

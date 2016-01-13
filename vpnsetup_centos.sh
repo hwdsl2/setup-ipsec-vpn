@@ -51,15 +51,19 @@ VPN_PASSWORD=your_very_secure_password
 
 # IMPORTANT NOTES:
 
-# If you need multiple VPN users with different credentials,
-# please see: https://gist.github.com/hwdsl2/123b886f29f4c689f531
-
-# For Windows users, a one-time registry change is required in order to
-# connect to a VPN server behind NAT (e.g. in Amazon EC2). Please see:
+# For **Windows users**, a one-time registry change is required for connections
+# to a VPN server behind NAT (e.g. Amazon EC2). Please see:
 # https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
-# If using Amazon EC2, these ports must be open in the security group of
-# your VPN server: UDP ports 500 & 4500, and TCP port 22 (optional, for SSH).
+# To support multiple VPN users with different credentials, see:
+# https://gist.github.com/hwdsl2/123b886f29f4c689f531
+
+# Clients are configured to use Google Public DNS when the VPN connection is active.
+# This setting is controlled by "ms-dns" in /etc/ppp/options.xl2tpd.
+# https://developers.google.com/speed/public-dns/
+
+# If using Amazon EC2, these ports must be open in the instance's security group:
+# UDP ports 500 & 4500 (for the VPN), and TCP port 22 (optional, for SSH).
 
 # If your server uses a custom SSH port (not 22), or if you wish to allow other services
 # through IPTables, be sure to edit the IPTables rules below before running this script.
@@ -67,7 +71,7 @@ VPN_PASSWORD=your_very_secure_password
 # This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/sysconfig/iptables
 # before overwriting them. Backups can be found under the same folder with .old suffix.
 
-# iPhone/iOS users may need to replace this line in ipsec.conf:
+# iPhone/iOS users: In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
 # Create and change to working dir
@@ -100,6 +104,17 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 [ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 [ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the VPN script manually."; exit 1; }
 
+# Check public/private IPs for correct format
+IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
+  echo "Could not find valid Public IP, please edit the VPN script manually."
+  exit 1
+fi
+if printf %s "$PRIVATE_IP" | grep -vEq "$IP_REGEX"; then
+  echo "Could not find valid Private IP, please edit the VPN script manually."
+  exit 1
+fi
+
 # Add the EPEL repository
 if grep -qs "release 6" /etc/redhat-release; then
   EPEL_RPM="epel-release-6-8.noarch.rpm"
@@ -111,9 +126,9 @@ else
   echo "Sorry, this script only supports versions 6 and 7 of CentOS/RHEL."
   exit 1
 fi
-wget -t 3 -T 30 -nv -O $EPEL_RPM $EPEL_URL
-[ ! -f $EPEL_RPM ] && { echo "Could not retrieve EPEL repository RPM file. Aborting."; exit 1; }
-rpm -ivh --force $EPEL_RPM && /bin/rm -f $EPEL_RPM
+wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
+[ ! -f "$EPEL_RPM" ] && { echo "Could not retrieve EPEL repository RPM file. Aborting."; exit 1; }
+rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
@@ -122,29 +137,31 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     fipscheck-devel unbound-devel gmp gmp-devel xmlto
 yum -y install ppp xl2tpd
 
+# Install Fail2Ban to protect SSH server
+yum -y install fail2ban
+
 # Installed Libevent 2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
   LE2_URL="https://people.redhat.com/pwouters/libreswan-rhel6"
   RPM1="libevent2-2.0.21-1.el6.x86_64.rpm"
   RPM2="libevent2-devel-2.0.21-1.el6.x86_64.rpm"
-  wget -t 3 -T 30 -nv -O $RPM1 $LE2_URL/$RPM1
-  wget -t 3 -T 30 -nv -O $RPM2 $LE2_URL/$RPM2
-  [ ! -f $RPM1 ] || [ ! -f $RPM2 ] && { echo "Could not retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
-  rpm -ivh --force $RPM1 $RPM2 && /bin/rm -f $RPM1 $RPM2
+  wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
+  wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
+  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Could not retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
 fi
 
 # Compile and install Libreswan (https://libreswan.org/)
-# To upgrade Libreswan when a newer version is available, just re-run these
-# commands with the new "SWAN_VER", then restore SELinux contexts using
-# the commands at the end of this script, and finally restart services with
-# "service ipsec restart" and "service xl2tpd restart".
 SWAN_VER=3.16
-SWAN_URL=https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz
-wget -t 3 -T 30 -qO- $SWAN_URL | tar xvz
-[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve Libreswan source files. Aborting."; exit 1; }
-cd libreswan-${SWAN_VER}
+SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
+SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
+wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
+[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
+tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
 # Prepare various config files
@@ -306,6 +323,25 @@ COMMIT
 COMMIT
 EOF
 
+if [ ! -f /etc/fail2ban/jail.local ] ; then
+
+cat > /etc/fail2ban/jail.local <<EOF
+[DEFAULT]
+ignoreip = 127.0.0.1/8
+bantime  = 600
+findtime  = 600
+maxretry = 5
+backend = auto
+
+[ssh-iptables]
+enabled  = true
+filter   = sshd
+action   = iptables[name=SSH, port=ssh, protocol=tcp]
+logpath  = /var/log/secure
+EOF
+
+fi
+
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/rc.local <<EOF
 #!/bin/sh
@@ -316,8 +352,9 @@ cat > /etc/rc.local <<EOF
 
 touch /var/lock/subsys/local
 /sbin/iptables-restore < /etc/sysconfig/iptables
-/sbin/service ipsec restart
-/sbin/service xl2tpd restart
+/sbin/service fail2ban restart
+/sbin/service ipsec start
+/sbin/service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 
@@ -333,8 +370,14 @@ restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 /sbin/sysctl -p
+/bin/chmod +x /etc/rc.local
 /bin/chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets
 /sbin/iptables-restore < /etc/sysconfig/iptables
 
-/sbin/service ipsec restart
-/sbin/service xl2tpd restart
+/sbin/service fail2ban stop >/dev/null 2>&1
+/sbin/service ipsec stop >/dev/null 2>&1
+/sbin/service xl2tpd stop >/dev/null 2>&1
+
+/sbin/service fail2ban start
+/sbin/service ipsec start
+/sbin/service xl2tpd start

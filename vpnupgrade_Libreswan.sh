@@ -10,6 +10,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
+# Check https://libreswan.org and update version number if necessary
 SWAN_VER=3.16
 
 if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
@@ -34,11 +35,14 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
+clear
+
 ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
 if [ "$?" = "0" ]; then
   echo "You already have Libreswan ${SWAN_VER} installed! "
   echo
-  read -r -p "Do you wish to continue anyway? [y/N] " response
+  printf "Do you wish to continue anyway? [y/N] "
+  read -r response
   case $response in
     [yY][eE][sS]|[yY])
       echo
@@ -55,7 +59,8 @@ echo "This is intended for use on VPN servers with an older version of Libreswan
 echo "Your existing VPN configuration files will NOT be modified."
 
 echo
-read -r -p "Do you wish to continue? [y/N] " response
+printf "Do you wish to continue? [y/N] "
+read -r response
 case $response in
   [yY][eE][sS]|[yY])
     echo
@@ -86,14 +91,16 @@ apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd
 
 # Compile and install Libreswan (https://libreswan.org/)
-SWAN_URL=https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz
+SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
+SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
+wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
+[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
-wget -t 3 -T 30 -qO- $SWAN_URL | tar xvz
-[ ! -d libreswan-${SWAN_VER} ] && { echo "Could not retrieve Libreswan source files. Aborting."; exit 1; }
-cd libreswan-${SWAN_VER}
+tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
-ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
+ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
 if [ "$?" != "0" ]; then
   echo
   echo "Sorry, something went wrong."

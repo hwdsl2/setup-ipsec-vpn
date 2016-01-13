@@ -10,7 +10,7 @@ Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 1
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed usage instructions</a>  
+### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">My VPN tutorial with detailed usage instructions</a>  
 
 ## Features
 
@@ -25,7 +25,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 ## Requirements
 
 A newly created Amazon EC2 instance, using these AMIs: (See the link above for usage instructions)
-- <a href="http://cloud-images.ubuntu.com/releases/trusty/release/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/releases/precise/release/" target="_blank">12.04 (Precise)</a>
+- <a href="http://cloud-images.ubuntu.com/trusty/current/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/precise/current/" target="_blank">12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates HVM</a> - Does NOT have cloud-init. Run script manually via SSH.
@@ -48,6 +48,8 @@ OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-inst
 
 ### For Ubuntu and Debian:
 
+First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional but recommended.
+
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
@@ -63,6 +65,8 @@ wget https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90/raw -O vpnsetup-workaro
 ```
 
 ### For CentOS and RHEL:
+
+First, update your system with `yum update` and reboot. This is optional but recommended.
 
 ```bash
 yum -y install wget nano
@@ -84,11 +88,13 @@ To support multiple VPN users with different credentials, just <a href="https://
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN connection is active. This setting is controlled by `ms-dns` in `/etc/ppp/options.xl2tpd`.
 
-If using Amazon EC2, these ports must be open in the instance's security group: **UDP ports 500 & 4500**, and **TCP port 22** (optional, for SSH).
+If using Amazon EC2, these ports must be open in the instance's security group: **UDP ports 500 & 4500** (for the VPN), and **TCP port 22** (optional, for SSH).
 
 If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
 
 The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with `.old` suffix.
+
+iPhone/iOS users: If unable to connect, try replacing `rightprotoport=17/%any` in `ipsec.conf` with `rightprotoport=17/0`.
 
 ## Copyright and license
 
