@@ -33,7 +33,7 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-ipsec --version 2>/dev/null | grep -qs "Libreswan"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
 if [ "$?" != "0" ]; then
   echo "This upgrade script requires that you already have Libreswan installed."
   echo "Aborting."
@@ -42,7 +42,7 @@ fi
 
 clear
 
-ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
 if [ "$?" = "0" ]; then
   echo "You already have Libreswan ${SWAN_VER} installed! "
   echo
@@ -130,7 +130,7 @@ tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
-ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
 if [ "$?" != "0" ]; then
   echo
   echo "Sorry, something went wrong."
