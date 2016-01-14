@@ -251,7 +251,7 @@ cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 
-$VPN_USER  l2tpd  $VPN_PASSWORD  *
+"$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
