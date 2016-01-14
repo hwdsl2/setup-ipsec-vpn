@@ -84,6 +84,8 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required for connections to a VPN server behind NAT (e.g. Amazon EC2).
 
+**Android 6.0 users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to the end of both `ike=` and `phase2alg=`, then add a new line `sha2-truncbug=yes`. Start lines with two spaces. When finished, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Source</a>)
+
 To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN connection is active. This setting is controlled by `ms-dns` in `/etc/ppp/options.xl2tpd`.

@@ -53,6 +53,11 @@ VPN_PASSWORD=your_very_secure_password
 # to a VPN server behind NAT (e.g. Amazon EC2). Please see:
 # https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
+# **Android 6.0 users**: Edit /etc/ipsec.conf and append ",aes256-sha2_256" to the end of both
+# "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Start lines with two spaces.
+# When finished, run "service ipsec restart". Source:
+# https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow
+
 # To support multiple VPN users with different credentials, see:
 # https://gist.github.com/hwdsl2/123b886f29f4c689f531
 
