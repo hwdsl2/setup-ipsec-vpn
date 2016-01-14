@@ -34,9 +34,9 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 # Please define your own values for those variables
-IPSEC_PSK=your_very_secure_key
-VPN_USER=your_username
-VPN_PASSWORD=your_very_secure_password
+IPSEC_PSK=van2016
+VPN_USER=vpntrial
+VPN_PASSWORD=jan2016
 
 # IMPORTANT NOTES:
 
@@ -180,7 +180,7 @@ port = 1701
 ;debug tunnel = yes
 
 [lns default]
-ip range = 192.168.42.10-192.168.42.250
+ip range = 192.168.42.10-192.168.255.255
 local ip = 192.168.42.1
 require chap = yes
 refuse pap = yes
@@ -213,6 +213,7 @@ cat > /etc/ppp/chap-secrets <<EOF
 # client  server  secret  IP addresses
 
 $VPN_USER  l2tpd  $VPN_PASSWORD  *
+$VPN_USER  pptp  $VPN_PASSWORD  *
 EOF
 
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
@@ -335,3 +336,17 @@ fi
 /usr/sbin/service fail2ban start
 /usr/sbin/service ipsec start
 /usr/sbin/service xl2tpd start
+
+#VPN 2 - Setup PPTP Server
+apt-get install pptpd -y
+echo "localip 10.0.0.1" >> /etc/pptpd.conf
+echo "remoteip 10.0.0.100-200" >> /etc/pptpd.conf
+echo "ms-dns 8.8.8.8" >> /etc/ppp/pptpd-options
+echo "ms-dns 8.8.4.4" >> /etc/ppp/pptpd-options
+service pptpd restart
+
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && iptables-save
+ 
+
