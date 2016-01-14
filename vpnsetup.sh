@@ -28,6 +28,12 @@ if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ];
   exit 1
 fi
 
+if [ -f "/proc/user_beancounters" ]; then
+  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
+  echo "https://github.com/Nyr/openvpn-install"
+  exit 1
+fi
+
 if [ "$(id -u)" != 0 ]; then
   echo "Sorry, you need to run this script as root."
   exit 1
@@ -68,6 +74,11 @@ VPN_PASSWORD=your_very_secure_password
 # iPhone/iOS users: In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
 # "rightprotoport=17/%any" with "rightprotoport=17/0".
 
+# Check for empty VPN variables
+[ -z "$IPSEC_PSK" ] && { echo "'IPSEC_PSK' cannot be empty. Please edit the VPN script."; exit 1; }
+[ -z "$VPN_USER" ] && { echo "'VPN_USER' cannot be empty. Please edit the VPN script."; exit 1; }
+[ -z "$VPN_PASSWORD" ] && { echo "'VPN_PASSWORD' cannot be empty. Please edit the VPN script."; exit 1; }
+
 # Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
@@ -94,11 +105,11 @@ PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/lat
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Attempt to find server IPs automatically for non-EC2 servers
-[ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
-[ "$PUBLIC_IP" = "" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
-[ "$PUBLIC_IP" = "" ] && { echo "Could not find Public IP, please edit the VPN script manually."; exit 1; }
-[ "$PRIVATE_IP" = "" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
-[ "$PRIVATE_IP" = "" ] && { echo "Could not find Private IP, please edit the VPN script manually."; exit 1; }
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check public/private IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
