@@ -82,11 +82,13 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required for connections to a VPN server behind NAT (e.g. Amazon EC2).
-
-**Android 6.0 users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to the end of both `ike=` and `phase2alg=`, then add a new line `sha2-truncbug=yes`. Start lines with two spaces. When finished, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Source</a>)
-
 To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
+
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
+
+**Android 6.0 users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to the end of both `ike=` and `phase2alg=`, then add a new line `sha2-truncbug=yes`. Must start lines with two spaces. Finally, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Ref</a>)
+
+**iPhone/iOS users**: In iOS settings, choose `L2TP` (instead of `IPSec`) for the VPN type. In case you're unable to connect, try replacing this line in /etc/ipsec.conf: `rightprotoport=17/%any` with `rightprotoport=17/0`. Then restart `ipsec` service.
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN connection is active. This setting is controlled by `ms-dns` in `/etc/ppp/options.xl2tpd`.
 
@@ -95,8 +97,6 @@ If using Amazon EC2, these ports must be open in the instance's security group: 
 If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
 
 The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with `.old` suffix.
-
-iPhone/iOS users: If unable to connect, try replacing `rightprotoport=17/%any` in `ipsec.conf` with `rightprotoport=17/0`.
 
 ## Copyright and license
 

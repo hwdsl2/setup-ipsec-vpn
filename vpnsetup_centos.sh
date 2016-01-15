@@ -55,21 +55,23 @@ VPN_PASSWORD=your_very_secure_password
 
 # IMPORTANT NOTES:
 
-# For **Windows users**, a one-time registry change is required for connections
-# to a VPN server behind NAT (e.g. Amazon EC2). Please see:
+# To support multiple VPN users with different credentials, just edit a few lines below.
+# See: https://gist.github.com/hwdsl2/123b886f29f4c689f531
+
+# For **Windows users**, a one-time registry change is required if the VPN server
+# and/or client is behind NAT (e.g. home router). Refer to "Error 809" on this page:
 # https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
-# **Android 6.0 users**: Edit /etc/ipsec.conf and append ",aes256-sha2_256" to the end of both
-# "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Start lines with two spaces.
-# When finished, run "service ipsec restart". Source:
-# https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow
+# **Android 6.0 users**: Edit /etc/ipsec.conf and append ",aes256-sha2_256" to the end of
+# both "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Must start lines with
+# two spaces. Finally, run "service ipsec restart".
 
-# To support multiple VPN users with different credentials, see:
-# https://gist.github.com/hwdsl2/123b886f29f4c689f531
+# **iPhone/iOS users**: In iOS settings, choose L2TP (instead of IPSec) for the VPN type.
+# In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
+# "rightprotoport=17/%any" with "rightprotoport=17/0". Then restart "ipsec" service.
 
-# Clients are configured to use Google Public DNS when the VPN connection is active.
+# Clients are configured to use "Google Public DNS" when the VPN connection is active.
 # This setting is controlled by "ms-dns" in /etc/ppp/options.xl2tpd.
-# https://developers.google.com/speed/public-dns/
 
 # If using Amazon EC2, these ports must be open in the instance's security group:
 # UDP ports 500 & 4500 (for the VPN), and TCP port 22 (optional, for SSH).
@@ -79,9 +81,6 @@ VPN_PASSWORD=your_very_secure_password
 
 # This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/sysconfig/iptables
 # before overwriting them. Backups can be found under the same folder with .old suffix.
-
-# iPhone/iOS users: In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
-# "rightprotoport=17/%any" with "rightprotoport=17/0".
 
 # Check for empty VPN variables
 [ -z "$IPSEC_PSK" ] && { echo "'IPSEC_PSK' cannot be empty. Please edit the VPN script."; exit 1; }
