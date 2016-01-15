@@ -24,8 +24,9 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 # Please define your own values for these variables
-# IMPORTANT: You must escape all non-alphanumeric characters with a backslash.
-# Examples: \ --> \\, " --> \", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
+# IMPORTANT:
+# Escape all non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
+# Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
 
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
