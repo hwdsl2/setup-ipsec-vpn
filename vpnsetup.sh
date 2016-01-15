@@ -23,28 +23,17 @@ if [ "$(uname)" = "Darwin" ]; then
   exit 1
 fi
 
-if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
-  echo "Looks like you aren't running this script on a Ubuntu or Debian system."
-  exit 1
-fi
+# Please define your own values for these variables
+# IMPORTANT: You must escape all non-alphanumeric characters with a backslash.
+# Examples: \ --> \\, " --> \", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
 
-if [ -f "/proc/user_beancounters" ]; then
-  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
-  echo "https://github.com/Nyr/openvpn-install"
-  exit 1
-fi
-
-if [ "$(id -u)" != 0 ]; then
-  echo "Sorry, you need to run this script as root."
-  exit 1
-fi
-
-# Please define your own values for those variables
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
 
-# IMPORTANT NOTES:
+# --------------------
+# | IMPORTANT NOTES  |
+# --------------------
 
 # To support multiple VPN users with different credentials, just edit a few lines below.
 # See: https://gist.github.com/hwdsl2/123b886f29f4c689f531
@@ -72,6 +61,22 @@ VPN_PASSWORD=your_very_secure_password
 
 # This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/iptables.rules
 # before overwriting them. Backups can be found under the same folder with .old suffix.
+
+if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
+  echo "Looks like you aren't running this script on a Ubuntu or Debian system."
+  exit 1
+fi
+
+if [ -f "/proc/user_beancounters" ]; then
+  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
+  echo "https://github.com/Nyr/openvpn-install"
+  exit 1
+fi
+
+if [ "$(id -u)" != 0 ]; then
+  echo "Sorry, you need to run this script as root."
+  exit 1
+fi
 
 # Check for empty VPN variables
 [ -z "$IPSEC_PSK" ] && { echo "'IPSEC_PSK' cannot be empty. Please edit the VPN script."; exit 1; }
