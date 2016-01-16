@@ -76,10 +76,6 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
-## Upgrading Libreswan
-
-You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libreswan_centos.sh` (for CentOS/RHEL) to upgrade <a href="https://libreswan.org/" target="_blank">Libreswan</a> to a newer version. Check and update the `SWAN_VER` variable on top of the scripts as necessary.
-
 ## Important Notes
 
 To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
@@ -97,6 +93,16 @@ If using Amazon EC2, these ports must be open in the instance's security group: 
 If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
 
 The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with `.old` suffix.
+
+## Upgrading Libreswan
+
+You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libreswan_centos.sh` (for CentOS/RHEL) to upgrade <a href="https://libreswan.org/" target="_blank">Libreswan</a> to a newer version. Check and update the `SWAN_VER` variable on top of the scripts as necessary.
+
+## Bugs & Questions
+
+- Have a question? Please read other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#google_translate_element" target="_blank">on my blog</a> before posting.
+- For Libreswan related questions, you may ask on the <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">mailing list</a>, or check out the <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
+- If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## Copyright and license
 
