@@ -26,41 +26,12 @@ fi
 # Please define your own values for these variables
 # Escape *all* non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
 # Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
-
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
 
-# -----------------
-#  IMPORTANT NOTES
-# -----------------
-
-# To support multiple VPN users with different credentials, just edit a few lines below.
-# See: https://gist.github.com/hwdsl2/123b886f29f4c689f531
-
-# For **Windows users**, a one-time registry change is required if the VPN server
-# and/or client is behind NAT (e.g. home router). Refer to "Error 809" on this page:
-# https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
-
-# **Android 6.0 users**: Edit /etc/ipsec.conf and append ",aes256-sha2_256" to the end of
-# both "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Must start lines
-# with two spaces. Finally, run "service ipsec restart".
-
-# **iPhone/iOS users**: In iOS settings, choose L2TP (instead of IPSec) for the VPN type.
-# In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
-# "rightprotoport=17/%any" with "rightprotoport=17/0". Then restart "ipsec" service.
-
-# Clients are configured to use "Google Public DNS" when the VPN connection is active.
-# This setting is controlled by "ms-dns" in /etc/ppp/options.xl2tpd.
-
-# If using Amazon EC2, these ports must be open in the instance's security group:
-# UDP ports 500 & 4500 (for the VPN), and TCP port 22 (optional, for SSH).
-
-# If your server uses a custom SSH port (not 22), or if you wish to allow other services
-# through IPTables, be sure to edit the IPTables rules below before running this script.
-
-# This script will backup your existing configuration files before overwriting them.
-# Backups can be found in the same folder as the original, with .old-date/time suffix.
+# IMPORTANT: Be sure to read important notes at the URL below:
+# https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
 if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
@@ -79,9 +50,10 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 # Check for empty VPN variables
-[ -z "$IPSEC_PSK" ] && { echo "'IPSEC_PSK' cannot be empty. Please edit the VPN script."; exit 1; }
-[ -z "$VPN_USER" ] && { echo "'VPN_USER' cannot be empty. Please edit the VPN script."; exit 1; }
-[ -z "$VPN_PASSWORD" ] && { echo "'VPN_PASSWORD' cannot be empty. Please edit the VPN script."; exit 1; }
+if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+  echo "Sorry, the VPN credentials cannot be empty. Please re-edit the VPN script."
+  exit 1
+fi
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -93,29 +65,28 @@ apt-get -y update
 apt-get -y install wget dnsutils sed nano
 
 echo
-echo 'Please wait... Trying to find Public IP and Private IP of this server.'
+echo 'Please wait... Trying to find Public/Private IP of this server.'
 echo
 echo 'If the script hangs here for more than a few minutes, press Ctrl-C to interrupt,'
-echo 'then edit it and comment out the next two lines PUBLIC_IP= and PRIVATE_IP= ,'
-echo 'OR replace them with the actual IPs. If your server only has a public IP,'
-echo 'put that public IP on both lines.'
+echo 'then edit and comment out the next two lines PUBLIC_IP= and PRIVATE_IP=, or replace'
+echo 'them with actual IPs. If your server only has a public IP, put it on both lines.'
 echo
 
 # In Amazon EC2, these two variables will be found automatically.
 # For all other servers, you may replace them with the actual IPs,
 # or comment out and let the script auto-detect in the next section.
-# If your server only has a public IP, put that public IP on both lines.
+# If your server only has a public IP, put it on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
-# Attempt to find server IPs automatically for non-EC2 servers
+# Attempt to find server IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
-# Check public/private IPs for correct format
+# Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
   echo "Could not find valid Public IP, please edit the VPN script manually."
@@ -149,6 +120,7 @@ cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory
 make programs && make install
 
 # Prepare various config files
+# Create Libreswan configuration
 /bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -187,11 +159,13 @@ conn vpnpsk
   dpdaction=clear
 EOF
 
+# Specify IPsec PSK
 /bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$IPSEC_PSK"
 EOF
 
+# Create xl2tpd config
 /bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
@@ -214,6 +188,7 @@ pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
 
+# Specify xl2tpd options
 /bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
@@ -232,16 +207,16 @@ lcp-echo-interval 60
 connect-delay 5000
 EOF
 
+# Create VPN credentials
 /bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
-
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
+# Update sysctl settings for VPN and better performance
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
 
@@ -278,15 +253,15 @@ net.core.rmem_max = 12582912
 net.ipv4.tcp_rmem = 10240 87380 12582912
 net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
-
 fi
 
+# Create basic IPTables rules. First, check if there are existing IPTables rules loaded.
+# 1. If IPTables is "empty", write out the new set of rules below.
+# 2. If *not* empty, insert new rules and save them together with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
-
 /bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 /usr/sbin/service fail2ban stop >/dev/null 2>&1
 if [ "$(/sbin/iptables-save | grep -c '^\-')" = "0" ]; then
-
 cat > /etc/iptables.rules <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -333,24 +308,20 @@ else
 iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
 iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
 iptables -I INPUT 3 -p udp --dport 1701 -j DROP
-
 iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
 iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
-# If you wish to allow traffic between VPN clients themselves, uncomment this line:
 # iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 iptables -A FORWARD -j DROP
-
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "${PRIVATE_IP}"
 
-/sbin/iptables-save > /etc/iptables.rules
-echo "# Modified by hwdsl2 VPN script" >> /etc/iptables.rules
-
+echo "# Modified by hwdsl2 VPN script" > /etc/iptables.rules
+/sbin/iptables-save >> /etc/iptables.rules
 fi
 fi
 
+# Create basic IP6Tables rules
 if ! grep -qs "hwdsl2 VPN script" /etc/ip6tables.rules; then
-
 /bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ip6tables.rules <<EOF
 # Added by hwdsl2 VPN script
@@ -366,9 +337,9 @@ cat > /etc/ip6tables.rules <<EOF
 -A INPUT -j DROP
 COMMIT
 EOF
-
 fi
 
+# Load IPTables rules at system boot
 cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 #!/bin/sh
 /sbin/iptables-restore < /etc/iptables.rules
@@ -381,8 +352,8 @@ cat > /etc/network/if-pre-up.d/ip6tablesload <<EOF
 exit 0
 EOF
 
+# Update rc.local to start services at system boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 /bin/sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
 cat >> /etc/rc.local <<EOF
@@ -394,28 +365,32 @@ cat >> /etc/rc.local <<EOF
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
-
 fi
 
+# Initialize Libreswan database
 if [ ! -f /etc/ipsec.d/cert8.db ] ; then
    echo > /var/tmp/libreswan-nss-pwd
    /usr/bin/certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
    /bin/rm -f /var/tmp/libreswan-nss-pwd
 fi
 
+# Reload sysctl.conf settings
 /sbin/sysctl -p
+
+# Update attributes of various files
 /bin/chmod +x /etc/rc.local
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
 /bin/chmod +x /etc/network/if-pre-up.d/ip6tablesload
 /bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
 
+# Apply new IPTables rules
 /sbin/iptables-restore < /etc/iptables.rules
 /sbin/ip6tables-restore < /etc/ip6tables.rules
 
+# Restart services
 /usr/sbin/service fail2ban stop >/dev/null 2>&1
 /usr/sbin/service ipsec stop >/dev/null 2>&1
 /usr/sbin/service xl2tpd stop >/dev/null 2>&1
-
 /usr/sbin/service fail2ban start
 /usr/sbin/service ipsec start
 /usr/sbin/service xl2tpd start
