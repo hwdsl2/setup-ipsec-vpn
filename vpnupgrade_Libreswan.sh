@@ -106,6 +106,11 @@ tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
+# Restart services
+/usr/sbin/service ipsec restart
+/usr/sbin/service xl2tpd restart
+
+# Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
 if [ "$?" != "0" ]; then
   echo
@@ -114,9 +119,6 @@ if [ "$?" != "0" ]; then
   echo "Exiting script."
   exit 1
 fi
-
-service ipsec restart
-service xl2tpd restart
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"

@@ -113,7 +113,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     fipscheck-devel unbound-devel gmp gmp-devel xmlto
 yum -y install ppp xl2tpd
 
-# Installed Libevent 2. Use backported version for CentOS 6.
+# Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
   LE2_URL="https://people.redhat.com/pwouters/libreswan-rhel6"
   RPM1="libevent2-2.0.21-1.el6.x86_64.rpm"
@@ -136,6 +136,16 @@ tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
 make programs && make install
 
+# Restore SELinux contexts
+restorecon /etc/ipsec.d/*db 2>/dev/null
+restorecon /usr/local/sbin -Rv 2>/dev/null
+restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+
+# Restart services
+/sbin/service ipsec restart
+/sbin/service xl2tpd restart
+
+# Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
 if [ "$?" != "0" ]; then
   echo
@@ -144,14 +154,6 @@ if [ "$?" != "0" ]; then
   echo "Exiting script."
   exit 1
 fi
-
-# Restore SELinux contexts
-restorecon /etc/ipsec.d/*db 2>/dev/null
-restorecon /usr/local/sbin -Rv 2>/dev/null
-restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
-
-service ipsec restart
-service xl2tpd restart
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"
