@@ -10,7 +10,7 @@ Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 1
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
 
-### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">My VPN tutorial with detailed usage instructions</a>  
+#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed usage instructions</a>
 
 ## Features
 
@@ -32,7 +32,8 @@ A newly created Amazon EC2 instance, using these AMIs: (See the link above for u
 
 **-OR-**
 
-A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with **freshly installed**:
+A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with these Linux OS:   
+(It is recommended that you use the VPN scripts on a **freshly installed** system)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
 - Debian 7 (Wheezy) - Not recommended. A workaround is required, see below.
@@ -40,9 +41,9 @@ A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with *
 
 OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">I want to run my own VPN but don't have a server for that</a>
+##### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">&raquo; I want to run my own VPN but don't have a server for that</a>
 
-##### Do NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
+##### DO NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
 
 ## Installation
 
@@ -92,7 +93,7 @@ If using Amazon EC2, these ports must be open in the instance's security group: 
 
 If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
 
-The scripts will backup files `/etc/rc.local`, `/etc/sysctl.conf`, `/etc/iptables.rules` and `/etc/sysconfig/iptables` before overwriting them. Backups can be found under the same folder with `.old` suffix.
+The scripts will backup your existing configuration files before overwriting them. Backups can be found in the same folder as the original, with `.old-date/time` suffix.
 
 ## Upgrading Libreswan
 
