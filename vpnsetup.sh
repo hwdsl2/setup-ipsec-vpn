@@ -24,17 +24,16 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 # Please define your own values for these variables
-# IMPORTANT:
-# Escape all non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
+# Escape *all* non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
 # Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
 
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
 VPN_PASSWORD=your_very_secure_password
 
-# --------------------
-# | IMPORTANT NOTES  |
-# --------------------
+# -----------------
+#  IMPORTANT NOTES
+# -----------------
 
 # To support multiple VPN users with different credentials, just edit a few lines below.
 # See: https://gist.github.com/hwdsl2/123b886f29f4c689f531
@@ -44,8 +43,8 @@ VPN_PASSWORD=your_very_secure_password
 # https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809
 
 # **Android 6.0 users**: Edit /etc/ipsec.conf and append ",aes256-sha2_256" to the end of
-# both "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Must start lines with
-# two spaces. Finally, run "service ipsec restart".
+# both "ike=" and "phase2alg=", then add a new line "sha2-truncbug=yes". Must start lines
+# with two spaces. Finally, run "service ipsec restart".
 
 # **iPhone/iOS users**: In iOS settings, choose L2TP (instead of IPSec) for the VPN type.
 # In case you're unable to connect, try replacing this line in /etc/ipsec.conf:
@@ -60,8 +59,8 @@ VPN_PASSWORD=your_very_secure_password
 # If your server uses a custom SSH port (not 22), or if you wish to allow other services
 # through IPTables, be sure to edit the IPTables rules below before running this script.
 
-# This script will backup /etc/rc.local, /etc/sysctl.conf and /etc/iptables.rules
-# before overwriting them. Backups can be found under the same folder with .old suffix.
+# This script will backup your existing configuration files before overwriting them.
+# Backups can be found in the same folder as the original, with .old-date/time suffix.
 
 if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
@@ -88,10 +87,10 @@ fi
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
-# Update package index and install wget, dig (dnsutils) and nano
+# Update package index and install wget, dig (dnsutils), sed and nano
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
-apt-get -y install wget dnsutils nano
+apt-get -y install wget dnsutils sed nano
 
 echo
 echo 'Please wait... Trying to find Public IP and Private IP of this server.'
@@ -150,6 +149,7 @@ cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory
 make programs && make install
 
 # Prepare various config files
+/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -187,10 +187,12 @@ conn vpnpsk
   dpdaction=clear
 EOF
 
+/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$IPSEC_PSK"
 EOF
 
+/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
@@ -212,6 +214,7 @@ pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
 
+/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
@@ -229,15 +232,20 @@ lcp-echo-interval 60
 connect-delay 5000
 EOF
 
+/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
-
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
+if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
+
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
-cat > /etc/sysctl.conf <<EOF
+cat >> /etc/sysctl.conf <<EOF
+
+# Added by hwdsl2 VPN script
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
 net.ipv4.tcp_syncookies = 1
@@ -256,8 +264,6 @@ net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
-net.ipv6.conf.all.disable_ipv6=1
-net.ipv6.conf.default.disable_ipv6=1
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.conf.all.secure_redirects = 0
@@ -269,8 +275,16 @@ net.ipv4.tcp_rmem= 10240 87380 12582912
 net.ipv4.tcp_wmem= 10240 87380 12582912
 EOF
 
+fi
+
+if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
+
 /bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/usr/sbin/service fail2ban stop >/dev/null 2>&1
+if [ "$(/sbin/iptables-save | grep -c '^\-')" = "0" ]; then
+
 cat > /etc/iptables.rules <<EOF
+# Added by hwdsl2 VPN script
 *filter
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
@@ -305,9 +319,30 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source ${PRIVATE_IP}
+-A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "${PRIVATE_IP}"
 COMMIT
 EOF
+
+else
+
+iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
+iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+iptables -I INPUT 3 -p udp --dport 1701 -j DROP
+
+iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
+iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
+# If you wish to allow traffic between VPN clients themselves, uncomment this line:
+# iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+iptables -A FORWARD -j DROP
+
+iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "${PRIVATE_IP}"
+
+/sbin/iptables-save > /etc/iptables.rules
+echo "# Modified by hwdsl2 VPN script" >> /etc/iptables.rules
+
+fi
+fi
 
 cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 #!/bin/sh
@@ -315,27 +350,21 @@ cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 exit 0
 EOF
 
-/bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
-cat > /etc/rc.local <<EOF
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
+if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 
+/bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
+cat >> /etc/rc.local <<EOF
+
+# Added by hwdsl2 VPN script
 /usr/sbin/service fail2ban restart || /bin/true
 /usr/sbin/service ipsec start
 /usr/sbin/service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
+
+fi
 
 if [ ! -f /etc/ipsec.d/cert8.db ] ; then
    echo > /var/tmp/libreswan-nss-pwd
@@ -346,7 +375,7 @@ fi
 /sbin/sysctl -p
 /bin/chmod +x /etc/rc.local
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
-/bin/chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets
+/bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
 /sbin/iptables-restore < /etc/iptables.rules
 
 /usr/sbin/service fail2ban stop >/dev/null 2>&1
