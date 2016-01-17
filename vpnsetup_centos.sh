@@ -303,8 +303,12 @@ net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
+net.ipv4.conf.lo.send_redirects = 0
+net.ipv4.conf.eth0.send_redirects = 0
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.lo.rp_filter = 0
+net.ipv4.conf.eth0.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 
@@ -332,6 +336,7 @@ cat > /etc/sysconfig/iptables <<EOF
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
+-A INPUT -d 127.0.0.0/8 -j REJECT
 -A INPUT -p icmp --icmp-type 255 -j ICMPALL
 -A INPUT -p udp --dport 67:68 --sport 67:68 -j ACCEPT
 -A INPUT -p tcp --dport 22 -j ACCEPT
@@ -382,6 +387,8 @@ echo "# Modified by hwdsl2 VPN script" >> /etc/sysconfig/iptables
 fi
 fi
 
+if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/ip6tables; then
+
 /bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
 cat > /etc/sysconfig/ip6tables <<EOF
 # Added by hwdsl2 VPN script
@@ -397,6 +404,8 @@ cat > /etc/sysconfig/ip6tables <<EOF
 -A INPUT -j DROP
 COMMIT
 EOF
+
+fi
 
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 
