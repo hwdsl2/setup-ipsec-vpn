@@ -158,6 +158,11 @@ yum -y install ppp xl2tpd
 # Install Fail2Ban to protect SSH server
 yum -y install fail2ban
 
+# Install IP6Tables for CentOS/RHEL 6
+if grep -qs "release 6" /etc/redhat-release; then
+  yum -y install iptables-ipv6
+fi
+
 # Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
   LE2_URL="https://people.redhat.com/pwouters/libreswan-rhel6"
@@ -282,12 +287,14 @@ cat >> /etc/sysctl.conf <<EOF
 # Added by hwdsl2 VPN script
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
-net.ipv4.tcp_syncookies = 1
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = 68719476736
 kernel.shmall = 4294967296
+kernel.randomize_va_space = 1
+
 net.ipv4.ip_forward = 1
+net.ipv4.tcp_syncookies = 1
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.all.log_martians = 1
@@ -300,13 +307,11 @@ net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
-net.ipv4.conf.all.secure_redirects = 0
-net.ipv4.conf.default.secure_redirects = 0
-kernel.randomize_va_space = 1
-net.core.wmem_max=12582912
-net.core.rmem_max=12582912
-net.ipv4.tcp_rmem= 10240 87380 12582912
-net.ipv4.tcp_wmem= 10240 87380 12582912
+
+net.core.wmem_max = 12582912
+net.core.rmem_max = 12582912
+net.ipv4.tcp_rmem = 10240 87380 12582912
+net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 
 fi
@@ -377,6 +382,22 @@ echo "# Modified by hwdsl2 VPN script" >> /etc/sysconfig/iptables
 fi
 fi
 
+/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+cat > /etc/sysconfig/ip6tables <<EOF
+# Added by hwdsl2 VPN script
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -m rt --rt-type 0 -j DROP
+-A INPUT -s fe80::/10 -j ACCEPT
+-A INPUT -p ipv6-icmp -j ACCEPT
+-A INPUT -j DROP
+COMMIT
+EOF
+
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 
 cat > /etc/fail2ban/jail.local <<EOF
@@ -403,6 +424,7 @@ cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
 /sbin/iptables-restore < /etc/sysconfig/iptables
+/sbin/ip6tables-restore < /etc/sysconfig/ip6tables
 /sbin/service fail2ban restart
 /sbin/service ipsec start
 /sbin/service xl2tpd start
@@ -425,7 +447,9 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 /sbin/sysctl -p
 /bin/chmod +x /etc/rc.local
 /bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
+
 /sbin/iptables-restore < /etc/sysconfig/iptables
+/sbin/ip6tables-restore < /etc/sysconfig/ip6tables
 
 /sbin/service fail2ban stop >/dev/null 2>&1
 /sbin/service ipsec stop >/dev/null 2>&1

@@ -248,12 +248,14 @@ cat >> /etc/sysctl.conf <<EOF
 # Added by hwdsl2 VPN script
 kernel.sysrq = 0
 kernel.core_uses_pid = 1
-net.ipv4.tcp_syncookies = 1
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = 68719476736
 kernel.shmall = 4294967296
+kernel.randomize_va_space = 1
+
 net.ipv4.ip_forward = 1
+net.ipv4.tcp_syncookies = 1
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.all.log_martians = 1
@@ -266,13 +268,11 @@ net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
-net.ipv4.conf.all.secure_redirects = 0
-net.ipv4.conf.default.secure_redirects = 0
-kernel.randomize_va_space = 1
-net.core.wmem_max=12582912
-net.core.rmem_max=12582912
-net.ipv4.tcp_rmem= 10240 87380 12582912
-net.ipv4.tcp_wmem= 10240 87380 12582912
+
+net.core.wmem_max = 12582912
+net.core.rmem_max = 12582912
+net.ipv4.tcp_rmem = 10240 87380 12582912
+net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 
 fi
@@ -344,9 +344,31 @@ echo "# Modified by hwdsl2 VPN script" >> /etc/iptables.rules
 fi
 fi
 
+/bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+cat > /etc/ip6tables.rules <<EOF
+# Added by hwdsl2 VPN script
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -m rt --rt-type 0 -j DROP
+-A INPUT -s fe80::/10 -j ACCEPT
+-A INPUT -p ipv6-icmp -j ACCEPT
+-A INPUT -j DROP
+COMMIT
+EOF
+
 cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 #!/bin/sh
 /sbin/iptables-restore < /etc/iptables.rules
+exit 0
+EOF
+
+cat > /etc/network/if-pre-up.d/ip6tablesload <<EOF
+#!/bin/sh
+/sbin/ip6tables-restore < /etc/ip6tables.rules
 exit 0
 EOF
 
@@ -375,8 +397,11 @@ fi
 /sbin/sysctl -p
 /bin/chmod +x /etc/rc.local
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
+/bin/chmod +x /etc/network/if-pre-up.d/ip6tablesload
 /bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
+
 /sbin/iptables-restore < /etc/iptables.rules
+/sbin/ip6tables-restore < /etc/ip6tables.rules
 
 /usr/sbin/service fail2ban stop >/dev/null 2>&1
 /usr/sbin/service ipsec stop >/dev/null 2>&1
