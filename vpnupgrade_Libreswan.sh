@@ -13,7 +13,7 @@
 # Check https://libreswan.org and update version number if necessary
 SWAN_VER=3.16
 
-if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
+if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/dev/null)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
   exit 1
 fi

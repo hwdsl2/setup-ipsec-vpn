@@ -33,7 +33,7 @@ VPN_PASSWORD=your_very_secure_password
 # IMPORTANT: Be sure to read important notes at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
-if [ "$(lsb_release -si)" != "Ubuntu" ] && [ "$(lsb_release -si)" != "Debian" ]; then
+if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/dev/null)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
   exit 1
 fi
