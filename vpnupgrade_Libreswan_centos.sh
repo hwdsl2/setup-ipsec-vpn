@@ -115,9 +115,9 @@ yum -y install ppp xl2tpd
 
 # Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
-  LE2_URL="https://people.redhat.com/pwouters/libreswan-rhel6"
-  RPM1="libevent2-2.0.21-1.el6.x86_64.rpm"
-  RPM2="libevent2-devel-2.0.21-1.el6.x86_64.rpm"
+  LE2_URL="https://download.libreswan.org/binaries/rhel/6/x86_64"
+  RPM1="libevent2-2.0.22-1.el6.x86_64.rpm"
+  RPM2="libevent2-devel-2.0.22-1.el6.x86_64.rpm"
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
   [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Could not retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
