@@ -18,11 +18,6 @@ if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/d
   exit 1
 fi
 
-if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
-  echo "Sorry, this script does not support Debian 7 (Wheezy)."
-  exit 1
-fi
-
 if [ -f "/proc/user_beancounters" ]; then
   echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
   echo "https://github.com/Nyr/openvpn-install"
@@ -41,11 +36,9 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-clear
-
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
 if [ "$?" = "0" ]; then
-  echo "You already have Libreswan ${SWAN_VER} installed! "
+  echo "It looks like you already have Libreswan ${SWAN_VER} installed! "
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -60,9 +53,18 @@ if [ "$?" = "0" ]; then
   esac
 fi
 
+clear
+
 echo "Welcome! This upgrade script will build and install Libreswan ${SWAN_VER} on your server."
 echo "This is intended for use on VPN servers with an older version of Libreswan installed."
 echo "Your existing VPN configuration files will NOT be modified."
+
+if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
+  echo
+  echo "IMPORTANT NOTE for Debian 7 (Wheezy) users:"
+  echo "A workaround is required for your system. See: https://github.com/hwdsl2/setup-ipsec-vpn#installation"
+  echo "Continue only if you have already completed the workaround."
+fi
 
 echo
 printf "Do you wish to continue? [y/N] "

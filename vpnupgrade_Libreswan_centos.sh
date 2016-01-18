@@ -46,11 +46,9 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-clear
-
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
 if [ "$?" = "0" ]; then
-  echo "You already have Libreswan ${SWAN_VER} installed! "
+  echo "It looks like you already have Libreswan ${SWAN_VER} installed! "
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -64,6 +62,8 @@ if [ "$?" = "0" ]; then
       ;;
   esac
 fi
+
+clear
 
 echo "Welcome! This upgrade script will build and install Libreswan ${SWAN_VER} on your server."
 echo "This is intended for use on VPN servers with an older version of Libreswan installed."
