@@ -28,6 +28,11 @@ if [ "$(uname -m)" != "x86_64" ]; then
   exit 1
 fi
 
+if [ -f "/proc/user_beancounters" ]; then
+  echo "This script does NOT support OpenVZ VPS."
+  exit 1
+fi
+
 if [ "$(id -u)" != 0 ]; then
   echo "Sorry, you need to run this script as root."
   exit 1
