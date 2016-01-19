@@ -39,8 +39,8 @@ if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/d
 fi
 
 if [ -f "/proc/user_beancounters" ]; then
-  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
-  echo "https://github.com/Nyr/openvpn-install"
+  echo "This script does NOT support OpenVZ VPS."
+  echo "Try Nyr's OpenVPN script instead: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -51,7 +51,7 @@ fi
 
 # Check for empty VPN variables
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "Sorry, the VPN credentials cannot be empty. Please re-edit the VPN script."
+  echo "The VPN credentials cannot be empty. Please re-edit the VPN script."
   exit 1
 fi
 

@@ -18,12 +18,6 @@ if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/d
   exit 1
 fi
 
-if [ -f "/proc/user_beancounters" ]; then
-  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
-  echo "https://github.com/Nyr/openvpn-install"
-  exit 1
-fi
-
 if [ "$(id -u)" != 0 ]; then
   echo "Sorry, you need to run this script as root."
   exit 1
@@ -31,7 +25,7 @@ fi
 
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
 if [ "$?" != "0" ]; then
-  echo "This upgrade script requires that you already have Libreswan installed."
+  echo "This upgrade script requires you already have Libreswan installed."
   echo "Aborting."
   exit 1
 fi

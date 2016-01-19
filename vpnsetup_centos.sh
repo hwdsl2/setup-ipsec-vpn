@@ -38,18 +38,18 @@ if [ ! -f /etc/redhat-release ]; then
 fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  echo "Sorry, this script only supports versions 6 and 7 of CentOS/RHEL."
+  echo "This script only supports versions 6 and 7 of CentOS/RHEL."
   exit 1
 fi
 
 if [ "$(uname -m)" != "x86_64" ]; then
-  echo "Sorry, this script only supports 64-bit CentOS/RHEL."
+  echo "This script only supports 64-bit CentOS/RHEL."
   exit 1
 fi
 
 if [ -f "/proc/user_beancounters" ]; then
-  echo "Sorry, this script does NOT support OpenVZ VPS. Try Nyr's OpenVPN script instead:"
-  echo "https://github.com/Nyr/openvpn-install"
+  echo "This script does NOT support OpenVZ VPS."
+  echo "Try Nyr's OpenVPN script instead: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -60,7 +60,7 @@ fi
 
 # Check for empty VPN variables
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "Sorry, the VPN credentials cannot be empty. Please re-edit the VPN script."
+  echo "The VPN credentials cannot be empty. Please re-edit the VPN script."
   exit 1
 fi
 
