@@ -58,6 +58,15 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
+# Make sure "eth0" is available
+if [ ! -f /sys/class/net/eth0/operstate ]; then
+  echo "Network interface 'eth0' is not available. Aborting."
+  echo
+  echo "CentOS 7 users should change interfaces to use the old naming convention"
+  echo "before running this script. See: https://wiki.centos.org/FAQ/CentOS7"
+  exit 1
+fi
+
 # Check for empty VPN variables
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   echo "The VPN credentials cannot be empty. Please re-edit the VPN script."
