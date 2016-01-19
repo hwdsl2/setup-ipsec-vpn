@@ -1,8 +1,8 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
 Note: This repository was created from (and replaces) these GitHub Gists:
-- <a href="https://gist.github.com/hwdsl2/9030462/2aaaf443855de0275dad8a4e45bea523b5b0f966" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/9030462</a> (224 Stars, 87 Forks as of 01/08/2016)
-- <a href="https://gist.github.com/hwdsl2/e9a78a50e300d12ae195/5f68fb260c5c143e10d3cf6b3ce2c2f5426f7c1e" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/e9a78a50e300d12ae195</a> (9 Stars, 5 Forks)
+- <a href="https://gist.github.com/hwdsl2/9030462/2aaaf443855de0275dad8a4e45bea523b5b0f966" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/9030462</a> (225 Stars, 88 Forks as of 01/18/2016)
+- <a href="https://gist.github.com/hwdsl2/e9a78a50e300d12ae195/5f68fb260c5c143e10d3cf6b3ce2c2f5426f7c1e" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/e9a78a50e300d12ae195</a> (10 Stars, 6 Forks)
 
 ## Overview
 
@@ -33,10 +33,10 @@ A newly created Amazon EC2 instance, using these AMIs: (See the link above for u
 **-OR-**
 
 A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with these Linux OS:   
-(It is recommended that you use the VPN scripts on a **freshly installed** system)
+(Using the VPN scripts on a **freshly installed** system is recommended)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
-- Debian 7 (Wheezy) - Not recommended. A workaround is required, see below.
+- Debian 7 (Wheezy) - NOT recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
@@ -49,7 +49,7 @@ OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-inst
 
 ### For Ubuntu and Debian:
 
-First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional but recommended.
+First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
@@ -58,16 +58,9 @@ nano -w vpnsetup.sh
 /bin/sh vpnsetup.sh
 ```
 
-Workaround required for Debian 7 (Wheezy) ONLY: (Run these commands first)
-
-```bash
-wget https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90/raw -O vpnsetup-workaround.sh
-/bin/sh vpnsetup-workaround.sh
-```
-
 ### For CentOS and RHEL:
 
-First, update your system with `yum update` and reboot. This is optional but recommended.
+First, update your system with `yum update` and reboot. This is optional, but recommended.
 
 ```bash
 yum -y install wget nano
@@ -77,23 +70,23 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
+If unable to download via `wget`, you may open the VPN scripts above and click the `Raw` button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+
 ## Important Notes
 
 To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
 
 For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-**Android 6.0 users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to the end of both `ike=` and `phase2alg=`, then add a new line `sha2-truncbug=yes`. Must start lines with two spaces. Finally, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Ref</a>)
+**Android 6 (Marshmallow) users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Also add a new line `sha2-truncbug=yes`. Must start lines with two spaces. Finally, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Ref</a>)
 
-**iPhone/iOS users**: In iOS settings, choose `L2TP` (instead of `IPSec`) for the VPN type. In case you're unable to connect, try replacing this line in /etc/ipsec.conf: `rightprotoport=17/%any` with `rightprotoport=17/0`. Then restart `ipsec` service.
+**iPhone/iPad users**: In iOS settings, choose `L2TP` (instead of `IPSec`) for the VPN type. In case you're unable to connect, edit `ipsec.conf` and replace `rightprotoport=17/%any` with `rightprotoport=17/0`. Then restart `ipsec` service.
 
-Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN connection is active. This setting is controlled by `ms-dns` in `/etc/ppp/options.xl2tpd`.
+Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-If using Amazon EC2, these ports must be open in the instance's security group: **UDP ports 500 & 4500** (for the VPN), and **TCP port 22** (optional, for SSH).
+If you configured a custom SSH port or wish to allow other services, edit the IPTables rules in the scripts before using.
 
-If your server uses a custom SSH port (not 22), or if you wish to allow other services through IPTables, be sure to edit the IPTables rules in the scripts before using.
-
-The scripts will backup your existing configuration files before overwriting them. Backups can be found in the same folder as the original, with `.old-date/time` suffix.
+The scripts will backup your existing config files before making changes, to the same folder with `.old-date-time` suffix.
 
 ## Upgrading Libreswan
 
@@ -101,7 +94,7 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 ## Bugs & Questions
 
-- Have a question? Please read other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#google_translate_element" target="_blank">on my blog</a> before posting.
+- Have a question? Please first read other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#google_translate_element" target="_blank">on my blog</a>.
 - For Libreswan related questions, you may ask on the <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">mailing list</a>, or check out the <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
