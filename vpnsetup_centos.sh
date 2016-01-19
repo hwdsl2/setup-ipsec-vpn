@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 # Script for automatic configuration of IPsec/L2TP VPN server on 64-bit CentOS/RHEL 6 & 7.
-# Works on dedicated servers or any KVM- or XEN-based Virtual Private Server (VPS).
-# It can also be used as the Amazon EC2 "user-data" with the official CentOS 6 and 7 AMIs.
+# Works on dedicated servers or any KVM- or Xen-based Virtual Private Server (VPS).
+# It can also be used as Amazon EC2 "user-data" with the official CentOS 6 & 7 AMIs.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
 # ON YOUR DEDICATED SERVER OR VPS!
@@ -17,13 +17,13 @@
 # know how you have improved it! 
 
 if [ "$(uname)" = "Darwin" ]; then
-  echo 'DO NOT run this script on your Mac! It should only be run on a Dedicated Server / VPS'
+  echo 'DO NOT run this script on your Mac! It should only be run on a dedicated server / VPS'
   echo 'or a newly-created EC2 instance, after you have modified it to set the variables below.'
   exit 1
 fi
 
 # Please define your own values for these variables
-# Escape *all* non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
+# Escape *all* non-alphanumeric characters with a backslash (3 backslashes for \ and ").
 # Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
@@ -49,7 +49,7 @@ fi
 
 if [ -f "/proc/user_beancounters" ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try Nyr's OpenVPN script instead: https://github.com/Nyr/openvpn-install"
+  echo "Try Nyr's OpenVPN script: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -58,18 +58,16 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-# Make sure "eth0" is available
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
   echo
-  echo "CentOS 7 users should change interfaces to use the old naming convention"
+  echo "CentOS 7 users should change interfaces to use old naming convention"
   echo "before running this script. See: https://wiki.centos.org/FAQ/CentOS7"
   exit 1
 fi
 
-# Check for empty VPN variables
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "The VPN credentials cannot be empty. Please re-edit the VPN script."
+  echo "VPN credentials cannot be empty, please edit the VPN script."
   exit 1
 fi
 
@@ -105,11 +103,11 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
-  echo "Could not find valid Public IP, please edit the VPN script manually."
+  echo "Cannot find valid Public IP, please edit the VPN script manually."
   exit 1
 fi
 if printf %s "$PRIVATE_IP" | grep -vEq "$IP_REGEX"; then
-  echo "Could not find valid Private IP, please edit the VPN script manually."
+  echo "Cannot find valid Private IP, please edit the VPN script manually."
   exit 1
 fi
 
@@ -120,12 +118,9 @@ if grep -qs "release 6" /etc/redhat-release; then
 elif grep -qs "release 7" /etc/redhat-release; then
   EPEL_RPM="epel-release-7-5.noarch.rpm"
   EPEL_URL="http://download.fedoraproject.org/pub/epel/7/x86_64/e/$EPEL_RPM"
-else
-  echo "Sorry, this script only supports versions 6 and 7 of CentOS/RHEL."
-  exit 1
 fi
 wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
-[ ! -f "$EPEL_RPM" ] && { echo "Could not retrieve EPEL repository RPM file. Aborting."; exit 1; }
+[ ! -f "$EPEL_RPM" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
 rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 
 # Install necessary packages
@@ -150,26 +145,27 @@ if grep -qs "release 6" /etc/redhat-release; then
   RPM2="libevent2-devel-2.0.22-1.el6.x86_64.rpm"
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
-  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Could not retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
   rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
 fi
 
-# Compile and install Libreswan (https://libreswan.org/)
+# Compile and install Libreswan
 SWAN_VER=3.16
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
+[ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
-cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
 
 # Prepare various config files
-# Create Libreswan configuration
-/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+# Create IPsec (Libreswan) configuration
+SYS_DT="$(/bin/date +%Y-%m-%d-%H:%M:%S)"
+/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -208,13 +204,13 @@ conn vpnpsk
 EOF
 
 # Specify IPsec PSK
-/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
-/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-${SYS_DT}" 2>/dev/null
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
@@ -237,7 +233,7 @@ length bit = yes
 EOF
 
 # Specify xl2tpd options
-/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
@@ -256,16 +252,16 @@ connect-delay 5000
 EOF
 
 # Create VPN credentials
-/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
-# Update sysctl settings for VPN and better performance
+# Update sysctl settings for VPN and performance
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-${SYS_DT}" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
@@ -303,11 +299,11 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-# Create basic IPTables rules. First, check if there are existing IPTables rules loaded.
+# Create basic IPTables rules. First check if there are existing IPTables rules loaded.
 # 1. If IPTables is "empty", write out the new set of rules below.
 # 2. If *not* empty, insert new rules and save them together with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
-/bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-${SYS_DT}" 2>/dev/null
 /sbin/service fail2ban stop >/dev/null 2>&1
 if [ "$(/sbin/iptables-save | grep -c '^\-')" = "0" ]; then
 cat > /etc/sysconfig/iptables <<EOF
@@ -367,9 +363,9 @@ echo "# Modified by hwdsl2 VPN script" > /etc/sysconfig/iptables
 fi
 fi
 
-# Create basic IP6Tables rules
+# Create basic IP6Tables (IPv6) rules
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/ip6tables; then
-/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-${SYS_DT}" 2>/dev/null
 cat > /etc/sysconfig/ip6tables <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -404,9 +400,9 @@ logpath  = /var/log/secure
 EOF
 fi
 
-# Update rc.local to start services at system boot
+# Update rc.local to start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-/bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/rc.local "/etc/rc.local.old-${SYS_DT}" 2>/dev/null
 cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
@@ -419,7 +415,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 fi
 
-# Initialize Libreswan database
+# Initialize Libreswan DB
 if [ ! -f /etc/ipsec.d/cert8.db ] ; then
    echo > /var/tmp/libreswan-nss-pwd
    /usr/bin/certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
@@ -431,10 +427,10 @@ restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
-# Reload sysctl.conf settings
+# Reload sysctl.conf
 /sbin/sysctl -p
 
-# Update attributes of various files
+# Update file attributes
 /bin/chmod +x /etc/rc.local
 /bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
 

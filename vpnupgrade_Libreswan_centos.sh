@@ -97,12 +97,9 @@ if grep -qs "release 6" /etc/redhat-release; then
 elif grep -qs "release 7" /etc/redhat-release; then
   EPEL_RPM="epel-release-7-5.noarch.rpm"
   EPEL_URL="http://download.fedoraproject.org/pub/epel/7/x86_64/e/$EPEL_RPM"
-else
-  echo "Sorry, this script only supports versions 6 and 7 of CentOS/RHEL."
-  exit 1
 fi
 wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
-[ ! -f "$EPEL_RPM" ] && { echo "Could not retrieve EPEL repository RPM file. Aborting."; exit 1; }
+[ ! -f "$EPEL_RPM" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
 rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 
 # Install necessary packages
@@ -119,20 +116,20 @@ if grep -qs "release 6" /etc/redhat-release; then
   RPM2="libevent2-devel-2.0.22-1.el6.x86_64.rpm"
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
-  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Could not retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
   rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
 fi
 
-# Compile and install Libreswan (https://libreswan.org/)
+# Compile and install Libreswan
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
+[ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
-cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
 
 # Restore SELinux contexts

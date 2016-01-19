@@ -2,11 +2,11 @@
 #
 # Amazon EC2 user-data file for automatic configuration of IPsec/L2TP VPN server
 # on a Ubuntu or Debian instance. Tested with Ubuntu 14.04 & 12.04 and Debian 8.
-# With minor modifications, this script *can also be used* on dedicated servers
-# or any KVM- or XEN-based Virtual Private Server (VPS) from other providers.
+# Besides EC2, this script *can also be used* on dedicated servers or any KVM-
+# or Xen-based Virtual Private Server (VPS) from other providers.
 #
-# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN WHEN 
-# YOUR AMAZON EC2 INSTANCE STARTS!
+# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
+# ON YOUR DEDICATED SERVER OR VPS!
 #
 # Copyright (C) 2014 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -19,12 +19,12 @@
 
 if [ "$(uname)" = "Darwin" ]; then
   echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
-  echo 'or other Dedicated Server / VPS, after you have modified it to set the variables below.'
+  echo 'or other dedicated server / VPS, after you have modified it to set the variables below.'
   exit 1
 fi
 
 # Please define your own values for these variables
-# Escape *all* non-alphanumeric characters with a backslash (or 3 backslashes for \ and ").
+# Escape *all* non-alphanumeric characters with a backslash (3 backslashes for \ and ").
 # Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
 IPSEC_PSK=your_very_secure_key
 VPN_USER=your_username
@@ -40,7 +40,7 @@ fi
 
 if [ -f "/proc/user_beancounters" ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try Nyr's OpenVPN script instead: https://github.com/Nyr/openvpn-install"
+  echo "Try Nyr's OpenVPN script: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -49,15 +49,13 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-# Make sure "eth0" is available
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
   exit 1
 fi
 
-# Check for empty VPN variables
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "The VPN credentials cannot be empty. Please re-edit the VPN script."
+  echo "VPN credentials cannot be empty, please edit the VPN script."
   exit 1
 fi
 
@@ -95,11 +93,11 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
-  echo "Could not find valid Public IP, please edit the VPN script manually."
+  echo "Cannot find valid Public IP, please edit the VPN script manually."
   exit 1
 fi
 if printf %s "$PRIVATE_IP" | grep -vEq "$IP_REGEX"; then
-  echo "Could not find valid Private IP, please edit the VPN script manually."
+  echo "Cannot find valid Private IP, please edit the VPN script manually."
   exit 1
 fi
 
@@ -114,20 +112,21 @@ apt-get -y install xl2tpd
 # Install Fail2Ban to protect SSH server
 apt-get -y install fail2ban
 
-# Compile and install Libreswan (https://libreswan.org/)
+# Compile and install Libreswan
 SWAN_VER=3.16
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ ! -f "$SWAN_FILE" ] && { echo "Could not retrieve Libreswan source file. Aborting."; exit 1; }
+[ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
-cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source directory. Aborting."; exit 1; }
+cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
 
 # Prepare various config files
-# Create Libreswan configuration
-/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+# Create IPsec (Libreswan) configuration
+SYS_DT="$(/bin/date +%Y-%m-%d-%H:%M:%S)"
+/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -166,13 +165,13 @@ conn vpnpsk
 EOF
 
 # Specify IPsec PSK
-/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
-/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-${SYS_DT}" 2>/dev/null
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
@@ -195,7 +194,7 @@ length bit = yes
 EOF
 
 # Specify xl2tpd options
-/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
@@ -214,16 +213,16 @@ connect-delay 5000
 EOF
 
 # Create VPN credentials
-/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
-# Update sysctl settings for VPN and better performance
+# Update sysctl settings for VPN and performance
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-${SYS_DT}" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
@@ -261,11 +260,11 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-# Create basic IPTables rules. First, check if there are existing IPTables rules loaded.
+# Create basic IPTables rules. First check if there are existing IPTables rules loaded.
 # 1. If IPTables is "empty", write out the new set of rules below.
 # 2. If *not* empty, insert new rules and save them together with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
-/bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-${SYS_DT}" 2>/dev/null
 /usr/sbin/service fail2ban stop >/dev/null 2>&1
 if [ "$(/sbin/iptables-save | grep -c '^\-')" = "0" ]; then
 cat > /etc/iptables.rules <<EOF
@@ -326,9 +325,9 @@ echo "# Modified by hwdsl2 VPN script" > /etc/iptables.rules
 fi
 fi
 
-# Create basic IP6Tables rules
+# Create basic IP6Tables (IPv6) rules
 if ! grep -qs "hwdsl2 VPN script" /etc/ip6tables.rules; then
-/bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-${SYS_DT}" 2>/dev/null
 cat > /etc/ip6tables.rules <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -358,9 +357,9 @@ cat > /etc/network/if-pre-up.d/ip6tablesload <<EOF
 exit 0
 EOF
 
-# Update rc.local to start services at system boot
+# Update rc.local to start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-/bin/cp -f /etc/rc.local "/etc/rc.local.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null
+/bin/cp -f /etc/rc.local "/etc/rc.local.old-${SYS_DT}" 2>/dev/null
 /bin/sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
 cat >> /etc/rc.local <<EOF
 
@@ -373,17 +372,17 @@ exit 0
 EOF
 fi
 
-# Initialize Libreswan database
+# Initialize Libreswan DB
 if [ ! -f /etc/ipsec.d/cert8.db ] ; then
    echo > /var/tmp/libreswan-nss-pwd
    /usr/bin/certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
    /bin/rm -f /var/tmp/libreswan-nss-pwd
 fi
 
-# Reload sysctl.conf settings
+# Reload sysctl.conf
 /sbin/sysctl -p
 
-# Update attributes of various files
+# Update file attributes
 /bin/chmod +x /etc/rc.local
 /bin/chmod +x /etc/network/if-pre-up.d/iptablesload
 /bin/chmod +x /etc/network/if-pre-up.d/ip6tablesload
