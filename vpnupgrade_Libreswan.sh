@@ -54,15 +54,16 @@ fi
 
 clear
 
-echo "Welcome! This upgrade script will build and install Libreswan ${SWAN_VER} on your server."
-echo "This is intended for use on VPN servers with an older version of Libreswan installed."
+echo "Welcome! This script will build and install Libreswan ${SWAN_VER} on your server."
+echo "Related packages, such as those required by Libreswan compilation will also be installed."
+echo "This is intended for use on VPN servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
 
 if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
   echo
   echo "IMPORTANT NOTE for Debian 7 (Wheezy) users:"
-  echo "A workaround is required for your system. See: https://github.com/hwdsl2/setup-ipsec-vpn#installation"
-  echo "Continue only if you have already completed the workaround."
+  echo "A workaround is required for your system. See: https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90"
+  echo "Continue only if you have completed the workaround."
 fi
 
 echo
@@ -95,7 +96,6 @@ apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcurl4-nss-dev libgmp3-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
-apt-get -y install xl2tpd
 
 # Compile and install Libreswan
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
@@ -107,9 +107,8 @@ tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
 
-# Restart services
+# Restart IPsec service
 /usr/sbin/service ipsec restart
-/usr/sbin/service xl2tpd restart
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
@@ -123,5 +122,4 @@ fi
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"
-
 exit 0

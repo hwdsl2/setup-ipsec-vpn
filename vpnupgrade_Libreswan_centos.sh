@@ -64,8 +64,9 @@ fi
 
 clear
 
-echo "Welcome! This upgrade script will build and install Libreswan ${SWAN_VER} on your server."
-echo "This is intended for use on VPN servers with an older version of Libreswan installed."
+echo "Welcome! This script will build and install Libreswan ${SWAN_VER} on your server."
+echo "Related packages, such as those required by Libreswan compilation will also be installed."
+echo "This is intended for use on VPN servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
 
 echo
@@ -107,7 +108,6 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel \
     curl-devel gmp-devel flex bison gcc make \
     fipscheck-devel unbound-devel gmp gmp-devel xmlto
-yum -y install ppp xl2tpd
 
 # Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
@@ -137,9 +137,8 @@ restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
-# Restart services
+# Restart IPsec service
 /sbin/service ipsec restart
-/sbin/service xl2tpd restart
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
@@ -153,5 +152,4 @@ fi
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"
-
 exit 0
