@@ -33,7 +33,7 @@ A newly created Amazon EC2 instance, using these AMIs: (See the link above for u
 **-OR-**
 
 A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with these Linux OS:   
-(Using the VPN scripts on a **freshly installed** system is recommended)
+&nbsp;(Using the VPN scripts on a **freshly installed** system is recommended)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
 - Debian 7 (Wheezy) - NOT recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
@@ -71,6 +71,12 @@ nano -w vpnsetup_centos.sh
 ```
 
 If unable to download via `wget`, you may open the VPN scripts above and click the `Raw` button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+
+## Next Steps
+
+Get your computer to use the VPN. Search the web for instructions, e.g. https://www.google.com/#q=setup+ipsec+l2tp+client
+
+Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
