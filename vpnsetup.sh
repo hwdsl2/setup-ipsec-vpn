@@ -24,13 +24,14 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 # Please define your own values for these variables
-# Escape *all* non-alphanumeric characters with a backslash (3 backslashes for \ and ").
-# Examples: \ --> \\\\, " --> \\\", ' --> \', $ --> \$, ` --> \`, [space] --> \[space]
-IPSEC_PSK=your_very_secure_key
-VPN_USER=your_username
-VPN_PASSWORD=your_very_secure_password
+# - All values MUST be quoted using 'single quotes'
+# - DO NOT use these characters inside values:  \ " '
 
-# IMPORTANT: Be sure to read important notes at the URL below:
+IPSEC_PSK='your_ipsec_pre_shared_key'
+VPN_USER='your_vpn_username'
+VPN_PASSWORD='your_very_secure_password'
+
+# Be sure to read *important notes* at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
 if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/dev/null)" != "Debian" ]; then
