@@ -103,11 +103,11 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-if printf %s "$PUBLIC_IP" | grep -vEq "$IP_REGEX"; then
+if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
   echo "Cannot find valid Public IP, please edit the VPN script manually."
   exit 1
 fi
-if printf %s "$PRIVATE_IP" | grep -vEq "$IP_REGEX"; then
+if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
   echo "Cannot find valid Private IP, please edit the VPN script manually."
   exit 1
 fi
