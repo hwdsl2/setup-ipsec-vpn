@@ -13,6 +13,8 @@
 # Check https://libreswan.org and update version number if necessary
 SWAN_VER=3.16
 
+### Do not edit below this line
+
 if [ ! -f /etc/redhat-release ]; then
   echo "Looks like you aren't running this script on a CentOS/RHEL system."
   exit 1
@@ -88,8 +90,8 @@ esac
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
-# Install wget and nano
-yum -y install wget nano
+# Install Wget
+yum -y install wget
 
 # Add the EPEL repository
 if grep -qs "release 6" /etc/redhat-release; then
@@ -133,22 +135,16 @@ cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Abor
 make programs && make install
 
 # Restore SELinux contexts
-restorecon /etc/ipsec.d/*db 2>/dev/null
-restorecon /usr/local/sbin -Rv 2>/dev/null
-restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+/sbin/restorecon /etc/ipsec.d/*db 2>/dev/null
+/sbin/restorecon /usr/local/sbin -Rv 2>/dev/null
+/sbin/restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Restart IPsec service
 /sbin/service ipsec restart
 
-# Check if Libreswan install was successful
+# Check if the install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
-if [ "$?" != "0" ]; then
-  echo
-  echo "Sorry, something went wrong."
-  echo "Libreswan ${SWAN_VER} was NOT installed successfully."
-  echo "Exiting script."
-  exit 1
-fi
+[ "$?" != "0" ] && { echo "Sorry, Libreswan ${SWAN_VER} failed to compile or install. Aborting."; exit 1; }
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"

@@ -17,12 +17,6 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
-if [ "$(uname)" = "Darwin" ]; then
-  echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
-  echo 'or other dedicated server / VPS, after you have modified it to set the variables below.'
-  exit 1
-fi
-
 # Please define your own values for these variables
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
@@ -33,6 +27,14 @@ VPN_PASSWORD='your_very_secure_password'
 
 # Be sure to read *important notes* at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
+
+### Do not edit below this line
+
+if [ "$(uname)" = "Darwin" ]; then
+  echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
+  echo 'or other dedicated server / VPS, after you have modified it to set the variables above.'
+  exit 1
+fi
 
 if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/dev/null)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
@@ -64,10 +66,10 @@ fi
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
-# Update package index and install wget, dig (dnsutils), sed and nano
+# Update package index and install Wget and dig (dnsutils)
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
-apt-get -y install wget dnsutils sed nano
+apt-get -y install wget dnsutils
 
 echo
 echo 'Please wait... Trying to find Public/Private IP of this server.'
@@ -123,6 +125,10 @@ wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
+
+# Check if the install was successful
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
+[ "$?" != "0" ] && { echo "Sorry, Libreswan ${SWAN_VER} failed to compile or install. Aborting."; exit 1; }
 
 # Prepare various config files
 # Create IPsec (Libreswan) configuration

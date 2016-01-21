@@ -16,12 +16,6 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
-if [ "$(uname)" = "Darwin" ]; then
-  echo 'DO NOT run this script on your Mac! It should only be run on a dedicated server / VPS'
-  echo 'or a newly-created EC2 instance, after you have modified it to set the variables below.'
-  exit 1
-fi
-
 # Please define your own values for these variables
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
@@ -32,6 +26,14 @@ VPN_PASSWORD='your_very_secure_password'
 
 # Be sure to read *important notes* at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
+
+### Do not edit below this line
+
+if [ "$(uname)" = "Darwin" ]; then
+  echo 'DO NOT run this script on your Mac! It should only be run on a dedicated server / VPS'
+  echo 'or a newly-created EC2 instance, after you have modified it to set the variables above.'
+  exit 1
+fi
 
 if [ ! -f /etc/redhat-release ]; then
   echo "Looks like you aren't running this script on a CentOS/RHEL system."
@@ -76,8 +78,8 @@ fi
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
-# Install wget, dig (bind-utils) and nano
-yum -y install wget bind-utils nano
+# Install Wget and dig (bind-utils)
+yum -y install wget bind-utils
 
 echo
 echo 'Please wait... Trying to find Public/Private IP of this server.'
@@ -162,6 +164,10 @@ wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
+
+# Check if the install was successful
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
+[ "$?" != "0" ] && { echo "Sorry, Libreswan ${SWAN_VER} failed to compile or install. Aborting."; exit 1; }
 
 # Prepare various config files
 # Create IPsec (Libreswan) configuration
@@ -424,9 +430,9 @@ if [ ! -f /etc/ipsec.d/cert8.db ] ; then
 fi
 
 # Restore SELinux contexts
-restorecon /etc/ipsec.d/*db 2>/dev/null
-restorecon /usr/local/sbin -Rv 2>/dev/null
-restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+/sbin/restorecon /etc/ipsec.d/*db 2>/dev/null
+/sbin/restorecon /usr/local/sbin -Rv 2>/dev/null
+/sbin/restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Reload sysctl.conf
 /sbin/sysctl -p

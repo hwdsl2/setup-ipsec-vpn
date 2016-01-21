@@ -13,6 +13,8 @@
 # Check https://libreswan.org and update version number if necessary
 SWAN_VER=3.16
 
+### Do not edit below this line
+
 if [ "$(lsb_release -si 2>/dev/null)" != "Ubuntu" ] && [ "$(lsb_release -si 2>/dev/null)" != "Debian" ]; then
   echo "Looks like you aren't running this script on a Ubuntu or Debian system."
   exit 1
@@ -85,10 +87,10 @@ esac
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
 
-# Update package index and install wget and nano
+# Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
-apt-get -y install wget nano
+apt-get -y install wget
 
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
@@ -110,15 +112,9 @@ make programs && make install
 # Restart IPsec service
 /usr/sbin/service ipsec restart
 
-# Check if Libreswan install was successful
+# Check if the install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
-if [ "$?" != "0" ]; then
-  echo
-  echo "Sorry, something went wrong."
-  echo "Libreswan ${SWAN_VER} was NOT installed successfully."
-  echo "Exiting script."
-  exit 1
-fi
+[ "$?" != "0" ] && { echo "Sorry, Libreswan ${SWAN_VER} failed to compile or install. Aborting."; exit 1; }
 
 echo
 echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"
