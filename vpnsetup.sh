@@ -17,6 +17,8 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
+# ------------------------------------------------------------
+
 # Please define your own values for these variables
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
@@ -28,7 +30,7 @@ VPN_PASSWORD='your_very_secure_password'
 # Be sure to read *important notes* at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
-### Do not edit below this line
+# ------------------------------------------------------------
 
 if [ "$(uname)" = "Darwin" ]; then
   echo 'DO NOT run this script on your Mac! It should only be run on a newly-created EC2 instance'
@@ -233,20 +235,15 @@ if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
 cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
-kernel.sysrq = 0
-kernel.core_uses_pid = 1
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = 68719476736
 kernel.shmall = 4294967296
-kernel.randomize_va_space = 1
 
 net.ipv4.ip_forward = 1
 net.ipv4.tcp_syncookies = 1
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
-net.ipv4.conf.all.log_martians = 1
-net.ipv4.conf.default.log_martians = 1
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
