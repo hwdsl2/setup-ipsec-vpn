@@ -327,6 +327,11 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$
 echo "# Modified by hwdsl2 VPN script" > /etc/iptables.rules
 /sbin/iptables-save >> /etc/iptables.rules
 fi
+# Update rules for iptables-persistent
+if [ -f /etc/iptables/rules.v4 ]; then
+/bin/cp -f /etc/iptables/rules.v4 "/etc/iptables/rules.v4.old-${SYS_DT}"
+/bin/cp -f /etc/iptables.rules /etc/iptables/rules.v4
+fi
 fi
 
 # Create basic IP6Tables (IPv6) rules
@@ -346,6 +351,11 @@ cat > /etc/ip6tables.rules <<EOF
 -A INPUT -j DROP
 COMMIT
 EOF
+# Update rules (IPv6) for iptables-persistent
+if [ -f /etc/iptables/rules.v6 ]; then
+/bin/cp -f /etc/iptables/rules.v6 "/etc/iptables/rules.v6.old-${SYS_DT}"
+/bin/cp -f /etc/ip6tables.rules /etc/iptables/rules.v6
+fi
 fi
 
 # Load IPTables rules at system boot
