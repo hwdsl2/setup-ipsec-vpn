@@ -7,7 +7,7 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
 # ON YOUR DEDICATED SERVER OR VPS!
 #
-# Copyright (C) 2015 Lin Song
+# Copyright (C) 2015-2016 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 

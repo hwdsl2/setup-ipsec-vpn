@@ -2,7 +2,7 @@
 #
 # Simple script to upgrade Libreswan on CentOS and RHEL
 #
-# Copyright (C) 2015 Lin Song
+# Copyright (C) 2016 Lin Song
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
