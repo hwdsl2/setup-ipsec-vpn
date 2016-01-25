@@ -1,11 +1,5 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
-Note: This repository was created from (and replaces) these GitHub Gists:
-- <a href="https://gist.github.com/hwdsl2/9030462/2aaaf443855de0275dad8a4e45bea523b5b0f966" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/9030462</a> (225 Stars, 88 Forks as of 01/18/2016)
-- <a href="https://gist.github.com/hwdsl2/e9a78a50e300d12ae195/5f68fb260c5c143e10d3cf6b3ce2c2f5426f7c1e" target="_blank"  rel="nofollow">gist.github.com/hwdsl2/e9a78a50e300d12ae195</a> (10 Stars, 6 Forks)
-
-## Overview
-
 Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. All you need to do is providing your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and they will handle the rest. These scripts can also be directly used as the Amazon EC2 "user-data" when creating a new instance.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
@@ -36,7 +30,7 @@ A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with t
 &nbsp;(Using the VPN scripts on a **freshly installed** system is recommended)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
-- Debian 7 (Wheezy) - NOT recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
+- Debian 7 (Wheezy) - Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
@@ -70,7 +64,7 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
-If unable to download via `wget`, you may open the VPN scripts above and click the `Raw` button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+If unable to download via `wget`, you may alternatively open the VPN scripts above and click the **`Raw`** button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next Steps
 
@@ -106,7 +100,7 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 ## Copyright and license
 
-Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_profile_bluetxt_80x15.png" width="80" height="15" border="0" alt="View my profile on LinkedIn"></a>    
+Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>    
 Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
 
 This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
