@@ -68,7 +68,7 @@ If unable to download via `wget`, you may alternatively open the VPN scripts abo
 
 ## Next Steps
 
-Get your computer to use the VPN. Search the web for instructions, e.g. https://www.google.com/#q=setup+ipsec+l2tp+client
+Get your computer to use the VPN. Search the web for instructions, e.g. https://www.google.com/search?q=setup+l2tp+client
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
