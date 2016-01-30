@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Simple script to upgrade Libreswan on CentOS and RHEL
+# Script to upgrade Libreswan to a newer version on CentOS and RHEL
 #
 # Copyright (C) 2016 Lin Song
 #
@@ -30,7 +30,7 @@ if [ "$(uname -m)" != "x86_64" ]; then
   exit 1
 fi
 
-if [ -f "/proc/user_beancounters" ]; then
+if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
   exit 1
 fi
@@ -43,13 +43,12 @@ fi
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
 if [ "$?" != "0" ]; then
   echo "This upgrade script requires you already have Libreswan installed."
-  echo "Aborting."
   exit 1
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan ${SWAN_VER}"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $SWAN_VER"
 if [ "$?" = "0" ]; then
-  echo "It looks like you already have Libreswan ${SWAN_VER} installed! "
+  echo "Looks like you already have Libreswan version $SWAN_VER installed! "
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -66,7 +65,7 @@ fi
 
 clear
 
-echo "Welcome! This script will build and install Libreswan ${SWAN_VER} on your server."
+echo "Welcome! This script will build and install Libreswan $SWAN_VER on your server."
 echo "Related packages, such as those required by Libreswan compilation will also be installed."
 echo "This is intended for use on VPN servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
@@ -88,18 +87,18 @@ esac
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working directory to /opt/src. Aborting."; exit 1; }
+cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
 
 # Install Wget
 yum -y install wget
 
 # Add the EPEL repository
 if grep -qs "release 6" /etc/redhat-release; then
-  EPEL_RPM="epel-release-6-8.noarch.rpm"
-  EPEL_URL="http://download.fedoraproject.org/pub/epel/6/x86_64/$EPEL_RPM"
+  EPEL_RPM=epel-release-6-8.noarch.rpm
+  EPEL_URL=http://download.fedoraproject.org/pub/epel/6/x86_64/$EPEL_RPM
 elif grep -qs "release 7" /etc/redhat-release; then
-  EPEL_RPM="epel-release-7-5.noarch.rpm"
-  EPEL_URL="http://download.fedoraproject.org/pub/epel/7/x86_64/e/$EPEL_RPM"
+  EPEL_RPM=epel-release-7-5.noarch.rpm
+  EPEL_URL=http://download.fedoraproject.org/pub/epel/7/x86_64/e/$EPEL_RPM
 fi
 wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
 [ ! -f "$EPEL_RPM" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
@@ -113,9 +112,9 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 
 # Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then
-  LE2_URL="https://download.libreswan.org/binaries/rhel/6/x86_64"
-  RPM1="libevent2-2.0.22-1.el6.x86_64.rpm"
-  RPM2="libevent2-devel-2.0.22-1.el6.x86_64.rpm"
+  LE2_URL=https://download.libreswan.org/binaries/rhel/6/x86_64
+  RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
+  RPM2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
   [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
@@ -126,12 +125,12 @@ fi
 
 # Compile and install Libreswan
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
-SWAN_URL="https://download.libreswan.org/${SWAN_FILE}"
+SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-${SWAN_VER}"
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
-cd "libreswan-${SWAN_VER}" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 make programs && make install
 
 # Restore SELinux contexts
@@ -142,10 +141,10 @@ make programs && make install
 # Restart IPsec service
 /sbin/service ipsec restart
 
-# Check if the install was successful
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "${SWAN_VER}"
-[ "$?" != "0" ] && { echo "Sorry, Libreswan ${SWAN_VER} failed to compile or install. Aborting."; exit 1; }
+# Check if Libreswan install was successful
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
+[ "$?" != "0" ] && { echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 echo
-echo "Congratulations! Libreswan ${SWAN_VER} was installed successfully!"
+echo "Congratulations! Libreswan $SWAN_VER was installed successfully! "
 exit 0
