@@ -9,7 +9,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 ## Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
-- Encapsulates all VPN traffic in UDP - does not need the <a href="http://www.tcpipguide.com/free/t_IPSecEncapsulatingSecurityPayloadESP.htm" target="_blank">ESP protocol</a>
+- Encapsulates all VPN traffic in UDP - does not need the ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Automatically determines public IP and private IP of server
 - Includes basic IPTables rules and `sysctl.conf` settings
@@ -18,7 +18,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Requirements
 
-A newly created Amazon EC2 instance, using these AMIs: (See the link above for usage instructions)
+A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, using these AMIs: (Follow the link above for instructions)
 - <a href="http://cloud-images.ubuntu.com/trusty/current/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/precise/current/" target="_blank">12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
@@ -33,7 +33,7 @@ A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with t
 - Debian 7 (Wheezy) - Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
-OpenVZ VPS users should instead use <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
+OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
 
 ##### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">&raquo; I want to run my own VPN but don't have a server for that</a>
 
@@ -74,15 +74,17 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-To support multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
-
 For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-**Android 6 (Marshmallow) users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Also add a new line `sha2-truncbug=yes`. Must start lines with two spaces. Finally, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Ref</a>)
+**Android 6 (Marshmallow) users**: After install, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Also add a new line `sha2-truncbug=yes`. Start lines with two spaces. Finally, run `service ipsec restart`.
 
 **iPhone/iPad users**: In iOS settings, choose `L2TP` (instead of `IPSec`) for the VPN type. In case you're unable to connect, edit `ipsec.conf` and replace `rightprotoport=17/%any` with `rightprotoport=17/0`. Then restart `ipsec` service.
 
+If you wish to enable multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
+
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
+
+If using Amazon EC2, open these ports in the server's security group: **UDP 500 & 4500**, and **TCP port 22** (optional, for SSH).
 
 If you configured a custom SSH port or wish to allow other services, edit the IPTables rules in the scripts before using.
 
@@ -94,11 +96,11 @@ You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libres
 
 ## Bugs & Questions
 
-- Have a question? Please first read other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#google_translate_element" target="_blank">on my blog</a>.
+- Have a question? Please first check other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
 - For Libreswan related questions, you may ask on the <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">mailing list</a>, or check out the <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
-## Copyright and license
+## Copyright and License
 
 Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>    
 Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
