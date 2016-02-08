@@ -37,7 +37,7 @@ OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-inst
 
 ##### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">&raquo; I want to run my own VPN but don't have a server for that</a>
 
-##### DO NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
+##### :warning: DO NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
 
 ## Installation
 
