@@ -401,7 +401,7 @@ fi
 
 # Apply new IPTables rules
 /sbin/iptables-restore < /etc/iptables.rules
-/sbin/ip6tables-restore < /etc/ip6tables.rules
+/sbin/ip6tables-restore < /etc/ip6tables.rules >/dev/null 2>&1
 
 # Restart services
 /usr/sbin/service fail2ban stop >/dev/null 2>&1

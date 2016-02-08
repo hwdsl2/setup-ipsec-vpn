@@ -439,7 +439,7 @@ fi
 
 # Apply new IPTables rules
 /sbin/iptables-restore < /etc/sysconfig/iptables
-/sbin/ip6tables-restore < /etc/sysconfig/ip6tables
+/sbin/ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
 
 # Restart services
 /sbin/service fail2ban stop >/dev/null 2>&1
