@@ -9,7 +9,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 ## Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
-- Encapsulates all VPN traffic in UDP - does not need the ESP protocol
+- Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Automatically determines public IP and private IP of server
 - Includes basic IPTables rules and `sysctl.conf` settings
@@ -64,7 +64,7 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
-If unable to download via `wget`, you may alternatively open the VPN scripts above and click the **`Raw`** button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+If unable to download via `wget`, you may open [vpnsetup.sh](vpnsetup.sh) (or [vpnsetup_centos.sh](vpnsetup_centos.sh)) and click the **`Raw`** button on the right. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next Steps
 
@@ -74,7 +74,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, make sure that `CHAP` is selected under "Allow these protocols" in the "Security" tab of VPN adapter properties. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">Ref</a>)
 
 **Android 6 (Marshmallow) users**: After install, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Also add a new line `sha2-truncbug=yes`. Start lines with two spaces. Finally, run `service ipsec restart`.
 
@@ -92,11 +92,11 @@ The scripts will backup your existing config files before making changes, to the
 
 ## Upgrading Libreswan
 
-You may use `vpnupgrade_Libreswan.sh` (for Ubuntu/Debian) and `vpnupgrade_Libreswan_centos.sh` (for CentOS/RHEL) to upgrade <a href="https://libreswan.org/" target="_blank">Libreswan</a> to a newer version. Check and update the `SWAN_VER` variable on top of the scripts as necessary.
+You may use [vpnupgrade_Libreswan.sh](vpnupgrade_Libreswan.sh) (for Ubuntu/Debian) or [vpnupgrade_Libreswan_centos.sh](vpnupgrade_Libreswan_centos.sh) (for CentOS/RHEL) to upgrade <a href="https://libreswan.org/" target="_blank">Libreswan</a> to a newer version. Check and update the `SWAN_VER` variable on top of the scripts as necessary.
 
 ## Bugs & Questions
 
-- Have a question? Please first check other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
+- Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
 - For Libreswan related questions, you may ask on the <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">mailing list</a>, or check out the <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
