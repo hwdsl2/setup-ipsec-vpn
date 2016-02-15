@@ -1,6 +1,6 @@
 # IPsec/L2TP VPN Server Auto Setup Scripts
 
-Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. All you need to do is providing your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and they will handle the rest. These scripts can also be directly used as the Amazon EC2 "user-data" when creating a new instance.
+Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7. All you need to do is providing your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and let them handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
 
@@ -13,12 +13,11 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Automatically determines public IP and private IP of server
 - Includes basic IPTables rules and `sysctl.conf` settings
-- Tested with Ubuntu 14.04 & 12.04, Debian 8 and CentOS/RHEL 6 & 7
-
+- Tested with Ubuntu 14.04 & 12.04, Debian 8 and CentOS 6 & 7
 
 ## Requirements
 
-A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, using these AMIs: (Follow the link above for instructions)
+A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, using these AMIs: (Follow <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">this link</a> for instructions)
 - <a href="http://cloud-images.ubuntu.com/trusty/current/" target="_blank">Ubuntu 14.04 (Trusty)</a> or <a href="http://cloud-images.ubuntu.com/precise/current/" target="_blank">12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
@@ -26,8 +25,8 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 
 **-OR-**
 
-A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with these Linux OS:   
-&nbsp;(Using the VPN scripts on a **freshly installed** system is recommended)
+A dedicated server or KVM/Xen-based Virtual Private Server (VPS), running one of these OS:   
+&nbsp;(Note: Using the VPN scripts on a freshly installed system is recommended)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
 - Debian 7 (Wheezy) - Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
@@ -35,9 +34,9 @@ A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), with t
 
 OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
 
-##### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">&raquo; I want to run my own VPN but don't have a server for that</a>
+<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
-##### :warning: DO NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!
+:warning: **DO NOT run these scripts on your PC or Mac! They are meant to be run on a dedicated server or VPS!**
 
 ## Installation
 
@@ -74,7 +73,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, make sure that `CHAP` is selected under "Allow these protocols" in the "Security" tab of VPN adapter properties. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">Ref</a>)
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, make sure that `CHAP` is enabled under "Allow these protocols" in the "Security" tab of VPN connection properties. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">Ref</a>)
 
 **Android 6 (Marshmallow) users**: After install, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Also add a new line `sha2-truncbug=yes`. Start lines with two spaces. Finally, run `service ipsec restart`.
 
