@@ -63,11 +63,11 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
-If unable to download via `wget`, you may alternatively open [vpnsetup.sh](vpnsetup.sh) (or [vpnsetup_centos.sh](vpnsetup_centos.sh)) and click the **`Raw`** button. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next Steps
 
-Get your computer to use the VPN. Search the web for instructions, e.g. https://www.google.com/search?q=setup+l2tp+client
+Get your computer or device to use the VPN. Search the web for instructions, e.g. <a href="https://www.google.com/search?q=setup+l2tp+client" target="_blank">google.com/search?q=setup+l2tp+client</a>
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -91,12 +91,12 @@ The scripts will backup your existing config files before making changes, to the
 
 ## Upgrading Libreswan
 
-The additional scripts [vpnupgrade_Libreswan.sh](vpnupgrade_Libreswan.sh) and [vpnupgrade_Libreswan_centos.sh](vpnupgrade_Libreswan_centos.sh) can be used to periodically upgrade Libreswan to the latest version. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `SWAN_VER` variable as necessary.
+The additional scripts <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to periodically upgrade Libreswan to the latest version. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `SWAN_VER` variable as necessary.
 
 ## Bugs & Questions
 
 - Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
-- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on this mailing list</a>, or check out its <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
+- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or check out this <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## Copyright and License
