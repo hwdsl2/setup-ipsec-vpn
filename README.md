@@ -25,18 +25,18 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 
 **-OR-**
 
-A dedicated server or KVM/Xen-based Virtual Private Server (VPS), running one of these OS:   
-&nbsp;(Note: Using the VPN scripts on a freshly installed system is recommended)
+A dedicated server or KVM/Xen-based Virtual Private Server (VPS), with the following OS:   
+&nbsp;(Note: Starting with a freshly installed system is recommended)
 - Ubuntu 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
-- Debian 7 (Wheezy) - Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
+- Debian 7 (Wheezy) &raquo; Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
-:warning: **DO NOT run these scripts on your PC or Mac! They should only be run on a dedicated server or VPS!**
+:warning: **DO NOT run these scripts on your PC or Mac! They should only be used on a server!**
 
 ## Installation
 
@@ -83,9 +83,9 @@ If you wish to enable multiple VPN users with different credentials, just <a hre
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-If using Amazon EC2, open **UDP ports 500 & 4500** and **TCP port 22** (optional, for SSH) in the instance's <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>.
+For Amazon EC2 servers only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open **UDP ports 500 & 4500** and **TCP port 22** (optional, for SSH).
 
-If you configured a custom SSH port or wish to allow other services, edit the IPTables rules within the scripts before using.
+If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L285" target="_blank">IPTables rules</a> before using the scripts.
 
 The scripts will backup your existing config files before making changes, to the same folder with `.old-date-time` suffix.
 
@@ -96,7 +96,7 @@ The additional scripts <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgr
 ## Bugs & Questions
 
 - Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
-- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or check out this <a href="https://libreswan.org/wiki/Main_Page" target="_blank">official wiki</a>.
+- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## Copyright and License
