@@ -6,6 +6,12 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed usage instructions</a>
 
+## Author
+
+- Lin Song - Final year Ph.D. candidate seeking opportunities in Software or Systems Engineering.   
+View my profile on LinkedIn at <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>.
+- Based on the work of Thomas Sarlandie (<a href="https://github.com/sarfata/voodooprivacy" target="_blank">sarfata/voodooprivacy</a>).
+
 ## Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
