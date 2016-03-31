@@ -4,7 +4,20 @@ Scripts for automatic configuration of IPsec/L2TP VPN server on Ubuntu 14.04 & 1
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed usage instructions</a>
+#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to VPN tutorial with detailed usage instructions</a>
+
+## Table of Contents
+- [Author](#author)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [For Ubuntu and Debian](#for-ubuntu-and-debian)
+  - [For CentOS and RHEL](#for-centos-and-rhel)
+- [Next Steps](#next-steps)
+- [Important Notes](#important-notes)
+- [Upgrading Libreswan](#upgrading-libreswan)
+- [Bugs & Questions](#bugs--questions)
+- [Copyright and License](#copyright-and-license)
 
 ## Author
 
@@ -79,17 +92,17 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In addition, make sure `CHAP` <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">is enabled</a> under "Allow these protocols" in the "Security" tab of VPN connection properties.
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also make sure that `CHAP` <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">is enabled</a> under "Allow these protocols" in the "Security" tab of VPN properties.
 
 **Android 6 (Marshmallow) users**: After install, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Then <a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">add a new line</a> `sha2-truncbug=yes`. Indent lines with two spaces. Finally, run `service ipsec restart`.
 
 **iPhone/iPad users**: In iOS settings, choose `L2TP` (instead of `IPSec`) as the VPN type. In case you are unable to connect, edit `ipsec.conf` and replace `rightprotoport=17/%any` with `rightprotoport=17/0`. Then restart `ipsec` service.
 
-If you wish to enable multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
+If you wish to create multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-For Amazon EC2 servers only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open **UDP ports 500 & 4500** and **TCP port 22** (optional, for SSH).
+For Amazon EC2 instances only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open **UDP ports 500 & 4500** and **TCP port 22** (optional, for SSH).
 
 If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L285" target="_blank">IPTables rules</a> before using the scripts.
 
@@ -108,7 +121,7 @@ The additional scripts <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgr
 ## Copyright and License
 
 Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>    
-Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
+Based on the work of Thomas Sarlandie (Copyright 2012)
 
 This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
 Attribution required: please include my name in any derivative and let me know how you have improved it!
