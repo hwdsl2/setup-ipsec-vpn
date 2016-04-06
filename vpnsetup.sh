@@ -107,7 +107,7 @@ fi
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
-        libcurl4-nss-dev libgmp3-dev flex bison gcc make \
+        libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd
@@ -116,7 +116,7 @@ apt-get -y install xl2tpd
 apt-get -y install fail2ban
 
 # Compile and install Libreswan
-SWAN_VER=3.16
+SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"

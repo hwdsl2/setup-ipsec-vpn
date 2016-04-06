@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org and update version number if necessary
-SWAN_VER=3.16
+SWAN_VER=3.17
 
 ### Do not edit below this line
 
@@ -107,8 +107,8 @@ rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel \
-    curl-devel gmp-devel flex bison gcc make \
-    fipscheck-devel unbound-devel gmp gmp-devel xmlto
+    curl-devel flex bison gcc make \
+    fipscheck-devel unbound-devel xmlto
 
 # Installed Libevent2. Use backported version for CentOS 6.
 if grep -qs "release 6" /etc/redhat-release; then

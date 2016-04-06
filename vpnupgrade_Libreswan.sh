@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org and update version number if necessary
-SWAN_VER=3.16
+SWAN_VER=3.17
 
 ### Do not edit below this line
 
@@ -94,7 +94,7 @@ apt-get -y install wget
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
-        libcurl4-nss-dev libgmp3-dev flex bison gcc make \
+        libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
 

@@ -130,8 +130,8 @@ rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel \
-    curl-devel gmp-devel flex bison gcc make \
-    fipscheck-devel unbound-devel gmp gmp-devel xmlto
+    curl-devel flex bison gcc make \
+    fipscheck-devel unbound-devel xmlto
 yum -y install ppp xl2tpd
 
 # Install Fail2Ban to protect SSH
@@ -156,7 +156,7 @@ elif grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Compile and install Libreswan
-SWAN_VER=3.16
+SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
