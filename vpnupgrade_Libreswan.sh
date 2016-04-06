@@ -106,6 +106,10 @@ wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+# Workaround for Libreswan compile issues
+cat > Makefile.inc.local <<EOF
+WERROR_CFLAGS =
+EOF
 make programs && make install
 
 # Restart IPsec service
