@@ -21,7 +21,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Author
 
-- Lin Song - Final year Ph.D. candidate seeking opportunities in Software or Systems Engineering.   
+- Lin Song - Final year U.S. PhD candidate seeking opportunities in Software or Systems Engineering.   
 View my profile on LinkedIn at <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>.
 - Based on the work of Thomas Sarlandie (<a href="https://github.com/sarfata/voodooprivacy" target="_blank">sarfata/voodooprivacy</a>).
 
@@ -82,7 +82,7 @@ nano -w vpnsetup_centos.sh
 /bin/sh vpnsetup_centos.sh
 ```
 
-If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl+A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next Steps
 
@@ -102,9 +102,9 @@ If you wish to create multiple VPN users with different credentials, just <a hre
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-For Amazon EC2 instances only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open **UDP ports 500 & 4500** and **TCP port 22** (optional, for SSH).
+For Amazon EC2 instances only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open UDP ports 500 & 4500 and TCP port 22 (optional, for SSH).
 
-If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L285" target="_blank">IPTables rules</a> before using the scripts.
+If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L278" target="_blank">IPTables rules</a> before using the scripts.
 
 The scripts will backup your existing config files before making changes, to the same folder with `.old-date-time` suffix.
 

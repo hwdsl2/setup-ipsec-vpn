@@ -26,14 +26,14 @@ IPSEC_PSK='your_ipsec_pre_shared_key'
 VPN_USER='your_vpn_username'
 VPN_PASSWORD='your_very_secure_password'
 
-# Be sure to read *important notes* at the URL below:
+# Be sure to read IMPORTANT NOTES at the URL below:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
 # ------------------------------------------------------------
 
 if [ "$(uname)" = "Darwin" ]; then
   echo 'DO NOT run this script on your Mac! It should only be run on a dedicated server / VPS'
-  echo 'or a newly-created EC2 instance, after you have modified it to set the variables above.'
+  echo 'or a newly-created EC2 instance, after you have edited the variables above.'
   exit 1
 fi
 
@@ -96,11 +96,11 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP, please edit the script and manually enter."
+  echo "Cannot find valid public IP. Edit the script and manually enter."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP, please edit the script and manually enter."
+  echo "Cannot find valid private IP. Edit the script and manually enter."
   exit 1
 fi
 
@@ -142,16 +142,12 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
-  dumpdir=/var/run/pluto/
-  nat_traversal=yes
   virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/24
-  oe=off
   protostack=netkey
   nhelpers=0
   interfaces=%defaultroute
 
 conn vpnpsk
-  connaddrfamily=ipv4
   auto=add
   left=$PRIVATE_IP
   leftid=$PUBLIC_IP
@@ -187,11 +183,6 @@ cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
 
-;debug avp = yes
-;debug network = yes
-;debug state = yes
-;debug tunnel = yes
-
 [lns default]
 ip range = 192.168.42.10-192.168.42.250
 local ip = 192.168.42.1
@@ -199,7 +190,6 @@ require chap = yes
 refuse pap = yes
 require authentication = yes
 name = l2tpd
-;ppp debug = yes
 pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
@@ -279,12 +269,11 @@ cat > /etc/iptables.rules <<EOF
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-:ICMPALL - [0:0]
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -d 127.0.0.0/8 -j REJECT
--A INPUT -p icmp --icmp-type 255 -j ICMPALL
+-A INPUT -p icmp -j ACCEPT
 -A INPUT -p udp --dport 67:68 --sport 67:68 -j ACCEPT
 -A INPUT -p tcp --dport 22 -j ACCEPT
 -A INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT
@@ -297,13 +286,6 @@ cat > /etc/iptables.rules <<EOF
 # If you wish to allow traffic between VPN clients themselves, uncomment this line:
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 -A FORWARD -j DROP
--A ICMPALL -p icmp -f -j DROP
--A ICMPALL -p icmp --icmp-type 0 -j ACCEPT
--A ICMPALL -p icmp --icmp-type 3 -j ACCEPT
--A ICMPALL -p icmp --icmp-type 4 -j ACCEPT
--A ICMPALL -p icmp --icmp-type 8 -j ACCEPT
--A ICMPALL -p icmp --icmp-type 11 -j ACCEPT
--A ICMPALL -p icmp -j DROP
 COMMIT
 *nat
 :PREROUTING ACCEPT [0:0]
