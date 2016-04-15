@@ -1,0 +1,16 @@
+language: bash
+
+sudo: false
+
+addons:
+  apt:
+    sources:
+    - debian-sid
+    packages:
+    - shellcheck
+
+script:
+ - shellcheck *.sh
+
+matrix:
+  fast_finish: true
