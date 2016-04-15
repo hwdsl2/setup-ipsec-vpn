@@ -1,4 +1,4 @@
-# IPsec/L2TP VPN Server Auto Setup Scripts
+# IPsec/L2TP VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
 
 Scripts for automatic configuration of an IPsec/L2TP VPN server on Ubuntu 16.04/14.04/12.04, Debian 8 and CentOS 6 & 7. All you need to do is providing your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and let them handle the rest.
 
@@ -55,7 +55,7 @@ OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-inst
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
-:warning: **DO NOT run these scripts on your PC or Mac! They should only be used on a server!**
+:warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
 ## Installation
 
