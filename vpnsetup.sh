@@ -398,5 +398,19 @@ fi
 /usr/sbin/service xl2tpd start
 
 echo
-echo 'Congratulations! IPsec/L2TP VPN server setup is complete!'
+echo '============================================================'
+echo 'IPSec/L2TP VPN server setup is complete!'
+echo
+echo 'Connect to your new VPN with these credentials:'
+echo
+echo "Server IP: $PUBLIC_IP"
+echo "IPSec PSK: $IPSEC_PSK"
+echo "Username: $VPN_USER"
+echo "Password: $VPN_PASSWORD"
+echo '============================================================'
+echo
+echo 'Please read IMPORTANT NOTES at the URL below:'
+echo 'https://github.com/hwdsl2/setup-ipsec-vpn#important-notes'
+echo
+
 exit 0
