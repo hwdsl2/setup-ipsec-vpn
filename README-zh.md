@@ -77,15 +77,15 @@ nano -w vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以避免 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">已启用</a>在 VPN 连接属性的"安全"选项卡中"允许以下协议"的 `CHAP` 选项。
+**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并且禁用 `MS-CHAP v2`。
 
-**Android 6 (Marshmallow) 用户**: 在VPN安装完成之后，请编辑 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
+**Android 6 (Marshmallow) 用户**: 安装完成之后，请编辑文件 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行的结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
 **iPhone/iPad 用户**: 在 iOS 的设置菜单请选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。如果无法连接，可编辑 `ipsec.conf` 并尝试用 `rightprotoport=17/0` 替换 `rightprotoport=17/%any` 。保存修改并重启 `ipsec` 服务。
 
 如果你想创建具有不同凭据的多个 VPN 用户，只需要<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
 
-在 VPN 处于活动状态时，客户端已配置为使用<a href="https://developers.google.com/speed/public-dns/" target="_blank">谷歌公共 DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
+在 VPN 处于活动状态时，客户端已配置为使用<a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
 仅适用于 Amazon EC2 实例：在<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">安全组</a>设置中，请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （可选，用于 SSH ）。
 
