@@ -50,7 +50,7 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
-[编辑并替换以下变量： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[编辑脚本并替换以下参数值为你自己的： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 /bin/sh vpnsetup.sh
 ```
 
@@ -62,7 +62,7 @@ nano -w vpnsetup.sh
 yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[编辑并替换以下变量： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[编辑脚本并替换以下参数值为你自己的： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 /bin/sh vpnsetup_centos.sh
 ```
 
@@ -106,7 +106,7 @@ nano -w vpnsetup_centos.sh
 ## 版权与许可
 
 版权所有 (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>   
-基于 Thomas Sarlandie 的工作 (版权所有 2012)
+基于 <a href="https://github.com/sarfata/voodooprivacy" target="_blank">Thomas Sarlandie 的工作</a> (版权所有 2012)
 
 这个项目是以 <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">知识共享署名-相同方式共享3.0</a> 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！

@@ -8,24 +8,11 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to VPN tutorial with detailed usage instructions</a>
 
-## Table of Contents
-- [Author](#author)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-  - [For Ubuntu and Debian](#for-ubuntu-and-debian)
-  - [For CentOS and RHEL](#for-centos-and-rhel)
-- [Next Steps](#next-steps)
-- [Important Notes](#important-notes)
-- [Upgrading Libreswan](#upgrading-libreswan)
-- [Bugs & Questions](#bugs--questions)
-- [Copyright and License](#copyright-and-license)
-
 ## Author
 
-- Lin Song - Final year U.S. PhD candidate seeking opportunities in Software or Systems Engineering.   
-View my profile on LinkedIn at <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>.
-- Based on the work of Thomas Sarlandie (<a href="https://github.com/sarfata/voodooprivacy" target="_blank">sarfata/voodooprivacy</a>).
+##### Lin Song   
+- Final year U.S. PhD candidate seeking opportunities in the industry.   
+- View my LinkedIn profile and contact me: <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>
 
 ## Features
 
@@ -116,14 +103,14 @@ The additional scripts <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgr
 
 ## Bugs & Questions
 
-- Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
+- Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this GitHub Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
 - Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## Copyright and License
 
 Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>    
-Based on the work of Thomas Sarlandie (Copyright 2012)
+Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
 
 This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
 Attribution required: please include my name in any derivative and let me know how you have improved it!
