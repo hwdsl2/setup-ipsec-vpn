@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script to upgrade Libreswan to a newer version on CentOS and RHEL
+# Script to upgrade Libreswan on CentOS and RHEL
 #
 # Copyright (C) 2016 Lin Song
 #
@@ -16,12 +16,12 @@ SWAN_VER=3.17
 ### Do not edit below this line
 
 if [ ! -f /etc/redhat-release ]; then
-  echo "Looks like you aren't running this script on a CentOS/RHEL system."
+  echo "This script only supports CentOS or RHEL systems."
   exit 1
 fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  echo "This script only supports versions 6 and 7 of CentOS/RHEL."
+  echo "This script only supports CentOS/RHEL 6 and 7."
   exit 1
 fi
 
@@ -36,19 +36,19 @@ if [ -f /proc/user_beancounters ]; then
 fi
 
 if [ "$(id -u)" != 0 ]; then
-  echo "Sorry, you need to run this script as root."
+  echo "Script must be run as root. Try 'sudo sh $0'"
   exit 1
 fi
 
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
 if [ "$?" != "0" ]; then
-  echo "This upgrade script requires you already have Libreswan installed."
+  echo "This upgrade script requires Libreswan already installed."
   exit 1
 fi
 
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $SWAN_VER"
 if [ "$?" = "0" ]; then
-  echo "Looks like you already have Libreswan version $SWAN_VER installed! "
+  echo "You already have Libreswan version $SWAN_VER installed! "
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -66,8 +66,8 @@ fi
 clear
 
 echo "Welcome! This script will build and install Libreswan $SWAN_VER on your server."
-echo "Related packages, such as those required by Libreswan compilation will also be installed."
-echo "This is intended for use on VPN servers running an older version of Libreswan."
+echo "Additional packages required for Libreswan compilation will also be installed."
+echo "This is intended for use on servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
 
 echo
@@ -129,7 +129,7 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
+tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
@@ -138,17 +138,18 @@ EOF
 make programs && make install
 
 # Restore SELinux contexts
-/sbin/restorecon /etc/ipsec.d/*db 2>/dev/null
-/sbin/restorecon /usr/local/sbin -Rv 2>/dev/null
-/sbin/restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+restorecon /etc/ipsec.d/*db 2>/dev/null
+restorecon /usr/local/sbin -Rv 2>/dev/null
+restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Restart IPsec service
-/sbin/service ipsec restart
+service ipsec restart
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 echo
-echo "Congratulations! Libreswan $SWAN_VER was installed successfully! "
+echo "Libreswan $SWAN_VER was installed successfully! "
+echo
 exit 0

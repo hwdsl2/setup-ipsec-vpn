@@ -2,7 +2,6 @@
 #
 # Script for automatic setup of an IPsec/L2TP VPN server on 64-bit CentOS/RHEL 6 & 7.
 # Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).
-# It can also be used as Amazon EC2 "user-data" with the official CentOS 6 & 7 AMIs.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
 # ON YOUR DEDICATED SERVER OR VPS!
@@ -10,15 +9,15 @@
 # Copyright (C) 2015-2016 Lin Song
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
-# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
 #
 # Attribution required: please include my name in any derivative and let me
-# know how you have improved it! 
+# know how you have improved it!
 
 # ------------------------------------------------------------
 
-# Please define your own values for these variables
+# Define your own values for these variables
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
 
@@ -26,24 +25,23 @@ IPSEC_PSK='your_ipsec_pre_shared_key'
 VPN_USER='your_vpn_username'
 VPN_PASSWORD='your_very_secure_password'
 
-# Be sure to read IMPORTANT NOTES at the URL below:
+# Please read IMPORTANT NOTES at:
 # https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
 
 # ------------------------------------------------------------
 
 if [ "$(uname)" = "Darwin" ]; then
-  echo 'DO NOT run this script on your Mac! It should only be run on a dedicated server / VPS'
-  echo 'or a newly-created EC2 instance, after you have edited the variables above.'
+  echo 'DO NOT run this script on your Mac! It should only be used on a server.'
   exit 1
 fi
 
 if [ ! -f /etc/redhat-release ]; then
-  echo "Looks like you aren't running this script on a CentOS/RHEL system."
+  echo "This script only supports CentOS or RHEL systems."
   exit 1
 fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  echo "This script only supports versions 6 and 7 of CentOS/RHEL."
+  echo "This script only supports CentOS/RHEL 6 and 7."
   exit 1
 fi
 
@@ -54,12 +52,12 @@ fi
 
 if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try Nyr's OpenVPN script: https://github.com/Nyr/openvpn-install"
+  echo "Try alternative: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
 if [ "$(id -u)" != 0 ]; then
-  echo "Sorry, you need to run this script as root."
+  echo "Script must be run as root. Try 'sudo sh $0'"
   exit 1
 fi
 
@@ -84,10 +82,10 @@ cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exi
 yum -y install wget bind-utils
 
 echo
-echo 'Trying to determine Public/Private IP of this server...'
+echo 'Trying to find Public/Private IP of this server...'
 echo
 echo 'In case the script hangs here for more than a few minutes, press Ctrl-C to interrupt.'
-echo 'Then edit the script and follow instructions to manually enter server IPs.'
+echo 'Then edit it and follow instructions to manually enter server IPs.'
 echo
 
 # In Amazon EC2, these two variables will be retrieved from metadata.
@@ -162,7 +160,7 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && rm -f "$SWAN_FILE"
+tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
@@ -172,11 +170,11 @@ make programs && make install
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 # Prepare various config files
 # Create IPsec (Libreswan) config
-SYS_DT="$(/bin/date +%Y-%m-%d-%H:%M:%S)"
+SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"
 /bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$SYS_DT" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -301,8 +299,8 @@ fi
 # 2. If *not* empty, insert new rules and save them together with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
 /bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-$SYS_DT" 2>/dev/null
-/sbin/service fail2ban stop >/dev/null 2>&1
-if [ "$(/sbin/iptables-save | grep -c '^\-')" = "0" ]; then
+service fail2ban stop >/dev/null 2>&1
+if [ "$(iptables-save | grep -c '^\-')" = "0" ]; then
 cat > /etc/sysconfig/iptables <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -348,7 +346,7 @@ iptables -A FORWARD -j DROP
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
 
 echo "# Modified by hwdsl2 VPN script" > /etc/sysconfig/iptables
-/sbin/iptables-save >> /etc/sysconfig/iptables
+iptables-save >> /etc/sysconfig/iptables
 fi
 fi
 
@@ -395,11 +393,11 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
-/sbin/iptables-restore < /etc/sysconfig/iptables
-/sbin/ip6tables-restore < /etc/sysconfig/ip6tables
-/sbin/service fail2ban restart
-/sbin/service ipsec start
-/sbin/service xl2tpd start
+iptables-restore < /etc/sysconfig/iptables
+ip6tables-restore < /etc/sysconfig/ip6tables
+service fail2ban restart
+service ipsec start
+service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 fi
@@ -407,47 +405,47 @@ fi
 # Initialize Libreswan DB
 if [ ! -f /etc/ipsec.d/cert8.db ] ; then
    echo > /var/tmp/libreswan-nss-pwd
-   /usr/bin/certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
+   certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
    /bin/rm -f /var/tmp/libreswan-nss-pwd
 fi
 
 # Restore SELinux contexts
-/sbin/restorecon /etc/ipsec.d/*db 2>/dev/null
-/sbin/restorecon /usr/local/sbin -Rv 2>/dev/null
-/sbin/restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+restorecon /etc/ipsec.d/*db 2>/dev/null
+restorecon /usr/local/sbin -Rv 2>/dev/null
+restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Reload sysctl.conf
-/sbin/sysctl -p
+sysctl -p
 
 # Update file attributes
-/bin/chmod +x /etc/rc.local
-/bin/chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
+chmod +x /etc/rc.local
+chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
 
 # Apply new IPTables rules
-/sbin/iptables-restore < /etc/sysconfig/iptables
-/sbin/ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
+iptables-restore < /etc/sysconfig/iptables
+ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
 
 # Restart services
-/sbin/service fail2ban stop >/dev/null 2>&1
-/sbin/service ipsec stop >/dev/null 2>&1
-/sbin/service xl2tpd stop >/dev/null 2>&1
-/sbin/service fail2ban start
-/sbin/service ipsec start
-/sbin/service xl2tpd start
+service fail2ban stop >/dev/null 2>&1
+service ipsec stop >/dev/null 2>&1
+service xl2tpd stop >/dev/null 2>&1
+service fail2ban start
+service ipsec start
+service xl2tpd start
 
 echo
 echo '============================================================'
-echo 'IPSec/L2TP VPN server setup is complete!'
+echo 'IPsec/L2TP VPN server setup is complete!'
 echo
-echo 'Connect to your new VPN with these credentials:'
+echo 'Connect to your new VPN with these details:'
 echo
 echo "Server IP: $PUBLIC_IP"
-echo "IPSec PSK: $IPSEC_PSK"
+echo "IPsec PSK: $IPSEC_PSK"
 echo "Username: $VPN_USER"
 echo "Password: $VPN_PASSWORD"
 echo '============================================================'
 echo
-echo 'Please read IMPORTANT NOTES at the URL below:'
+echo 'Please read IMPORTANT NOTES at:'
 echo 'https://github.com/hwdsl2/setup-ipsec-vpn#important-notes'
 echo
 
