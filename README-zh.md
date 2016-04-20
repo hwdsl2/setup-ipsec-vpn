@@ -50,8 +50,8 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
-[编辑脚本并替换以下参数值为你自己的： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-/bin/sh vpnsetup.sh
+[编辑并替换这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+sudo sh vpnsetup.sh
 ```
 
 ### 用于 CentOS 和 RHEL:
@@ -62,8 +62,8 @@ nano -w vpnsetup.sh
 yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[编辑脚本并替换以下参数值为你自己的： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-/bin/sh vpnsetup_centos.sh
+[编辑并替换这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+sudo sh vpnsetup_centos.sh
 ```
 
 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。

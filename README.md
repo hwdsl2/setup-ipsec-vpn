@@ -56,7 +56,7 @@ First, update your system with `apt-get update && apt-get dist-upgrade` and rebo
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-/bin/sh vpnsetup.sh
+sudo sh vpnsetup.sh
 ```
 
 ### For CentOS and RHEL:
@@ -68,7 +68,7 @@ yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-/bin/sh vpnsetup_centos.sh
+sudo sh vpnsetup_centos.sh
 ```
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
