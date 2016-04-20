@@ -93,16 +93,20 @@ cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exi
 yum -y install wget
 
 # Add the EPEL repository
-if grep -qs "release 6" /etc/redhat-release; then
-  EPEL_RPM=epel-release-6-8.noarch.rpm
-  EPEL_URL=http://download.fedoraproject.org/pub/epel/6/x86_64/$EPEL_RPM
-elif grep -qs "release 7" /etc/redhat-release; then
-  EPEL_RPM=epel-release-7-5.noarch.rpm
-  EPEL_URL=http://download.fedoraproject.org/pub/epel/7/x86_64/e/$EPEL_RPM
+yum -y install epel-release
+yum list installed epel-release >/dev/null 2>&1
+if [ "$?" != "0" ]; then
+  if grep -qs "release 6" /etc/redhat-release; then
+    EPEL_RPM=epel-release-latest-6.noarch.rpm
+    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
+  elif grep -qs "release 7" /etc/redhat-release; then
+    EPEL_RPM=epel-release-latest-7.noarch.rpm
+    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
+  fi
+  wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
+  [ "$?" != "0" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
+  rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 fi
-wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
-[ ! -f "$EPEL_RPM" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
-rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
