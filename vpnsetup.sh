@@ -119,7 +119,7 @@ SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }

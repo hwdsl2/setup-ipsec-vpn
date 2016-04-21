@@ -150,8 +150,9 @@ if grep -qs "release 6" /etc/redhat-release; then
   RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
   RPM2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
+  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
-  [ ! -f "$RPM1" ] || [ ! -f "$RPM2" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
   rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
@@ -162,7 +163,7 @@ SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ ! -f "$SWAN_FILE" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
