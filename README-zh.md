@@ -89,7 +89,7 @@ sudo sh vpnsetup_centos.sh
 
 仅适用于 Amazon EC2 实例：在<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">安全组</a>设置中，请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （可选，用于 SSH ）。
 
-如果你为服务器配置了自定义 SSH 端口（不是 22）或希望允许其他服务，请在运行脚本之前编辑 <a href="vpnsetup.sh#L278" target="_blank">IPTables 防火墙规则</a>。
+如果你为服务器配置了自定义 SSH 端口（不是 22）或希望允许其他服务，请在运行脚本之前编辑 <a href="vpnsetup.sh#L277" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本每次在更改你的配置文件之前，会在同一目录下以 `.old-日期-时间` 为后缀备份现有的配置文件。
 

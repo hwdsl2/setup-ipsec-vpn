@@ -8,13 +8,27 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to VPN tutorial with detailed usage instructions</a>
 
+## Table of Contents
+
+- [Author](#author)
+- [Main Features](#main-features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [For Ubuntu and Debian](#for-ubuntu-and-debian)
+  - [For CentOS and RHEL](#for-centos-and-rhel)
+- [Next Steps](#next-steps)
+- [Important Notes](#important-notes)
+- [Upgrading Libreswan](#upgrading-libreswan)
+- [Bugs & Questions](#bugs--questions)
+- [Copyright and License](#copyright-and-license)
+
 ## Author
 
 ##### Lin Song   
 - Final year U.S. PhD candidate seeking opportunities in the industry.   
 - View my LinkedIn profile and contact me: <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>
 
-## Features
+## Main Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
@@ -93,7 +107,7 @@ Clients are configured to use <a href="https://developers.google.com/speed/publi
 
 For Amazon EC2 instances only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open UDP ports 500 & 4500 and TCP port 22 (optional, for SSH).
 
-If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L278" target="_blank">IPTables rules</a> before using the scripts.
+If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L277" target="_blank">IPTables rules</a> before using the scripts.
 
 The scripts will backup your existing config files before making changes, to the same folder with `.old-date-time` suffix.
 
