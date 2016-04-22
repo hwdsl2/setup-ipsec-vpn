@@ -6,12 +6,12 @@ Scripts for automatic configuration of an IPsec/L2TP VPN server on Ubuntu 16.04/
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> as the L2TP provider. 
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to VPN tutorial with detailed usage instructions</a>
+#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed usage instructions</a>
 
 ## Table of Contents
 
 - [Author](#author)
-- [Main Features](#main-features)
+- [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [For Ubuntu and Debian](#for-ubuntu-and-debian)
@@ -28,7 +28,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - Final year U.S. PhD candidate seeking opportunities in the industry.   
 - View my LinkedIn profile and contact me: <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>
 
-## Main Features
+## Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
@@ -70,7 +70,7 @@ First, update your system with `apt-get update && apt-get dist-upgrade` and rebo
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-sudo sh vpnsetup.sh
+sh vpnsetup.sh
 ```
 
 ### For CentOS and RHEL:
@@ -82,7 +82,7 @@ yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-sudo sh vpnsetup_centos.sh
+sh vpnsetup_centos.sh
 ```
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.

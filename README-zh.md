@@ -50,8 +50,8 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
-[编辑并替换这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sudo sh vpnsetup.sh
+[修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+sh vpnsetup.sh
 ```
 
 ### 用于 CentOS 和 RHEL:
@@ -62,8 +62,8 @@ sudo sh vpnsetup.sh
 yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[编辑并替换这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sudo sh vpnsetup_centos.sh
+[修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+sh vpnsetup_centos.sh
 ```
 
 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
@@ -85,7 +85,7 @@ sudo sh vpnsetup_centos.sh
 
 如果你想创建具有不同凭据的多个 VPN 用户，只需要<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
 
-在 VPN 处于活动状态时，客户端已配置为使用<a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
+在 VPN 处于活动状态时，客户端已配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
 仅适用于 Amazon EC2 实例：在<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">安全组</a>设置中，请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （可选，用于 SSH ）。
 
