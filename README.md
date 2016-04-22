@@ -107,7 +107,7 @@ Clients are configured to use <a href="https://developers.google.com/speed/publi
 
 For Amazon EC2 instances only: In the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">security group</a>, open UDP ports 500 & 4500 and TCP port 22 (optional, for SSH).
 
-If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L277" target="_blank">IPTables rules</a> before using the scripts.
+If you configured a custom SSH port (not 22) or wish to allow other services, edit <a href="vpnsetup.sh#L279" target="_blank">IPTables rules</a> before using the scripts.
 
 The scripts will backup your existing config files before making changes, to the same folder with `.old-date-time` suffix.
 
