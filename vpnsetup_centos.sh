@@ -76,7 +76,7 @@ fi
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
+cd /opt/src || exit 1
 
 # Make sure basic commands exist
 yum -y install wget bind-utils
@@ -85,18 +85,17 @@ yum -y install iproute gawk grep sed net-tools
 echo
 echo 'Trying to find Public/Private IP of this server...'
 echo
-echo 'In case the script hangs here for more than a few minutes, press Ctrl-C to interrupt.'
-echo 'Then edit it and follow instructions to manually enter server IPs.'
+echo 'In case the script hangs here for more than a few minutes,'
+echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
 echo
 
 # In Amazon EC2, these two variables will be retrieved from metadata.
-# For all other servers, you may replace them with actual IPs,
-# or comment them out to use auto-detection in the next section.
+# For all other servers, replace them with actual IPs (or comment out).
 # If your server only has a public IP, put that IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
-# Try to determine IPs for non-EC2 servers
+# Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
@@ -117,18 +116,7 @@ fi
 # Add the EPEL repository
 yum -y install epel-release
 yum list installed epel-release >/dev/null 2>&1
-if [ "$?" != "0" ]; then
-  if grep -qs "release 6" /etc/redhat-release; then
-    EPEL_RPM=epel-release-latest-6.noarch.rpm
-    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
-  elif grep -qs "release 7" /etc/redhat-release; then
-    EPEL_RPM=epel-release-latest-7.noarch.rpm
-    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
-  fi
-  wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
-  [ "$?" != "0" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
-  rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
-fi
+[ "$?" != "0" ] && { echo "Cannot add EPEL repository. Aborting."; exit 1; }
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
@@ -151,9 +139,9 @@ if grep -qs "release 6" /etc/redhat-release; then
   RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
   RPM2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
-  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
-  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
   rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
@@ -164,10 +152,10 @@ SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -176,7 +164,7 @@ make programs && make install
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 # Prepare various config files
 # Create IPsec (Libreswan) config

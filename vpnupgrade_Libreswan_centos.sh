@@ -67,6 +67,7 @@ clear
 
 echo "Welcome! This script will build and install Libreswan $SWAN_VER on your server."
 echo "Additional packages required for Libreswan compilation will also be installed."
+echo
 echo "This is intended for use on servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
 
@@ -87,7 +88,7 @@ esac
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
+cd /opt/src || exit 1
 
 # Install Wget
 yum -y install wget
@@ -95,18 +96,7 @@ yum -y install wget
 # Add the EPEL repository
 yum -y install epel-release
 yum list installed epel-release >/dev/null 2>&1
-if [ "$?" != "0" ]; then
-  if grep -qs "release 6" /etc/redhat-release; then
-    EPEL_RPM=epel-release-latest-6.noarch.rpm
-    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
-  elif grep -qs "release 7" /etc/redhat-release; then
-    EPEL_RPM=epel-release-latest-7.noarch.rpm
-    EPEL_URL=https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
-  fi
-  wget -t 3 -T 30 -nv -O "$EPEL_RPM" "$EPEL_URL"
-  [ "$?" != "0" ] && { echo "Cannot retrieve EPEL repo RPM file. Aborting."; exit 1; }
-  rpm -ivh --force "$EPEL_RPM" && /bin/rm -f "$EPEL_RPM"
-fi
+[ "$?" != "0" ] && { echo "Cannot add EPEL repository. Aborting."; exit 1; }
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
@@ -120,9 +110,9 @@ if grep -qs "release 6" /etc/redhat-release; then
   RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
   RPM2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
   wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
-  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
   wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
-  [ "$?" != "0" ] && { echo "Cannot retrieve Libevent2 RPM file(s). Aborting."; exit 1; }
+  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
   rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
@@ -132,10 +122,10 @@ fi
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -152,7 +142,7 @@ service ipsec restart
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 echo
 echo "Libreswan $SWAN_VER was installed successfully! "

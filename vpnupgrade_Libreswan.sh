@@ -58,13 +58,14 @@ clear
 
 echo "Welcome! This script will build and install Libreswan $SWAN_VER on your server."
 echo "Additional packages required for Libreswan compilation will also be installed."
+echo
 echo "This is intended for use on servers running an older version of Libreswan."
 echo "Your existing VPN configuration files will NOT be modified."
 
-if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
   echo
-  echo "IMPORTANT NOTE for Debian 7 (Wheezy) users:"
-  echo "A workaround is required for your system. See: https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90"
+  echo "IMPORTANT: Workaround required for Debian 7 (Wheezy)."
+  echo "See: https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90"
   echo "Continue only after you have completed the workaround."
 fi
 
@@ -85,7 +86,7 @@ esac
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
+cd /opt/src || exit 1
 
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
@@ -103,10 +104,10 @@ apt-get -y --no-install-recommends install xmlto
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -118,7 +119,7 @@ service ipsec restart
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 echo
 echo "Libreswan $SWAN_VER was installed successfully! "

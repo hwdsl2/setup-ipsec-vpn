@@ -64,7 +64,7 @@ fi
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
+cd /opt/src || exit 1
 
 # Update package index
 export DEBIAN_FRONTEND=noninteractive
@@ -77,18 +77,17 @@ apt-get -y install iproute gawk grep sed net-tools
 echo
 echo 'Trying to find Public/Private IP of this server...'
 echo
-echo 'In case the script hangs here for more than a few minutes, press Ctrl-C to interrupt.'
-echo 'Then edit it and follow instructions to manually enter server IPs.'
+echo 'In case the script hangs here for more than a few minutes,'
+echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
 echo
 
 # In Amazon EC2, these two variables will be retrieved from metadata.
-# For all other servers, you may replace them with actual IPs,
-# or comment them out to use auto-detection in the next section.
+# For all other servers, replace them with actual IPs (or comment out).
 # If your server only has a public IP, put that IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
-# Try to determine IPs for non-EC2 servers
+# Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
@@ -122,10 +121,10 @@ SWAN_VER=3.17
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
 SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
-[ "$?" != "0" ] && { echo "Cannot retrieve Libreswan source file. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Failed to enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -134,7 +133,7 @@ make programs && make install
 
 # Check if Libreswan install was successful
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Sorry, Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 # Prepare various config files
 # Create IPsec (Libreswan) config
