@@ -66,10 +66,13 @@ fi
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
 
-# Update package index and install Wget and dig (dnsutils)
+# Update package index
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
+
+# Make sure basic commands exist
 apt-get -y install wget dnsutils
+apt-get -y install iproute gawk grep sed net-tools
 
 echo
 echo 'Trying to find Public/Private IP of this server...'
@@ -106,7 +109,7 @@ fi
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
-        libcurl4-nss-dev flex bison gcc make sed \
+        libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
 apt-get -y install xl2tpd

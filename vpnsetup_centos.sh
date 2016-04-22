@@ -78,8 +78,9 @@ fi
 mkdir -p /opt/src
 cd /opt/src || { echo "Failed to change working dir to /opt/src. Aborting."; exit 1; }
 
-# Install Wget and dig (bind-utils)
+# Make sure basic commands exist
 yum -y install wget bind-utils
+yum -y install iproute gawk grep sed net-tools
 
 echo
 echo 'Trying to find Public/Private IP of this server...'

@@ -95,7 +95,7 @@ apt-get -y install wget
 # Install necessary packages
 apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
-        libcurl4-nss-dev flex bison gcc make sed \
+        libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
 apt-get -y --no-install-recommends install xmlto
 
