@@ -14,13 +14,13 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-  - [For Ubuntu and Debian](#for-ubuntu-and-debian)
-  - [For CentOS and RHEL](#for-centos-and-rhel)
+  - [Ubuntu & Debian](#ubuntu--debian)
+  - [CentOS & RHEL](#centos--rhel)
 - [Next Steps](#next-steps)
 - [Important Notes](#important-notes)
 - [Upgrading Libreswan](#upgrading-libreswan)
 - [Bugs & Questions](#bugs--questions)
-- [Copyright and License](#copyright-and-license)
+- [License](#license)
 
 ## Author
 
@@ -62,7 +62,7 @@ OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-inst
 
 ## Installation
 
-### For Ubuntu and Debian:
+### Ubuntu & Debian
 
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
@@ -70,10 +70,10 @@ First, update your system with `apt-get update && apt-get dist-upgrade` and rebo
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-sh vpnsetup.sh
+sudo sh vpnsetup.sh
 ```
 
-### For CentOS and RHEL:
+### CentOS & RHEL
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
@@ -82,7 +82,7 @@ yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
-sh vpnsetup_centos.sh
+sudo sh vpnsetup_centos.sh
 ```
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
@@ -95,7 +95,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In addition, you must enable `CHAP` (and disable `MS-CHAP v2`) <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">in the "Security" tab</a> of VPN connection properties.
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In case you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
 
 **Android 6 (Marshmallow) users**: After install, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Then <a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">add a new line</a> `sha2-truncbug=yes`. Indent lines with two spaces. Finally, run `service ipsec restart`.
 
@@ -117,11 +117,11 @@ The additional scripts <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgr
 
 ## Bugs & Questions
 
-- Have a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this GitHub Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
+- Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this GitHub Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
 - Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
-## Copyright and License
+## License
 
 Copyright (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>    
 Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)

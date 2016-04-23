@@ -43,7 +43,7 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 
 ## 安装说明
 
-### 用于 Ubuntu 和 Debian:
+### Ubuntu & Debian
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
@@ -51,10 +51,10 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
 [修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sh vpnsetup.sh
+sudo sh vpnsetup.sh
 ```
 
-### 用于 CentOS 和 RHEL:
+### CentOS & RHEL
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
@@ -63,35 +63,34 @@ yum -y install wget nano
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sh vpnsetup_centos.sh
+sudo sh vpnsetup_centos.sh
 ```
 
 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步
 
-配置你的计算机或其它设备使用 VPN 。在网络上根据关键词搜索教程，比如 <a href="https://www.bing.com/search?q=setup+L2TP+client" target="_blank">bing.com/search?q=setup+L2TP+client</a> 。
-
+配置你的计算机或其它设备使用 VPN 。在网络上根据关键词搜索教程，例如 <a href="https://www.bing.com/search?q=setup+L2TP+client" target="_blank">bing.com/search?q=setup+L2TP+client</a> 。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并且禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
 **Android 6 (Marshmallow) 用户**: 安装完成之后，请编辑文件 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行的结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
-**iPhone/iPad 用户**: 在 iOS 的设置菜单请选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。如果无法连接，可编辑 `ipsec.conf` 并尝试用 `rightprotoport=17/0` 替换 `rightprotoport=17/%any` 。保存修改并重启 `ipsec` 服务。
+**iPhone/iPad 用户**: 在 iOS 的设置菜单，选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。如果无法连接，可编辑 `ipsec.conf` 并尝试用 `rightprotoport=17/0` 替换 `rightprotoport=17/%any` 。保存修改并重启 `ipsec` 服务。
 
-如果你想创建具有不同凭据的多个 VPN 用户，只需要<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
+如果要创建具有不同凭据的多个 VPN 用户，只需<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
 
-在 VPN 处于活动状态时，客户端已配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
 仅适用于 Amazon EC2 实例：在<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">安全组</a>设置中，请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （可选，用于 SSH ）。
 
-如果你为服务器配置了自定义 SSH 端口（不是 22）或希望允许其他服务，请在运行脚本之前编辑 <a href="vpnsetup.sh#L279" target="_blank">IPTables 防火墙规则</a>。
+如果你配置了自定义 SSH 端口（不是 22）或希望允许其他服务，请在运行脚本之前编辑 <a href="vpnsetup.sh#L279" target="_blank">IPTables 防火墙规则</a>。
 
-这些脚本每次在更改你的配置文件之前，会在同一目录下以 `.old-日期-时间` 为后缀备份现有的配置文件。
+这些脚本在更改你现有的配置文件之前，会在同一目录下以 `.old-日期-时间` 为后缀做备份。
 
 ## 关于升级Libreswan
 
