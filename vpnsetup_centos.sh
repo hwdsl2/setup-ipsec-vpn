@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Script for automatic setup of an IPsec/L2TP VPN server on 64-bit CentOS/RHEL 6 & 7.
 # Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Script to upgrade Libreswan on Ubuntu and Debian
 #

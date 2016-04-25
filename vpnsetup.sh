@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Script for automatic setup of an IPsec/L2TP VPN server on Ubuntu LTS and Debian 8.
 # Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).
