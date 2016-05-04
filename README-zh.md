@@ -9,14 +9,14 @@
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">详细的 VPN 教程请参见我的博客文章</a>
 
-## 特性
+## 功能特性
 
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
 - 自动确定服务器的公网 IP 以及私有 IP 地址
 - 包括基本的 IPTables 防火墙规则和 `sysctl.conf` 优化设置
-- 测试通过： Ubuntu 16.04/14.04/12.04，Debian 8 和 CentOS 6/7
+- 测试通过： Ubuntu 16.04/14.04/12.04， Debian 8 和 CentOS 6/7
 
 ## 系统要求
 
@@ -76,7 +76,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
 **Android 6 (Marshmallow) 用户**: 安装完成之后，请编辑文件 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行的结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
@@ -102,7 +102,7 @@ sudo sh vpnsetup_centos.sh
 - Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些 wiki 文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a>。
 
-## 版权与许可
+## 授权协议
 
 版权所有 (C) 2014-2016&nbsp;Lin Song&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>   
 基于 <a href="https://github.com/sarfata/voodooprivacy" target="_blank">Thomas Sarlandie 的工作</a> (版权所有 2012)
