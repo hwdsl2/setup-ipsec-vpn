@@ -5,7 +5,7 @@
 使用 Linux Shell 脚本一键搭建 IPsec/L2TP VPN 服务器。适用于 Ubuntu 16.04/14.04/12.04，Debian 8 和 CentOS 6/7 系统。   
 你只需提供以下的信息： `IPSEC_PSK` ， `VPN_USER` 和 `VPN_PASSWORD` ，然后运行脚本自动完成安装。
 
-我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://www.xelerance.com/services/software/xl2tpd/" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
+我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">详细的 VPN 教程请参见我的博客文章</a>
 
@@ -26,10 +26,9 @@
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates HVM</a>
 
-**- 或者 -**
+**-或者-**
 
-一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，使用以下操作系统:   
-&nbsp;（注: 推荐在一个全新安装的系统上运行这些脚本）
+一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装:   
 - Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
 - Debian 7 (Wheezy) &raquo; 不推荐。必须先运行<a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">另一个脚本</a>。
@@ -76,21 +75,19 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前可能需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">更改注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
-**Android 6 (Marshmallow) 用户**: 安装完成之后，请编辑文件 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行的结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
+**Android 6 (Marshmallow) 用户**: 请编辑 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
-**iPhone/iPad 用户**: 在 iOS 的设置菜单，选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。如果无法连接，可编辑 `ipsec.conf` 并尝试用 `rightprotoport=17/0` 替换 `rightprotoport=17/%any` 。保存修改并重启 `ipsec` 服务。
+**iPhone/iPad 用户**: 在 iOS 的设置菜单请选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。
 
-如果要创建具有不同凭据的多个 VPN 用户，只需<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
+如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
-仅适用于 Amazon EC2 实例：在<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">安全组</a>设置中，请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （可选，用于 SSH ）。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L279" target="_blank">IPTables 防火墙规则</a>。
 
-如果你配置了自定义 SSH 端口（不是 22）或希望允许其他服务，请在运行脚本之前编辑 <a href="vpnsetup.sh#L279" target="_blank">IPTables 防火墙规则</a>。
-
-这些脚本在更改你现有的配置文件之前，会在同一目录下以 `.old-日期-时间` 为后缀做备份。
+这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
 ## 关于升级Libreswan
 
