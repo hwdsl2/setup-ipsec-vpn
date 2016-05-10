@@ -66,9 +66,9 @@ sudo sh vpnsetup_centos.sh
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
-## Next Steps
+## Usage
 
-Get your computer or device to use the VPN. Search the web for instructions, e.g. <a href="https://www.google.com/search?q=setup+l2tp+client" target="_blank">google.com/search?q=setup+l2tp+client</a>
+Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
