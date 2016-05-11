@@ -30,6 +30,8 @@ VPN_PASSWORD='your_very_secure_password'
 
 # ------------------------------------------------------------
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 if [ "$(uname)" = "Darwin" ]; then
   echo 'DO NOT run this script on your Mac! It should only be used on a server.'
   exit 1

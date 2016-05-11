@@ -15,6 +15,8 @@ SWAN_VER=3.17
 
 ### Do not edit below this line
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
   echo "This script only supports Ubuntu or Debian systems."

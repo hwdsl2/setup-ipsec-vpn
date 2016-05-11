@@ -15,6 +15,8 @@ SWAN_VER=3.17
 
 ### Do not edit below this line
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 if [ ! -f /etc/redhat-release ]; then
   echo "This script only supports CentOS or RHEL systems."
   exit 1
