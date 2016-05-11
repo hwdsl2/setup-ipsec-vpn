@@ -66,12 +66,6 @@ sudo sh vpnsetup_centos.sh
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
-## Usage
-
-Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
-
-Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
-
 ## Important Notes
 
 For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In case you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
@@ -87,6 +81,12 @@ Clients are configured to use <a href="https://developers.google.com/speed/publi
 For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L279" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
+
+## Next Steps
+
+Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
+
+Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Upgrading Libreswan
 
