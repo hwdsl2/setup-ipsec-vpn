@@ -74,7 +74,7 @@ For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_V
 
 **iPhone/iPad users**: In iOS settings, choose `L2TP` (instead of `IPSec`) as the VPN type.
 
-To enable multiple VPN users with different credentials, just <a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">edit a few lines</a> in the scripts.
+To enable multiple VPN users with different credentials, just <a href="docs/enable-multiple-users.txt" target="_blank">edit a few lines</a> in the scripts.
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 

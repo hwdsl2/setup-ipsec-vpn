@@ -75,7 +75,7 @@ sudo sh vpnsetup_centos.sh
 
 **iPhone/iPad 用户**: 在 iOS 的设置菜单请选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。
 
-如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="https://gist.github.com/hwdsl2/123b886f29f4c689f531" target="_blank">修改这几行的脚本</a>。
+如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="docs/enable-multiple-users.txt" target="_blank">修改这几行的脚本</a>。
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 

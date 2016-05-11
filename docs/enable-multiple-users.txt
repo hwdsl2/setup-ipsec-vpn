@@ -1,0 +1,21 @@
+To enable multiple VPN users with different credentials, find and replace these lines in the script:
+
+cat > /etc/ppp/chap-secrets <<EOF
+# Secrets for authentication using CHAP
+# client server secret IP addresses
+"$VPN_USER" l2tpd "$VPN_PASSWORD" *
+EOF
+
+with the following:
+
+cat > /etc/ppp/chap-secrets <<EOF
+"user1"  l2tpd  "password1"  *
+"user2"  l2tpd  "password2"  *
+EOF
+
+-----------------
+ IMPORTANT NOTES
+-----------------
+1. Make sure there is NO SPACE after both EOF above!
+2. This example shows user1 with password1, and user2 with password2. You can add more users, use one line for each user.
+3. The characters \ and " within your username/password MUST be escaped as \\ and \", respectively.
