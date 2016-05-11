@@ -39,7 +39,7 @@
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 1. 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请按照链接文章中的说明进行操作，并在完成后重新启动计算机。
 
-要连接到 VPN，只需在系统托盘中的无线/网络图标上单击右键，选择新的 VPN 连接，然后单击 **连接**。
+要连接到 VPN，只需在系统托盘中的无线/网络图标上单击右键，选择新的 VPN 连接，然后单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### OS X ###
 1. 打开系统偏好设置并转到网络部分。
@@ -59,7 +59,7 @@
 1. 单击 **TCP/IP** 选项卡，并确保在 **配置IPv6** 部分中选择 **仅本地**。
 1. 单击 **好** 关闭高级设置，然后单击 **应用** 保存VPN连接信息。
 
-要连接到 VPN，你可以使用菜单栏中的 VPN 图标，或者在系统偏好设置的网络部分选择 VPN，并单击 **连接**。
+要连接到 VPN，你可以使用菜单栏中的 VPN 图标，或者在系统偏好设置的网络部分选择 VPN，并单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### Android ###
 1. 启动 **设置** 应用程序。
@@ -79,7 +79,7 @@
 
 Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
-VPN 连接成功后，会在通知栏显示图标。
+VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### iOS ###
 1. 进入设置 -> 通用 -> VPN。
@@ -94,7 +94,7 @@ VPN 连接成功后，会在通知栏显示图标。
 1. 单击右上角的 **存储**。
 1. 启用 **VPN** 连接。
 
-VPN 连接成功后，会在通知栏显示图标。
+VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### Chromebook ###
 1. 如果你尚未登录 Chromebook，请先登录。
@@ -110,7 +110,7 @@ VPN 连接成功后，会在通知栏显示图标。
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 单击 **连接**。
 
-VPN 连接成功后，你会看到网络状态图标被 VPN 图标覆盖。
+VPN 连接成功后，你会看到网络状态图标被 VPN 图标覆盖。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 授权协议
 
