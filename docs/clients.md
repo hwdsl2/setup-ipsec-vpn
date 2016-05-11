@@ -2,23 +2,22 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-Note: These instructions were adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> and contributors. License: GPLv3
+Note: These instructions were adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> and contributors. License: [GPLv3](#license).
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
 ---
 * Platforms
   * [Windows](#windows)
-  * [OS X](#osx)
+  * [OS X](#os-x)
   * [Android](#android)
   * [iOS](#ios)
   * [Chromebook](#chromebook)
 
-<a name="windows"></a>
 ### Windows ###
 1. Click on the Start Menu and go to the Control Panel.
 1. Go to the **Network and Internet** section.
-1. Click **View network status and tasks**.
+1. Click **Network and Sharing Center**.
 1. Click **Set up a new connection or network**.
 1. Select **Connect to a workplace** and click **Next**.
 1. Click **Use my Internet connection (VPN)**.
@@ -42,7 +41,6 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 
 To connect to the VPN, simply right-click on the wireless/network icon in your system tray, select the new VPN connection, and click **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-<a name="osx"></a>
 ### OS X ###
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -63,7 +61,6 @@ To connect to the VPN, simply right-click on the wireless/network icon in your s
 
 You can connect to the VPN using the VPN icon in the menu bar, or by selecting the VPN in the Network section of System Preferences and choosing **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-<a name="android"></a>
 ### Android ###
 1. Launch the **Settings** application.
 1. Tap **More...** in the **Wireless & Networks** section.
@@ -84,7 +81,6 @@ Note for Android 6 (Marshmallow) users: On the VPN server, edit the file `/etc/i
 
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-<a name="ios"></a>
 ### iOS ###
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -100,7 +96,6 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-<a name="chromebook"></a>
 ### Chromebook ###
 1. If you haven't already, sign in to your Chromebook.
 1. Click the status area, where your account picture appears.
@@ -116,3 +111,12 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 1. Click **Connect**.
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+## License
+
+Copyright (C) 2016 Lin Song   
+Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
+
+This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.

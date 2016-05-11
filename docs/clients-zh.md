@@ -2,21 +2,21 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-注： 本说明是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档的基础上修改。该项目由 <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> 和其他志愿者维护。 授权协议： GPLv3
+注： 本说明是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档的基础上修改。该项目由 <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> 和其他志愿者维护。 授权协议： [GPLv3](#授权协议)。
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的用户名和密码。
 
 ---
 * 平台名称
   * [Windows](#windows)
-  * [OS X](#osx)
+  * [OS X](#os-x)
   * [Android](#android)
   * [iOS](#ios)
   * [Chromebook](#chromebook)
 
-<a name="windows"></a>
 ### Windows ###
-1. 单击开始菜单，进入控制面板。
+1. 单击开始菜单，选择控制面板。
+1. 进入 **网络和Internet** 部分。
 1. 单击 **网络与共享中心**。
 1. 单击 **设置新的连接或网络**。
 1. 选择 **连接到工作区**，然后单击**下一步**。
@@ -41,7 +41,6 @@
 
 要连接到 VPN，只需在系统托盘中的无线/网络图标上单击右键，选择新的 VPN 连接，然后单击 **连接**。
 
-<a name="osx"></a>
 ### OS X ###
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -62,7 +61,6 @@
 
 要连接到 VPN，你可以使用菜单栏中的 VPN 图标，或者在系统偏好设置的网络部分选择 VPN，并单击 **连接**。
 
-<a name="android"></a>
 ### Android ###
 1. 启动 **设置** 应用程序。
 1. 在 **无线和网络** 部分单击 **更多...**。
@@ -83,7 +81,6 @@ Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf`
 
 VPN 连接成功后，会在通知栏显示图标。
 
-<a name="ios"></a>
 ### iOS ###
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -99,12 +96,11 @@ VPN 连接成功后，会在通知栏显示图标。
 
 VPN 连接成功后，会在通知栏显示图标。
 
-<a name="chromebook"></a>
 ### Chromebook ###
 1. 如果你尚未登录 Chromebook，请先登录。
 1. 单击状态区（其中显示帐户头像）。
 1. 单击 **设置**。
-1. 在 **互联网连接** 部分，单击**添加连接**。
+1. 在 **互联网连接** 部分，单击 **添加连接**。
 1. 单击 **添加 OpenVPN / L2TP**。
 1. 在 **服务器主机名** 字段中输入`你的 VPN 服务器 IP`。
 1. 在 **服务名称** 字段中输入任意内容。
@@ -115,3 +111,12 @@ VPN 连接成功后，会在通知栏显示图标。
 1. 单击 **连接**。
 
 VPN 连接成功后，你会看到网络状态图标被 VPN 图标覆盖。
+
+## 授权协议
+
+版权所有 (C) 2016 Lin Song   
+基于 <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">Joshua Lund 的工作</a> (版权所有 2014-2016)
+
+本程序为自由软件，在自由软件联盟发布的<a href="https://www.gnu.org/licenses/gpl.html" target="_blank"> GNU 通用公共许可协议</a>的约束下，你可以对其进行再发布及修改。协议版本为第三版或（随你）更新的版本。
+
+我们希望发布的这款程序有用，但不保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。
