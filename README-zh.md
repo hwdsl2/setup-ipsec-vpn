@@ -47,7 +47,7 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
 ```bash
-wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
 [修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup.sh
@@ -59,7 +59,7 @@ sudo sh vpnsetup.sh
 
 ```bash
 yum -y install wget nano
-wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh

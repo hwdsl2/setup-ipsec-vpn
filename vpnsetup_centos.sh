@@ -25,8 +25,8 @@ IPSEC_PSK='your_ipsec_pre_shared_key'
 VPN_USER='your_vpn_username'
 VPN_PASSWORD='your_very_secure_password'
 
-# Please read IMPORTANT NOTES at:
-# https://github.com/hwdsl2/setup-ipsec-vpn#important-notes
+# Important Notes:   https://git.io/vpnnotes
+# Setup VPN Clients: https://git.io/vpnclients
 
 # ------------------------------------------------------------
 
@@ -428,7 +428,7 @@ service ipsec start
 service xl2tpd start
 
 echo
-echo '============================================================'
+echo '============================================='
 echo 'IPsec/L2TP VPN server setup is complete!'
 echo
 echo 'Connect to your new VPN with these details:'
@@ -437,10 +437,10 @@ echo "Server IP: $PUBLIC_IP"
 echo "IPsec PSK: $IPSEC_PSK"
 echo "Username: $VPN_USER"
 echo "Password: $VPN_PASSWORD"
-echo '============================================================'
+echo '============================================='
 echo
-echo 'Please read IMPORTANT NOTES at:'
-echo 'https://github.com/hwdsl2/setup-ipsec-vpn#important-notes'
+echo 'Important Notes:   https://git.io/vpnnotes'
+echo 'Setup VPN Clients: https://git.io/vpnclients'
 echo
 
 exit 0

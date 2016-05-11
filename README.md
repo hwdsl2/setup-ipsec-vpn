@@ -46,7 +46,7 @@ OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-inst
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
 ```bash
-wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
 sudo sh vpnsetup.sh
@@ -58,7 +58,7 @@ First, update your system with `yum update` and reboot. This is optional, but re
 
 ```bash
 yum -y install wget nano
-wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup_centos.sh -O vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
 sudo sh vpnsetup_centos.sh
