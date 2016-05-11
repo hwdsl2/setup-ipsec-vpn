@@ -10,7 +10,7 @@ addons:
     - shellcheck
 
 script:
- - shellcheck *.sh
+ - shellcheck *.sh extras/*.sh
 
 matrix:
   fast_finish: true
