@@ -31,7 +31,7 @@
 一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装:   
 - Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
-- Debian 7 (Wheezy) &raquo; 不推荐。必须先运行<a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">另一个脚本</a>。
+- Debian 7 (Wheezy) &raquo; 不推荐。必须先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr 的 OpenVPN 脚本</a>。

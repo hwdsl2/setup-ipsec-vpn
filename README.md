@@ -30,7 +30,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 A dedicated server or KVM/Xen-based Virtual Private Server (VPS), with freshly installed:   
 - Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)
 - Debian 8 (Jessie)
-- Debian 7 (Wheezy) &raquo; Not recommended. Requires <a href="https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90" target="_blank">this workaround</a> to work.
+- Debian 7 (Wheezy) &raquo; Not recommended. Requires <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a> to work.
 - CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
 
 OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
