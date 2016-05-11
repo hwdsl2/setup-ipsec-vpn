@@ -91,7 +91,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 关于升级Libreswan
 
-提供两个额外的脚本 <a href="vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于将已安装的 Libreswan 不定期升级至最新版本。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `SWAN_VER` 变量。
+提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于将已安装的 Libreswan 不定期升级至最新版本。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `SWAN_VER` 变量。
 
 ## 问题和反馈
 
