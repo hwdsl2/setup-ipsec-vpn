@@ -76,6 +76,16 @@ apt-get -y update
 apt-get -y install wget dnsutils
 apt-get -y install iproute gawk grep sed net-tools
 
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
+  echo
+  echo 'IMPORTANT: Workaround required for Debian 7 (Wheezy).'
+  echo 'First, run the script at: https://git.io/vpndebian7'
+  echo 'If not already done so, press Ctrl-C to interrupt.'
+  echo
+  echo 'Pausing for 30 seconds ...'
+  sleep 30
+fi
+
 echo
 echo 'Trying to find Public/Private IP of this server...'
 echo

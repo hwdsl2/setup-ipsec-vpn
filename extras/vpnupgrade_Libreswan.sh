@@ -66,9 +66,9 @@ echo "Your existing VPN configuration files will NOT be modified."
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
   echo
-  echo "IMPORTANT: Workaround required for Debian 7 (Wheezy)."
-  echo "See: https://gist.github.com/hwdsl2/5a769b2c4436cdf02a90"
-  echo "Continue only after you have completed the workaround."
+  echo 'IMPORTANT: Workaround required for Debian 7 (Wheezy).'
+  echo 'First, run the script at: https://git.io/vpndebian7'
+  echo 'Continue only after completing this workaround.'
 fi
 
 echo
