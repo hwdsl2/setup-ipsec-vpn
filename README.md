@@ -8,6 +8,20 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed instructions</a>
 
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Ubuntu & Debian](#ubuntu--debian)
+  - [CentOS & RHEL](#centos--rhel)
+- [Next Steps](#next-steps)
+- [Important Notes](#important-notes)
+- [Upgrading Libreswan](#upgrading-libreswan)
+- [Bugs & Questions](#bugs--questions)
+- [Author](#author)
+- [License](#license)
+
 ## Features
 
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
@@ -48,7 +62,7 @@ First, update your system with `apt-get update && apt-get dist-upgrade` and rebo
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
-[Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
+[Replace with your own values: IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -60,11 +74,17 @@ First, update your system with `yum update` and reboot. This is optional, but re
 yum -y install wget nano
 wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[Edit and replace IPSEC_PSK, VPN_USER and VPN_PASSWORD with your own values]
+[Replace with your own values: IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
 ```
 
 If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+
+## Next Steps
+
+Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
+
+Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
@@ -78,15 +98,9 @@ To enable multiple VPN users with different credentials, just <a href="docs/enab
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L279" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L291" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
-
-## Next Steps
-
-Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
-
-Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Upgrading Libreswan
 

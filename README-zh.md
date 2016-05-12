@@ -9,6 +9,19 @@
 
 #### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">详细的 VPN 教程请参见我的博客文章</a>
 
+## 目录
+
+- [功能特性](#功能特性)
+- [系统要求](#系统要求)
+- [安装说明](#安装说明)
+  - [Ubuntu & Debian](#ubuntu--debian)
+  - [CentOS & RHEL](#centos--rhel)
+- [下一步](#下一步)
+- [重要提示](#重要提示)
+- [关于升级Libreswan](#关于升级libreswan)
+- [问题和反馈](#问题和反馈)
+- [授权协议](#授权协议)
+
 ## 功能特性
 
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
@@ -49,7 +62,7 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
-[修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[修改为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -61,11 +74,17 @@ sudo sh vpnsetup.sh
 yum -y install wget nano
 wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[修改这些参数为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[修改为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
 ```
 
 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+
+## 下一步
+
+配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
+
+开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
@@ -79,15 +98,9 @@ sudo sh vpnsetup_centos.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L279" target="_blank">IPTables 防火墙规则</a>。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L291" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
-
-## 下一步
-
-配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
-
-开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 关于升级Libreswan
 
