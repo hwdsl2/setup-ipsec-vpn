@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-注： 本说明是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档的基础上修改。该项目由 <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> 和其他志愿者维护。 授权协议： [GPLv3](#授权协议)。
+注： 本文档是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档基础上翻译和修改。该项目由 Joshua Lund 和其他开发者维护。 授权协议： [GPLv3](#授权协议)。
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的用户名和密码。
 
@@ -32,12 +32,13 @@
 1. 返回到控制面板中的 **网络和Internet** 部分，然后单击 **连接到网络** 选项。
 1. 右键单击新的VPN连接，并选择 **属性**。
 1. 单击 **选项** 选项卡，取消选中 **包含Windows登录域** 复选框。
-1. 单击 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">**安全** 选项卡</a>，从 **VPN 类型** 下拉菜单中选择 **使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)**。在 **允许使用这些协议** 下，选中 `CHAP` 复选框，并且取消选中 `MS-CHAP v2`。
+1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 **使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)**。在 **允许使用这些协议** 下，选中 `CHAP` 复选框，并且取消选中 `MS-CHAP v2`。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
-1. 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请按照链接文章中的说明进行操作，并在完成后重新启动计算机。
+
+注： 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请按照链接文章中的说明进行操作，并在完成后重新启动计算机。
 
 要连接到 VPN，只需在系统托盘中的无线/网络图标上单击右键，选择新的 VPN 连接，然后单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -56,7 +57,7 @@
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
-1. 单击 **TCP/IP** 选项卡，并确保在 **配置IPv6** 部分中选择 **仅本地**。
+1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
 1. 单击 **好** 关闭高级设置，然后单击 **应用** 保存VPN连接信息。
 
 要连接到 VPN，你可以使用菜单栏中的 VPN 图标，或者在系统偏好设置的网络部分选择 VPN，并单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
@@ -65,7 +66,7 @@
 1. 启动 **设置** 应用程序。
 1. 在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
-1. 单击 **添加VPN配置文件**。
+1. 单击 **添加VPN配置文件** 或窗口右上角的 **+**。
 1. 在 **名称** 字段中输入任意内容。
 1. 在 **类型** 下拉菜单选择 **L2TP/IPSec PSK**。
 1. 在 **服务器地址** 字段中输入`你的 VPN 服务器 IP`。
@@ -77,7 +78,7 @@
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
+注： Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart`。
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -98,7 +99,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 
 ### Chromebook ###
 1. 如果你尚未登录 Chromebook，请先登录。
-1. 单击状态区（其中显示帐户头像）。
+1. 单击状态区（其中显示你的帐户头像）。
 1. 单击 **设置**。
 1. 在 **互联网连接** 部分，单击 **添加连接**。
 1. 单击 **添加 OpenVPN / L2TP**。
@@ -110,7 +111,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 单击 **连接**。
 
-VPN 连接成功后，你会看到网络状态图标被 VPN 图标覆盖。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 授权协议
 

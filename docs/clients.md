@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-Note: These instructions were adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by <a href="https://github.com/jlund" target="_blank">Joshua Lund</a> and contributors. License: [GPLv3](#license).
+Note: This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors. License: [GPLv3](#license).
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -32,12 +32,13 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Return to the Control Panel's **Network and Internet** section and click on the **Connect to a network** option.
 1. Right-click on the new VPN connection and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
-1. Click the <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">**Security** tab</a> and select **Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)** from the **Type of VPN** drop-down menu. Under "Allow these protocols", check the `CHAP` checkbox, and un-check `MS-CHAP v2`.
+1. Click the **Security** tab and select **Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)** from the **Type of VPN** drop-down menu. Under "Allow these protocols", select the `CHAP` checkbox, and de-select `MS-CHAP v2`.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
-1. This <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Please follow instructions in the linked article, and reboot your computer when done.
+
+Note: A <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Please follow instructions in the linked article, and reboot your computer when done.
 
 To connect to the VPN, simply right-click on the wireless/network icon in your system tray, select the new VPN connection, and click **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
@@ -65,7 +66,7 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Launch the **Settings** application.
 1. Tap **More...** in the **Wireless & Networks** section.
 1. Tap **VPN**.
-1. Tap the **+** icon in the top-right of the screen.
+1. Tap **Add VPN Profile** or the **+** icon at top-right of screen.
 1. Enter anything you like in the **Name** field.
 1. Select **L2TP/IPSec PSK** in the **Type** drop-down menu.
 1. Enter `Your VPN Server IP` in the **Server address** field.
@@ -84,15 +85,15 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 ### iOS ###
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
-1. Tap **Type**.
-1. Select **L2TP** and go back.
+1. Tap **Type**. Select **L2TP** and go back.
 1. Tap **Description** and enter anything you like.
 1. Tap **Server** and enter `Your VPN Server IP`.
 1. Tap **Account** and enter `Your VPN Username`.
 1. Tap **Password** and enter `Your VPN Password`.
 1. Tap **Secret** and enter `Your IPsec PSK`.
+1. Make sure the **Send All Traffic** switch is ON.
 1. Tap **Done**.
-1. Slide the **VPN** switch on.
+1. Slide the **VPN** switch ON.
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
