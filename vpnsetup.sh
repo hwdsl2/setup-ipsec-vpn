@@ -15,20 +15,21 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# ------------------------------------------------------------
+# =====================================================
 
 # Define your own values for these variables
+# - IPsec Pre-Shared Key, VPN Username and Password
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
 
-IPSEC_PSK='your_ipsec_pre_shared_key'
-VPN_USER='your_vpn_username'
-VPN_PASSWORD='your_very_secure_password'
+IPSEC_PSK=''
+VPN_USER=''
+VPN_PASSWORD=''
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
 
-# ------------------------------------------------------------
+# =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -57,6 +58,12 @@ fi
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
   exit 1
+fi
+
+if [ -z "$IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+  IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
+  VPN_USER=vpnuser
+  VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
 fi
 
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
@@ -411,7 +418,8 @@ service ipsec start
 service xl2tpd start
 
 echo
-echo '============================================='
+echo '================================================'
+echo
 echo 'IPsec/L2TP VPN server setup is complete!'
 echo
 echo 'Connect to your new VPN with these details:'
@@ -420,10 +428,13 @@ echo "Server IP: $PUBLIC_IP"
 echo "IPsec PSK: $IPSEC_PSK"
 echo "Username: $VPN_USER"
 echo "Password: $VPN_PASSWORD"
-echo '============================================='
+echo
+echo "Write these down. You'll need them to connect! "
 echo
 echo 'Important Notes:   https://git.io/vpnnotes'
 echo 'Setup VPN Clients: https://git.io/vpnclients'
+echo
+echo '================================================'
 echo
 
 exit 0

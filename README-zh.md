@@ -59,6 +59,14 @@ OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
+
+```bash
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+
+**选项 2:** 或者，在脚本中输入你自己的 VPN 登录凭证：
+
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
@@ -70,8 +78,15 @@ sudo sh vpnsetup.sh
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
+
 ```bash
-yum -y install wget nano
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+```
+
+**选项 2:** 或者，在脚本中输入你自己的 VPN 登录凭证：
+
+```bash
 wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [修改为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]

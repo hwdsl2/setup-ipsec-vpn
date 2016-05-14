@@ -59,6 +59,14 @@ OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-inst
 
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
+
+```bash
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+
+**Option 2:** Alternatively, enter your own VPN credentials in the script:
+
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
@@ -70,8 +78,15 @@ sudo sh vpnsetup.sh
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
+
 ```bash
-yum -y install wget nano
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+```
+
+**Option 2:** Alternatively, enter your own VPN credentials in the script:
+
+```bash
 wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Replace with your own values: IPSEC_PSK, VPN_USER and VPN_PASSWORD]
