@@ -1,6 +1,7 @@
 language: bash
 
-sudo: false
+sudo: required
+dist: trusty
 
 addons:
   apt:
@@ -11,6 +12,5 @@ addons:
 
 script:
  - shellcheck *.sh extras/*.sh
-
-matrix:
-  fast_finish: true
+ - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
+ - sudo sh vpnsetup.sh
