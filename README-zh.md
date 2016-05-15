@@ -2,8 +2,7 @@
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用 Linux Shell 脚本一键搭建 IPsec/L2TP VPN 服务器。适用于 Ubuntu 16.04/14.04/12.04，Debian 8 和 CentOS 6/7 系统。   
-你只需提供以下的信息： `IPSEC_PSK` ， `VPN_USER` 和 `VPN_PASSWORD` ，然后运行脚本自动完成安装。
+使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -20,6 +19,7 @@
 - [重要提示](#重要提示)
 - [关于升级Libreswan](#关于升级libreswan)
 - [问题和反馈](#问题和反馈)
+- [作者](#作者)
 - [授权协议](#授权协议)
 
 ## 功能特性
@@ -36,18 +36,12 @@
 一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI: (详细步骤<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a>)
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 8 (Jessie) EC2 Images</a>
-- <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
-- <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates HVM</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 
 **-或者-**
 
-一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装:   
-- Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)
-- Debian 8 (Jessie)
-- Debian 7 (Wheezy) &raquo; 不推荐。必须先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。
-- CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
-
-OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr 的 OpenVPN 脚本</a>。
+一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -113,7 +107,7 @@ sudo sh vpnsetup_centos.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
 
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L291" target="_blank">IPTables 防火墙规则</a>。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L298" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
@@ -126,6 +120,13 @@ sudo sh vpnsetup_centos.sh
 - 有问题需要提问？请先搜索其他用户的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 GitHub Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客文章</a>。
 - Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些 wiki 文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a>。
+
+## 作者
+
+##### 宋琳
+- 最后一年的美国在读博士生，专业是电子与计算机工程 (ECE)
+- 现在正在积极寻找新的工作机会，比如软件或系统工程师
+- 在 LinkedIn 上与我联系： <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
 
 ## 授权协议
 

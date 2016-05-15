@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-Scripts for automatic configuration of an IPsec/L2TP VPN server on Ubuntu 16.04/14.04/12.04, Debian 8 and CentOS 6 & 7. All you need to do is providing your own values for `IPSEC_PSK`, `VPN_USER` and `VPN_PASSWORD`, and let them handle the rest.
+With these scripts, you can set up your own IPsec/L2TP VPN server in just a few minutes on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials. The scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -36,18 +36,12 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, using these AMIs: (See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">instructions</a>)
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 8 (Jessie) EC2 Images</a>
-- <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates HVM</a>
-- <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates HVM</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
+- <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 
 **-OR-**
 
-A dedicated server or KVM/Xen-based Virtual Private Server (VPS), with freshly installed:   
-- Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)
-- Debian 8 (Jessie)
-- Debian 7 (Wheezy) &raquo; Not recommended. Requires <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a> to work.
-- CentOS / Red Hat Enterprise Linux (RHEL) 6 or 7
-
-OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">Nyr's OpenVPN script</a>.
+A dedicated server or KVM/Xen-based Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used after applying <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
@@ -113,7 +107,7 @@ To enable multiple VPN users with different credentials, just <a href="docs/enab
 
 Clients are configured to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, set `ms-dns` in `options.xl2tpd`.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L291" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L298" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
@@ -130,8 +124,9 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 ## Author
 
 ##### Lin Song   
-- Final year U.S. PhD candidate seeking opportunities in Software or Systems Engineering.   
-- View my LinkedIn profile and contact me: <a href="https://www.linkedin.com/in/linsongui" target="_blank">www.linkedin.com/in/linsongui</a>
+- Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
+- Actively seeking opportunities in areas such as Software or Systems Engineering
+- Contact me on LinkedIn: <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
 
 ## License
 
