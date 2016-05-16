@@ -80,7 +80,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
 
 # Make sure basic commands exist
-apt-get -y install wget dnsutils
+apt-get -y install wget dnsutils openssl
 apt-get -y install iproute gawk grep sed net-tools
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
@@ -162,33 +162,54 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
-  virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/24
+  virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
   protostack=netkey
   nhelpers=0
   interfaces=%defaultroute
+  uniqueids=no
 
-conn vpnpsk
-  auto=add
+conn shared
   left=$PRIVATE_IP
   leftid=$PUBLIC_IP
-  leftsubnet=$PRIVATE_IP/32
-  leftnexthop=%defaultroute
-  leftprotoport=17/1701
-  rightprotoport=17/%any
   right=%any
-  rightsubnetwithin=0.0.0.0/0
   forceencaps=yes
   authby=secret
   pfs=no
-  type=transport
-  auth=esp
-  ike=3des-sha1,aes-sha1
-  phase2alg=3des-sha1,aes-sha1
   rekey=no
   keyingtries=5
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
+
+conn l2tp-psk
+  auto=add
+  leftsubnet=$PRIVATE_IP/32
+  leftnexthop=%defaultroute
+  leftprotoport=17/1701
+  rightprotoport=17/%any
+  rightsubnetwithin=0.0.0.0/0
+  type=transport
+  auth=esp
+  ike=3des-sha1,aes-sha1
+  phase2alg=3des-sha1,aes-sha1
+  also=shared
+
+conn xauth-psk
+  auto=add
+  leftsubnet=0.0.0.0/0
+  rightaddresspool=192.168.43.10-192.168.43.250
+  modecfgdns1=8.8.8.8
+  modecfgdns2=8.8.4.4
+  leftxauthserver=yes
+  rightxauthclient=yes
+  leftmodecfgserver=yes
+  rightmodecfgclient=yes
+  modecfgpull=yes
+  xauthby=file
+  ike-frag=yes
+  ikev2=never
+  cisco-unity=yes
+  also=shared
 EOF
 
 # Specify IPsec PSK
@@ -240,6 +261,10 @@ cat > /etc/ppp/chap-secrets <<EOF
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
+
+/bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$SYS_DT" 2>/dev/null
+VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
+echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
 
 # Update sysctl settings for VPN and performance
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
@@ -303,8 +328,11 @@ cat > /etc/iptables.rules <<EOF
 -A FORWARD -m conntrack --ctstate INVALID -j DROP
 -A FORWARD -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
-# If you wish to allow traffic between VPN clients themselves, uncomment this line:
+-A FORWARD -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 192.168.43.0/24 -o eth+ -j ACCEPT
+# If you wish to allow traffic between VPN clients themselves, uncomment these lines:
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+# -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
 -A FORWARD -j DROP
 COMMIT
 *nat
@@ -313,6 +341,7 @@ COMMIT
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 -A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
+-A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
 COMMIT
 EOF
 
@@ -324,8 +353,12 @@ iptables -I INPUT 3 -p udp --dport 1701 -j DROP
 iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
 iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
-# iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+iptables -I FORWARD 4 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 5 -s 192.168.43.0/24 -o eth+ -j ACCEPT
+# iptables -I FORWARD 6 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+# iptables -I FORWARD 7 -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
 iptables -A FORWARD -j DROP
+iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
 
 echo "# Modified by hwdsl2 VPN script" > /etc/iptables.rules
@@ -403,7 +436,7 @@ sysctl -p
 chmod +x /etc/rc.local
 chmod +x /etc/network/if-pre-up.d/iptablesload
 chmod +x /etc/network/if-pre-up.d/ip6tablesload
-chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets*
+chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
 iptables-restore < /etc/iptables.rules
