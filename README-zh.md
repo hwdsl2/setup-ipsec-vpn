@@ -24,6 +24,7 @@
 
 ## 功能特性
 
+- :tada: **新特性：** 在 `IPsec/L2TP` 的基础上[新增](#下一步)对 `IPsec/XAUTH` 的支持
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -93,6 +94,8 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
+**新特性：** 在 `IPsec/L2TP` 的基础上，现在新增对 `IPsec/XAUTH` 的支持！它能够更快和更高效地传输数据。该模式在 Android 上被称为 `Xauth PSK`，在 iOS/OSX 上被称为 `(Cisco) IPSec`。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。
+
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
@@ -101,13 +104,11 @@ sudo sh vpnsetup_centos.sh
 
 **Android 6 (Marshmallow) 用户**: 请编辑 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
 
-**iPhone/iPad 用户**: 在 iOS 的设置菜单请选择 `L2TP` (而不是 `IPSec`) 作为 VPN 类型。
+如果要为 `IPsec/L2TP` 创建具有不同凭据的多个 VPN 用户，只需要<a href="docs/enable-multiple-users.txt" target="_blank">修改这几行的脚本</a>。
 
-如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="docs/enable-multiple-users.txt" target="_blank">修改这几行的脚本</a>。
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可通过编辑文件 `options.xl2tpd` 和 `ipsec.conf` 来更改。
 
-在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可在 `options.xl2tpd` 文件的 `ms-dns` 项更改。
-
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L298" target="_blank">IPTables 防火墙规则</a>。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L323" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
