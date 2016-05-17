@@ -18,7 +18,7 @@ SWAN_VER=3.17
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 if [ ! -f /etc/redhat-release ]; then
-  echo "This script only supports CentOS or RHEL systems."
+  echo "This script only supports CentOS/RHEL."
   exit 1
 fi
 
@@ -106,7 +106,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     curl-devel flex bison gcc make \
     fipscheck-devel unbound-devel xmlto
 
-# Installed Libevent2. Use backported version for CentOS 6.
+# Installed Libevent2
 if grep -qs "release 6" /etc/redhat-release; then
   LE2_URL=https://download.libreswan.org/binaries/rhel/6/x86_64
   RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
@@ -126,13 +126,13 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
+tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
 EOF
-make programs && make install
+make -s programs && make -s install
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
@@ -142,7 +142,7 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 # Restart IPsec service
 service ipsec restart
 
-# Check if Libreswan install was successful
+# Verify the install
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
 [ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 

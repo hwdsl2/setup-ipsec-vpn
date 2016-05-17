@@ -40,13 +40,13 @@ fi
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
-  echo "This script only supports Ubuntu or Debian systems."
+  echo "This script only supports Ubuntu/Debian."
   exit 1
 fi
 
 if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try alternative: https://github.com/Nyr/openvpn-install"
+  echo "Try: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -57,6 +57,9 @@ fi
 
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
+  echo
+  echo "Run 'cat /proc/net/dev' to find the name of the active network interface,"
+  echo "then search and replace ALL 'eth0' and 'eth+' in this script with that name."
   exit 1
 fi
 
@@ -67,9 +70,11 @@ if [ -z "$IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials cannot be empty. Edit the script and re-enter."
+  echo "VPN credentials cannot be empty. Edit the script and re-enter them."
   exit 1
 fi
+
+echo "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -77,11 +82,11 @@ cd /opt/src || exit 1
 
 # Update package index
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y update
+apt-get -yqq update
 
 # Make sure basic commands exist
-apt-get -y install wget dnsutils openssl
-apt-get -y install iproute gawk grep sed net-tools
+apt-get -yqq install wget dnsutils openssl
+apt-get -yqq install iproute gawk grep sed net-tools
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
   echo
@@ -101,7 +106,7 @@ echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
 echo
 
 # In Amazon EC2, these two variables will be retrieved from metadata.
-# For all other servers, replace them with actual IPs (or comment out).
+# For all other servers, replace them with actual IPs or comment out.
 # If your server only has a public IP, put that IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
@@ -109,31 +114,30 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP. Edit the script and manually enter."
+  echo "Cannot find valid public IP. Edit the script and manually enter IPs."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP. Edit the script and manually enter."
+  echo "Cannot find valid private IP. Edit the script and manually enter IPs."
   exit 1
 fi
 
 # Install necessary packages
-apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+apt-get -yqq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
-apt-get -y --no-install-recommends install xmlto
-apt-get -y install xl2tpd
+apt-get -yqq --no-install-recommends install xmlto
+apt-get -yqq install xl2tpd
 
 # Install Fail2Ban to protect SSH
-apt-get -y install fail2ban
+apt-get -yqq install fail2ban
 
 # Compile and install Libreswan
 SWAN_VER=3.17
@@ -142,19 +146,18 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
+tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
 EOF
-make programs && make install
+make -s programs && make -s install
 
-# Check if Libreswan install was successful
+# Verify the install
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
 [ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
-# Prepare various config files
 # Create IPsec (Libreswan) config
 SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"
 /bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$SYS_DT" 2>/dev/null
@@ -235,7 +238,7 @@ pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
 
-# Specify xl2tpd options
+# Set xl2tpd options
 /bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$SYS_DT" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
@@ -266,7 +269,7 @@ EOF
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
 
-# Update sysctl settings for VPN and performance
+# Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$SYS_DT" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
@@ -301,9 +304,9 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-# Create basic IPTables rules. First check if there are existing rules.
-# 1. If IPTables is "empty", write out the new set of rules.
-# 2. If *not* empty, insert new rules and save them together with existing ones.
+# Create basic IPTables rules. First check for existing rules.
+# - If IPTables is "empty", simply write out the new rules.
+# - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
 /bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$SYS_DT" 2>/dev/null
 service fail2ban stop >/dev/null 2>&1
@@ -330,7 +333,7 @@ cat > /etc/iptables.rules <<EOF
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
 -A FORWARD -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# If you wish to allow traffic between VPN clients themselves, uncomment these lines:
+# To allow traffic between VPN clients themselves, uncomment these lines:
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 # -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
 -A FORWARD -j DROP
@@ -371,7 +374,7 @@ if [ -f /etc/iptables/rules.v4 ]; then
 fi
 fi
 
-# Create basic IP6Tables (IPv6) rules
+# Create basic IPv6 rules
 if ! grep -qs "hwdsl2 VPN script" /etc/ip6tables.rules; then
 /bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-$SYS_DT" 2>/dev/null
 cat > /etc/ip6tables.rules <<EOF
@@ -407,7 +410,7 @@ ip6tables-restore < /etc/ip6tables.rules
 exit 0
 EOF
 
-# Update rc.local to start services at boot
+# Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$SYS_DT" 2>/dev/null
 sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
@@ -430,7 +433,7 @@ if [ ! -f /etc/ipsec.d/cert8.db ] ; then
 fi
 
 # Reload sysctl.conf
-sysctl -p
+sysctl -q -p
 
 # Update file attributes
 chmod +x /etc/rc.local
@@ -443,12 +446,9 @@ iptables-restore < /etc/iptables.rules
 ip6tables-restore < /etc/ip6tables.rules >/dev/null 2>&1
 
 # Restart services
-service fail2ban stop >/dev/null 2>&1
-service ipsec stop >/dev/null 2>&1
-service xl2tpd stop >/dev/null 2>&1
-service fail2ban start
-service ipsec start
-service xl2tpd start
+service fail2ban restart
+service ipsec restart
+service xl2tpd restart
 
 echo
 echo '================================================'

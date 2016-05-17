@@ -39,7 +39,7 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 if [ ! -f /etc/redhat-release ]; then
-  echo "This script only supports CentOS or RHEL systems."
+  echo "This script only supports CentOS/RHEL."
   exit 1
 fi
 
@@ -55,7 +55,7 @@ fi
 
 if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try alternative: https://github.com/Nyr/openvpn-install"
+  echo "Try: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -67,8 +67,8 @@ fi
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
   echo
-  echo "CentOS 7 users should change interfaces to use old naming convention"
-  echo "before running this script. See: https://wiki.centos.org/FAQ/CentOS7"
+  echo "Run 'cat /proc/net/dev' to find the name of the active network interface,"
+  echo "then search and replace ALL 'eth0' and 'eth+' in this script with that name."
   exit 1
 fi
 
@@ -79,9 +79,11 @@ if [ -z "$IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials cannot be empty. Edit the script and re-enter."
+  echo "VPN credentials cannot be empty. Edit the script and re-enter them."
   exit 1
 fi
+
+echo "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -99,7 +101,7 @@ echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
 echo
 
 # In Amazon EC2, these two variables will be retrieved from metadata.
-# For all other servers, replace them with actual IPs (or comment out).
+# For all other servers, replace them with actual IPs or comment out.
 # If your server only has a public IP, put that IP on both lines.
 PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
 PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
@@ -107,18 +109,17 @@ PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/la
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipecho.net/plain)
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP. Edit the script and manually enter."
+  echo "Cannot find valid public IP. Edit the script and manually enter IPs."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP. Edit the script and manually enter."
+  echo "Cannot find valid private IP. Edit the script and manually enter IPs."
   exit 1
 fi
 
@@ -137,12 +138,12 @@ yum -y install ppp xl2tpd
 # Install Fail2Ban to protect SSH
 yum -y install fail2ban
 
-# Install IP6Tables for CentOS/RHEL 6
+# Install IP6Tables
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y install iptables-ipv6
 fi
 
-# Installed Libevent2. Use backported version for CentOS 6.
+# Installed Libevent2
 if grep -qs "release 6" /etc/redhat-release; then
   LE2_URL=https://download.libreswan.org/binaries/rhel/6/x86_64
   RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
@@ -163,19 +164,18 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
+tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
 EOF
-make programs && make install
+make -s programs && make -s install
 
-# Check if Libreswan install was successful
+# Verify the install
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
 [ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
-# Prepare various config files
 # Create IPsec (Libreswan) config
 SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"
 /bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$SYS_DT" 2>/dev/null
@@ -256,7 +256,7 @@ pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
 
-# Specify xl2tpd options
+# Set xl2tpd options
 /bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$SYS_DT" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
@@ -287,7 +287,7 @@ EOF
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
 
-# Update sysctl settings for VPN and performance
+# Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$SYS_DT" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
@@ -322,9 +322,9 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-# Create basic IPTables rules. First check if there are existing rules.
-# 1. If IPTables is "empty", write out the new set of rules.
-# 2. If *not* empty, insert new rules and save them together with existing ones.
+# Create basic IPTables rules. First check for existing rules.
+# - If IPTables is "empty", simply write out the new rules.
+# - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
 /bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-$SYS_DT" 2>/dev/null
 service fail2ban stop >/dev/null 2>&1
@@ -351,7 +351,7 @@ cat > /etc/sysconfig/iptables <<EOF
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
 -A FORWARD -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# If you wish to allow traffic between VPN clients themselves, uncomment these lines:
+# To allow traffic between VPN clients themselves, uncomment these lines:
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 # -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
 -A FORWARD -j DROP
@@ -386,7 +386,7 @@ iptables-save >> /etc/sysconfig/iptables
 fi
 fi
 
-# Create basic IP6Tables (IPv6) rules
+# Create basic IPv6 rules
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/ip6tables; then
 /bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$SYS_DT" 2>/dev/null
 cat > /etc/sysconfig/ip6tables <<EOF
@@ -405,7 +405,7 @@ COMMIT
 EOF
 fi
 
-# Create basic Fail2Ban rules if not present
+# Create basic Fail2Ban rules
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 cat > /etc/fail2ban/jail.local <<EOF
 [DEFAULT]
@@ -423,7 +423,7 @@ logpath  = /var/log/secure
 EOF
 fi
 
-# Update rc.local to start services at boot
+# Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$SYS_DT" 2>/dev/null
 cat >> /etc/rc.local <<EOF
@@ -451,7 +451,7 @@ restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Reload sysctl.conf
-sysctl -p
+sysctl -q -p
 
 # Update file attributes
 chmod +x /etc/rc.local
@@ -462,12 +462,9 @@ iptables-restore < /etc/sysconfig/iptables
 ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
 
 # Restart services
-service fail2ban stop >/dev/null 2>&1
-service ipsec stop >/dev/null 2>&1
-service xl2tpd stop >/dev/null 2>&1
-service fail2ban start
-service ipsec start
-service xl2tpd start
+service fail2ban restart
+service ipsec restart
+service xl2tpd restart
 
 echo
 echo '================================================'

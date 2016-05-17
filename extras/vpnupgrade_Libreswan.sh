@@ -19,7 +19,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
-  echo "This script only supports Ubuntu or Debian systems."
+  echo "This script only supports Ubuntu/Debian."
   exit 1
 fi
 
@@ -92,15 +92,15 @@ cd /opt/src || exit 1
 
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y update
-apt-get -y install wget
+apt-get -yqq update
+apt-get -yqq install wget
 
 # Install necessary packages
-apt-get -y install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+apt-get -yqq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
-apt-get -y --no-install-recommends install xmlto
+apt-get -yqq --no-install-recommends install xmlto
 
 # Compile and install Libreswan
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
@@ -108,18 +108,18 @@ SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
 wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xvzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
+tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
 cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
 EOF
-make programs && make install
+make -s programs && make -s install
 
 # Restart IPsec service
 service ipsec restart
 
-# Check if Libreswan install was successful
+# Verify the install
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
 [ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
