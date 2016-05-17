@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-With these scripts, you can set up your own IPsec/L2TP VPN server in just a few minutes on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials. The scripts will handle the rest.
+With these scripts, you can set up your own IPsec/L2TP VPN server in just a few minutes on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials (or auto-generate them). The scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -24,7 +24,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :tada: **NEW:** `IPsec/XAUTH` is [now supported](#next-steps) in addition to `IPsec/L2TP`
+- :tada: **NEW:** `IPsec/XAUTH` is now supported in addition to `IPsec/L2TP`
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -108,7 +108,7 @@ To create multiple VPN users with different credentials for `IPsec/L2TP`, just <
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L323" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L326" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 

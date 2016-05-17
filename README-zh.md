@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证（或者可以自动生成），然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -24,7 +24,7 @@
 
 ## 功能特性
 
-- :tada: **新特性：** 在 `IPsec/L2TP` 的基础上[新增](#下一步)对 `IPsec/XAUTH` 的支持
+- :tada: **新特性：** 在 `IPsec/L2TP` 的基础上新增对 `IPsec/XAUTH` 的支持
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -108,7 +108,7 @@ sudo sh vpnsetup_centos.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可通过编辑文件 `options.xl2tpd` 和 `ipsec.conf` 来更改。
 
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L323" target="_blank">IPTables 防火墙规则</a>。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L326" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
