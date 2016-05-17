@@ -94,7 +94,7 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** `IPsec/XAUTH` is now supported in addition to `IPsec/L2TP`! This new mode is faster with less overhead. On Android, this mode is called `Xauth PSK`. On iOS/OSX it is called `(Cisco) IPSec`. Windows users can use the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft client</a>.
+**NEW:** `IPsec/XAUTH` is now supported in addition to `IPsec/L2TP`. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -104,7 +104,7 @@ For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_V
 
 **Android 6 (Marshmallow) users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Then <a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">add a new line</a> `sha2-truncbug=yes`. Indent lines with two spaces. Finally, run `service ipsec restart`.
 
-To create multiple VPN users with different credentials for `IPsec/L2TP`, just <a href="docs/enable-multiple-users.txt" target="_blank">edit a few lines</a> in the scripts.
+To create multiple VPN users with different credentials, just <a href="docs/enable-multiple-users.txt" target="_blank">edit a few lines</a> in the scripts.
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
 

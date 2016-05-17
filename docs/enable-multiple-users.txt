@@ -1,4 +1,4 @@
-To enable multiple VPN users with different credentials,
+To create multiple VPN users with different credentials for IPsec/L2TP,
  find and replace these lines in the script:
 
 cat > /etc/ppp/chap-secrets <<EOF
@@ -22,3 +22,5 @@ EOF
    You can add more users, use one line for each user.
 3. The characters \ and " within your username/password (if present)
    MUST be escaped as \\ and \", respectively.
+4. To create multiple VPN users for IPsec/XAUTH, add more lines to file
+   "/etc/ipsec.d/passwd". Refer to the VPN script for correct format.

@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-Note: This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors. License: [GPLv3](#license).
+*To connect using IPsec/XAUTH mode, see: [Configure IPsec/XAUTH VPN Clients](clients-xauth.md)*
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -112,6 +112,10 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 1. Click **Connect**.
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+## Acknowledgement
+
+This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
 
 ## License
 

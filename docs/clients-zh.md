@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-注： 本文档是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档基础上翻译和修改。该项目由 Joshua Lund 和其他开发者维护。 授权协议： [GPLv3](#授权协议)。
+*如需使用 IPsec/XAUTH 模式连接，请参见： [配置 IPsec/XAUTH VPN 客户端](clients-xauth-zh.md)*
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的用户名和密码。
 
@@ -112,6 +112,10 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 单击 **连接**。
 
 VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+## 致谢
+
+本文档是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档基础上翻译和修改。该项目由 Joshua Lund 和其他开发者维护。
 
 ## 授权协议
 
