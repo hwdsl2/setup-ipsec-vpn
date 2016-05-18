@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证（或者可以自动生成），然后运行脚本自动完成安装。
+使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，或者选择随机生成凭证。然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -24,7 +24,7 @@
 
 ## 功能特性
 
-- :tada: **新特性：** 在 `IPsec/L2TP` 的基础上新增对 `IPsec/XAUTH` 的支持
+- :tada: **NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -94,7 +94,7 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**新特性：** 在 `IPsec/L2TP` 的基础上，现在新增对 `IPsec/XAUTH` 的支持。请参见： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
