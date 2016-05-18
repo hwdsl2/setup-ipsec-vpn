@@ -22,9 +22,11 @@
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
 
-IPSEC_PSK="$VPNSETUP_IPSEC_PSK"
-VPN_USER="$VPNSETUP_USERNAME"
-VPN_PASSWORD="$VPNSETUP_PASSWORD"
+IPSEC_PSK="$VPN_IPSEC_PSK"
+VPN_USER="$VPN_USERNAME"
+VPN_PASSWORD="$VPN_PASSWORD"
+PUBLIC_IP="$VPN_PUBLIC_IP"
+PRIVATE_IP="$VPN_PRIVATE_IP"
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
@@ -108,8 +110,8 @@ echo
 # In Amazon EC2, these two variables will be retrieved from metadata.
 # For all other servers, replace them with actual IPs or comment out.
 # If your server only has a public IP, put that IP on both lines.
-PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
-PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
