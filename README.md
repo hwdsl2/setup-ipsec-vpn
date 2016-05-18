@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-With these scripts, you can set up your own IPsec/L2TP VPN server in just a few minutes on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials (or auto-generate them). The scripts will handle the rest.
+These scripts will let you set up your own IPsec/L2TP VPN server in no more than a minute on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, or auto-generate them. The scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -24,7 +24,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :tada: **NEW:** `IPsec/XAUTH` is now supported in addition to `IPsec/L2TP`
+- :tada: **NEW:** The faster `IPsec/XAUTH` (a.k.a. `Cisco IPsec`) mode is now supported
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -94,7 +94,7 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** `IPsec/XAUTH` is now supported in addition to `IPsec/L2TP`. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
+**NEW:** The faster `IPsec/XAUTH` (a.k.a. `Cisco IPsec`) mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -102,7 +102,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In case you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
 
-**Android 6 (Marshmallow) users**: Edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=`. Then <a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">add a new line</a> `sha2-truncbug=yes`. Indent lines with two spaces. Finally, run `service ipsec restart`.
+**Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
 To create multiple VPN users with different credentials, just <a href="docs/enable-multiple-users.txt" target="_blank">edit a few lines</a> in the scripts.
 

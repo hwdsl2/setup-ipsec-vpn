@@ -72,6 +72,8 @@ VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled*
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
+注： Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。然后在 `conn shared` 部分增加一行 `sha2-truncbug=yes` (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参见这里</a>)。每行开头必须空两格。保存修改并运行 `service ipsec restart`。
+
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### iOS ###

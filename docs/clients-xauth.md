@@ -72,6 +72,8 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
+Note for Android 6 (Marshmallow) users: On the VPN server, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` under section `conn shared` (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>). Indent lines with two spaces. When finished, run `service ipsec restart`.
+
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ### iOS ###

@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证（或者可以自动生成），然后运行脚本自动完成安装。
+使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，或者选择随机生成凭证。然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -24,7 +24,7 @@
 
 ## 功能特性
 
-- :tada: **新特性：** 在 `IPsec/L2TP` 的基础上新增对 `IPsec/XAUTH` 的支持
+- :tada: **NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -94,7 +94,7 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**新特性：** 在 `IPsec/L2TP` 的基础上，现在新增对 `IPsec/XAUTH` 的支持。请参见： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
@@ -102,7 +102,7 @@ sudo sh vpnsetup_centos.sh
 
 **Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
-**Android 6 (Marshmallow) 用户**: 请编辑 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。另外<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">增加一行</a> `sha2-truncbug=yes` 。每行开头必须空两格。保存修改并运行 `service ipsec restart` 。
+**Android 6 (Marshmallow) 用户** 请参见此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
 如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="docs/enable-multiple-users.txt" target="_blank">修改这几行的脚本</a>。
 
