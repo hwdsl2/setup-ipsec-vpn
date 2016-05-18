@@ -22,9 +22,9 @@
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
 
-IPSEC_PSK=''
-VPN_USER=''
-VPN_PASSWORD=''
+IPSEC_PSK="$VPNSETUP_IPSEC_PSK"
+VPN_USER="$VPNSETUP_USERNAME"
+VPN_PASSWORD="$VPNSETUP_PASSWORD"
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
