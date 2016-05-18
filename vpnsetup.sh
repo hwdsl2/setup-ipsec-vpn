@@ -22,11 +22,11 @@
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
 
-IPSEC_PSK="$VPN_IPSEC_PSK"
-VPN_USER="$VPN_USERNAME"
-VPN_PASSWORD="$VPN_PASSWORD"
-PUBLIC_IP="$VPN_PUBLIC_IP"
-PRIVATE_IP="$VPN_PRIVATE_IP"
+IPSEC_PSK=$VPN_IPSEC_PSK
+VPN_USER=$VPN_USERNAME
+VPN_PASSWORD=$VPN_PASSWORD
+PUBLIC_IP=$VPN_PUBLIC_IP
+PRIVATE_IP=$VPN_PRIVATE_IP
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
