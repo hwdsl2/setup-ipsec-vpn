@@ -18,13 +18,13 @@
 # =====================================================
 
 # Define your own values for these variables
-# - IPsec Pre-Shared Key, VPN Username and Password
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
+# - IPsec Pre-Shared Key, VPN Username and Password
 
-IPSEC_PSK=''
-VPN_USER=''
-VPN_PASSWORD=''
+VPN_IPSEC_PSK=$VPN_IPSEC_PSK
+VPN_USER=$VPN_USER
+VPN_PASSWORD=$VPN_PASSWORD
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
@@ -72,13 +72,13 @@ if [ ! -f /sys/class/net/eth0/operstate ]; then
   exit 1
 fi
 
-if [ -z "$IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
+if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+  VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
 fi
 
-if [ -z "$IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   echo "VPN credentials cannot be empty. Edit the script and re-enter them."
   exit 1
 fi
@@ -100,11 +100,14 @@ echo 'In case the script hangs here for more than a few minutes,'
 echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
 echo
 
-# In Amazon EC2, these two variables will be retrieved from metadata.
-# For all other servers, replace them with actual IPs or comment out.
-# If your server only has a public IP, put that IP on both lines.
-PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
-PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
+# In case auto IP discovery fails, you may manually enter server IPs here.
+# If your server only has a public IP, put that public IP on both lines.
+PUBLIC_IP=$VPN_PUBLIC_IP
+PRIVATE_IP=$VPN_PRIVATE_IP
+
+# In Amazon EC2, these two variables will be retrieved from metadata
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
@@ -236,7 +239,7 @@ EOF
 # Specify IPsec PSK
 /bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$SYS_DT" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
-$PUBLIC_IP  %any  : PSK "$IPSEC_PSK"
+$PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
@@ -474,7 +477,7 @@ echo
 echo 'Connect to your new VPN with these details:'
 echo
 echo "Server IP: $PUBLIC_IP"
-echo "IPsec PSK: $IPSEC_PSK"
+echo "IPsec PSK: $VPN_IPSEC_PSK"
 echo "Username: $VPN_USER"
 echo "Password: $VPN_PASSWORD"
 echo
