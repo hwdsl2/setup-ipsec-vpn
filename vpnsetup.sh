@@ -85,8 +85,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get -yqq update
 
 # Make sure basic commands exist
-apt-get -yqq install wget dnsutils openssl
-apt-get -yqq install iproute gawk grep sed net-tools
+apt-get -yq install wget dnsutils openssl
+apt-get -yq install iproute gawk grep sed net-tools
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
   echo
@@ -132,15 +132,15 @@ if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
 fi
 
 # Install necessary packages
-apt-get -yqq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
-apt-get -yqq --no-install-recommends install xmlto
-apt-get -yqq install xl2tpd
+apt-get -yq --no-install-recommends install xmlto
+apt-get -yq install xl2tpd
 
 # Install Fail2Ban to protect SSH
-apt-get -yqq install fail2ban
+apt-get -yq install fail2ban
 
 # Compile and install Libreswan
 SWAN_VER=3.17
@@ -401,6 +401,7 @@ fi
 fi
 
 # Load IPTables rules at system boot
+mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
@@ -426,13 +427,6 @@ service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
-fi
-
-# Initialize Libreswan DB
-if [ ! -f /etc/ipsec.d/cert8.db ] ; then
-   echo > /var/tmp/libreswan-nss-pwd
-   certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
-   /bin/rm -f /var/tmp/libreswan-nss-pwd
 fi
 
 # Reload sysctl.conf

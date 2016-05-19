@@ -441,13 +441,6 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 fi
 
-# Initialize Libreswan DB
-if [ ! -f /etc/ipsec.d/cert8.db ] ; then
-   echo > /var/tmp/libreswan-nss-pwd
-   certutil -N -f /var/tmp/libreswan-nss-pwd -d /etc/ipsec.d
-   /bin/rm -f /var/tmp/libreswan-nss-pwd
-fi
-
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null

@@ -93,14 +93,14 @@ cd /opt/src || exit 1
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yqq update
-apt-get -yqq install wget
+apt-get -yq install wget
 
 # Install necessary packages
-apt-get -yqq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
         libunbound-dev libnss3-tools libevent-dev
-apt-get -yqq --no-install-recommends install xmlto
+apt-get -yq --no-install-recommends install xmlto
 
 # Compile and install Libreswan
 SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
