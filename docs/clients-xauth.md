@@ -24,7 +24,7 @@ Note: You may also connect using [IPsec/L2TP mode](clients.md). No additional so
 1. Click the **Add (+)** button on toolbar.
 1. Enter `Your VPN Server IP` in the **Host Name or IP Address** field.
 1. Click the **Authentication** tab. Select **Mutual PSK + XAuth** from the **Authentication Method** drop-down menu.
-1. Click the **Credentials** tab below. Enter `Your IPsec PSK` in the **Pre Shared Key** field.
+1. Click the **Credentials** tab below. Enter `Your VPN IPsec PSK` in the **Pre Shared Key** field.
 1. Click the **Phase 1** tab. Select **main** from the **Exchange Type** drop-down menu.
 1. Click **Save** to save the VPN connection details.
 1. Select the new VPN connection. Click the **Connect** button on toolbar.
@@ -47,7 +47,7 @@ Once connected, you will see **tunnel enabled** in the VPN Connect status window
 1. Enter `Your VPN Username` for the **Account Name**.
 1. Enter `Your VPN Password` for the **Password**.
 1. Click the **Authentication Settings** button.
-1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your IPsec PSK` as its value.
+1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK` as its value.
 1. Leave the **Group Name** field blank.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
@@ -64,7 +64,7 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Select **IPSec Xauth PSK** in the **Type** drop-down menu.
 1. Enter `Your VPN Server IP` in the **Server address** field.
 1. Leave the **IPSec identifier** field blank.
-1. Enter `Your IPsec PSK` in the **IPSec pre-shared key** field.
+1. Enter `Your VPN IPsec PSK` in the **IPSec pre-shared key** field.
 1. Tap **Save**.
 1. Tap the new VPN connection.
 1. Enter `Your VPN Username` in the **Username** field.
@@ -85,7 +85,7 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 1. Tap **Account** and enter `Your VPN Username`.
 1. Tap **Password** and enter `Your VPN Password`.
 1. Leave the **Group Name** field blank.
-1. Tap **Secret** and enter `Your IPsec PSK`.
+1. Tap **Secret** and enter `Your VPN IPsec PSK`.
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
 

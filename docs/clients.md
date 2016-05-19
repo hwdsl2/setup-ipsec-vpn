@@ -34,7 +34,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
 1. Click the **Security** tab and select **Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)** from the **Type of VPN** drop-down menu. Under "Allow these protocols", select the `CHAP` checkbox, and de-select `MS-CHAP v2`.
 1. Click the **Advanced settings** button.
-1. Select **Use preshared key for authentication** and enter `Your IPsec PSK` for the **Key**.
+1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
@@ -53,7 +53,7 @@ To connect to the VPN, simply right-click on the wireless/network icon in your s
 1. Enter `Your VPN Username` for the **Account Name**.
 1. Click the **Authentication Settings** button.
 1. In the **User Authentication** section, select the **Password** radio button and enter `Your VPN Password` as its value.
-1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your IPsec PSK` as its value.
+1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK` as its value.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is selected.
@@ -70,7 +70,7 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Enter anything you like in the **Name** field.
 1. Select **L2TP/IPSec PSK** in the **Type** drop-down menu.
 1. Enter `Your VPN Server IP` in the **Server address** field.
-1. Enter `Your IPsec PSK` in the **IPSec pre-shared key** field.
+1. Enter `Your VPN IPsec PSK` in the **IPSec pre-shared key** field.
 1. Tap **Save**.
 1. Tap the new VPN connection.
 1. Enter `Your VPN Username` in the **Username** field.
@@ -90,7 +90,7 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 1. Tap **Server** and enter `Your VPN Server IP`.
 1. Tap **Account** and enter `Your VPN Username`.
 1. Tap **Password** and enter `Your VPN Password`.
-1. Tap **Secret** and enter `Your IPsec PSK`.
+1. Tap **Secret** and enter `Your VPN IPsec PSK`.
 1. Make sure the **Send All Traffic** switch is ON.
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
@@ -106,7 +106,7 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 1. Enter `Your VPN Server IP` for the **Server hostname**.
 1. Enter anything you like for the **Service name**.
 1. Make sure **Provider type** is **L2TP/IPSec + pre-shared key**.
-1. Enter `Your IPsec PSK` for the **Pre-shared key**.
+1. Enter `Your VPN IPsec PSK` for the **Pre-shared key**.
 1. Enter `Your VPN Username` for the **Username**.
 1. Enter `Your VPN Password` for the **Password**.
 1. Click **Connect**.

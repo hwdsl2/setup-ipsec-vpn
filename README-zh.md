@@ -24,7 +24,7 @@
 
 ## 功能特性
 
-- :tada: **NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式
+- :tada: **NEW：** 新增支持更高效的 `IPsec/XAUTH ("Cisco IPsec")` 模式
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -57,15 +57,15 @@
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget 'https://git.io/vpnsetup' -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**选项 2:** 或者，在脚本中输入你自己的 VPN 登录凭证：
+**选项 2:** 在脚本中输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh
+wget 'https://git.io/vpnsetup' -O vpnsetup.sh
 nano -w vpnsetup.sh
-[修改为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -76,15 +76,15 @@ sudo sh vpnsetup.sh
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
 ```
 
-**选项 2:** 或者，在脚本中输入你自己的 VPN 登录凭证：
+**选项 2:** 在脚本中输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
+wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[修改为你自己的值： IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
 ```
 
@@ -94,7 +94,7 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**NEW：** 新增支持更高效的 `IPsec/XAUTH` （也称为 `Cisco IPsec`） 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `IPsec/XAUTH ("Cisco IPsec")` 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
@@ -108,7 +108,7 @@ sudo sh vpnsetup_centos.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。此设置可通过编辑文件 `options.xl2tpd` 和 `ipsec.conf` 来更改。
 
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L326" target="_blank">IPTables 防火墙规则</a>。
+如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L329" target="_blank">IPTables 防火墙规则</a>。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 

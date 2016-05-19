@@ -24,7 +24,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :tada: **NEW:** The faster `IPsec/XAUTH` (a.k.a. `Cisco IPsec`) mode is now supported
+- :tada: **NEW:** The faster `IPsec/XAUTH ("Cisco IPsec")` mode is now supported
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -57,15 +57,15 @@ First, update your system with `apt-get update && apt-get dist-upgrade` and rebo
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget 'https://git.io/vpnsetup' -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**Option 2:** Alternatively, enter your own VPN credentials in the script:
+**Option 2:** Enter your own VPN credentials, or define them as environment variables:
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh
+wget 'https://git.io/vpnsetup' -O vpnsetup.sh
 nano -w vpnsetup.sh
-[Replace with your own values: IPSEC_PSK, VPN_USER and VPN_PASSWORD]
+[Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -76,15 +76,15 @@ First, update your system with `yum update` and reboot. This is optional, but re
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
 ```
 
-**Option 2:** Alternatively, enter your own VPN credentials in the script:
+**Option 2:** Enter your own VPN credentials, or define them as environment variables:
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
+wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
-[Replace with your own values: IPSEC_PSK, VPN_USER and VPN_PASSWORD]
+[Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
 ```
 
@@ -94,7 +94,7 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** The faster `IPsec/XAUTH` (a.k.a. `Cisco IPsec`) mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
+**NEW:** The faster `IPsec/XAUTH ("Cisco IPsec")` mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -108,7 +108,7 @@ To create multiple VPN users with different credentials, just <a href="docs/enab
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L326" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L329" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 

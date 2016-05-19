@@ -24,7 +24,7 @@
 1. 单击工具栏中的 **Add (+)** 按钮。
 1. 在 **Host Name or IP Address** 字段中输入`你的 VPN 服务器 IP`。
 1. 单击 **Authentication** 选项卡，从 **Authentication Method** 下拉菜单中选择 **Mutual PSK + XAuth**。
-1. 单击 **Credentials** 子选项卡，并在 **Pre Shared Key** 字段中输入`你的 IPsec PSK`。
+1. 单击 **Credentials** 子选项卡，并在 **Pre Shared Key** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **Phase 1** 选项卡，从 **Exchange Type** 下拉菜单中选择 **main**。
 1. 单击 **Save** 保存 VPN 连接的详细信息。
 1. 选择新添加的 VPN 连接。单击工具栏中的 **Connect** 按钮。
@@ -47,7 +47,7 @@ VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled*
 1. 在 **帐户名称** 字段中输入`你的 VPN 用户名`。
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 单击 **鉴定设置** 按钮。
-1. 在 **机器鉴定** 部分，选择 **共享的密钥** 单选按钮，然后输入`你的 IPsec PSK`。
+1. 在 **机器鉴定** 部分，选择 **共享的密钥** 单选按钮，然后输入`你的 VPN IPsec PSK`。
 1. 保持 **群组名称** 字段空白。
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
@@ -64,7 +64,7 @@ VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled*
 1. 在 **类型** 下拉菜单选择 **IPSec Xauth PSK**。
 1. 在 **服务器地址** 字段中输入`你的 VPN 服务器 IP`。
 1. 保持 **IPSec 标识符** 字段空白。
-1. 在 **IPSec 预共享密钥** 字段中输入`你的 IPsec PSK`。
+1. 在 **IPSec 预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **保存**。
 1. 单击新的VPN连接。
 1. 在 **用户名** 字段中输入`你的 VPN 用户名`。
@@ -85,7 +85,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 在 **帐户** 字段中输入`你的 VPN 用户名`。
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 保持 **群组名称** 字段空白。
-1. 在 **密钥** 字段中输入`你的 IPsec PSK`。
+1. 在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击右上角的 **存储**。
 1. 启用 **VPN** 连接。
 
