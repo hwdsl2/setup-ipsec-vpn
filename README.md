@@ -29,7 +29,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :tada: **NEW:** The faster `IPsec/XAUTH ("Cisco IPsec")` mode is now supported
+- :tada: **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -99,7 +99,7 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** The faster `IPsec/XAUTH ("Cisco IPsec")` mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAUTH VPN Clients</a>.
+**NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 

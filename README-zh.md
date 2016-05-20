@@ -29,7 +29,7 @@
 
 ## 功能特性
 
-- :tada: **NEW：** 新增支持更高效的 `IPsec/XAUTH ("Cisco IPsec")` 模式
+- :tada: **NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -99,7 +99,7 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**NEW：** 新增支持更高效的 `IPsec/XAUTH ("Cisco IPsec")` 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAUTH VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
