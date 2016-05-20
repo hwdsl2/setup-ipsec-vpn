@@ -1,4 +1,8 @@
-﻿# IPsec/L2TP VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
+﻿# IPsec/L2TP VPN Server Auto Setup Scripts
+
+[![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
+[![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
@@ -19,6 +23,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Important Notes](#important-notes)
 - [Upgrading Libreswan](#upgrading-libreswan)
 - [Bugs & Questions](#bugs--questions)
+- [See Also](#see-also)
 - [Author](#author)
 - [License](#license)
 
@@ -121,6 +126,10 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 - Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this GitHub Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
 - Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
+
+## See Also
+
+- [Docker IPsec VPN Server](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## Author
 

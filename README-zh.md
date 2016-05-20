@@ -1,5 +1,9 @@
 ﻿# IPsec/L2TP VPN 服务器一键安装脚本
 
+[![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
+[![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
 使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，或者选择随机生成凭证。然后运行脚本自动完成安装。
@@ -19,6 +23,7 @@
 - [重要提示](#重要提示)
 - [关于升级Libreswan](#关于升级libreswan)
 - [问题和反馈](#问题和反馈)
+- [另见](#另见)
 - [作者](#作者)
 - [授权协议](#授权协议)
 
@@ -121,6 +126,10 @@ sudo sh vpnsetup_centos.sh
 - 有问题需要提问？请先搜索其他用户的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 GitHub Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客文章</a>。
 - Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些 wiki 文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a>。
+
+## 另见
+
+- [Docker 上的 IPsec VPN 服务器](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## 作者
 
