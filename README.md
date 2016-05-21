@@ -113,7 +113,7 @@ To create multiple VPN users with different credentials, just <a href="docs/enab
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L329" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L336" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
@@ -129,7 +129,7 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 
 ## See Also
 
-- [Docker IPsec VPN Server](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## Author
 
