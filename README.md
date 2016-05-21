@@ -2,11 +2,10 @@
 
 [![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
 [![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-These scripts will let you set up your own IPsec/L2TP VPN server in no more than a minute on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, or auto-generate them. The scripts will handle the rest.
+These scripts will let you set up your own IPsec/L2TP VPN server in no more than a minute on Ubuntu, Debian and CentOS. Just provide your own VPN credentials, and the scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -59,16 +58,16 @@ A dedicated server or KVM/Xen-based Virtual Private Server (VPS), freshly instal
 
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
-**Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed on the screen):
 
 ```bash
-wget 'https://git.io/vpnsetup' -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
 **Option 2:** Enter your own VPN credentials, or define them as environment variables:
 
 ```bash
-wget 'https://git.io/vpnsetup' -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup.sh
@@ -78,16 +77,16 @@ sudo sh vpnsetup.sh
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
-**Option 1:** Have the script generate random VPN credentials for you (will be displayed when done):
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed on the screen):
 
 ```bash
-wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
 ```
 
 **Option 2:** Enter your own VPN credentials, or define them as environment variables:
 
 ```bash
-wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
@@ -99,13 +98,13 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported. See: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>.
+**NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#windows" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
+For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
@@ -119,12 +118,12 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrading Libreswan
 
-The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to periodically upgrade Libreswan to the latest version. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `swan_ver` variable as necessary.
+The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to upgrade Libreswan. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `swan_ver` variable as necessary.
 
 ## Bugs & Questions
 
 - Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this GitHub Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
-- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>.
+- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these articles: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## See Also

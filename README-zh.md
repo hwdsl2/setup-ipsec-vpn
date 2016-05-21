@@ -2,11 +2,10 @@
 
 [![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
 [![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，或者选择随机生成凭证。然后运行脚本自动完成安装。
+使用这些 Linux Shell 脚本一键快速搭建 IPsec/L2TP VPN 服务器。支持 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -59,16 +58,16 @@
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
 
 ```bash
-wget 'https://git.io/vpnsetup' -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**选项 2:** 在脚本中输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
+**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
 
 ```bash
-wget 'https://git.io/vpnsetup' -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
 [修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup.sh
@@ -78,16 +77,16 @@ sudo sh vpnsetup.sh
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （在安装完成后显示）：
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
 
 ```bash
-wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
 ```
 
-**选项 2:** 在脚本中输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
+**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
 
 ```bash
-wget 'https://git.io/vpnsetup-centos' -O vpnsetup_centos.sh
+wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
 nano -w vpnsetup_centos.sh
 [修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
 sudo sh vpnsetup_centos.sh
@@ -99,15 +98,15 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式。请参考 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#windows" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `Error 628` ，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
-**Android 6 (Marshmallow) 用户** 请参见此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
+**Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
 如果要创建具有不同凭据的多个 VPN 用户，只需要<a href="docs/enable-multiple-users.txt" target="_blank">修改这几行的脚本</a>。
 
@@ -119,12 +118,12 @@ sudo sh vpnsetup_centos.sh
 
 ## 关于升级Libreswan
 
-提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于将已安装的 Libreswan 不定期升级至最新版本。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `swan_ver` 变量。
+提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于升级 Libreswan。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `swan_ver` 变量。
 
 ## 问题和反馈
 
 - 有问题需要提问？请先搜索其他用户的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 GitHub Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客文章</a>。
-- Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些 wiki 文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[5]</a>。
+- Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a>。
 
 ## 另见

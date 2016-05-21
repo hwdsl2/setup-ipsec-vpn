@@ -38,6 +38,7 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
+<a id="regkey"></a>
 要连接到 VPN，只需在系统托盘中的无线/网络图标上单击右键，选择新的 VPN 连接，然后单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 **注：** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请参照链接文章中的说明，或者打开<a href="http://windows.microsoft.com/zh-cn/windows/command-prompt-faq#1TC=windows-7" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重新启动计算机。
