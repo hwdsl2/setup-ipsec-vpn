@@ -153,27 +153,27 @@ fi
 
 # Installed Libevent2
 if grep -qs "release 6" /etc/redhat-release; then
-  LE2_URL=https://download.libreswan.org/binaries/rhel/6/x86_64
-  RPM1=libevent2-2.0.22-1.el6.x86_64.rpm
-  RPM2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
-  wget -t 3 -T 30 -nv -O "$RPM1" "$LE2_URL/$RPM1"
+  le2_url=https://download.libreswan.org/binaries/rhel/6/x86_64
+  rpm1=libevent2-2.0.22-1.el6.x86_64.rpm
+  rpm2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
+  wget -t 3 -T 30 -nv -O "$rpm1" "$le2_url/$rpm1"
   [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
-  wget -t 3 -T 30 -nv -O "$RPM2" "$LE2_URL/$RPM2"
+  wget -t 3 -T 30 -nv -O "$rpm2" "$le2_url/$rpm2"
   [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
-  rpm -ivh --force "$RPM1" "$RPM2" && /bin/rm -f "$RPM1" "$RPM2"
+  rpm -ivh --force "$rpm1" "$rpm2" && /bin/rm -f "$rpm1" "$rpm2"
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
 fi
 
 # Compile and install Libreswan
-SWAN_VER=3.17
-SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
-SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
-wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
+swan_ver=3.17
+swan_file="libreswan-${swan_ver}.tar.gz"
+swan_url="https://download.libreswan.org/$swan_file"
+wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+cd "libreswan-$swan_ver" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -181,12 +181,12 @@ EOF
 make -s programs && make -s install
 
 # Verify the install
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
+[ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
 # Create IPsec (Libreswan) config
-SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"
-/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$SYS_DT" 2>/dev/null
+sys_dt="$(date +%Y-%m-%d-%H:%M:%S)"
+/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$sys_dt" 2>/dev/null
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -242,13 +242,13 @@ conn xauth-psk
 EOF
 
 # Specify IPsec PSK
-/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$sys_dt" 2>/dev/null
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
-/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$sys_dt" 2>/dev/null
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
@@ -265,7 +265,7 @@ length bit = yes
 EOF
 
 # Set xl2tpd options
-/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$sys_dt" 2>/dev/null
 cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
@@ -284,20 +284,20 @@ connect-delay 5000
 EOF
 
 # Create VPN credentials
-/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$sys_dt" 2>/dev/null
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
-/bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$sys_dt" 2>/dev/null
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
 
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
 cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
@@ -334,7 +334,7 @@ fi
 # - If IPTables is "empty", simply write out the new rules.
 # - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
-/bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/sysconfig/iptables "/etc/sysconfig/iptables.old-$sys_dt" 2>/dev/null
 service fail2ban stop >/dev/null 2>&1
 if [ "$(iptables-save | grep -c '^\-')" = "0" ]; then
 cat > /etc/sysconfig/iptables <<EOF
@@ -396,7 +396,7 @@ fi
 
 # Create basic IPv6 rules
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/ip6tables; then
-/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$sys_dt" 2>/dev/null
 cat > /etc/sysconfig/ip6tables <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -433,7 +433,7 @@ fi
 
 # Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-/bin/cp -f /etc/rc.local "/etc/rc.local.old-$SYS_DT" 2>/dev/null
+/bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
 cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script

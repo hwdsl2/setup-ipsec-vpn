@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org and update version number if necessary
-SWAN_VER=3.17
+swan_ver=3.17
 
 ### Do not edit below this line
 
@@ -39,9 +39,9 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $SWAN_VER"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $swan_ver"
 if [ "$?" = "0" ]; then
-  echo "You already have Libreswan version $SWAN_VER installed! "
+  echo "You already have Libreswan version $swan_ver installed! "
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -59,7 +59,7 @@ fi
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $SWAN_VER on your server.
+Welcome! This script will build and install Libreswan $swan_ver on your server.
 Additional packages required for Libreswan compilation will also be installed.
 
 This is intended for use on servers running an older version of Libreswan.
@@ -106,13 +106,13 @@ apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
 apt-get -yq --no-install-recommends install xmlto
 
 # Compile and install Libreswan
-SWAN_FILE="libreswan-${SWAN_VER}.tar.gz"
-SWAN_URL="https://download.libreswan.org/$SWAN_FILE"
-wget -t 3 -T 30 -nv -O "$SWAN_FILE" "$SWAN_URL"
+swan_file="libreswan-${swan_ver}.tar.gz"
+swan_url="https://download.libreswan.org/$swan_file"
+wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xzf "$SWAN_FILE" && /bin/rm -f "$SWAN_FILE"
-cd "libreswan-$SWAN_VER" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+cd "libreswan-$swan_ver" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 # Workaround for Libreswan compile issues
 cat > Makefile.inc.local <<EOF
 WERROR_CFLAGS =
@@ -123,11 +123,11 @@ make -s programs && make -s install
 service ipsec restart
 
 # Verify the install
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echo; echo "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
+[ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
 echo
-echo "Libreswan $SWAN_VER was installed successfully! "
+echo "Libreswan $swan_ver was installed successfully! "
 echo
 
 exit 0
