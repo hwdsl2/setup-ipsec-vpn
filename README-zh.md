@@ -105,7 +105,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#windows" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到`Error 628`，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
 
 **Android 6 (Marshmallow) 用户** 请参见此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
@@ -119,7 +119,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 关于升级Libreswan
 
-提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于将已安装的 Libreswan 不定期升级至最新版本。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `SWAN_VER` 变量。
+提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于将已安装的 Libreswan 不定期升级至最新版本。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `swan_ver` 变量。
 
 ## 问题和反馈
 

@@ -105,7 +105,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In case you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
+For **Windows users**, a <a href="docs/clients.md#windows" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
@@ -119,7 +119,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrading Libreswan
 
-The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to periodically upgrade Libreswan to the latest version. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `SWAN_VER` variable as necessary.
+The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to periodically upgrade Libreswan to the latest version. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `swan_ver` variable as necessary.
 
 ## Bugs & Questions
 

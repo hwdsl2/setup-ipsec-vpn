@@ -34,7 +34,6 @@
 
 VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled** 字样。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-<a id="regkey"></a>
 **注：** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请参照链接文章中的说明，或者打开<a href="http://windows.microsoft.com/zh-cn/windows/command-prompt-faq#1TC=windows-7" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重新启动计算机。
 - 适用于 Windows Vista 及以上版本
   ```console
