@@ -18,9 +18,9 @@
 # =====================================================
 
 # Define your own values for these variables
+# - IPsec pre-shared key, VPN username and password
 # - All values MUST be quoted using 'single quotes'
 # - DO NOT use these characters inside values:  \ " '
-# - IPsec Pre-Shared Key, VPN Username and Password
 
 VPN_IPSEC_PSK=$VPN_IPSEC_PSK
 VPN_USER=$VPN_USER
@@ -55,7 +55,7 @@ fi
 
 if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
-  echo "Try: https://github.com/Nyr/openvpn-install"
+  echo "Try alternative: https://github.com/Nyr/openvpn-install"
   exit 1
 fi
 
@@ -65,11 +65,13 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 if [ ! -f /sys/class/net/eth0/operstate ]; then
-  echo "Network interface 'eth0' is not available. Aborting."
-  echo
-  echo "Run 'cat /proc/net/dev' to find the name of the active network interface,"
-  echo "then search and replace ALL 'eth0' and 'eth+' in this script with that name."
-  exit 1
+cat <<'EOF'
+Network interface 'eth0' is not available. Aborting.
+
+Run 'cat /proc/net/dev' to find the name of the active network interface,
+then search and replace ALL 'eth0' and 'eth+' in this script with that name.
+EOF
+exit 1
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
@@ -84,6 +86,7 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
 fi
 
 echo "VPN setup in progress... Please be patient."
+echo
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -93,12 +96,14 @@ cd /opt/src || exit 1
 yum -y install wget bind-utils openssl
 yum -y install iproute gawk grep sed net-tools
 
-echo
-echo 'Trying to find Public/Private IP of this server...'
-echo
-echo 'In case the script hangs here for more than a few minutes,'
-echo 'use Ctrl-C to interrupt. Then edit it and manually enter IPs.'
-echo
+cat <<'EOF'
+
+Trying to find Public/Private IP of this server...
+
+In case the script hangs here for more than a few minutes,
+use Ctrl-C to interrupt. Then edit it and manually enter IPs.
+
+EOF
 
 # In case auto IP discovery fails, you may manually enter server IPs here.
 # If your server only has a public IP, put that public IP on both lines.
@@ -462,24 +467,26 @@ service fail2ban restart
 service ipsec restart
 service xl2tpd restart
 
-echo
-echo '================================================'
-echo
-echo 'IPsec/L2TP VPN server setup is complete!'
-echo
-echo 'Connect to your new VPN with these details:'
-echo
-echo "Server IP: $PUBLIC_IP"
-echo "IPsec PSK: $VPN_IPSEC_PSK"
-echo "Username: $VPN_USER"
-echo "Password: $VPN_PASSWORD"
-echo
-echo "Write these down. You'll need them to connect! "
-echo
-echo 'Important Notes:   https://git.io/vpnnotes'
-echo 'Setup VPN Clients: https://git.io/vpnclients'
-echo
-echo '================================================'
-echo
+cat <<EOF
+
+================================================
+
+IPsec/L2TP VPN server setup is complete!
+
+Connect to your new VPN with these details:
+
+Server IP: $PUBLIC_IP
+IPsec PSK: $VPN_IPSEC_PSK
+Username: $VPN_USER
+Password: $VPN_PASSWORD
+
+Write these down. You'll need them to connect!
+
+Important Notes:   https://git.io/vpnnotes
+Setup VPN Clients: https://git.io/vpnclients
+
+================================================
+
+EOF
 
 exit 0

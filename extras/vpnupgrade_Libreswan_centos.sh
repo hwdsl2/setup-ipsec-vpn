@@ -67,13 +67,15 @@ fi
 
 clear
 
-echo "Welcome! This script will build and install Libreswan $SWAN_VER on your server."
-echo "Additional packages required for Libreswan compilation will also be installed."
-echo
-echo "This is intended for use on servers running an older version of Libreswan."
-echo "Your existing VPN configuration files will NOT be modified."
+cat <<EOF
+Welcome! This script will build and install Libreswan $SWAN_VER on your server.
+Additional packages required for Libreswan compilation will also be installed.
 
-echo
+This is intended for use on servers running an older version of Libreswan.
+Your existing VPN configuration files will NOT be modified.
+
+EOF
+
 printf "Do you wish to continue? [y/N] "
 read -r response
 case $response in
@@ -149,4 +151,5 @@ service ipsec restart
 echo
 echo "Libreswan $SWAN_VER was installed successfully! "
 echo
+
 exit 0
