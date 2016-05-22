@@ -20,6 +20,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
   - [CentOS & RHEL](#centos--rhel)
 - [Next Steps](#next-steps)
 - [Important Notes](#important-notes)
+- [Manage VPN Users](#manage-vpn-users)
 - [Upgrading Libreswan](#upgrading-libreswan)
 - [Bugs & Questions](#bugs--questions)
 - [See Also](#see-also)
@@ -108,13 +109,53 @@ For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-ti
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-To create multiple VPN users with different credentials, just <a href="docs/enable-multiple-users.txt" target="_blank">edit a few lines</a> in the scripts.
-
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
 
 For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L336" target="_blank">IPTables rules</a> before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
+
+## Manage VPN Users
+
+By default, a single user account for VPN login is created. If you wish to add, edit or remove users, read this section.
+
+First, the IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. To change to a new PSK, just edit this file. 
+
+```bash
+<VPN Server IP>  %any  : PSK "<VPN IPsec PSK>"
+```
+
+For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:
+
+```bash
+"<VPN User 1>"  l2tpd  "<VPN Password 1>"  *
+"<VPN User 2>"  l2tpd  "<VPN Password 2>"  *
+... ...
+```
+
+You can add more users, use one line for each user. DO NOT use the characters `\` and `"` inside username or password.
+
+For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/passwd`. The format of this file is:
+
+```bash
+<VPN User 1>:<VPN Password 1 (hashed)>:xauth-psk
+<VPN User 2>:<VPN Password 2 (hashed)>:xauth-psk
+... ...
+```
+
+Passwords in this file are salted and hashed. This step can be done using e.g. the `openssl` utility:
+
+```bash
+# The output will be <VPN Password 1 (hashed)>
+openssl passwd -1 "<VPN Password 1>"
+```
+
+When finished, you must restart services with:
+
+```bash
+service ipsec restart
+service xl2tpd restart
+```
 
 ## Upgrading Libreswan
 
