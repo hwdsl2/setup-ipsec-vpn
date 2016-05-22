@@ -109,7 +109,7 @@ For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-ti
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. To change, edit `options.xl2tpd` and `ipsec.conf`.
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with your new servers. Then restart `ipsec` and `xl2tpd` services.
 
 For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L336" target="_blank">IPTables rules</a> before using.
 
