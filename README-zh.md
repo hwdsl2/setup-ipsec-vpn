@@ -1,7 +1,4 @@
-﻿# IPsec/L2TP VPN 服务器一键安装脚本
-
-[![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
+﻿# IPsec/L2TP VPN 服务器一键安装脚本 <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
@@ -29,7 +26,8 @@
 
 ## 功能特性
 
-- :tada: **NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- **NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- **NEW:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 映像</a>
 - 全自动的 IPsec/L2TP VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -133,7 +131,7 @@ sudo sh vpnsetup_centos.sh
 ... ...
 ```
 
-你可以添加更多用户，每个用户对应文件中的一行。**不要**在用户名和密码中使用这些字符：`\ "`
+你可以添加更多用户，每个用户对应文件中的一行。**不要**在用户名，密码或 PSK 中使用这些字符：`\ " '`
 
 对于 `IPsec/XAuth ("Cisco IPsec")`， VPN 用户账户信息保存在文件 `/etc/ipsec.d/passwd`。该文件的格式如下：
 

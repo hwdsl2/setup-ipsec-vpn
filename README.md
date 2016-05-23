@@ -1,7 +1,4 @@
-﻿# IPsec/L2TP VPN Server Auto Setup Scripts
-
-[![Build Status](https://img.shields.io/travis/hwdsl2/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) 
+﻿# IPsec/L2TP VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
@@ -29,7 +26,8 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :tada: **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
+- **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
+- **NEW:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
 - Fully automated IPsec/L2TP VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -133,7 +131,7 @@ For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format
 ... ...
 ```
 
-You can add more users, use one line for each user. DO NOT use the characters `\` and `"` inside username or password.
+You can add more users, use one line for each user. DO NOT use these characters inside values: `\ " '`
 
 For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/passwd`. The format of this file is:
 
