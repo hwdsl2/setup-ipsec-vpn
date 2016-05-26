@@ -110,14 +110,8 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 
 # Installed Libevent2
 if grep -qs "release 6" /etc/redhat-release; then
-  le2_url=https://download.libreswan.org/binaries/rhel/6/x86_64
-  rpm1=libevent2-2.0.22-1.el6.x86_64.rpm
-  rpm2=libevent2-devel-2.0.22-1.el6.x86_64.rpm
-  wget -t 3 -T 30 -nv -O "$rpm1" "$le2_url/$rpm1"
-  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
-  wget -t 3 -T 30 -nv -O "$rpm2" "$le2_url/$rpm2"
-  [ "$?" != "0" ] && { echo "Cannot download Libevent2. Aborting."; exit 1; }
-  rpm -ivh --force "$rpm1" "$rpm2" && /bin/rm -f "$rpm1" "$rpm2"
+  yum -y remove libevent-devel
+  yum -y install libevent2-devel
 elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install libevent-devel
 fi
