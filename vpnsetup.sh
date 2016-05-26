@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec/L2TP VPN server on Ubuntu LTS and Debian 8.
+# Script for automatic setup of an IPsec VPN server on Ubuntu LTS and Debian 8.
 # Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
@@ -20,7 +20,7 @@
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
 # - All values MUST be quoted using 'single quotes'
-# - DO NOT use these characters inside values:  \ " '
+# - DO NOT use these characters within values:  \ " '
 
 VPN_IPSEC_PSK=$VPN_IPSEC_PSK
 VPN_USER=$VPN_USER
@@ -105,7 +105,7 @@ fi
 
 cat <<'EOF'
 
-Trying to find Public/Private IP of this server...
+Trying to auto discover IPs of this server...
 
 In case the script hangs here for more than a few minutes,
 use Ctrl-C to interrupt. Then edit it and manually enter IPs.
@@ -458,7 +458,7 @@ cat <<EOF
 
 ================================================
 
-IPsec/L2TP VPN server setup is complete!
+IPsec VPN server is now ready for use!
 
 Connect to your new VPN with these details:
 
