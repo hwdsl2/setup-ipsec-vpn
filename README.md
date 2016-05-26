@@ -1,8 +1,8 @@
-﻿# IPsec/L2TP VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
+﻿# IPsec VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-These scripts will let you set up your own IPsec/L2TP VPN server in no more than a minute on Ubuntu, Debian and CentOS. Just provide your own VPN credentials, and the scripts will handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and the scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -28,7 +28,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 - **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
 - **NEW:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
-- Fully automated IPsec/L2TP VPN server setup, no user input needed
+- Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Automatically determines public IP and private IP of server
@@ -107,7 +107,7 @@ For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-ti
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with your new servers. Then restart `ipsec` and `xl2tpd` services.
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with new ones. Then reboot your server.
 
 For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L336" target="_blank">IPTables rules</a> before using.
 
@@ -131,7 +131,7 @@ For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format
 ... ...
 ```
 
-You can add more users, use one line for each user. DO NOT use these characters inside values: `\ " '`
+You can add more users, use one line for each user. DO NOT use these characters within values: `\ " '`
 
 For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/passwd`. The format of this file is:
 
