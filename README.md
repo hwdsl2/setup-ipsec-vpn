@@ -2,13 +2,13 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and the scripts will handle the rest.
+These scripts will let you set up your own IPsec VPN server, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian & CentOS. All you need to do is provide your own VPN credentials, and the scripts will handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">Link to my VPN tutorial with detailed instructions</a>
+<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">**&raquo; Related tutorial: IPsec VPN Server Auto Setup with Libreswan**</a>
 
-## Table of Contents
+#### Table of Contents
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -97,7 +97,7 @@ If unable to download via `wget`, you may alternatively open <a href="vpnsetup.s
 
 Get your computer or device to use the VPN. Please see: <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
-**NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>.
+**NEW:** The faster `"Cisco IPsec"` mode is also supported: <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>.
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -148,12 +148,7 @@ Passwords in this file are salted and hashed. This step can be done using e.g. t
 openssl passwd -1 "<VPN Password 1>"
 ```
 
-When finished, you must restart services with:
-
-```bash
-service ipsec restart
-service xl2tpd restart
-```
+When finished making changes, reboot your server.
 
 ## Upgrading Libreswan
 
@@ -175,6 +170,8 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 - Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
 - Actively seeking opportunities in areas such as Software or Systems Engineering
 - Contact me on LinkedIn: <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
+
+A special thanks to [all contributors](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors) of this project!
 
 ## License
 

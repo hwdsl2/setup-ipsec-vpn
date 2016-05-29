@@ -6,9 +6,9 @@
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
-#### <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">详细的 VPN 教程请参见我的博客文章</a>
+<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">**&raquo; 相关教程： IPsec VPN Server Auto Setup with Libreswan**</a>
 
-## 目录
+#### 目录
 
 - [功能特性](#功能特性)
 - [系统要求](#系统要求)
@@ -97,7 +97,7 @@ sudo sh vpnsetup_centos.sh
 
 配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-**NEW：** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
+**NEW：** 新增支持更高效的 `"Cisco IPsec"` 模式： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
@@ -148,12 +148,7 @@ sudo sh vpnsetup_centos.sh
 openssl passwd -1 "<VPN Password 1>"
 ```
 
-在完成修改之后，你必须重新启动相关服务：
-
-```bash
-service ipsec restart
-service xl2tpd restart
-```
+在完成修改之后，需要重启服务器。
 
 ## 关于升级Libreswan
 
@@ -175,6 +170,8 @@ service xl2tpd restart
 - 最后一年的美国在读博士生，专业是电子与计算机工程 (ECE)
 - 现在正在积极寻找新的工作机会，比如软件或系统工程师
 - 在 LinkedIn 上与我联系： <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
+
+感谢本项目所有的 [贡献者](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors)！
 
 ## 授权协议
 
