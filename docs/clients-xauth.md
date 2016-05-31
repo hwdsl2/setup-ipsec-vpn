@@ -17,7 +17,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 
 ### Windows ###
 
-Note: You may also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
+**Note:** You can also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
 
 1. Download and install the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN client</a>.
 1. Click Start Menu -> All Programs -> ShrewSoft VPN Client -> VPN Access Manager
@@ -100,7 +100,7 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-## Acknowledgement
+## Credits
 
 This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
 

@@ -15,6 +15,29 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Chromebook](#chromebook)
 
 ### Windows ###
+
+**Windows 10 and 8.x:**
+
+1. Right-click on the wireless/network icon in your system tray.
+1. Select **Open Network and Sharing Center**.
+1. Click **Set up a new connection or network**.
+1. Select **Connect to a workplace** and click **Next**.
+1. Click **Use my Internet connection (VPN)**.
+1. Enter `Your VPN Server IP` in the **Internet address** field.
+1. Enter anything you like in the **Destination name** field, and then click **Create**.
+1. Right-click on the wireless/network icon in your system tray, select **Open Network and Sharing Center**.
+1. On the left, click **Change adapter settings**. Right-click on the new VPN entry and choose **Properties**.
+1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
+1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect others.
+1. Click the **Advanced settings** button.
+1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
+1. Click **OK** to close the **Advanced settings**.
+1. Click **OK** to save the VPN connection details.
+
+**Note:** A one-time registry change is required before connecting. See notes below.
+
+**Windows 7, Vista and XP:**
+
 1. Click on the Start Menu and go to the Control Panel.
 1. Go to the **Network and Internet** section.
 1. Click **Network and Sharing Center**.
@@ -28,18 +51,19 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Enter `Your VPN Username` in the **User name** field.
 1. Enter `Your VPN Password` in the **Password** field.
 1. Check the **Remember this password** checkbox.
-1. Click **Connect**, then click the **Close** button.
-1. Return to the Control Panel's **Network and Internet** section and click on the **Connect to a network** option.
-1. Right-click on the new VPN connection and choose **Properties**.
+1. Click **Create**, and then **Close**.
+1. Right-click on the wireless/network icon in your system tray, select **Open Network and Sharing Center**.
+1. On the left, click **Change adapter settings**. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
-1. Click the **Security** tab and select **Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)** from the **Type of VPN** drop-down menu. Under "Allow these protocols", select the `CHAP` checkbox, and de-select `MS-CHAP v2`.
+1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
+1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect others.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
 <a id="regkey"></a>
-To connect to the VPN, simply right-click on the wireless/network icon in your system tray, select the new VPN connection, and click **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 **Note:** A <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Please refer to the linked page, or run the following from an <a href="http://windows.microsoft.com/en-us/windows/command-prompt-faq#1TC=windows-7" target="_blank">elevated command prompt</a>. You must reboot your computer when done.
 - For Windows Vista and newer
@@ -123,7 +147,7 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-## Acknowledgement
+## Credits
 
 This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
 

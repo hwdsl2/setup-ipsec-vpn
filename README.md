@@ -103,7 +103,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, go to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">the "Security" tab</a> of VPN connection properties, enable `CHAP` and disable `MS-CHAP v2`.
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, go to the "Security" tab of VPN connection properties and make sure <a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">only "CHAP" is selected</a>.
 
 **Android 6 (Marshmallow) users**： Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 

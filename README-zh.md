@@ -103,7 +103,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `Error 628` ，请打开 VPN 连接属性的<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-210084875" target="_blank">"安全"选项卡</a>，启用 `CHAP` 选项并禁用 `MS-CHAP v2`。
+**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `Error 628` ，请打开 VPN 连接属性的"安全"选项卡，并确保<a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">仅选中 "CHAP" 选项</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
