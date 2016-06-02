@@ -72,6 +72,7 @@ cat <<'EOF'
 IMPORTANT: Workaround required for Debian 7 (Wheezy).
 First, run the script at: https://git.io/vpndebian7
 Continue only after completing this workaround.
+
 EOF
 fi
 

@@ -80,6 +80,18 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exit 1
 fi
 
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
+cat <<'EOF'
+IMPORTANT: Workaround required for Debian 7 (Wheezy).
+First, run the script at: https://git.io/vpndebian7
+If not already done so, press Ctrl-C to interrupt now.
+
+Pausing for 60 seconds...
+
+EOF
+sleep 60
+fi
+
 echo "VPN setup in progress... Please be patient."
 echo
 
@@ -94,18 +106,6 @@ apt-get -yqq update
 # Make sure basic commands exist
 apt-get -yq install wget dnsutils openssl
 apt-get -yq install iproute gawk grep sed net-tools
-
-if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
-cat <<'EOF'
-
-IMPORTANT: Workaround required for Debian 7 (Wheezy).
-First, run the script at: https://git.io/vpndebian7
-If not already done so, press Ctrl-C to interrupt.
-
-Pausing for 60 seconds...
-EOF
-sleep 60
-fi
 
 cat <<'EOF'
 
