@@ -19,12 +19,12 @@
 
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
-# - All values MUST be quoted using 'single quotes'
+# - All values MUST be placed inside 'single quotes'
 # - DO NOT use these characters within values:  \ " '
 
-VPN_IPSEC_PSK=$VPN_IPSEC_PSK
-VPN_USER=$VPN_USER
-VPN_PASSWORD=$VPN_PASSWORD
+VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-'your_ipsec_psk'}
+VPN_USER=${VPN_USER:-'your_vpn_username'}
+VPN_PASSWORD=${VPN_PASSWORD:-'your_vpn_password'}
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
@@ -65,6 +65,10 @@ EOF
 exit 1
 fi
 
+[ "$VPN_IPSEC_PSK" = "your_ipsec_psk" ] && VPN_IPSEC_PSK=''
+[ "$VPN_USER" = "your_vpn_username" ] && VPN_USER=''
+[ "$VPN_PASSWORD" = "your_vpn_password" ] && VPN_PASSWORD=''
+
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
   VPN_USER=vpnuser
@@ -72,7 +76,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials cannot be empty. Edit the script and re-enter them."
+  echo "VPN credentials must be specified. Edit the script and re-enter them."
   exit 1
 fi
 
@@ -114,8 +118,8 @@ EOF
 
 # In case auto IP discovery fails, you may manually enter server IPs here.
 # If your server only has a public IP, put that public IP on both lines.
-PUBLIC_IP=$VPN_PUBLIC_IP
-PRIVATE_IP=$VPN_PRIVATE_IP
+PUBLIC_IP=${VPN_PUBLIC_IP:-''}
+PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 
 # In Amazon EC2, these two variables will be retrieved from metadata
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
