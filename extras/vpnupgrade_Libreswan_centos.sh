@@ -130,6 +130,12 @@ WERROR_CFLAGS =
 EOF
 make -s programs && make -s install
 
+# Verify the install and clean up
+cd /opt/src || exit 1
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
+[ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
+
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null
@@ -137,10 +143,6 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Restart IPsec service
 service ipsec restart
-
-# Verify the install
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-[ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
 echo
 echo "Libreswan $swan_ver was installed successfully! "

@@ -15,21 +15,20 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# =====================================================
+# ===========================================================
 
 # Define your own values for these variables
-# - IPsec pre-shared key, VPN username and password
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these characters within values:  \ " '
 
-VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-'your_ipsec_psk'}
+VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-'your_ipsec_pre_shared_key'}
 VPN_USER=${VPN_USER:-'your_vpn_username'}
 VPN_PASSWORD=${VPN_PASSWORD:-'your_vpn_password'}
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
 
-# =====================================================
+# ===========================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -74,7 +73,7 @@ EOF
 exit 1
 fi
 
-[ "$VPN_IPSEC_PSK" = "your_ipsec_psk" ] && VPN_IPSEC_PSK=''
+[ "$VPN_IPSEC_PSK" = "your_ipsec_pre_shared_key" ] && VPN_IPSEC_PSK=''
 [ "$VPN_USER" = "your_vpn_username" ] && VPN_USER=''
 [ "$VPN_PASSWORD" = "your_vpn_password" ] && VPN_PASSWORD=''
 
@@ -115,8 +114,8 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 
 # In Amazon EC2, these two variables will be retrieved from metadata
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget --retry-connrefused -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
@@ -178,7 +177,9 @@ WERROR_CFLAGS =
 EOF
 make -s programs && make -s install
 
-# Verify the install
+# Verify the install and clean up
+cd /opt/src || exit 1
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
 [ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
@@ -356,9 +357,6 @@ cat > /etc/sysconfig/iptables <<EOF
 -A FORWARD -i ppp+ -o eth+ -j ACCEPT
 -A FORWARD -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# To allow traffic between VPN clients themselves, uncomment these lines:
-# -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-# -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
 -A FORWARD -j DROP
 COMMIT
 *nat
@@ -380,9 +378,6 @@ iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED
 iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# iptables -I FORWARD 6 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-# iptables -I FORWARD 7 -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
-iptables -A FORWARD -j DROP
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
 
@@ -449,7 +444,7 @@ restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Reload sysctl.conf
-sysctl -q -p
+sysctl -q -p 2>/dev/null
 
 # Update file attributes
 chmod +x /etc/rc.local
@@ -460,9 +455,12 @@ iptables-restore < /etc/sysconfig/iptables
 ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
 
 # Restart services
-service fail2ban restart
-service ipsec restart
-service xl2tpd restart
+service fail2ban stop >/dev/null 2>&1
+service ipsec stop >/dev/null 2>&1
+service xl2tpd stop >/dev/null 2>&1
+service fail2ban start
+service ipsec start
+service xl2tpd start
 
 cat <<EOF
 

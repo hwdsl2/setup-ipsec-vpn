@@ -96,7 +96,7 @@ cd /opt/src || exit 1
 
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
-apt-get -yqq update
+apt-get -yq update
 apt-get -yq install wget
 
 # Install necessary packages
@@ -120,12 +120,14 @@ WERROR_CFLAGS =
 EOF
 make -s programs && make -s install
 
-# Restart IPsec service
-service ipsec restart
-
-# Verify the install
+# Verify the install and clean up
+cd /opt/src || exit 1
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
 [ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
+
+# Restart IPsec service
+service ipsec restart
 
 echo
 echo "Libreswan $swan_ver was installed successfully! "
