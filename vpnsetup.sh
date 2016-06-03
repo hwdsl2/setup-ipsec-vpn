@@ -197,6 +197,8 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
+  ike=3des-sha1,aes-sha1
+  phase2alg=3des-sha1,aes-sha1
 
 conn l2tp-psk
   auto=add
@@ -204,11 +206,8 @@ conn l2tp-psk
   leftnexthop=%defaultroute
   leftprotoport=17/1701
   rightprotoport=17/%any
-  rightsubnetwithin=0.0.0.0/0
   type=transport
   auth=esp
-  ike=3des-sha1,aes-sha1
-  phase2alg=3des-sha1,aes-sha1
   also=shared
 
 conn xauth-psk
