@@ -108,8 +108,9 @@ apt-get -yq --no-install-recommends install xmlto
 
 # Compile and install Libreswan
 swan_file="libreswan-${swan_ver}.tar.gz"
-swan_url="https://download.libreswan.org/$swan_file"
-wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url"
+swan_url1="https://download.libreswan.org/$swan_file"
+swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
+wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
