@@ -27,11 +27,6 @@ if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
   exit 1
 fi
 
-if [ "$(uname -m)" != "x86_64" ]; then
-  echo "This script only supports 64-bit CentOS/RHEL."
-  exit 1
-fi
-
 if [ -f /proc/user_beancounters ]; then
   echo "This script does NOT support OpenVZ VPS."
   exit 1

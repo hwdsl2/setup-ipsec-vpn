@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on 64-bit CentOS/RHEL 6 & 7.
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6 & 7.
 # Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
@@ -44,11 +44,6 @@ fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
   echo "This script only supports CentOS/RHEL 6 and 7."
-  exit 1
-fi
-
-if [ "$(uname -m)" != "x86_64" ]; then
-  echo "This script only supports 64-bit CentOS/RHEL."
   exit 1
 fi
 
