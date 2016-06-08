@@ -35,4 +35,9 @@
 openssl passwd -1 "<VPN Password 1>"
 ```
 
-在完成修改之后，需要重启服务器。
+在完成修改之后，运行以下命令或者重启服务器。
+
+```bash
+service ipsec restart
+service xl2tpd restart
+```

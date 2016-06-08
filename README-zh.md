@@ -36,7 +36,7 @@
 
 ## 系统要求
 
-一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI: (详细步骤<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a>)
+一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI： (详细步骤<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a>)
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
@@ -94,15 +94,16 @@ sudo sh vpnsetup_centos.sh
 
 ## 下一步
 
-配置你的计算机或其它设备使用 VPN 。请参见： <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
+配置你的计算机或其它设备使用 VPN 。请参见：
 
-**NEW：** 新增支持更高效的 `"Cisco IPsec"` 模式： <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>。
+<a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>   
+<a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `Error 628` ，请打开 VPN 连接属性的"安全"选项卡，并确保<a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">仅选中 "CHAP" 选项</a>。
+**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的"安全"选项卡，并确保<a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">仅选中 "CHAP" 选项</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
@@ -126,7 +127,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 另见
 
-- [Docker 上的 IPsec VPN 服务器](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## 作者
 

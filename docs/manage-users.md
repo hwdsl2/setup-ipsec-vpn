@@ -35,4 +35,9 @@ Passwords in this file are salted and hashed. This step can be done using e.g. t
 openssl passwd -1 "<VPN Password 1>"
 ```
 
-When finished making changes, reboot your server.
+When finished making changes, run these commands or reboot your server.
+
+```bash
+service ipsec restart
+service xl2tpd restart
+```
