@@ -2,7 +2,7 @@
 #
 # Script to upgrade Libreswan on CentOS and RHEL
 #
-# Copyright (C) 2016 Lin Song
+# Copyright (C) 2016 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -10,42 +10,45 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Check https://libreswan.org and update version number if necessary
-swan_ver=3.17
+# Check https://libreswan.org for the latest version
+SWAN_VER=3.17
 
 ### Do not edit below this line
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
+echoerr() { echo "$@" 1>&2; }
+
 if [ ! -f /etc/redhat-release ]; then
-  echo "This script only supports CentOS/RHEL."
+  echoerr "This script only supports CentOS/RHEL."
   exit 1
 fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  echo "This script only supports CentOS/RHEL 6 and 7."
+  echoerr "This script only supports CentOS/RHEL 6 and 7."
   exit 1
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  echo "This script does NOT support OpenVZ VPS."
+  echoerr "This script does not support OpenVZ VPS."
   exit 1
 fi
 
 if [ "$(id -u)" != 0 ]; then
-  echo "Script must be run as root. Try 'sudo sh $0'"
+  echoerr "Script must be run as root. Try 'sudo sh $0'"
   exit 1
 fi
 
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
 if [ "$?" != "0" ]; then
-  echo "This upgrade script requires Libreswan already installed."
+  echoerr "This upgrade script requires Libreswan already installed."
   exit 1
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $swan_ver"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $SWAN_VER"
 if [ "$?" = "0" ]; then
-  echo "You already have Libreswan version $swan_ver installed! "
+  echo "You already have Libreswan version $SWAN_VER installed! "
+  echo "If you continue, the same version will be re-installed."
   echo
   printf "Do you wish to continue anyway? [y/N] "
   read -r response
@@ -63,7 +66,7 @@ fi
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $swan_ver on your server.
+Welcome! This script will build and install Libreswan $SWAN_VER on your server.
 Additional packages required for Libreswan compilation will also be installed.
 
 This is intended for use on servers running an older version of Libreswan.
@@ -95,7 +98,7 @@ yum -y install wget
 # Add the EPEL repository
 yum -y install epel-release
 yum list installed epel-release >/dev/null 2>&1
-[ "$?" != "0" ] && { echo "Cannot add EPEL repository. Aborting."; exit 1; }
+[ "$?" != "0" ] && { echoerr "Cannot add EPEL repository. Aborting."; exit 1; }
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
@@ -112,25 +115,22 @@ elif grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Compile and install Libreswan
-swan_file="libreswan-${swan_ver}.tar.gz"
+swan_file="libreswan-${SWAN_VER}.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
-[ "$?" != "0" ] && { echo "Cannot download Libreswan source. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+[ "$?" != "0" ] && { echoerr "Cannot download Libreswan source. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$swan_ver" || { echo "Cannot enter Libreswan source dir. Aborting."; exit 1; }
-# Workaround for Libreswan compile issues
-cat > Makefile.inc.local <<EOF
-WERROR_CFLAGS =
-EOF
+cd "libreswan-$SWAN_VER" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+echo "WERROR_CFLAGS =" > Makefile.inc.local
 make -s programs && make -s install
 
 # Verify the install and clean up
 cd /opt/src || exit 1
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-[ "$?" != "0" ] && { echo; echo "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
+[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
@@ -141,7 +141,7 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 service ipsec restart
 
 echo
-echo "Libreswan $swan_ver was installed successfully! "
+echo "Libreswan $SWAN_VER was installed successfully! "
 echo
 
 exit 0
