@@ -109,7 +109,7 @@ sudo sh vpnsetup_centos.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果要使用另外的 DNS 服务商，可以编辑文件 `options.xl2tpd` 和 `ipsec.conf` 并用新的服务器替换 `8.8.8.8` 和 `8.8.4.4`。然后重新启动系统。
 
-如果服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在运行脚本前编辑 <a href="vpnsetup.sh#L340" target="_blank">IPTables 防火墙规则</a>。
+如果你为服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在使用前编辑脚本中的 IPTables 防火墙规则。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
@@ -166,7 +166,7 @@ openssl passwd -1 "<VPN Password 1>"
 
 ## 作者
 
-##### 宋琳
+**Lin Song** (linsongui@gmail.com)   
 - 最后一年的美国在读博士生，专业是电子与计算机工程 (ECE)
 - 现在正在积极寻找新的工作机会，比如软件或系统工程师
 - 在 LinkedIn 上与我联系： <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>

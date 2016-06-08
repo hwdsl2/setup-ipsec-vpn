@@ -109,7 +109,7 @@ For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_V
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with new ones. Then reboot your server.
 
-For servers with a custom SSH port (not 22) or other services, edit the <a href="vpnsetup.sh#L340" target="_blank">IPTables rules</a> before using.
+For servers with a custom SSH port (not 22) or other services, edit IPTables rules in the script before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
@@ -166,12 +166,12 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 
 ## Author
 
-##### Lin Song   
+**Lin Song** (linsongui@gmail.com)   
 - Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
 - Actively seeking opportunities in areas such as Software or Systems Engineering
 - Contact me on LinkedIn: <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
 
-A special thanks to [all contributors](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors) of this project!
+Thanks to [all contributors](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors) of this project!
 
 ## License
 
