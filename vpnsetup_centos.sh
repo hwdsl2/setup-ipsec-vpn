@@ -18,12 +18,13 @@
 # ===========================================================
 
 # Define your own values for these variables
+# - IPsec pre-shared key, VPN username and password
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these characters within values:  \ " '
 
-VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-'your_ipsec_pre_shared_key'}
-VPN_USER=${VPN_USER:-'your_vpn_username'}
-VPN_PASSWORD=${VPN_PASSWORD:-'your_vpn_password'}
+YOUR_IPSEC_PSK=''
+YOUR_USERNAME=''
+YOUR_PASSWORD=''
 
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
@@ -68,18 +69,20 @@ EOF
 exit 1
 fi
 
-[ "$VPN_IPSEC_PSK" = "your_ipsec_pre_shared_key" ] && VPN_IPSEC_PSK=''
-[ "$VPN_USER" = "your_vpn_username" ] && VPN_USER=''
-[ "$VPN_PASSWORD" = "your_vpn_password" ] && VPN_PASSWORD=''
+[ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
+[ -n "$YOUR_USERNAME" ] && VPN_USER="$YOUR_USERNAME"
+[ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+  echo "VPN credentials not set by user. Generating random PSK and password..."
+  echo
   VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echoerr "VPN credentials must be specified. Edit the script and re-enter them."
+  echoerr "All VPN credentials must be specified. Edit the script and re-enter them."
   exit 1
 fi
 
