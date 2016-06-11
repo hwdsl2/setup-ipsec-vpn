@@ -53,7 +53,8 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-if [ ! -f /sys/class/net/eth0/operstate ]; then
+eth0_state=$(cat /sys/class/net/eth0/operstate 2>/dev/null)
+if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
 cat 1>&2 <<'EOF'
 Network interface 'eth0' is not available. Aborting.
 
