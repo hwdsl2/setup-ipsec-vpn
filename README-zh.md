@@ -56,18 +56,18 @@
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （完成后会在屏幕上显示）：
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
+**选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
-[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -75,22 +75,9 @@ sudo sh vpnsetup.sh
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
+按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
 
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
-```
-
-**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
-
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
-nano -w vpnsetup_centos.sh
-[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sudo sh vpnsetup_centos.sh
-```
-
-如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+注： 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步
 
@@ -103,7 +90,7 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的"安全"选项卡，并确保<a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">仅选中 "CHAP" 选项</a>。
+**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的 "安全" 选项卡，并确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">仅选中 "CHAP" 选项</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 

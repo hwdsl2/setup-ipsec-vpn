@@ -56,18 +56,18 @@ A dedicated server or KVM/Xen-based Virtual Private Server (VPS), freshly instal
 
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
 
-**Option 1:** Have the script generate random VPN credentials for you (will be displayed on the screen):
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**Option 2:** Enter your own VPN credentials, or define them as environment variables:
+**Option 2:** Edit the script and provide your own VPN credentials:
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
 nano -w vpnsetup.sh
-[Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
+[Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -75,22 +75,9 @@ sudo sh vpnsetup.sh
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
-**Option 1:** Have the script generate random VPN credentials for you (will be displayed on the screen):
+Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
 
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
-```
-
-**Option 2:** Enter your own VPN credentials, or define them as environment variables:
-
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
-nano -w vpnsetup_centos.sh
-[Replace with your own values: VPN_IPSEC_PSK, VPN_USER and VPN_PASSWORD]
-sudo sh vpnsetup_centos.sh
-```
-
-If unable to download via `wget`, you may alternatively open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+Note: If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next Steps
 
@@ -103,7 +90,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In addition, open the "Security" tab of VPN connection properties and make sure <a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">only "CHAP" is selected</a>.
+For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). In addition, open the "Security" tab of VPN connection properties and make sure <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">only "CHAP" is selected</a>.
 
 **Android 6 (Marshmallow) users**: Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
