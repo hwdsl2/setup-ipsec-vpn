@@ -25,8 +25,8 @@
 
 ## 功能特性
 
-- **NEW:** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
-- **NEW:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 映像</a>
+- :new: 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- :new: 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 镜像</a>
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -56,18 +56,18 @@
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （完成后会在屏幕上显示）：
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
+**选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
-nano -w vpnsetup.sh
-[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
+nano -w vpnsetup.sh  # 或者使用你喜欢的编辑器
+[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
 
@@ -75,22 +75,9 @@ sudo sh vpnsetup.sh
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （会在屏幕上显示）：
+然后按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
 
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh && sudo sh vpnsetup_centos.sh
-```
-
-**选项 2:** 输入你自己的 VPN 登录凭证，或者将它们定义为环境变量：
-
-```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup_centos.sh
-nano -w vpnsetup_centos.sh
-[修改为你自己的值： VPN_IPSEC_PSK, VPN_USER 和 VPN_PASSWORD]
-sudo sh vpnsetup_centos.sh
-```
-
-如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+注： 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步
 
@@ -103,11 +90,11 @@ sudo sh vpnsetup_centos.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外请打开 VPN 连接属性的"安全"选项卡，并确保<a href="https://cloud.githubusercontent.com/assets/5704064/14538812/96b4f930-024b-11e6-9d81-fa3d3db1ce33.png" target="_blank">仅选中 "CHAP" 选项</a>。
+**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `错误 628`，请打开 VPN 连接属性的 "安全" 选项卡，并确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">仅选中 "CHAP" 选项</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-如果你需要添加，编辑或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
+如果需要添加，编辑或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果要使用另外的 DNS 服务商，可以编辑文件 `options.xl2tpd` 和 `ipsec.conf` 并用新的服务器替换 `8.8.8.8` 和 `8.8.4.4`。然后重新启动系统。
 
@@ -121,9 +108,9 @@ sudo sh vpnsetup_centos.sh
 
 ## 问题和反馈
 
-- 有问题需要提问？请先搜索其他用户的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 GitHub Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客文章</a>。
+- 有问题需要提问？请先搜索已有的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客</a>。
 - Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>。
-- 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues" target="_blank">GitHub Issue</a>。
+- 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a>。
 
 ## 另见
 
