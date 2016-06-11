@@ -258,12 +258,12 @@ ms-dns 8.8.4.4
 noccp
 auth
 crtscts
-idle 1800
 mtu 1280
 mru 1280
 lock
-lcp-echo-failure 10
-lcp-echo-interval 60
+proxyarp
+lcp-echo-failure 4
+lcp-echo-interval 30
 connect-delay 5000
 EOF
 
