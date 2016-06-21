@@ -15,7 +15,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# ===========================================================
+# =====================================================
 
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
@@ -29,10 +29,7 @@ YOUR_PASSWORD=''
 # Important Notes:   https://git.io/vpnnotes
 # Setup VPN Clients: https://git.io/vpnclients
 
-# ===========================================================
-
-# Check https://libreswan.org for the latest version
-SWAN_VER=3.17
+# =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -63,8 +60,8 @@ if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
 cat 1>&2 <<'EOF'
 Network interface 'eth0' is not available. Aborting.
 
-Run 'cat /proc/net/dev' to find the name of the active network interface,
-then search and replace ALL 'eth0' and 'eth+' in this script with that name.
+Run 'cat /proc/net/dev' to find the active network interface,
+then use it to replace ALL 'eth0' and 'eth+' in this script.
 EOF
 exit 1
 fi
@@ -86,8 +83,10 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exit 1
 fi
 
-echo "VPN setup in progress... Please be patient."
-echo
+cat <<'EOF'
+VPN setup in progress... Please be patient.
+
+EOF
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -161,22 +160,23 @@ elif grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Compile and install Libreswan
-swan_file="libreswan-${SWAN_VER}.tar.gz"
+swan_ver=3.17
+swan_file="libreswan-${swan_ver}.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && { echoerr "Cannot download Libreswan source. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$swan_ver" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 echo "WERROR_CFLAGS =" > Makefile.inc.local
 make -s programs && make -s install
 
 # Verify the install and clean up
 cd /opt/src || exit 1
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
+[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
 # Create IPsec (Libreswan) config
 sys_dt="$(date +%Y-%m-%d-%H:%M:%S)"
@@ -448,7 +448,7 @@ restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Reload sysctl.conf
-sysctl -q -p 2>/dev/null
+sysctl -e -q -p
 
 # Update file attributes
 chmod +x /etc/rc.local

@@ -10,8 +10,8 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Check https://libreswan.org for the latest version
-SWAN_VER=3.17
+# Check for the latest version at https://libreswan.org and update as necessary
+swan_ver=3.17
 
 ### Do not edit below this line
 
@@ -39,15 +39,20 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
-if [ "$?" != "0" ]; then
-  echoerr "This upgrade script requires Libreswan already installed."
+if [ -z "$swan_ver" ]; then
+  echoerr "Libreswan version 'swan_ver' not specified. Aborting."
   exit 1
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $SWAN_VER"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
+if [ "$?" != "0" ]; then
+  echoerr "This script requires Libreswan already installed. Aborting."
+  exit 1
+fi
+
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $swan_ver"
 if [ "$?" = "0" ]; then
-  echo "You already have Libreswan version $SWAN_VER installed! "
+  echo "You already have Libreswan version $swan_ver installed! "
   echo "If you continue, the same version will be re-installed."
   echo
   printf "Do you wish to continue anyway? [y/N] "
@@ -66,7 +71,7 @@ fi
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $SWAN_VER on your server.
+Welcome! This script will build and install Libreswan $swan_ver on your server.
 Additional packages required for Libreswan compilation will also be installed.
 
 This is intended for use on servers running an older version of Libreswan.
@@ -115,22 +120,22 @@ elif grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Compile and install Libreswan
-swan_file="libreswan-${SWAN_VER}.tar.gz"
+swan_file="libreswan-${swan_ver}.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && { echoerr "Cannot download Libreswan source. Aborting."; exit 1; }
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$swan_ver" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 echo "WERROR_CFLAGS =" > Makefile.inc.local
 make -s programs && make -s install
 
 # Verify the install and clean up
 cd /opt/src || exit 1
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$SWAN_VER"
-[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $SWAN_VER failed to build. Aborting."; exit 1; }
+/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
+[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
@@ -141,7 +146,7 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 service ipsec restart
 
 echo
-echo "Libreswan $SWAN_VER was installed successfully! "
+echo "Libreswan $swan_ver was installed successfully! "
 echo
 
 exit 0
