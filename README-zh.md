@@ -25,8 +25,8 @@
 
 ## 功能特性
 
-- :new: 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
-- :new: 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 镜像</a>
+- **NEW:** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- **NEW:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 镜像</a>
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -66,7 +66,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
-nano -w vpnsetup.sh  # 或者使用你喜欢的编辑器
+nano -w vpnsetup.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
@@ -75,7 +75,7 @@ sudo sh vpnsetup.sh
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
-然后按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
+按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
 
 注： 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
@@ -90,7 +90,7 @@ sudo sh vpnsetup.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `错误 628`，请打开 VPN 连接属性的 "安全" 选项卡，并确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">仅选中 "CHAP" 选项</a>。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `错误 628`，请打开 VPN 连接属性的 "安全" 选项卡，并确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">仅选中 "CHAP" 选项</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 

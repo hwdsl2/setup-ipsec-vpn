@@ -25,8 +25,8 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- :new: The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
-- :new: A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
+- **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
+- **NEW:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -66,7 +66,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
-nano -w vpnsetup.sh  # or use your favorite editor
+nano -w vpnsetup.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
@@ -75,7 +75,7 @@ sudo sh vpnsetup.sh
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
-Then follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
+Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
 
 Note: If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
@@ -90,7 +90,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, open the "Security" tab of VPN connection properties and make sure <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">only "CHAP" is selected</a>.
+For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, open the "Security" tab of VPN connection properties and make sure <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">only "CHAP" is selected</a>.
 
 **Android 6 (Marshmallow) users**: Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
