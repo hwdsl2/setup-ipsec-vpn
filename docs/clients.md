@@ -28,7 +28,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Right-click on the wireless/network icon in your system tray, select **Open Network and Sharing Center**.
 1. On the left, click **Change adapter settings**. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect others.
+1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect all others.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -52,11 +52,11 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Enter `Your VPN Password` in the **Password** field.
 1. Check the **Remember this password** checkbox.
 1. Click **Create**, and then **Close**.
-1. Right-click on the wireless/network icon in your system tray, select **Open Network and Sharing Center**.
+1. Repeat steps 1-3 above to open **Network and Sharing Center**.
 1. On the left, click **Change adapter settings**. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect others.
+1. Click **Allow these protocols**. Select "Challenge Handshake Authentication Protocol (CHAP)" and deselect all others.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -66,7 +66,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 **Note:** A <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Please refer to the linked page, or run the following from an <a href="http://windows.microsoft.com/en-us/windows/command-prompt-faq#1TC=windows-7" target="_blank">elevated command prompt</a>. You must reboot your computer when done.
-- For Windows Vista and newer
+- For Windows Vista, 7, 8 and 10
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
@@ -86,8 +86,8 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 1. Enter `Your VPN Server IP` for the **Server Address**.
 1. Enter `Your VPN Username` for the **Account Name**.
 1. Click the **Authentication Settings** button.
-1. In the **User Authentication** section, select the **Password** radio button and enter `Your VPN Password` as its value.
-1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK` as its value.
+1. In the **User Authentication** section, select the **Password** radio button and enter `Your VPN Password`.
+1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK`.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is selected.
@@ -112,7 +112,7 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-Note for Android 6 (Marshmallow) users: On the VPN server, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` under section `conn shared` (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>). Indent lines with two spaces. When finished, run `service ipsec restart`.
+**Note:** Android 6 (Marshmallow) users should edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. When finished, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>)
 
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 

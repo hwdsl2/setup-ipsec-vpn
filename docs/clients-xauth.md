@@ -35,7 +35,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 Once connected, you will see **tunnel enabled** in the VPN Connect status window. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 **Note:** A <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Please refer to the linked page, or run the following from an <a href="http://windows.microsoft.com/en-us/windows/command-prompt-faq#1TC=windows-7" target="_blank">elevated command prompt</a>. You must reboot your computer when done.
-- For Windows Vista and newer
+- For Windows Vista, 7, 8 and 10
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
@@ -56,7 +56,7 @@ Once connected, you will see **tunnel enabled** in the VPN Connect status window
 1. Enter `Your VPN Username` for the **Account Name**.
 1. Enter `Your VPN Password` for the **Password**.
 1. Click the **Authentication Settings** button.
-1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK` as its value.
+1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK`.
 1. Leave the **Group Name** field blank.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
@@ -81,7 +81,7 @@ You can connect to the VPN using the VPN icon in the menu bar, or by selecting t
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-Note for Android 6 (Marshmallow) users: On the VPN server, edit `/etc/ipsec.conf` and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` under section `conn shared` (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>). Indent lines with two spaces. When finished, run `service ipsec restart`.
+**Note:** Android 6 (Marshmallow) users should edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. When finished, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>)
 
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 

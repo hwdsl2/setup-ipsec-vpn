@@ -4,7 +4,7 @@
 
 *如需使用 IPsec/L2TP 模式连接，请参见： [配置 IPsec/L2TP VPN 客户端](clients-zh.md)*
 
-在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/XAuth 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。如果无法连接,请首先检查是否输入了正确的用户名和密码。
+在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/XAuth 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。如果无法连接,请首先检查是否输入了正确的 VPN 登录信息。
 
 `IPsec/XAuth` 模式也称为 `Cisco IPsec`。和 `IPsec/L2TP` 相比较，它通常能够更高效地传输数据。
 
@@ -35,7 +35,7 @@
 VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled** 字样。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 **注：** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。请参照链接文章中的说明，或者打开<a href="http://windows.microsoft.com/zh-cn/windows/command-prompt-faq#1TC=windows-7" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重新启动计算机。
-- 适用于 Windows Vista 及以上版本
+- 适用于 Windows Vista, 7, 8 和 10
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
@@ -81,7 +81,7 @@ VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled*
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-注： Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 。然后在 `conn shared` 部分增加一行 `sha2-truncbug=yes` (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参见这里</a>)。每行开头必须空两格。保存修改并运行 `service ipsec restart`。
+**注：** Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">更多信息</a>)
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
