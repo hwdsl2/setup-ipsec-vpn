@@ -2,6 +2,15 @@
 
 To remove the VPN:
 
+## Steps
+
+* [First step](#first-step)
+* [Second step](#second-step)
+* [Third step](#third-step)
+* [Fourth step](#fourth-step)
+* [Optional](#optional)
+* [When finished](#when-finished)
+
 ## First step
 ```
 service ipsec stop
