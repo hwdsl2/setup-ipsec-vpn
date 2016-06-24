@@ -115,6 +115,7 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 ## See Also
 
 - [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+- [For uninstallation see this](/docs/uninstall.md)
 
 ## Author
 
