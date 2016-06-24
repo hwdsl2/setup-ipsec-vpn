@@ -19,6 +19,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Important Notes](#important-notes)
 - [Upgrading Libreswan](#upgrading-libreswan)
 - [Bugs & Questions](#bugs--questions)
+- [How to Uninstall](#how-to-uninstall)
 - [See Also](#see-also)
 - [Author](#author)
 - [License](#license)
@@ -112,10 +113,13 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 - Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these articles: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a> to submit a bug report.
 
+## How to Uninstall
+
+Please refer to [Uninstall the VPN](docs/uninstall.md).
+
 ## See Also
 
 - [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
-- [For uninstallation see this](/docs/uninstall.md)
 
 ## Author
 
