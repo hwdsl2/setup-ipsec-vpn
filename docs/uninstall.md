@@ -49,7 +49,7 @@ If using IPv6, also edit `/etc/sysconfig/ip6tables`.
 ## Fourth step
 
 Edit `/etc/sysctl.conf` and remove the lines after `# Added by hwdsl2 VPN script`.   
-Edit `/etc/rc.local` and remove the lines after `# Added by hwdsl2 VPN script`, *except exit 0 (if any)*.
+Edit `/etc/rc.local` and remove the lines after `# Added by hwdsl2 VPN script`, **except exit 0 (if any)**.
 
 ## Optional
 
@@ -66,7 +66,7 @@ Remove these config files:
 
 Copy and paste for fast removal:
 
-`rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd /etc/ppp/chap-secrets /etc/ipsec.d/* /etc/pam.d/pluto /etc/sysconfig/pluto`
+`rm -rf /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd /etc/ppp/chap-secrets /etc/ipsec.d/* /etc/pam.d/pluto /etc/sysconfig/pluto`
 
 Remove Libreswan source directory:
 
