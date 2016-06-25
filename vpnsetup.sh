@@ -322,7 +322,6 @@ fi
 # - If IPTables is "empty", simply write out the new rules.
 # - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
-/bin/cp -f /etc/iptables.rules "/etc/iptables.rules.old-$sys_dt" 2>/dev/null
 service fail2ban stop >/dev/null 2>&1
 if [ "$(iptables-save | grep -c '^\-')" = "0" ]; then
 cat > /etc/iptables.rules <<EOF
@@ -343,7 +342,7 @@ cat > /etc/iptables.rules <<EOF
 -A INPUT -p udp --dport 1701 -j DROP
 -A INPUT -j DROP
 -A FORWARD -m conntrack --ctstate INVALID -j DROP
-# To disallow (DROP) traffic between VPN clients themselves, uncomment these lines:
+# Uncomment to DROP traffic between VPN clients themselves
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 -A FORWARD -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
@@ -365,6 +364,8 @@ EOF
 
 else
 
+iptables-save > "/etc/iptables.rules.old-$sys_dt"
+
 iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
 iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
 iptables -I INPUT 3 -p udp --dport 1701 -j DROP
@@ -374,7 +375,7 @@ iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# To disallow (DROP) traffic between VPN clients themselves, uncomment these lines:
+# Uncomment to DROP traffic between VPN clients themselves
 # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -A FORWARD -j DROP
