@@ -11,7 +11,7 @@
 * [第三步](#第三步)
 * [第四步](#第四步)
 * [可选步骤](#可选步骤)
-* [完成后操作](#完成后操作)
+* [操作完成后](#操作完成后)
 
 ## 第一步
 
@@ -37,21 +37,24 @@ rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
 ### Ubuntu/Debian
 
 编辑 `/etc/iptables.rules` 并删除不需要的规则。   
-你以前的防火墙规则（如果有）会备份在 `/etc/iptables.rules.old-date-time`。   
+你以前的防火墙规则（如果有）会备份在 `/etc/iptables.rules.old-日期-时间`。   
 另外如果文件 `/etc/iptables/rules.v4` 存在，请编辑它。   
 如果使用 IPv6 ，还需编辑 `/etc/ip6tables.rules` 和/或 `/etc/iptables/rules.v6`。
 
 ### CentOS/RHEL
 
 编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。   
+你以前的防火墙规则（如果有）会备份在 `/etc/sysconfig/iptables.old-日期-时间`。   
 如果使用 IPv6 ，还需编辑 `/etc/sysconfig/ip6tables`。
 
 ## 第四步
 
 编辑 `/etc/sysctl.conf` 并删除该标记后面的行： `# Added by hwdsl2 VPN script`。   
-编辑 `/etc/rc.local` 并删除该标记后面的行： `# Added by hwdsl2 VPN script`。*不要删除 `exit 0` （如果有）*。
+编辑 `/etc/rc.local` 并删除该标记后面的行： `# Added by hwdsl2 VPN script`。\*不要\* 删除 `exit 0` （如果有）。
 
 ## 可选步骤
+
+注： 这一步是可选的。
 
 删除这些配置文件：
 
@@ -60,18 +63,18 @@ rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
 * /etc/xl2tpd/xl2tpd.conf
 * /etc/ppp/options.xl2tpd
 * /etc/ppp/chap-secrets
-* /etc/ipsec.d/*
 * /etc/pam.d/pluto
 * /etc/sysconfig/pluto
+* /etc/ipsec.d (目录)
 
 要快速删除，可以复制并粘贴以下命令：
 
-`rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd /etc/ppp/chap-secrets /etc/ipsec.d/* /etc/pam.d/pluto /etc/sysconfig/pluto`
+```
+rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd \
+      /etc/ppp/chap-secrets /etc/pam.d/pluto /etc/sysconfig/pluto
+rm -rf /etc/ipsec.d
+```
 
-删除 Libreswan 源目录：
-
-`rm -rf /opt/src/libreswan-*`
-
-## 完成后操作
+## 操作完成后
 
 重启你的服务器。

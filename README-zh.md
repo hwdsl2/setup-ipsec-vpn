@@ -19,7 +19,7 @@
 - [重要提示](#重要提示)
 - [关于升级Libreswan](#关于升级libreswan)
 - [问题和反馈](#问题和反馈)
-- [如何卸载](#如何卸载)
+- [卸载说明](#卸载说明)
 - [另见](#另见)
 - [作者](#作者)
 - [授权协议](#授权协议)
@@ -113,7 +113,7 @@ sudo sh vpnsetup.sh
 - Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a>。
 
-## 如何卸载
+## 卸载说明
 
 请参见 [卸载 VPN](docs/uninstall-zh.md)。
 

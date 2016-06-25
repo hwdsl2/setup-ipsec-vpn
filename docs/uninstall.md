@@ -44,14 +44,17 @@ If using IPv6, also edit `/etc/ip6tables.rules` and/or `/etc/iptables/rules.v6`.
 ### CentOS/RHEL
 
 Edit `/etc/sysconfig/iptables` and remove unneeded rules.   
+Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.   
 If using IPv6, also edit `/etc/sysconfig/ip6tables`.
 
 ## Fourth step
 
 Edit `/etc/sysctl.conf` and remove the lines after `# Added by hwdsl2 VPN script`.   
-Edit `/etc/rc.local` and remove the lines after `# Added by hwdsl2 VPN script`, *except exit 0 (if any)*.
+Edit `/etc/rc.local` and remove the lines after `# Added by hwdsl2 VPN script`. DO NOT remove `exit 0` (if any).
 
 ## Optional
+
+Note: This step is optional.
 
 Remove these config files:
 
@@ -60,17 +63,17 @@ Remove these config files:
 * /etc/xl2tpd/xl2tpd.conf
 * /etc/ppp/options.xl2tpd
 * /etc/ppp/chap-secrets
-* /etc/ipsec.d/*
 * /etc/pam.d/pluto
 * /etc/sysconfig/pluto
+* /etc/ipsec.d (directory)
 
 Copy and paste for fast removal:
 
-`rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd /etc/ppp/chap-secrets /etc/ipsec.d/* /etc/pam.d/pluto /etc/sysconfig/pluto`
-
-Remove Libreswan source directory:
-
-`rm -rf /opt/src/libreswan-*`
+```
+rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd \
+      /etc/ppp/chap-secrets /etc/pam.d/pluto /etc/sysconfig/pluto
+rm -rf /etc/ipsec.d
+```
 
 ## When finished
 
