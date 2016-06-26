@@ -91,7 +91,7 @@ sudo sh vpnsetup.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果遇到 `错误 628`，请打开 VPN 连接属性的 "安全" 选项卡，并确保<a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">仅选中 "CHAP" 选项</a>。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
@@ -99,13 +99,15 @@ sudo sh vpnsetup.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果要使用另外的 DNS 服务商，可以编辑文件 `options.xl2tpd` 和 `ipsec.conf` 并用新的服务器替换 `8.8.8.8` 和 `8.8.4.4`。然后重新启动系统。
 
+对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
+
 如果你为服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在使用前编辑脚本中的 IPTables 防火墙规则。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
 ## 关于升级Libreswan
 
-提供两个额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于升级 Libreswan。请关注<a href="https://libreswan.org" target="_blank">官方网站</a>，并在运行前根据需要更新 `swan_ver` 变量。
+提供额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于升级 Libreswan (<a href="https://libreswan.org" target="_blank">官网</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>)。请在运行前根据需要修改 `swan_ver` 变量。检查已安装版本： `ipsec --version`
 
 ## 问题和反馈
 
@@ -115,11 +117,11 @@ sudo sh vpnsetup.sh
 
 ## 卸载说明
 
-请参见 [卸载 VPN](docs/uninstall-zh.md)。
+请参见 <a href="docs/uninstall-zh.md" target="_blank">卸载 VPN</a>。
 
 ## 另见
 
-- [在 Docker 上搭建 IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+- <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">在 Docker 上搭建 IPsec VPN</a>
 
 ## 作者
 
@@ -128,7 +130,7 @@ sudo sh vpnsetup.sh
 - 现在正在积极寻找新的工作机会，比如软件或系统工程师
 - 在 LinkedIn 上与我联系： <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
 
-感谢本项目所有的 [贡献者](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors)！
+感谢本项目所有的 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors" target="_blank">贡献者</a>！
 
 ## 授权协议
 

@@ -91,7 +91,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Also, if you see `Error 628`, open the "Security" tab of VPN connection properties and make sure <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/7#issuecomment-182571109" target="_blank">only "CHAP" is selected</a>.
+For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). If you encountered an error when connecting, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 **Android 6 (Marshmallow) users**: Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
@@ -99,13 +99,15 @@ If you wish to add, edit or remove VPN user accounts, refer to <a href="docs/man
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with new ones. Then reboot your server.
 
-For servers with a custom SSH port (not 22) or other services, edit IPTables rules in the script before using.
+For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
+
+If your server has a custom SSH port (not 22) or other services, edit IPTables rules in the script before using.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
 ## Upgrading Libreswan
 
-The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to upgrade Libreswan. Check the <a href="https://libreswan.org" target="_blank">official website</a> and update the `swan_ver` variable as necessary.
+The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">swan-announce</a>). Update the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
 
 ## Bugs & Questions
 
@@ -115,11 +117,11 @@ The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">
 
 ## Uninstallation
 
-Please refer to [Uninstall the VPN](docs/uninstall.md).
+Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a>.
 
 ## See Also
 
-- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+- <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
 
 ## Author
 
@@ -128,7 +130,7 @@ Please refer to [Uninstall the VPN](docs/uninstall.md).
 - Actively seeking opportunities in areas such as Software or Systems Engineering
 - Contact me on LinkedIn: <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
 
-Thanks to [all contributors](https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors) of this project!
+Thanks to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/graphs/contributors" target="_blank">all contributors</a> to this project!
 
 ## License
 
