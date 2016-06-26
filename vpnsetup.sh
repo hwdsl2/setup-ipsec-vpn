@@ -392,40 +392,11 @@ if [ -f /etc/iptables/rules.v4 ]; then
 fi
 fi
 
-# Create basic IPv6 rules
-if ! grep -qs "hwdsl2 VPN script" /etc/ip6tables.rules; then
-/bin/cp -f /etc/ip6tables.rules "/etc/ip6tables.rules.old-$sys_dt" 2>/dev/null
-cat > /etc/ip6tables.rules <<EOF
-# Added by hwdsl2 VPN script
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
--A INPUT -i lo -j ACCEPT
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -m rt --rt-type 0 -j DROP
--A INPUT -s fe80::/10 -j ACCEPT
--A INPUT -p ipv6-icmp -j ACCEPT
--A INPUT -j DROP
-COMMIT
-EOF
-if [ -f /etc/iptables/rules.v6 ]; then
-/bin/cp -f /etc/iptables/rules.v6 "/etc/iptables/rules.v6.old-$sys_dt"
-/bin/cp -f /etc/ip6tables.rules /etc/iptables/rules.v6
-fi
-fi
-
 # Load IPTables rules at system boot
 mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<EOF
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
-exit 0
-EOF
-
-cat > /etc/network/if-pre-up.d/ip6tablesload <<EOF
-#!/bin/sh
-ip6tables-restore < /etc/ip6tables.rules
 exit 0
 EOF
 
@@ -450,12 +421,10 @@ sysctl -e -q -p
 # Update file attributes
 chmod +x /etc/rc.local
 chmod +x /etc/network/if-pre-up.d/iptablesload
-chmod +x /etc/network/if-pre-up.d/ip6tablesload
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
 iptables-restore < /etc/iptables.rules
-ip6tables-restore < /etc/ip6tables.rules >/dev/null 2>&1
 
 # Restart services
 service fail2ban stop >/dev/null 2>&1

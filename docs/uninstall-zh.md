@@ -39,13 +39,11 @@ rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
 编辑 `/etc/iptables.rules` 并删除不需要的规则。   
 你以前的防火墙规则（如果有）会备份在 `/etc/iptables.rules.old-日期-时间`。   
 另外如果文件 `/etc/iptables/rules.v4` 存在，请编辑它。   
-如果使用 IPv6 ，还需编辑 `/etc/ip6tables.rules` 和/或 `/etc/iptables/rules.v6`。
 
 ### CentOS/RHEL
 
 编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。   
 你以前的防火墙规则（如果有）会备份在 `/etc/sysconfig/iptables.old-日期-时间`。   
-如果使用 IPv6 ，还需编辑 `/etc/sysconfig/ip6tables`。
 
 ## 第四步
 

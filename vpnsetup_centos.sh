@@ -146,11 +146,6 @@ yum -y install ppp xl2tpd
 # Install Fail2Ban to protect SSH
 yum -y install fail2ban
 
-# Install IP6Tables
-if grep -qs "release 6" /etc/redhat-release; then
-  yum -y install iptables-ipv6
-fi
-
 # Installed Libevent2
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
@@ -391,25 +386,6 @@ iptables-save >> /etc/sysconfig/iptables
 fi
 fi
 
-# Create basic IPv6 rules
-if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/ip6tables; then
-/bin/cp -f /etc/sysconfig/ip6tables "/etc/sysconfig/ip6tables.old-$sys_dt" 2>/dev/null
-cat > /etc/sysconfig/ip6tables <<EOF
-# Added by hwdsl2 VPN script
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
--A INPUT -i lo -j ACCEPT
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -m rt --rt-type 0 -j DROP
--A INPUT -s fe80::/10 -j ACCEPT
--A INPUT -p ipv6-icmp -j ACCEPT
--A INPUT -j DROP
-COMMIT
-EOF
-fi
-
 # Create basic Fail2Ban rules
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 cat > /etc/fail2ban/jail.local <<EOF
@@ -435,7 +411,6 @@ cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
 iptables-restore < /etc/sysconfig/iptables
-ip6tables-restore < /etc/sysconfig/ip6tables
 service fail2ban restart
 service ipsec start
 service xl2tpd start
@@ -457,7 +432,6 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
 iptables-restore < /etc/sysconfig/iptables
-ip6tables-restore < /etc/sysconfig/ip6tables >/dev/null 2>&1
 
 # Restart services
 service fail2ban stop >/dev/null 2>&1

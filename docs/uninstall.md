@@ -39,13 +39,11 @@ rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
 Edit `/etc/iptables.rules` and remove unneeded rules.   
 Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`.   
 In addition, edit `/etc/iptables/rules.v4` if the file exists.   
-If using IPv6, also edit `/etc/ip6tables.rules` and/or `/etc/iptables/rules.v6`.
 
 ### CentOS/RHEL
 
 Edit `/etc/sysconfig/iptables` and remove unneeded rules.   
 Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.   
-If using IPv6, also edit `/etc/sysconfig/ip6tables`.
 
 ## Fourth step
 
