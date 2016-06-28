@@ -124,6 +124,9 @@ wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swa
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
 echo "WERROR_CFLAGS =" > Makefile.inc.local
+if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
+  apt-get -yq install libsystemd-dev
+fi
 make -s programs && make -s install
 
 # Verify the install and clean up

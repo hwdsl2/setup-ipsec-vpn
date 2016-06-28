@@ -111,12 +111,12 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     curl-devel flex bison gcc make \
     fipscheck-devel unbound-devel xmlto
 
-# Installed Libevent2
+# Install libevent2 and systemd-devel (CentOS 7)
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel
 elif grep -qs "release 7" /etc/redhat-release; then
-  yum -y install libevent-devel
+  yum -y install libevent-devel systemd-devel
 fi
 
 # Compile and install Libreswan
