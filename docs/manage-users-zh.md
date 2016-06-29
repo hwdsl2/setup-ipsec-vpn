@@ -31,7 +31,7 @@
 这个文件中的密码以 salted and hashed 的形式保存。该步骤可以借助比如 `openssl` 工具来完成：
 
 ```bash
-# The output will be <VPN Password 1 (hashed)>
+# 以下命令的输出为 <VPN Password 1 (hashed)>
 openssl passwd -1 "<VPN Password 1>"
 ```
 

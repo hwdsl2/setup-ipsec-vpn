@@ -2,9 +2,9 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-*如需使用 IPsec/XAuth 模式连接，请参见： [配置 IPsec/XAuth VPN 客户端](clients-xauth-zh.md)*
+*如需使用 IPsec/XAuth ("Cisco IPsec") 模式连接，请参见： [配置 IPsec/XAuth VPN 客户端](clients-xauth-zh.md)*
 
-在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录信息。
+在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的 VPN 服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
 ---
 * 平台名称

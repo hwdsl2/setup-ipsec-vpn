@@ -1,8 +1,8 @@
-﻿# IPsec VPN Server Auto Setup Scripts <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
+﻿# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-These scripts will let you set up your own IPsec VPN server, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian & CentOS. All you need to do is provide your own VPN credentials, and the scripts will handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -17,7 +17,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
   - [CentOS & RHEL](#centos--rhel)
 - [Next Steps](#next-steps)
 - [Important Notes](#important-notes)
-- [Upgrading Libreswan](#upgrading-libreswan)
+- [Upgrade Libreswan](#upgrade-libreswan)
 - [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
 - [See Also](#see-also)
@@ -26,8 +26,8 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- **NEW:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
-- **NEW:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
+- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
+- **New:** A pre-built [Docker image](#see-also) of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -45,7 +45,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 
 **-OR-**
 
-A dedicated server or KVM/Xen-based Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or any KVM/Xen-based Virtual Private Server (VPS), freshly installed with one of the above systems. Additionally, Debian 7 (Wheezy) can be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
@@ -56,6 +56,8 @@ A dedicated server or KVM/Xen-based Virtual Private Server (VPS), freshly instal
 ### Ubuntu & Debian
 
 First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
+
+To install the VPN, please choose one of the following options:
 
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
 
@@ -72,20 +74,31 @@ nano -w vpnsetup.sh
 sudo sh vpnsetup.sh
 ```
 
+**Option 3:** Define your VPN credentials as environment variables:
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these characters within values:  \ " '
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo \
+VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
+VPN_USER='your_vpn_username' \
+VPN_PASSWORD='your_vpn_password' sh vpnsetup.sh
+```
+
+**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+
 ### CentOS & RHEL
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
 Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
 
-Note: If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
-
 ## Next Steps
 
 Get your computer or device to use the VPN. Please refer to:
 
 <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>   
-<a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth VPN Clients</a>
+<a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth ("Cisco IPsec") VPN Clients</a>
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -97,7 +110,9 @@ For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-ti
 
 If you wish to add, edit or remove VPN user accounts, refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `options.xl2tpd` and `ipsec.conf` with new ones. Then reboot your server.
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
+
+When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
@@ -105,9 +120,9 @@ If your server has a custom SSH port (not 22) or other services, edit IPTables r
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
-## Upgrading Libreswan
+## Upgrade Libreswan
 
-The additional scripts <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> and <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">swan-announce</a>). Update the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
+The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">mailing list</a>). Update the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
 
 ## Bugs & Questions
 

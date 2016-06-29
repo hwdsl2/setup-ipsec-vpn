@@ -19,14 +19,15 @@ Follow these steps to remove the VPN. Commands must be run as `root`, or with `s
 service ipsec stop
 service xl2tpd stop
 rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec
-rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
+rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
+      /etc/init.d/ipsec /usr/lib/systemd/system/ipsec.service
 ```
 
 ## Second step
 
 ### Ubuntu/Debian
 
-`apt-get remove xl2tpd`
+`apt-get purge xl2tpd`
 
 ### CentOS/RHEL
 
@@ -56,21 +57,22 @@ Note: This step is optional.
 
 Remove these config files:
 
-* /etc/ipsec.conf
-* /etc/ipsec.secrets
-* /etc/xl2tpd/xl2tpd.conf
-* /etc/ppp/options.xl2tpd
-* /etc/ppp/chap-secrets
+* /etc/ipsec.conf*
+* /etc/ipsec.secrets*
+* /etc/ppp/chap-secrets*
+* /etc/ppp/options.xl2tpd*
 * /etc/pam.d/pluto
 * /etc/sysconfig/pluto
+* /etc/default/pluto
 * /etc/ipsec.d (directory)
+* /etc/xl2tpd (directory)
 
 Copy and paste for fast removal:
 
 ```
-rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd \
-      /etc/ppp/chap-secrets /etc/pam.d/pluto /etc/sysconfig/pluto
-rm -rf /etc/ipsec.d
+rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
+      /etc/pam.d/pluto /etc/sysconfig/pluto /etc/default/pluto
+rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
 ## When finished

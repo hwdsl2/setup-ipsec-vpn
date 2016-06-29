@@ -11,7 +11,7 @@
 * [第三步](#第三步)
 * [第四步](#第四步)
 * [可选步骤](#可选步骤)
-* [操作完成后](#操作完成后)
+* [完成后](#完成后)
 
 ## 第一步
 
@@ -19,14 +19,15 @@
 service ipsec stop
 service xl2tpd stop
 rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec
-rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
+rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
+      /etc/init.d/ipsec /usr/lib/systemd/system/ipsec.service
 ```
 
 ## 第二步
 
 ### Ubuntu/Debian
 
-`apt-get remove xl2tpd`
+`apt-get purge xl2tpd`
 
 ### CentOS/RHEL
 
@@ -56,23 +57,24 @@ rm -f /etc/init.d/ipsec /lib/systemd/system/ipsec.service
 
 删除这些配置文件：
 
-* /etc/ipsec.conf
-* /etc/ipsec.secrets
-* /etc/xl2tpd/xl2tpd.conf
-* /etc/ppp/options.xl2tpd
-* /etc/ppp/chap-secrets
+* /etc/ipsec.conf*
+* /etc/ipsec.secrets*
+* /etc/ppp/chap-secrets*
+* /etc/ppp/options.xl2tpd*
 * /etc/pam.d/pluto
 * /etc/sysconfig/pluto
+* /etc/default/pluto
 * /etc/ipsec.d (目录)
+* /etc/xl2tpd (目录)
 
 要快速删除，可以复制并粘贴以下命令：
 
 ```
-rm -f /etc/ipsec.conf /etc/ipsec.secrets /etc/xl2tpd/xl2tpd.conf /etc/ppp/options.xl2tpd \
-      /etc/ppp/chap-secrets /etc/pam.d/pluto /etc/sysconfig/pluto
-rm -rf /etc/ipsec.d
+rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
+      /etc/pam.d/pluto /etc/sysconfig/pluto /etc/default/pluto
+rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
-## 操作完成后
+## 完成后
 
 重启你的服务器。

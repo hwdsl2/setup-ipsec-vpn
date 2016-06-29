@@ -4,9 +4,9 @@
 
 *如需使用 IPsec/L2TP 模式连接，请参见： [配置 IPsec/L2TP VPN 客户端](clients-zh.md)*
 
-在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的VPN服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/XAuth 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。如果无法连接,请首先检查是否输入了正确的 VPN 登录信息。
+在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的 VPN 服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/XAuth ("Cisco IPsec") 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
-`IPsec/XAuth` 模式也称为 `Cisco IPsec`。和 `IPsec/L2TP` 相比较，它通常能够更高效地传输数据。
+`IPsec/XAuth` 模式也称为 "Cisco IPsec"。和 `IPsec/L2TP` 相比较，它通常能够更高效地传输数据。
 
 ---
 * 平台名称

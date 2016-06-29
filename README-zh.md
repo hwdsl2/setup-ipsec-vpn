@@ -1,8 +1,8 @@
-﻿# IPsec VPN 服务器一键安装脚本 <a href="https://travis-ci.org/hwdsl2/setup-ipsec-vpn"><img align="right" src="https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master" alt="Build status" /></a>
+﻿# IPsec VPN 服务器一键安装脚本 &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用这些 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -17,7 +17,7 @@
   - [CentOS & RHEL](#centos--rhel)
 - [下一步](#下一步)
 - [重要提示](#重要提示)
-- [关于升级Libreswan](#关于升级libreswan)
+- [升级Libreswan](#升级libreswan)
 - [问题和反馈](#问题和反馈)
 - [卸载说明](#卸载说明)
 - [另见](#另见)
@@ -26,8 +26,8 @@
 
 ## 功能特性
 
-- **NEW:** 新增支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
-- **NEW:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 镜像</a>
+- **新:** 增加支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- **新:** 现在可以下载 VPN 服务器的预构建 [Docker 镜像](#另见)
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -37,7 +37,7 @@
 
 ## 系统要求
 
-一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI： (详细步骤<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a>)
+一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI： （详细步骤 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a> ）
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
@@ -45,7 +45,7 @@
 
 **-或者-**
 
-一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户请使用其它的 VPN 软件，比如 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
+一个专用服务器，或者任何基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户请使用其它的 VPN 软件，比如 Shadowsocks ( <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">libev</a> | <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">rss</a> )。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -56,6 +56,8 @@
 ### Ubuntu & Debian
 
 首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
+
+要安装 VPN，请从以下选项中选择一个：
 
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证 （完成后会在屏幕上显示）：
 
@@ -72,20 +74,31 @@ nano -w vpnsetup.sh
 sudo sh vpnsetup.sh
 ```
 
+**选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo \
+VPN_IPSEC_PSK='你的IPsec预共享密钥' \
+VPN_USER='你的VPN用户名' \
+VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
+```
+
+**注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+
 ### CentOS & RHEL
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
 按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
 
-注： 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
-
 ## 下一步
 
 配置你的计算机或其它设备使用 VPN 。请参见：
 
 <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>   
-<a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth VPN 客户端</a>
+<a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端</a>
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
@@ -95,9 +108,11 @@ sudo sh vpnsetup.sh
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
-如果需要添加，编辑或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
+如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 
-在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果要使用另外的 DNS 服务商，可以编辑文件 `options.xl2tpd` 和 `ipsec.conf` 并用新的服务器替换 `8.8.8.8` 和 `8.8.4.4`。然后重新启动系统。
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启服务器。
+
+在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
 
@@ -105,9 +120,9 @@ sudo sh vpnsetup.sh
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
-## 关于升级Libreswan
+## 升级Libreswan
 
-提供额外的脚本 <a href="extras/vpnupgrade_Libreswan.sh" target="_blank">vpnupgrade_Libreswan.sh</a> 和 <a href="extras/vpnupgrade_Libreswan_centos.sh" target="_blank">vpnupgrade_Libreswan_centos.sh</a> ，可用于升级 Libreswan (<a href="https://libreswan.org" target="_blank">官网</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>)。请在运行前根据需要修改 `swan_ver` 变量。检查已安装版本： `ipsec --version`
+提供两个额外的脚本 <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> 和 <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a>，可用于升级 Libreswan （<a href="https://libreswan.org" target="_blank">网站</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `swan_ver` 变量。检查已安装版本： `ipsec --version`
 
 ## 问题和反馈
 
