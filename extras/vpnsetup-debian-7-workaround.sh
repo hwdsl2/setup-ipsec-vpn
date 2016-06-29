@@ -22,26 +22,23 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-echoerr() { echo "$@" 1>&2; }
+exiterr() { echo "Error: ${1}" >&2; exit 1; }
 
 if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" != "7" ]; then
-  echoerr "This script only supports Debian 7 (Wheezy)."
-  exit 1
+  exiterr "This script only supports Debian 7 (Wheezy)."
 fi
 
 if [ "$(uname -m)" != "x86_64" ]; then
-  echoerr "This script only supports 64-bit Debian 7."
-  exit 1
+  exiterr "This script only supports 64-bit Debian 7."
 fi
 
 if [ "$(id -u)" != 0 ]; then
-  echoerr "Script must be run as root. Try 'sudo sh $0'"
-  exit 1
+  exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || exit 1
+cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Update package index and install wget
 export DEBIAN_FRONTEND=noninteractive
@@ -71,8 +68,6 @@ if [ -s "$deb1" ] && [ -s "$deb2" ] && [ -s "$deb3" ] && [ -s "$deb4" ] && [ -s 
   echo 'Completed! If no error, you may now proceed to run the VPN setup script.'
   exit 0
 else
-  echoerr
-  echoerr 'Could not download libnss/libnspr package(s). Aborting.'
   /bin/rm -f "$deb1" "$deb2" "$deb3" "$deb4" "$deb5"
-  exit 1
+  exiterr 'Could not download libnss/libnspr package(s).'
 fi

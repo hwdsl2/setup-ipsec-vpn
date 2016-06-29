@@ -33,32 +33,28 @@ YOUR_PASSWORD=''
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-echoerr() { echo "$@" 1>&2; }
+exiterr() { echo "Error: ${1}" >&2; exit 1; }
 
 if [ ! -f /etc/redhat-release ]; then
-  echoerr "This script only supports CentOS/RHEL."
-  exit 1
+  exiterr "This script only supports CentOS/RHEL."
 fi
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  echoerr "This script only supports CentOS/RHEL 6 and 7."
-  exit 1
+  exiterr "This script only supports CentOS/RHEL 6 and 7."
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  echoerr "This script does not support OpenVZ VPS."
-  exit 1
+  exiterr "This script does not support OpenVZ VPS."
 fi
 
 if [ "$(id -u)" != 0 ]; then
-  echoerr "Script must be run as root. Try 'sudo sh $0'"
-  exit 1
+  exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
 eth0_state=$(cat /sys/class/net/eth0/operstate 2>/dev/null)
 if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
 cat 1>&2 <<'EOF'
-Network interface 'eth0' is not available. Aborting.
+Error: Network interface 'eth0' is not available.
 
 Run 'cat /proc/net/dev' to find the active network interface,
 then use it to replace ALL 'eth0' and 'eth+' in this script.
@@ -79,8 +75,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echoerr "All VPN credentials must be specified. Edit the script and re-enter them."
-  exit 1
+  exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
 cat <<'EOF'
@@ -90,7 +85,7 @@ EOF
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || exit 1
+cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Make sure basic commands exist
 yum -y install wget bind-utils openssl
@@ -124,18 +119,16 @@ PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echoerr "Cannot find valid public IP. Edit the script and manually enter IPs."
-  exit 1
+  exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echoerr "Cannot find valid private IP. Edit the script and manually enter IPs."
-  exit 1
+  exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
 fi
 
 # Add the EPEL repository
 yum -y install epel-release
 yum list installed epel-release >/dev/null 2>&1
-[ "$?" != "0" ] && { echoerr "Cannot add EPEL repository. Aborting."; exit 1; }
+[ "$?" != "0" ] && exiterr "Cannot add EPEL repository."
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
@@ -161,18 +154,18 @@ swan_file="libreswan-${swan_ver}.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
 swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
-[ "$?" != "0" ] && { echoerr "Cannot download Libreswan source. Aborting."; exit 1; }
+[ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$swan_ver" || { echoerr "Cannot enter Libreswan source dir. Aborting."; exit 1; }
+cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
 echo "WERROR_CFLAGS =" > Makefile.inc.local
 make -s programs && make -s install
 
 # Verify the install and clean up
-cd /opt/src || exit 1
+cd /opt/src || exiterr "Cannot enter /opt/src."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-[ "$?" != "0" ] && { echoerr; echoerr "Libreswan $swan_ver failed to build. Aborting."; exit 1; }
+[ "$?" != "0" ] && exiterr "Libreswan $swan_ver failed to build."
 
 # Create IPsec (Libreswan) config
 sys_dt="$(date +%Y-%m-%d-%H:%M:%S)"
