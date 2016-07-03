@@ -17,7 +17,8 @@ swan_ver=3.17
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
 
 if [ ! -f /etc/redhat-release ]; then
   exiterr "This script only supports CentOS/RHEL."
@@ -92,25 +93,23 @@ mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Install Wget
-yum -y install wget
+yum -y install wget || exiterr2
 
 # Add the EPEL repository
-yum -y install epel-release
-yum list installed epel-release >/dev/null 2>&1
-[ "$?" != "0" ] && exiterr "Cannot add EPEL repository."
+yum -y install epel-release || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel \
     curl-devel flex bison gcc make \
-    fipscheck-devel unbound-devel xmlto
+    fipscheck-devel unbound-devel xmlto || exiterr2
 
 # Install libevent2 and systemd-devel (CentOS 7)
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
-  yum -y install libevent2-devel
+  yum -y install libevent2-devel || exiterr2
 elif grep -qs "release 7" /etc/redhat-release; then
-  yum -y install libevent-devel systemd-devel
+  yum -y install libevent-devel systemd-devel || exiterr2
 fi
 
 # Compile and install Libreswan

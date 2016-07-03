@@ -17,7 +17,8 @@ swan_ver=3.17
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
@@ -99,15 +100,15 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
-apt-get -yq update
-apt-get -yq install wget
+apt-get -yq update || exiterr "'apt-get update' failed."
+apt-get -yq install wget || exiterr2
 
 # Install necessary packages
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
-        libunbound-dev libnss3-tools libevent-dev
-apt-get -yq --no-install-recommends install xmlto
+        libunbound-dev libnss3-tools libevent-dev || exiterr2
+apt-get -yq --no-install-recommends install xmlto || exiterr2
 
 # Compile and install Libreswan
 swan_file="libreswan-${swan_ver}.tar.gz"
@@ -120,7 +121,7 @@ tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
 echo "WERROR_CFLAGS =" > Makefile.inc.local
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
-  apt-get -yq install libsystemd-dev
+  apt-get -yq install libsystemd-dev || exiterr2
 fi
 make -s programs && make -s install
 

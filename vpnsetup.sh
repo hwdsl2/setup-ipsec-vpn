@@ -33,7 +33,8 @@ YOUR_PASSWORD=''
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
@@ -81,10 +82,10 @@ IMPORTANT: Workaround required for Debian 7 (Wheezy).
 You must first run the script at: https://git.io/vpndeb7
 If not already done so, press Ctrl-C to interrupt now.
 
-Pausing for 60 seconds...
+Pausing for 30 seconds...
 
 EOF
-sleep 60
+sleep 30
 fi
 
 cat <<'EOF'
@@ -98,11 +99,11 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Update package index
 export DEBIAN_FRONTEND=noninteractive
-apt-get -yq update
+apt-get -yq update || exiterr "'apt-get update' failed."
 
 # Make sure basic commands exist
-apt-get -yq install wget dnsutils openssl
-apt-get -yq install iproute gawk grep sed net-tools
+apt-get -yq install wget dnsutils openssl || exiterr2
+apt-get -yq install iproute gawk grep sed net-tools || exiterr2
 
 cat <<'EOF'
 
@@ -142,12 +143,12 @@ fi
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
         libcap-ng-dev libcap-ng-utils libselinux1-dev \
         libcurl4-nss-dev flex bison gcc make \
-        libunbound-dev libnss3-tools libevent-dev
-apt-get -yq --no-install-recommends install xmlto
-apt-get -yq install xl2tpd
+        libunbound-dev libnss3-tools libevent-dev || exiterr2
+apt-get -yq --no-install-recommends install xmlto || exiterr2
+apt-get -yq install ppp xl2tpd || exiterr2
 
 # Install Fail2Ban to protect SSH
-apt-get -yq install fail2ban
+apt-get -yq install fail2ban || exiterr2
 
 # Compile and install Libreswan
 swan_ver=3.17
@@ -161,7 +162,7 @@ tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
 echo "WERROR_CFLAGS =" > Makefile.inc.local
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
-  apt-get -yq install libsystemd-dev
+  apt-get -yq install libsystemd-dev || exiterr2
 fi
 make -s programs && make -s install
 
@@ -235,7 +236,7 @@ EOF
 
 # Create xl2tpd config
 /bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$sys_dt" 2>/dev/null
-cat > /etc/xl2tpd/xl2tpd.conf <<EOF
+cat > /etc/xl2tpd/xl2tpd.conf <<'EOF'
 [global]
 port = 1701
 
@@ -252,7 +253,7 @@ EOF
 
 # Set xl2tpd options
 /bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$sys_dt" 2>/dev/null
-cat > /etc/ppp/options.xl2tpd <<EOF
+cat > /etc/ppp/options.xl2tpd <<'EOF'
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns 8.8.8.8
@@ -279,12 +280,14 @@ EOF
 
 /bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$sys_dt" 2>/dev/null
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
+cat > /etc/ipsec.d/passwd <<EOF
+$VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
+EOF
 
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
-cat >> /etc/sysctl.conf <<EOF
+cat >> /etc/sysctl.conf <<'EOF'
 
 # Added by hwdsl2 VPN script
 kernel.msgmnb = 65536
@@ -355,8 +358,8 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
--A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
+-A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source $PRIVATE_IP
+-A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
 COMMIT
 EOF
 
@@ -392,7 +395,7 @@ fi
 
 # Load IPTables rules at system boot
 mkdir -p /etc/network/if-pre-up.d
-cat > /etc/network/if-pre-up.d/iptablesload <<EOF
+cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
 exit 0
@@ -402,7 +405,7 @@ EOF
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
 sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
-cat >> /etc/rc.local <<EOF
+cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
 service fail2ban restart || /bin/true

@@ -33,7 +33,8 @@ YOUR_PASSWORD=''
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
 
 if [ ! -f /etc/redhat-release ]; then
   exiterr "This script only supports CentOS/RHEL."
@@ -88,8 +89,8 @@ mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Make sure basic commands exist
-yum -y install wget bind-utils openssl
-yum -y install iproute gawk grep sed net-tools
+yum -y install wget bind-utils openssl || exiterr2
+yum -y install iproute gawk grep sed net-tools || exiterr2
 
 cat <<'EOF'
 
@@ -126,26 +127,24 @@ if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
 fi
 
 # Add the EPEL repository
-yum -y install epel-release
-yum list installed epel-release >/dev/null 2>&1
-[ "$?" != "0" ] && exiterr "Cannot add EPEL repository."
+yum -y install epel-release || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel \
     curl-devel flex bison gcc make \
-    fipscheck-devel unbound-devel xmlto
-yum -y install ppp xl2tpd
+    fipscheck-devel unbound-devel xmlto || exiterr2
+yum -y install ppp xl2tpd || exiterr2
 
 # Install Fail2Ban to protect SSH
-yum -y install fail2ban
+yum -y install fail2ban || exiterr2
 
 # Install libevent2 and systemd-devel (CentOS 7)
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
-  yum -y install libevent2-devel
+  yum -y install libevent2-devel || exiterr2
 elif grep -qs "release 7" /etc/redhat-release; then
-  yum -y install libevent-devel systemd-devel
+  yum -y install libevent-devel systemd-devel || exiterr2
 fi
 
 # Compile and install Libreswan
@@ -231,7 +230,7 @@ EOF
 
 # Create xl2tpd config
 /bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$sys_dt" 2>/dev/null
-cat > /etc/xl2tpd/xl2tpd.conf <<EOF
+cat > /etc/xl2tpd/xl2tpd.conf <<'EOF'
 [global]
 port = 1701
 
@@ -248,7 +247,7 @@ EOF
 
 # Set xl2tpd options
 /bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$sys_dt" 2>/dev/null
-cat > /etc/ppp/options.xl2tpd <<EOF
+cat > /etc/ppp/options.xl2tpd <<'EOF'
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns 8.8.8.8
@@ -275,12 +274,14 @@ EOF
 
 /bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$sys_dt" 2>/dev/null
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
+cat > /etc/ipsec.d/passwd <<EOF
+$VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
+EOF
 
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
 /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
-cat >> /etc/sysctl.conf <<EOF
+cat >> /etc/sysctl.conf <<'EOF'
 
 # Added by hwdsl2 VPN script
 kernel.msgmnb = 65536
@@ -350,8 +351,8 @@ COMMIT
 :PREROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
--A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
+-A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source $PRIVATE_IP
+-A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
 COMMIT
 EOF
 
@@ -382,7 +383,7 @@ fi
 
 # Create basic Fail2Ban rules
 if [ ! -f /etc/fail2ban/jail.local ] ; then
-cat > /etc/fail2ban/jail.local <<EOF
+cat > /etc/fail2ban/jail.local <<'EOF'
 [DEFAULT]
 ignoreip = 127.0.0.1/8
 bantime  = 600
@@ -401,7 +402,7 @@ fi
 # Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 /bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
-cat >> /etc/rc.local <<EOF
+cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
 iptables-restore < /etc/sysconfig/iptables

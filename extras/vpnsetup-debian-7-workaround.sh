@@ -42,8 +42,8 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 # Update package index and install wget
 export DEBIAN_FRONTEND=noninteractive
-apt-get -yq update
-apt-get -yq install wget
+apt-get -yq update || exiterr "'apt-get update' failed."
+apt-get -yq install wget || exiterr "Failed to install 'wget'."
 
 # Install libnss/libnspr packages from download.libreswan.org.
 # Ref: https://libreswan.org/wiki/3.14_on_Debian_Wheezy
