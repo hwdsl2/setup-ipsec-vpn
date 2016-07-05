@@ -45,7 +45,7 @@
 
 **-或者-**
 
-一个专用服务器，或者任何基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户请使用其它的 VPN 软件，比如 Shadowsocks ( <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">libev</a> | <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">rss</a> )。
+一个专用服务器，或者任何基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户可以尝试使用 Shadowsocks ( <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">libev</a> | <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">rss</a> ) 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -104,7 +104,7 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器和客户端与 NAT （比如家用路由器）的兼容问题。另外如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
@@ -116,7 +116,7 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
 
-如果你为服务器配置了自定义 SSH 端口（不是 22）或其他服务，请在使用前编辑脚本中的 IPTables 防火墙规则。
+如果你的服务器配置了自定义 SSH 端口（不是 22）或运行其他服务，请在使用前编辑脚本中的 IPTables 防火墙规则。或者在安装后编辑以下文件并重启： `/etc/iptables.rules`, `/etc/iptables/rules.v4` 和/或 `/etc/sysconfig/iptables`。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 

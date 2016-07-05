@@ -104,7 +104,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). If you encountered an error when connecting, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 **Android 6 (Marshmallow) users**: Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
@@ -116,7 +116,7 @@ When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within th
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
-If your server has a custom SSH port (not 22) or other services, edit IPTables rules in the script before using.
+If your server uses a custom SSH port (not 22) or runs other services, edit IPTables rules in the scripts before using. Or edit these files after install and reboot: `/etc/iptables.rules`, `/etc/iptables/rules.v4` and/or `/etc/sysconfig/iptables`.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
