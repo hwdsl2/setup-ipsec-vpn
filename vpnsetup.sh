@@ -324,7 +324,10 @@ fi
 # - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
 service fail2ban stop >/dev/null 2>&1
-if [ "$(iptables-save | grep -c '^\-')" = "0" ]; then
+iptables-save > "/etc/iptables.rules.old-$sys_dt"
+sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
+
+if [ "$(iptables-save | grep -c '^\-')" = "0" ] && [ "$sshd_port" = "22" ]; then
 cat > /etc/iptables.rules <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -364,8 +367,6 @@ COMMIT
 EOF
 
 else
-
-iptables-save > "/etc/iptables.rules.old-$sys_dt"
 
 iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
 iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
