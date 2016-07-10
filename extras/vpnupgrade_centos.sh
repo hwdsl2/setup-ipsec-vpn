@@ -100,9 +100,9 @@ yum -y install epel-release || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
-    libcap-ng-devel libselinux-devel \
-    curl-devel flex bison gcc make \
-    fipscheck-devel unbound-devel xmlto || exiterr2
+  libcap-ng-devel libselinux-devel \
+  curl-devel flex bison gcc make \
+  fipscheck-devel unbound-devel xmlto || exiterr2
 
 # Install libevent2 and systemd-devel (CentOS 7)
 if grep -qs "release 6" /etc/redhat-release; then
@@ -113,9 +113,9 @@ elif grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Compile and install Libreswan
-swan_file="libreswan-${swan_ver}.tar.gz"
+swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"

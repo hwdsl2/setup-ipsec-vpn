@@ -105,15 +105,15 @@ apt-get -yq install wget || exiterr2
 
 # Install necessary packages
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
-        libcap-ng-dev libcap-ng-utils libselinux1-dev \
-        libcurl4-nss-dev flex bison gcc make \
-        libunbound-dev libnss3-tools libevent-dev || exiterr2
+  libcap-ng-dev libcap-ng-utils libselinux1-dev \
+  libcurl4-nss-dev flex bison gcc make \
+  libunbound-dev libnss3-tools libevent-dev || exiterr2
 apt-get -yq --no-install-recommends install xmlto || exiterr2
 
 # Compile and install Libreswan
-swan_file="libreswan-${swan_ver}.tar.gz"
+swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"

@@ -57,10 +57,11 @@ if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
 cat 1>&2 <<'EOF'
 Error: Network interface 'eth0' is not available.
 
+Please DO NOT run this script on your PC or Mac!
 Run 'cat /proc/net/dev' to find the active network interface,
 then use it to replace ALL 'eth0' and 'eth+' in this script.
 EOF
-exit 1
+  exit 1
 fi
 
 [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
@@ -79,10 +80,8 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
-cat <<'EOF'
-VPN setup in progress... Please be patient.
-
-EOF
+echo "VPN setup in progress... Please be patient."
+echo
 
 # Create and change to working dir
 mkdir -p /opt/src
@@ -131,9 +130,9 @@ yum -y install epel-release || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
-    libcap-ng-devel libselinux-devel \
-    curl-devel flex bison gcc make \
-    fipscheck-devel unbound-devel xmlto || exiterr2
+  libcap-ng-devel libselinux-devel \
+  curl-devel flex bison gcc make \
+  fipscheck-devel unbound-devel xmlto || exiterr2
 yum -y install ppp xl2tpd || exiterr2
 
 # Install Fail2Ban to protect SSH
@@ -149,9 +148,9 @@ fi
 
 # Compile and install Libreswan
 swan_ver=3.17
-swan_file="libreswan-${swan_ver}.tar.gz"
+swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v${swan_ver}.tar.gz"
+swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
 wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
 [ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
@@ -280,7 +279,7 @@ EOF
 
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-/bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
+  /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
 cat >> /etc/sysctl.conf <<'EOF'
 
 # Added by hwdsl2 VPN script
@@ -317,11 +316,10 @@ fi
 # - If IPTables is "empty", simply write out the new rules.
 # - If *not* empty, insert new rules and save them with existing ones.
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
-service fail2ban stop >/dev/null 2>&1
-iptables-save > "/etc/sysconfig/iptables.old-$sys_dt"
-sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
-
-if [ "$(iptables-save | grep -c '^\-')" = "0" ] && [ "$sshd_port" = "22" ]; then
+  service fail2ban stop >/dev/null 2>&1
+  iptables-save > "/etc/sysconfig/iptables.old-$sys_dt"
+  sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
+  if [ "$(iptables-save | grep -c '^\-')" = "0" ] && [ "$sshd_port" = "22" ]; then
 cat > /etc/sysconfig/iptables <<EOF
 # Added by hwdsl2 VPN script
 *filter
@@ -358,28 +356,25 @@ COMMIT
 -A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
 COMMIT
 EOF
-
-else
-
-iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
-iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-iptables -I INPUT 3 -p udp --dport 1701 -j DROP
-iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
-iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# Uncomment to DROP traffic between VPN clients themselves
-# iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
-# iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
-iptables -A FORWARD -j DROP
-iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
-iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
-
-echo "# Modified by hwdsl2 VPN script" > /etc/sysconfig/iptables
-iptables-save >> /etc/sysconfig/iptables
-fi
+  else
+    iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
+    iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+    iptables -I INPUT 3 -p udp --dport 1701 -j DROP
+    iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
+    iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
+    iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+    iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
+    # Uncomment to DROP traffic between VPN clients themselves
+    # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
+    # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+    iptables -A FORWARD -j DROP
+    iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
+    iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
+    echo "# Modified by hwdsl2 VPN script" > /etc/sysconfig/iptables
+    iptables-save >> /etc/sysconfig/iptables
+  fi
 fi
 
 # Create basic Fail2Ban rules
@@ -402,7 +397,7 @@ fi
 
 # Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-/bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
+  /bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
