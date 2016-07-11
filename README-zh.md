@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
-使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。同时支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
@@ -37,7 +37,7 @@
 
 ## 系统要求
 
-一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI： （详细步骤 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">点这里</a> ）
+一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些 AMI： （详细步骤 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">看这里</a>）
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial), 14.04 (Trusty) or 12.04 (Precise)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 8 (Jessie) EC2 Images</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
@@ -45,7 +45,7 @@
 
 **-或者-**
 
-一个专用服务器，或者任何基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上系统之一。另外也可用 Debian 7 (Wheezy)，但是必须首先运行 <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户可以尝试使用 Shadowsocks ( <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">libev</a> | <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">rss</a> ) 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
+一个专用服务器，或者任何基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可以使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 用户可尝试 <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a> ( <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">libev</a> | <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">rss</a> ) 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -112,11 +112,11 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启服务器。
 
-在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
-
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
 
-如果你的服务器配置了自定义 SSH 端口（不是 22）或运行其他服务，请在使用前编辑脚本中的 IPTables 防火墙规则。或者在安装后编辑以下文件并重启： `/etc/iptables.rules`, `/etc/iptables/rules.v4` 和/或 `/etc/sysconfig/iptables`。
+如果需要打开服务器上的其它端口，请编辑 IPTables 防火墙规则： `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
+
+在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 

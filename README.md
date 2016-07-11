@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with both IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
@@ -26,7 +26,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Features
 
-- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is now supported
+- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is supported
 - **New:** A pre-built [Docker image](#see-also) of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
@@ -45,7 +45,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 
 **-OR-**
 
-A dedicated server or any KVM/Xen-based Virtual Private Server (VPS), freshly installed with one of the above systems. Additionally, Debian 7 (Wheezy) can be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or any KVM- or Xen-based Virtual Private Server (VPS), freshly installed with one of the above systems. Besides those, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS users should instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
@@ -104,7 +104,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
 
-For **Windows users**, a <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+For **Windows users**, this <a href="docs/clients.md#regkey" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 **Android 6 (Marshmallow) users**: Please see notes in <a href="docs/clients.md#android" target="_blank">Configure IPsec/L2TP VPN Clients</a>.
 
@@ -112,11 +112,11 @@ If you wish to add, edit or remove VPN user accounts, refer to <a href="docs/man
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 
-When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
-
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
-If your server uses a custom SSH port (not 22) or runs other services, edit IPTables rules in the scripts before using. Or edit these files after install and reboot: `/etc/iptables.rules`, `/etc/iptables/rules.v4` and/or `/etc/sysconfig/iptables`.
+To open additional ports on the server, edit the IPTables rules in `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
+
+When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
