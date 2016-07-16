@@ -2,9 +2,11 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-*To connect using IPsec/XAuth ("Cisco IPsec") mode, see: [Configure IPsec/XAuth VPN Clients](clients-xauth.md)*
+*To connect using IPsec/XAuth mode, see: [Configure IPsec/XAuth VPN Clients](clients-xauth.md)*
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
+
+An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> with images is available, written by Tony Tran.
 
 ---
 * Platforms
