@@ -10,10 +10,10 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Check for the latest version at https://libreswan.org and update as necessary
+# Check https://libreswan.org for the latest version
 swan_ver=3.17
 
-### Do not edit below this line
+### Do not edit below this line ###
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -45,7 +45,7 @@ if [ "$?" != "0" ]; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan $swan_ver"
+/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
 if [ "$?" = "0" ]; then
   echo "You already have Libreswan version $swan_ver installed! "
   echo "If you continue, the same version will be re-installed."
