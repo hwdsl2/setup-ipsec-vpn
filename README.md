@@ -47,7 +47,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 
 A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
-This also includes Linux VMs in public clouds such as Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean and Linode.
+This also includes Linux VMs in public clouds such as Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr and Linode.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 

@@ -47,7 +47,7 @@
 
 一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 不受支持，用户可以尝试使用 <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
-这也包括各种云计算服务中的 Linux 虚拟机，比如 Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean 和 Linode.
+这也包括各种云计算服务中的 Linux 虚拟机，比如 Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr 和 Linode。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 

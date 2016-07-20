@@ -11,9 +11,9 @@
 ---
 * 平台名称
   * [Windows](#windows)
-  * [OS X](#os-x)
+  * [OS X (macOS)](#os-x)
   * [Android](#android)
-  * [iOS](#ios)
+  * [iOS (iPhone/iPad)](#ios)
 
 ### Windows ###
 
@@ -33,9 +33,6 @@
 1. 单击 **Connect**。
 
 VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled** 字样。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
-
-<a id="regkey"></a>
-如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 **注：** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请参照链接网页中的说明，或者打开<a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重启计算机。
 - 适用于 Windows Vista, 7, 8 和 10
@@ -65,7 +62,7 @@ VPN 连接成功后，会在 VPN Connect 状态窗口中显示 **tunnel enabled*
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存VPN连接信息。
 
-要连接到 VPN，你可以使用菜单栏中的 VPN 图标，或者在系统偏好设置的网络部分选择 VPN，并单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN： 使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### Android ###
 1. 启动 **设置** 应用程序。
@@ -102,32 +99,6 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 启用 **VPN** 连接。
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
-
-## 故障排除
-
-### Windows 错误 809
-
-> 无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。
-
-要解决此错误，请按照<a href="#regkey">上面的步骤</a>添加注册表键并重启计算机。
-
-### Windows 错误 628
-
-> 在连接完成前，连接被远程计算机终止。
-
-要解决此错误，请按以下步骤操作：
-
-1. 右键单击系统托盘中的无线/网络图标，选择 **打开网络与共享中心**。
-1. 单击左侧的 **更改适配器设置**。右键单击新的 VPN 连接，并选择 **属性**。
-1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
-1. 单击 **确定** 保存 VPN 连接的详细信息。
-
-![Select only CHAP in VPN connection properties-2](https://cloud.githubusercontent.com/assets/5104323/16026263/cbda945a-3192-11e6-96a6-ff18c5dd9a48.png)
-
-### 其它错误
-
-更多的故障排除信息请参见 <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">这个文档</a>。
 
 ## 致谢
 

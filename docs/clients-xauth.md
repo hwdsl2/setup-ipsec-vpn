@@ -11,9 +11,9 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 ---
 * Platforms
   * [Windows](#windows)
-  * [OS X](#os-x)
+  * [OS X (macOS)](#os-x)
   * [Android](#android)
-  * [iOS](#ios)
+  * [iOS (iPhone/iPad)](#ios)
 
 ### Windows ###
 
@@ -33,9 +33,6 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click **Connect**.
 
 Once connected, you will see **tunnel enabled** in the VPN Connect status window. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
-
-<a id="regkey"></a>
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 **Note:** This <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Refer to the linked web page, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. You must reboot your computer when finished.
 - For Windows Vista, 7, 8 and 10
@@ -65,7 +62,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Apply** to save the VPN connection information.
 
-You can connect to the VPN using the VPN icon in the menu bar, or by selecting the VPN in the Network section of System Preferences and choosing **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ### Android ###
 1. Launch the **Settings** application.
@@ -102,32 +99,6 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 1. Slide the **VPN** switch ON.
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
-
-## Troubleshooting
-
-### Windows Error 809
-
-> The network connection between your computer and the VPN server could not be established because the remote server is not responding.
-
-To fix this error, follow <a href="#regkey">the steps above</a> to add a registry key and reboot your computer.
-
-### Windows Error 628
-
-> The connection was terminated by the remote computer before it could be completed.
-
-To fix this error, please follow these steps:
-
-1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
-1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
-1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
-1. Click **Allow these protocols**. Select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox, and deselect all others.
-1. Click **OK** to save the VPN connection details.
-
-![Select only CHAP in VPN connection properties](https://cloud.githubusercontent.com/assets/5104323/16024310/b113e9b6-3186-11e6-9e03-12f5455487ba.png)
-
-### Other Errors
-
-Please refer to <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">this document</a> for more troubleshooting tips.
 
 ## Credits
 
