@@ -150,7 +150,7 @@ apt-get -yq install ppp xl2tpd || exiterr2
 apt-get -yq install fail2ban || exiterr2
 
 # Compile and install Libreswan
-swan_ver=3.17
+swan_ver=3.18
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
 swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
