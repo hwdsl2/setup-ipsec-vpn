@@ -118,7 +118,7 @@ Clients are set to use <a href="https://developers.google.com/speed/public-dns/"
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
-To open additional ports on the server, edit the IPTables rules in `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
+To open additional ports on the server, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
 
 When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 
@@ -126,7 +126,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">mailing list</a>). Update the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
+The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">mailing list</a>). Edit the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
 
 ## Bugs & Questions
 
