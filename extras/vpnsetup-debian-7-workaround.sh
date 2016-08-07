@@ -1,11 +1,11 @@
 #!/bin/sh
 #
 # Debian 7 (Wheezy) does NOT have the required libnss version (>= 3.16) for Libreswan.
-# This script provides a workaround by installing unofficial packages from download.libreswan.org.
+# This script provides a workaround by installing newer packages from libreswan.org.
 # Debian 7 users: Run this script first, before using the VPN setup script.
 #
-# IMPORTANT: These unofficial packages do not receive the latest security updates compared to
-# official Debian packages. They could contain unpatched vulnerabilities. Use at your own risk!
+# IMPORTANT: These unofficial packages may not receive security updates compared to
+# official Debian packages. They could contain vulnerabilities. Use at your own risk!
 #
 # Copyright (C) 2015-2016 Lin Song <linsongui@gmail.com>
 #

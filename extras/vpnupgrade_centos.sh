@@ -104,7 +104,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   curl-devel flex bison gcc make \
   fipscheck-devel unbound-devel xmlto || exiterr2
 
-# Install libevent2 and systemd-devel (CentOS 7)
+# Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2

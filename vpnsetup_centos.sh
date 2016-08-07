@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6 & 7.
-# Works on dedicated servers and any KVM- or Xen-based Virtual Private Server (VPS).
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6 and 7.
+# Works on any dedicated server or Virtual Private Server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
-# ON YOUR DEDICATED SERVER OR VPS!
+# ON A DEDICATED SERVER OR VPS!
 #
 # Copyright (C) 2015-2016 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -26,8 +26,8 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# Important Notes:   https://git.io/vpnnotes
-# Setup VPN Clients: https://git.io/vpnclients
+# Important notes:   https://git.io/vpnnotes
+# Setup VPN clients: https://git.io/vpnclients
 
 # =====================================================
 
@@ -58,6 +58,7 @@ cat 1>&2 <<'EOF'
 Error: Network interface 'eth0' is not available.
 
 Please DO NOT run this script on your PC or Mac!
+
 Run 'cat /proc/net/dev' to find the active network interface,
 then use it to replace ALL 'eth0' and 'eth+' in this script.
 EOF
@@ -135,10 +136,10 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   fipscheck-devel unbound-devel xmlto || exiterr2
 yum -y install ppp xl2tpd || exiterr2
 
-# Install Fail2Ban to protect SSH
+# Install Fail2Ban to protect SSH server
 yum -y install fail2ban || exiterr2
 
-# Install libevent2 and systemd-devel (CentOS 7)
+# Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2
@@ -172,6 +173,7 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
+  nat_traversal=yes
   virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
   protostack=netkey
   nhelpers=0
@@ -447,8 +449,8 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Important Notes:   https://git.io/vpnnotes
-Setup VPN Clients: https://git.io/vpnclients
+Important notes:   https://git.io/vpnnotes
+Setup VPN clients: https://git.io/vpnclients
 
 ================================================
 
