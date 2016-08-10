@@ -48,7 +48,7 @@ Customizable with the following options:
  - Username
  - Password
  - Pre-Shared Key
- - Operation System Image (Debian 8 or Ubuntu 16.04 LTS)
+ - Operating System Image (Debian 8 or Ubuntu 16.04 LTS)
  - The size of the virtual machine. Default: Standard_A0 
 
 
