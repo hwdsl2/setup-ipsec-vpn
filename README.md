@@ -1,4 +1,4 @@
-﻿# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
+# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
@@ -38,6 +38,19 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 ## Requirements
 
 Microsoft Azure Subscription
+
+![Azure Custom Deployment](azure/custom_deployment_screenshot.png)
+
+The Template will create a fully working VPN server on the Microsoft Azure Cloud. <a href="https://azure.microsoft.com/en-us/pricing/details/virtual-machines/" target="_blank">Pricing details</a>
+
+Customizable with the following options:
+
+ - Username
+ - Password
+ - Pre-Shared Key
+ - Operation System Image (Debian 8 or Ubuntu 16.04 LTS)
+ - The size of the virtual machine. Default: Standard_A0 
+
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fderdanu%2Fsetup-ipsec-vpn%2Fmaster%2Fazure%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
