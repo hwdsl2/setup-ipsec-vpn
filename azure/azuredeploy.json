@@ -113,7 +113,7 @@
       "sku": "8",
       "version": "latest"
     },
-    "installScriptURL": "https://raw.githubusercontent.com/derdanu/setup-ipsec-vpn/master/azure/install.sh",
+    "installScriptURL": "https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/azure/install.sh",
     "installCommand": "[concat('sh install.sh ', parameters('preSharedKey'), ' ', parameters('username'), ' ', parameters('password'))]"
   },
   "resources": [
