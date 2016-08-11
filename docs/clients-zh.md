@@ -160,10 +160,17 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 1. 在文件 `xl2tpd.conf` 中，删除这一行 `# your vpn server goes here`。
 1. 在文件 `options.l2tpd.client` 中，将 `require-mschap-v2` 换成 `require-chap`。
+1. 替换 `sudo echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" > /var/run/xl2tpd/l2tp-control` 为:
+
+   ```
+   echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" | sudo tee /var/run/xl2tpd/l2tp-control
+   ```
+
 1. 替换最后一个命令 `sudo route add -net default gw <vpn server local ip>` 为：
-```
-sudo route add default dev ppp0
-```
+
+   ```
+   sudo route add default dev ppp0
+   ```
 
 如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
 
@@ -211,7 +218,7 @@ sudo route del default dev ppp0
 1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-![Select only CHAP in VPN connection properties-2](https://cloud.githubusercontent.com/assets/5104323/16026263/cbda945a-3192-11e6-96a6-ff18c5dd9a48.png)
+![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
 ### 其它错误
 

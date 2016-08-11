@@ -52,7 +52,9 @@
 这也包括各种云计算服务中的 Linux 虚拟机，比如 Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr 和 Linode。
 
 <a href="azure/README-zh.md" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png" alt="Deploy to Azure" />
+    <img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
+</a> <a href="http://dovpn.carlfriess.com/" target="_blank">
+    <img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" />
 </a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>

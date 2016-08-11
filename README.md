@@ -52,7 +52,9 @@ A dedicated server or Virtual Private Server (VPS), freshly installed with one o
 This also includes Linux VMs in public clouds such as Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr and Linode.
 
 <a href="azure/README.md" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png" alt="Deploy to Azure" />
+    <img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
+</a> <a href="http://dovpn.carlfriess.com/" target="_blank">
+    <img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" />
 </a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
@@ -93,7 +95,7 @@ VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' sh vpnsetup.sh
 ```
 
-For installation on DigitalOcean, check out this <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> by Tony Tran.
+For install on DigitalOcean, you may refer to this <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> by Tony Tran.
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 

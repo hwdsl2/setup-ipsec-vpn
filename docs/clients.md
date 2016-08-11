@@ -160,10 +160,17 @@ Follow the steps in <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn
 
 1. In `xl2tpd.conf`, remove the line `# your vpn server goes here`. 
 1. In `options.l2tpd.client`, replace `require-mschap-v2` with `require-chap`.
+1. Replace `sudo echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" > /var/run/xl2tpd/l2tp-control` with:
+
+   ```
+   echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" | sudo tee /var/run/xl2tpd/l2tp-control
+   ```
+
 1. Replace the last command `sudo route add -net default gw <vpn server local ip>` with:
-```
-sudo route add default dev ppp0
-```
+
+   ```
+   sudo route add default dev ppp0
+   ```
 
 If there is an error, check the output of `ifconfig` and replace `ppp0` above with `ppp1`, etc.
 
@@ -211,7 +218,7 @@ To fix this error, please follow these steps:
 1. Click **Allow these protocols**. Check "Challenge Handshake Authentication Protocol (CHAP)" and uncheck all others.
 1. Click **OK** to save the VPN connection details.
 
-![Select only CHAP in VPN connection properties](https://cloud.githubusercontent.com/assets/5104323/16024310/b113e9b6-3186-11e6-9e03-12f5455487ba.png)
+![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
 ### Other Errors
 
