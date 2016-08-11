@@ -1,4 +1,4 @@
-# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
+﻿# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
@@ -52,7 +52,7 @@ Customizable with the following options:
  - The size of the virtual machine. Default: Standard_A0 
 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fderdanu%2Fsetup-ipsec-vpn%2Fmaster%2Fazure%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fhwdsl2%2Fsetup-ipsec-vpn%2Fmaster%2Fazure%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
