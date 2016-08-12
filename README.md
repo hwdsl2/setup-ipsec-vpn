@@ -55,6 +55,8 @@ This also includes Linux VMs in public clouds such as Google Compute Engine, Ama
     <img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
 </a> <a href="http://dovpn.carlfriess.com/" target="_blank">
     <img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" />
+</a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank">
+    <img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" />
 </a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
