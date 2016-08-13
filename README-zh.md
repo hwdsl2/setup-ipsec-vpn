@@ -51,13 +51,7 @@
 
 这也包括各种云计算服务中的 Linux 虚拟机，比如 Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr 和 Linode。
 
-<a href="azure/README-zh.md" target="_blank">
-    <img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
-</a> <a href="http://dovpn.carlfriess.com/" target="_blank">
-    <img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" />
-</a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank">
-    <img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" />
-</a>
+<a href="azure/README-zh.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -97,7 +91,7 @@ VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 ```
 
-如需在 DigitalOcean 上安装，可以参考这个<a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">分步指南</a>，由 Tony Tran 编写。
+DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">分步指南</a>，由 Tony Tran 编写。
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
@@ -140,8 +134,8 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 ## 问题和反馈
 
-- 有问题需要提问？请先搜索已有的留言，在<a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 Gist</a> 以及<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客</a>。
-- Libreswan (IPsec) 的相关问题可在<a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">邮件列表</a>提问。也可以参见这些文章：<a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>。
+- 有问题需要提问？请先搜索已有的留言，在 <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 Gist</a> 以及 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客</a>。
+- VPN 的相关问题可在这些邮件列表提问： <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">[1]</a> <a href="https://lists.strongswan.org/mailman/listinfo/users" target="_blank">[2]</a>，或者看相关文章： <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a>。
 
 ## 卸载说明
@@ -158,6 +152,7 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 - <a href="https://github.com/ftao/vpn-deploy-playbook" target="_blank">VPN Deploy Playbook</a>
 - <a href="https://github.com/sockeye44/instavpn" target="_blank">Insta VPN</a>
 - <a href="https://github.com/quericy/one-key-ikev2-vpn" target="_blank">One Key IKEv2 VPN</a>
+- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup Strongswan</a>
 
 ## 作者
 

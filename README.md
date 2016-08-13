@@ -47,17 +47,11 @@ Please refer to <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubu
 
 **-OR-**
 
-A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is NOT supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 This also includes Linux VMs in public clouds such as Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr and Linode.
 
-<a href="azure/README.md" target="_blank">
-    <img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
-</a> <a href="http://dovpn.carlfriess.com/" target="_blank">
-    <img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" />
-</a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank">
-    <img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" />
-</a>
+<a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
@@ -97,7 +91,7 @@ VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' sh vpnsetup.sh
 ```
 
-For install on DigitalOcean, you may refer to this <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> by Tony Tran.
+DigitalOcean users may refer to this <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> by Tony Tran.
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
@@ -141,7 +135,7 @@ The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade
 ## Bugs & Questions
 
 - Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
-- Ask Libreswan (IPsec) related questions <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">on the mailing list</a>, or read these articles: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://help.ubuntu.com/community/L2TPServer" target="_blank">[4]</a> <a href="https://libreswan.org/man/ipsec.conf.5.html" target="_blank">[5]</a>.
+- Ask VPN related questions on these mailing lists: <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">[1]</a> <a href="https://lists.strongswan.org/mailman/listinfo/users" target="_blank">[2]</a>, or read related articles: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a>.
 - If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a> to submit a bug report.
 
 ## Uninstallation
@@ -158,6 +152,7 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 - <a href="https://github.com/ftao/vpn-deploy-playbook" target="_blank">VPN Deploy Playbook</a>
 - <a href="https://github.com/sockeye44/instavpn" target="_blank">Insta VPN</a>
 - <a href="https://github.com/quericy/one-key-ikev2-vpn" target="_blank">One Key IKEv2 VPN</a>
+- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup Strongswan</a>
 
 ## Author
 
