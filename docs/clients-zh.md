@@ -117,7 +117,10 @@
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-**注：** Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">更多信息</a>)
+**注：** 如果你使用 Android 6 (Marshmallow) 并且无法连接，请尝试以下解决方案：
+
+1. 单击 VPN 连接右边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请跳到下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参见</a>)
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 

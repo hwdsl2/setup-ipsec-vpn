@@ -117,7 +117,10 @@ To connect to the VPN: Use the menu bar icon, or go to the Network section of Sy
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-**Note:** Android 6 (Marshmallow) users should edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. When finished, run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>)
+**Note:** If you are using Android 6 (Marshmallow) and unable to connect, try these workarounds:
+
+1. Click the settings icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, skip to the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes`. Indent lines with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Ref</a>)
 
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
