@@ -107,8 +107,8 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 
 # In Amazon EC2, these two variables will be retrieved from metadata
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget -t 3 -T 15 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
+[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 5 -qO- 'http://169.254.169.254/latest/meta-data/public-ipv4')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(wget -t 3 -T 5 -qO- 'http://169.254.169.254/latest/meta-data/local-ipv4')
 
 # Try to find IPs for non-EC2 servers
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)

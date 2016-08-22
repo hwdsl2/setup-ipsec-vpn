@@ -117,7 +117,10 @@
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-**注：** Android 6 (Marshmallow) 用户需要编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">更多信息</a>)
+**注：** 如果你使用 Android 6 (Marshmallow) 并且无法连接，请尝试以下解决方案：
+
+1. 单击 VPN 连接右边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请跳到下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参见</a>)
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -160,10 +163,17 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 1. 在文件 `xl2tpd.conf` 中，删除这一行 `# your vpn server goes here`。
 1. 在文件 `options.l2tpd.client` 中，将 `require-mschap-v2` 换成 `require-chap`。
+1. 替换 `sudo echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" > /var/run/xl2tpd/l2tp-control` 为:
+
+   ```
+   echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" | sudo tee /var/run/xl2tpd/l2tp-control
+   ```
+
 1. 替换最后一个命令 `sudo route add -net default gw <vpn server local ip>` 为：
-```
-sudo route add default dev ppp0
-```
+
+   ```
+   sudo route add default dev ppp0
+   ```
 
 如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
 
@@ -211,7 +221,7 @@ sudo route del default dev ppp0
 1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-![Select only CHAP in VPN connection properties-2](https://cloud.githubusercontent.com/assets/5104323/16026263/cbda945a-3192-11e6-96a6-ff18c5dd9a48.png)
+![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
 ### 其它错误
 

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 export VPN_IPSEC_PSK=$1
 export VPN_USER=$2
 export VPN_PASSWORD=$3

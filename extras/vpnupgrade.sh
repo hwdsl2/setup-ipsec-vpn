@@ -21,7 +21,7 @@ exiterr()  { echo "Error: ${1}" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
 os_type="$(lsb_release -si 2>/dev/null)"
-if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ]; then
+if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ] && [ "$os_type" != "Raspbian" ]; then
   exiterr "This script only supports Ubuntu/Debian."
 fi
 
