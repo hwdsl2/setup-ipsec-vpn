@@ -37,8 +37,6 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-**注：** 在首次连接之前需要修改一次注册表。请参见下面的说明。
-
 **Windows 7, Vista and XP:**
 
 1. 单击开始菜单，选择控制面板。
@@ -57,7 +55,7 @@
 1. 单击 **创建**，然后单击 **关闭** 按钮。
 1. 返回 **网络与共享中心**。单击左侧的 **更改适配器设置**。
 1. 右键单击新创建的 VPN 连接，并选择 **属性**。
-1. 单击 **选项** 选项卡，取消选中 **包含Windows登录域** 复选框。
+1. 单击 **选项** 选项卡，取消选中 **包括Windows登录域** 复选框。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
 1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
 1. 单击 **高级设置** 按钮。
@@ -67,19 +65,7 @@
 
 要连接到 VPN： 单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-<a id="regkey"></a>
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
-
-**注：** 在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请参照链接网页中的说明，或者打开<a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重启计算机。
-- 适用于 Windows Vista, 7, 8 和 10
-  ```console
-  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
-  ```
-
-- 仅适用于 Windows XP
-  ```console
-  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
-  ```
 
 ### OS X ###
 1. 打开系统偏好设置并转到网络部分。
@@ -117,10 +103,10 @@
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-**注：** 如果你使用 Android 6 (Marshmallow) 并且无法连接，请尝试以下解决方案：
+**注：** 如果无法使用 Android 6 (Marshmallow) 连接，请尝试以下解决方案：
 
-1. 单击 VPN 连接右边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请跳到下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参见</a>)
+1. 单击 VPN 连接右边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请跳到第二步。
+1. （注：最新版本的 VPN 脚本已经包含这些更改）编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参考链接</a>)
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -175,7 +161,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
    sudo route add default dev ppp0
    ```
 
-如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
+   如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
 
 检查 VPN 是否正常工作：
 ```
@@ -207,7 +193,17 @@ sudo route del default dev ppp0
 
 > 无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。
 
-要解决此错误，请按照<a href="#regkey">上面的步骤</a>添加注册表键并重启计算机。
+要解决此错误，在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请参照链接网页中的说明，或者打开<a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a>并运行以下命令。完成后必须重启计算机。
+
+- 适用于 Windows Vista, 7, 8 和 10
+  ```console
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
+  ```
+
+- 仅适用于 Windows XP
+  ```console
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
+  ```
 
 ### Windows 错误 628
 

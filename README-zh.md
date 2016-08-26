@@ -112,7 +112,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 ## 重要提示
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#regkey" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+**Windows 用户** 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 **Android 6 (Marshmallow) 用户** 请参考此文档中的注释： <a href="docs/clients-zh.md#android" target="_blank">配置 IPsec/L2TP VPN 客户端</a>。
 
@@ -135,7 +135,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 ## 问题和反馈
 
 - 有问题需要提问？请先搜索已有的留言，在 <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 Gist</a> 以及 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客</a>。
-- VPN 的相关问题可在这些邮件列表提问： <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">[1]</a> <a href="https://lists.strongswan.org/mailman/listinfo/users" target="_blank">[2]</a>，或者看相关文章： <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a>。
+- VPN 的相关问题可在这些邮件列表提问： <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">[1]</a> <a href="https://lists.strongswan.org/mailman/listinfo/users" target="_blank">[2]</a>，或者看相关文章： <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[2]</a> <a href="https://wiki.archlinux.org/index.php/L2TP/IPsec_VPN_client_setup" target="_blank">[3]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[4]</a>。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a>。
 
 ## 卸载说明
@@ -145,13 +145,11 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 ## 另见
 
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
+- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
 - <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
-- <a href="https://github.com/ftao/vpn-deploy-playbook" target="_blank">VPN Deploy Playbook</a>
-- <a href="https://github.com/sockeye44/instavpn" target="_blank">Insta VPN</a>
-- <a href="https://github.com/quericy/one-key-ikev2-vpn" target="_blank">One Key IKEv2 VPN</a>
 - <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup Strongswan</a>
 
 ## 作者
