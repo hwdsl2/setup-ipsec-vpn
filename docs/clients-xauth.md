@@ -26,13 +26,14 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click the **Authentication** tab. Select **Mutual PSK + XAuth** from the **Authentication Method** drop-down menu.
 1. Click the **Credentials** tab below. Enter `Your VPN IPsec PSK` in the **Pre Shared Key** field.
 1. Click the **Phase 1** tab. Select **main** from the **Exchange Type** drop-down menu.
+1. Click the **Phase 2** tab. Select **sha1** from the **HMAC Algorithm** drop-down menu.
 1. Click **Save** to save the VPN connection details.
 1. Select the new VPN connection. Click the **Connect** button on toolbar.
 1. Enter `Your VPN Username` in the **Username** field.
 1. Enter `Your VPN Password` in the **Password** field.
 1. Click **Connect**.
 
-Once connected, you will see **tunnel enabled** in the VPN Connect status window. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see **tunnel enabled** in the VPN Connect status window. Click the "Network" tab, and confirm that **Established - 1** is displayed under "Security Associations". You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 **Note:** This <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router). Refer to the linked web page, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. You must reboot your computer when finished.
 - For Windows Vista, 7, 8 and 10
