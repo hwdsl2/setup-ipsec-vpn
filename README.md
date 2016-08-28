@@ -108,6 +108,8 @@ Get your computer or device to use the VPN. Please refer to:
 <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>   
 <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth ("Cisco IPsec") VPN Clients</a>
 
+<a href="docs/ikev2-howto.md" target="_blank">How To: IKEv2 VPN for Windows 7 and newer</a>
+
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important Notes
@@ -150,7 +152,7 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
 - <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
-- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup Strongswan</a>
+- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
 ## Author
 

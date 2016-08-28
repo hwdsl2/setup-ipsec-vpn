@@ -108,6 +108,8 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>   
 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端</a>
 
+<a href="docs/ikev2-howto-zh.md" target="_blank">如何配置 IKEv2 VPN: Windows 7 和更新版本</a>
+
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
@@ -150,7 +152,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
 - <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
-- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup Strongswan</a>
+- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
 ## 作者
 
