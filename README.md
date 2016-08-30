@@ -1,12 +1,19 @@
-﻿# IPsec VPN Server Auto Setup Scripts &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
+﻿# IPsec VPN Server Auto Setup Scripts
 
-*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
+[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
+[![Author](https://img.shields.io/badge/author-Lin%20Song-orange.svg?maxAge=2592000)](https://www.linkedin.com/in/linsongui) 
+[![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 Set up your own IPsec VPN server in just a few minutes, with both IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
+
+An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
 We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">**&raquo; Related tutorial: IPsec VPN Server Auto Setup with Libreswan**</a>
+
+*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
 #### Table of Contents
 
