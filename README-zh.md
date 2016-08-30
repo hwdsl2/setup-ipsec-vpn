@@ -1,12 +1,19 @@
-﻿# IPsec VPN 服务器一键安装脚本 &nbsp;[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn)
+﻿# IPsec VPN 服务器一键安装脚本
 
-*其他语言版本: [English](README.md), [简体中文](README-zh.md).*
+[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
+[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](https://www.linkedin.com/in/linsongui) 
+[![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
-使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。同时支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+
+IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/" target="_blank">**&raquo; 相关教程： IPsec VPN Server Auto Setup with Libreswan**</a>
+
+*其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
 #### 目录
 
