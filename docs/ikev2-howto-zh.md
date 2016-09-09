@@ -2,11 +2,17 @@
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
+---
+
 **重要提示：** 本指南仅适用于**高级用户**。其他用户请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a>。
 
-Windows 7 和更新版本支持 IKEv2 和 MOBIKE 标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 （Security association，SA）。与 IKEv1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+---
+
+Windows 7 和更新版本 （包括 Windows Phone 8.1 及以上） 支持 IKEv2 和 MOBIKE 标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 （Security association，SA）。与 IKEv1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。除了 Windows 之外，它也可用于 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient" target="_blank">strongSwan Android VPN 客户端</a>。下面举例说明如何配置 IKEv2。
+
+首先，请确保你已经成功地<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建了自己的 VPN 服务器</a>。以下命令必须用 `root` 账户运行。
 
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
@@ -197,11 +203,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   连接成功后，你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+   连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 已知问题
 
-Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误 "Error 809"，或者可能在连接后无法打开任何网站。如果出现这些问题，请首先尝试 <a href="clients-zh.md#故障排除" target="_blank">这个解决方案</a>。如果仍然无法解决，请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 协议连接。
+Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误 "Error 809"，或者可能在连接后无法打开任何网站。如果出现这些问题，请首先尝试 <a href="clients-zh.md#故障排除" target="_blank">这个解决方案</a>。如果仍然无法解决，请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
 
 ## 参考链接
 

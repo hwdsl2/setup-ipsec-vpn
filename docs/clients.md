@@ -1,12 +1,12 @@
-﻿## Configure IPsec/L2TP VPN Clients
+﻿# Configure IPsec/L2TP VPN Clients
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-*To connect using IPsec/XAuth mode, see: [Configure IPsec/XAuth VPN Clients](clients-xauth.md)*
+*Note: You may also connect using [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).*
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
-You may also refer to this alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">setup guide with images</a> by Tony Tran.
+An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">setup guide</a> with images is available, written by Tony Tran.
 
 ---
 * Platforms
@@ -15,11 +15,12 @@ You may also refer to this alternative <a href="https://usefulpcguide.com/17318/
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Chromebook](#chromebook)
+  * [Windows Phone](#windows-phone)
   * [Linux](#linux)
 
-### Windows ###
+## Windows
 
-**Windows 10 and 8.x:**
+### Windows 10 and 8.x
 
 1. Right-click on the wireless/network icon in your system tray.
 1. Select **Open Network and Sharing Center**.
@@ -37,7 +38,7 @@ You may also refer to this alternative <a href="https://usefulpcguide.com/17318/
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-**Windows 7, Vista and XP:**
+### Windows 7, Vista and XP
 
 1. Click on the Start Menu and go to the Control Panel.
 1. Go to the **Network and Internet** section.
@@ -67,7 +68,8 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
-### OS X ###
+## OS X
+
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
 1. Select **VPN** from the **Interface** drop-down menu.
@@ -87,7 +89,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### Android ###
+## Android
+
 1. Launch the **Settings** application.
 1. Tap **More...** in the **Wireless & Networks** section.
 1. Tap **VPN**.
@@ -103,14 +106,12 @@ To connect to the VPN: Use the menu bar icon, or go to the Network section of Sy
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-**Note:** If unable to connect using Android 6 (Marshmallow), try these workarounds:
-
-1. Tap the settings icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, skip to step 2.
-1. (Note: Latest version of the VPN scripts already include these changes) Edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>)
-
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### iOS ###
+If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+
+## iOS
+
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
 1. Tap **Type**. Select **L2TP** and go back.
@@ -125,7 +126,8 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### Chromebook ###
+## Chromebook
+
 1. If you haven't already, sign in to your Chromebook.
 1. Click the status area, where your account picture appears.
 1. Click **Settings**.
@@ -141,9 +143,13 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### Linux ###
+## Windows Phone
 
-**Ubuntu and Debian:**
+Users with Windows Phone 8.1 and newer, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. Please note that IPsec/L2TP support on this platform may have some issues. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+## Linux
+
+### Ubuntu & Debian
 
 Follow the steps in <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn-on-ubuntu-16-04/" target="_blank">this tutorial</a>. Some corrections are required:
 
@@ -163,7 +169,7 @@ Follow the steps in <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn
 
    If there is an error, check the output of `ifconfig` and replace `ppp0` above with `ppp1`, etc.
 
-Verify that your traffic is being routed properly:
+Once connected, verify that your traffic is being routed properly:
 ```
 wget -qO- http://whatismyip.akamai.com; echo
 ```
@@ -175,7 +181,7 @@ To stop routing traffic via the VPN server:
 sudo route del default dev ppp0
 ```
 
-**CentOS and Fedora:**
+### CentOS & Fedora
 
 Refer to the Ubuntu/Debian section above, with these changes:
 
@@ -183,7 +189,7 @@ Refer to the Ubuntu/Debian section above, with these changes:
 1. In these systems, the `ipsec` command has been renamed to `strongswan`.
 1. The files `ipsec.conf` and `ipsec.secrets` should be saved under `/etc/strongswan`.
 
-**Other Linux:**
+### Other Linux
 
 If your system provides the `strongswan` package, refer to the two sections above.
 
@@ -219,6 +225,13 @@ To fix this error, please follow these steps:
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
+### Android 6.0 and 7.0
+
+If you are unable to connect using Android 6.0 (Marshmallow) or 7.0 (Nougat), try these workarounds:
+
+1. Tap the "Settings" icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, see the next step.
+1. (Note: The latest version of VPN scripts already includes these changes) Edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+
 ### Other Errors
 
 Please refer to <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">this document</a> for more troubleshooting tips.
@@ -228,6 +241,8 @@ Please refer to <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubl
 This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
 
 ## License
+
+Note: This license applies to this document only.
 
 Copyright (C) 2016 Lin Song   
 Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)

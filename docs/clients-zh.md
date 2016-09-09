@@ -1,12 +1,12 @@
-﻿## 配置 IPsec/L2TP VPN 客户端
+﻿# 配置 IPsec/L2TP VPN 客户端
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-*如需使用 IPsec/XAuth 模式连接，请参见： [配置 IPsec/XAuth VPN 客户端](clients-xauth-zh.md)*
+*注: 你也可以使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。*
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的 VPN 服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
-你也可以参考另一个<a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">带图片的安装指南</a>，由 Tony Tran 编写。
+另一个带图片的<a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">安装指南</a>可供参考，它由 Tony Tran 编写。
 
 ---
 * 平台名称
@@ -15,11 +15,12 @@
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Chromebook](#chromebook)
+  * [Windows Phone](#windows-phone)
   * [Linux](#linux)
 
-### Windows ###
+## Windows
 
-**Windows 10 and 8.x:**
+### Windows 10 and 8.x
 
 1. 右键单击系统托盘中的无线/网络图标。
 1. 选择 **打开网络与共享中心**。
@@ -37,7 +38,7 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-**Windows 7, Vista and XP:**
+### Windows 7, Vista and XP
 
 1. 单击开始菜单，选择控制面板。
 1. 进入 **网络和Internet** 部分。
@@ -63,11 +64,12 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-要连接到 VPN： 单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN： 单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
-### OS X ###
+## OS X
+
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
 1. 从 **接口** 下拉菜单选择 **VPN**。
@@ -85,9 +87,10 @@
 1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
 1. 单击 **好** 关闭高级设置，然后单击 **应用** 保存VPN连接信息。
 
-要连接到 VPN： 使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN： 使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-### Android ###
+## Android
+
 1. 启动 **设置** 应用程序。
 1. 在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
@@ -103,14 +106,12 @@
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-**注：** 如果无法使用 Android 6 (Marshmallow) 连接，请尝试以下解决方案：
+VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-1. 单击 VPN 连接右边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请跳到第二步。
-1. （注：最新版本的 VPN 脚本已经包含这些更改）编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">参考链接</a>)
+如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
-VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+## iOS
 
-### iOS ###
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
 1. 单击 **类型** 。选择 **L2TP** 并返回。
@@ -123,9 +124,10 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 单击右上角的 **存储**。
 1. 启用 **VPN** 连接。
 
-VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-### Chromebook ###
+## Chromebook
+
 1. 如果你尚未登录 Chromebook，请先登录。
 1. 单击状态区（其中显示你的帐户头像）。
 1. 单击 **设置**。
@@ -139,11 +141,15 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到<a href="h
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 单击 **连接**。
 
-VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到<a href="https://www.whatismyip.com" target="_blank">这里</a>检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-### Linux ###
+## Windows Phone
 
-**Ubuntu and Debian:**
+Windows Phone 8.1 和更新版本的用户可以尝试<a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a>。请注意，该平台的 IPsec/L2TP 支持可能有一些问题。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+## Linux
+
+### Ubuntu & Debian
 
 按照 <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn-on-ubuntu-16-04/" target="_blank">这个教程</a> 的步骤操作。需要更正以下项：
 
@@ -163,7 +169,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
    如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
 
-检查 VPN 是否正常工作：
+连接成功后，检查 VPN 是否正常工作：
 ```
 wget -qO- http://whatismyip.akamai.com; echo
 ```
@@ -175,7 +181,7 @@ wget -qO- http://whatismyip.akamai.com; echo
 sudo route del default dev ppp0
 ```
 
-**CentOS and Fedora:**
+### CentOS & Fedora
 
 参照上面的 Ubuntu/Debian 部分，并进行以下改动：
 
@@ -183,7 +189,7 @@ sudo route del default dev ppp0
 1. 在这些系统中，`ipsec` 命令已经被重命名为 `strongswan`。
 1. 文件 `ipsec.conf` 和 `ipsec.secrets` 应该保存在 `/etc/strongswan` 目录中。
 
-**Other Linux:**
+### Other Linux
 
 如果你的系统提供 `strongswan` 软件包，请参见上面的两个部分。
 
@@ -219,6 +225,13 @@ sudo route del default dev ppp0
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
+### Android 6.0 and 7.0
+
+如果你无法使用 Android 6.0 (Marshmallow) 或者 7.0 (Nougat) 连接，请尝试以下解决方案：
+
+1. 单击 VPN 连接旁边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请看下一步。
+1. （注： 最新版本的 VPN 脚本已经包含这些更改） 编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+
 ### 其它错误
 
 更多的故障排除信息请参见 <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">这个文档</a>。
@@ -228,6 +241,8 @@ sudo route del default dev ppp0
 本文档是在 <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> 项目文档基础上翻译和修改。该项目由 Joshua Lund 和其他开发者维护。
 
 ## 授权协议
+
+注： 这个协议仅适用于本文档。
 
 版权所有 (C) 2016 Lin Song   
 基于 <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">Joshua Lund 的工作</a> (版权所有 2014-2016)

@@ -2,11 +2,17 @@
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
+---
+
 **IMPORTANT:** This guide is for **advanced users** ONLY. Other users please use <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a>.
 
-Windows 7 and newer releases support the IKEv2 and MOBIKE standards through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a security association (SA) in the IPsec protocol suite. Compared to IKEv1, IKEv2 has <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">many improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
+---
+
+Windows 7 and newer releases (including Windows Phone 8.1 and newer) support the IKEv2 and MOBIKE standards through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a security association (SA) in the IPsec protocol suite. Compared to IKEv1, IKEv2 has <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">many improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. Besides Windows, it can also be used with <a href="https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient" target="_blank">strongSwan Android VPN client</a>. The following examples show how to configure IKEv2.
+
+First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>. Commands below must be run as `root`.
 
 1. Find the public and private IP of your server, and make sure they are not empty. It is OK if they are the same.
 
@@ -201,9 +207,9 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 ## Known Issues
 
-The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail with "Error 809", or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> instead.
+The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail with "Error 809", or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> modes instead.
 
-## Useful Links
+## References
 
 * https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan

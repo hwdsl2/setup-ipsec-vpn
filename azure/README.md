@@ -24,4 +24,4 @@ Screenshot:
 
 ## Author
 
-- Daniel Falkner (https://github.com/derdanu)
+Copyright (C) 2016 [Daniel Falkner](https://github.com/derdanu)

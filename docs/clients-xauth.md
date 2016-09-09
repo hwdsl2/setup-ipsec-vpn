@@ -1,12 +1,12 @@
-﻿## Configure IPsec/XAuth VPN Clients
+﻿# Configure IPsec/XAuth VPN Clients
 
 *Read this in other languages: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
 
-*To connect using IPsec/L2TP mode, see: [Configure IPsec/L2TP VPN Clients](clients.md)*
+*Note: You may also connect using [IPsec/L2TP mode](clients.md), or set up [IKEv2](ikev2-howto.md).*
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/XAuth ("Cisco IPsec") is natively supported by Android, iOS and OS X. There is no additional software to install. Windows users can use the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft client</a>. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
-`IPsec/XAuth` mode is also called "Cisco IPsec". Compared to `IPsec/L2TP`, it is generally faster with less overhead.
+IPsec/XAuth mode is also called "Cisco IPsec". It is generally faster than IPsec/L2TP with less overhead.
 
 ---
 * Platforms
@@ -15,9 +15,9 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
 
-### Windows ###
+## Windows
 
-**Note:** You can also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
+**Note:** You may also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
 
 1. Download and install the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN client</a>.
 1. Click Start Menu -> All Programs -> ShrewSoft VPN Client -> VPN Access Manager
@@ -35,7 +35,10 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 
 Once connected, you will see **tunnel enabled** in the VPN Connect status window. Click the "Network" tab, and confirm that **Established - 1** is displayed under "Security Associations". You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### OS X ###
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
+## OS X
+
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
 1. Select **VPN** from the **Interface** drop-down menu.
@@ -54,7 +57,8 @@ Once connected, you will see **tunnel enabled** in the VPN Connect status window
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### Android ###
+## Android
+
 1. Launch the **Settings** application.
 1. Tap **More...** in the **Wireless & Networks** section.
 1. Tap **VPN**.
@@ -71,14 +75,12 @@ To connect to the VPN: Use the menu bar icon, or go to the Network section of Sy
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-**Note:** If unable to connect using Android 6 (Marshmallow), try these workarounds:
-
-1. Tap the settings icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, skip to step 2.
-1. (Note: Latest version of the VPN scripts already include these changes) Edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Android_6.0_connection_comes_up_but_no_packet_flow" target="_blank">Reference</a>)
-
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### iOS ###
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
+## iOS
+
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
 1. Tap **Type**. Select **IPSec** and go back.
@@ -98,6 +100,8 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
 
 ## License
+
+Note: This license applies to this document only.
 
 Copyright (C) 2016 Lin Song   
 Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)

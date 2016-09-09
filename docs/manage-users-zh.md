@@ -1,4 +1,4 @@
-﻿## 管理 VPN 用户
+﻿# 管理 VPN 用户
 
 *其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 

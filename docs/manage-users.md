@@ -1,4 +1,4 @@
-﻿## Manage VPN Users
+﻿# Manage VPN Users
 
 *Read this in other languages: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
