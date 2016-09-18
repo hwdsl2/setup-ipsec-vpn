@@ -207,7 +207,7 @@ First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-
 
 ## Known Issues
 
-The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail with "Error 809", or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> modes instead.
+The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail with "Error 809", or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> instead.
 
 ## References
 

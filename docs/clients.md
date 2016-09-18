@@ -234,7 +234,11 @@ If you are unable to connect using Android 6.0 (Marshmallow) or 7.0 (Nougat), tr
 
 ### Other Errors
 
-Please refer to <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">this document</a> for more troubleshooting tips.
+Refer to the links below for more troubleshooting tips:
+
+https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+http://www.tp-link.com/en/faq-1029.html
 
 ## Credits
 

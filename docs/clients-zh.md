@@ -234,7 +234,11 @@ sudo route del default dev ppp0
 
 ### 其它错误
 
-更多的故障排除信息请参见 <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues" target="_blank">这个文档</a>。
+更多的故障排除信息请参见以下链接：
+
+https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+http://www.tp-link.com/en/faq-1029.html
 
 ## 致谢
 

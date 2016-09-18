@@ -1,7 +1,7 @@
 ﻿# IPsec VPN Server Auto Setup Scripts
 
 [![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Author](https://img.shields.io/badge/author-Lin%20Song-orange.svg?maxAge=2592000)](https://www.linkedin.com/in/linsongui) 
+[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](#author) 
 [![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
@@ -137,7 +137,14 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">mailing list</a>). Edit the `swan_ver` variable as necessary. Check installed version: `ipsec --version`
+The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade Libreswan (<a href="https://libreswan.org" target="_blank">website</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">mailing list</a>). Edit the `swan_ver` variable as necessary. Check installed version: `ipsec --version`.
+
+```bash
+# Ubuntu & Debian
+wget https://git.io/vpnupgrade -O vpnupgrade.sh
+# CentOS & RHEL
+wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
+```
 
 ## Bugs & Questions
 
@@ -155,7 +162,7 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
-- <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
+- <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a>/<a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 - <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
