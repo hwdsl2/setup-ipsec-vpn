@@ -317,10 +317,20 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-# Create basic IPTables rules. First check for existing rules.
-# - If IPTables is "empty", simply write out the new rules.
-# - If *not* empty, insert new rules and save them with existing ones.
+# Check if IPTables rules need updating
+ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
+  ipt_flag=1
+elif ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+  ipt_flag=1
+elif ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+  ipt_flag=1
+fi
+
+# Create basic IPTables rules
+# - If IPTables is "empty", write out the entire new rule set.
+# - If *not* empty, insert only the required rules for the VPN.
+if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   iptables-save > "/etc/sysconfig/iptables.old-$sys_dt"
   sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
