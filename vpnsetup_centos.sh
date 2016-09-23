@@ -35,6 +35,10 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: ${1}" >&2; exit 1; }
 exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
+check_ip() {
+  IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+  printf %s "${1}" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
 
 if [ ! -f /etc/redhat-release ]; then
   exiterr "This script only supports CentOS/RHEL."
@@ -111,22 +115,11 @@ PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 
 # Check IPs for correct format
-IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
-fi
-if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-fi
-if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
-fi
-if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
-fi
-if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
-fi
+check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
+check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
+check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
 
 # Add the EPEL repository
 yum -y install epel-release || exiterr2
