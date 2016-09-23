@@ -85,6 +85,12 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
+case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
+  *[\\\"\']*)
+    exiterr "VPN credentials must not contain any of these characters: \\ \" '"
+    ;;
+esac
+
 echo "VPN setup in progress... Please be patient."
 echo
 
