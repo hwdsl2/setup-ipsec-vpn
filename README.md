@@ -1,7 +1,7 @@
 ﻿# IPsec VPN Server Auto Setup Scripts
 
 [![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](#author) 
+[![Author](https://static.ls20.com/travis-ci/author.svg)](#author) 
 [![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
@@ -22,19 +22,19 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Installation](#installation)
   - [Ubuntu & Debian](#ubuntu--debian)
   - [CentOS & RHEL](#centos--rhel)
-- [Next Steps](#next-steps)
-- [Important Notes](#important-notes)
+- [Next steps](#next-steps)
+- [Important notes](#important-notes)
 - [Upgrade Libreswan](#upgrade-libreswan)
 - [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
-- [See Also](#see-also)
+- [See also](#see-also)
 - [Author](#author)
 - [License](#license)
 
 ## Features
 
 - **New:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is supported
-- **New:** A pre-built [Docker image](#see-also) of the VPN server is now available
+- **New:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -108,7 +108,7 @@ First, update your system with `yum update` and reboot. This is optional, but re
 
 Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
 
-## Next Steps
+## Next steps
 
 Get your computer or device to use the VPN. Please refer to:
 
@@ -119,11 +119,13 @@ Get your computer or device to use the VPN. Please refer to:
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
-## Important Notes
+## Important notes
 
 **Windows and Android 6.0/7.0 users**: If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 If you wish to add, edit or remove VPN user accounts, refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
+
+The same VPN account can be used by your multiple devices. However, due to a limitation of the IPsec protocol, if these devices are behind the same NAT (e.g. home router), they cannot simultaneously connect to the VPN server.
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 
@@ -156,13 +158,13 @@ wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 
 Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a>.
 
-## See Also
+## See also
 
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
-- <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a>/<a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
+- <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a> / <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 - <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 

@@ -1,7 +1,7 @@
 ﻿# IPsec VPN 服务器一键安装脚本
 
 [![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](#作者) 
+[![Author](https://static.ls20.com/travis-ci/author.svg)](#作者) 
 [![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
@@ -34,7 +34,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 ## 功能特性
 
 - **新:** 增加支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
-- **新:** 现在可以下载 VPN 服务器的预构建 [Docker 镜像](#另见)
+- **新:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker 镜像</a>
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
@@ -54,7 +54,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 **-或者-**
 
-一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 不受支持，用户可以尝试使用 <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a>/<a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
+一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 不受支持，用户可以尝试使用 <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a> / <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 这也包括各种云计算服务中的 Linux 虚拟机，比如 Google Compute Engine, Amazon EC2, Microsoft Azure, IBM SoftLayer, VMware vCloud Air, Rackspace, DigitalOcean, Vultr 和 Linode。
 
@@ -125,6 +125,8 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果上述设备属于同一个 NAT 网络（比如家用路由器），它们无法同时连接到 VPN 服务器。
+
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启服务器。
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
@@ -162,7 +164,7 @@ wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
-- <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a>/<a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
+- <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">Shadowsocks</a> / <a href="https://github.com/breakwa11/shadowsocks-rss" target="_blank">ShadowsocksR</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 - <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
