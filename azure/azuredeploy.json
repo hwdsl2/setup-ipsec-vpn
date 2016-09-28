@@ -120,14 +120,16 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageName')]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2016-01-01",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "StorageAccount"
       },
-      "properties": {
-        "accountType": "[variables('vhdStorageType')]"
-      }
+      "properties": {},
+      "sku": {
+        "name": "[variables('vhdStorageType')]"
+      },
+      "kind": "Storage"
     },
     {
       "apiVersion": "[variables('apiVersion')]",
@@ -187,9 +189,9 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
+      "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "VirtualMachine"
@@ -211,7 +213,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://', variables('storageName'), '.blob.core.windows.net/vmachines/', variables('vmName'), '.vhd')]"
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageName'))).primaryEndpoints.blob, 'vmachines/', variables('vmName'), '.vhd')]"              
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
