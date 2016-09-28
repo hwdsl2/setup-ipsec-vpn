@@ -8,7 +8,7 @@
 
 ---
 
-Windows 7 和更新版本 （包括 Windows Phone 8.1 及以上） 支持 IKEv2 和 MOBIKE 标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 （Security association，SA）。与 IKEv1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+Windows 7 和更新版本 （包括 Windows Phone 8.1 及以上） 支持 IKEv2 和 MOBIKE 标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。除了 Windows 之外，它也可用于 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient" target="_blank">strongSwan Android VPN 客户端</a>。下面举例说明如何配置 IKEv2。
 
@@ -17,7 +17,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
    ```bash
-   $ PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Your public IP is displayed)
@@ -57,10 +57,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：
+1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：   
+   注： 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
 
    ```bash
-   $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 12 -d sql:/etc/ipsec.d -t "CT,," -2
+   $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
 
    A random seed must be generated that will be used in the
    creation of your key.  One of the easiest ways to create a
@@ -83,7 +84,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Is this a critical extension [y/N]?
    N
 
-   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 12 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "$PUBLIC_IP"
+   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "$PUBLIC_IP"
 
    A random seed must be generated that will be used in the
    creation of your key.  One of the easiest ways to create a
@@ -156,18 +157,18 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 生成客户端证书，并且导出 p12 文件。该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
-   $ certutil -S -c "Example CA" -n "winclient" -s "O=Example,CN=winclient" -k rsa -g 4096 -v 12 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "winclient"
+   $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
 
    -- repeat same extensions as above --
 
-   $ pk12util -o winclient.p12 -n "winclient" -d sql:/etc/ipsec.d
+   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
    Enter password for PKCS12 file:
    Re-enter password:
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   可以重复该步骤来为更多的客户端生成证书，但必须把所有的 `winclient` 换成 `winclient2`，等等。
+   可以重复该步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。
 
 1. 证书数据库现在应该包含以下内容：
 
@@ -179,7 +180,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    Example CA                                         CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
-   winclient                                          u,u,u
+   vpnclient                                          u,u,u
    ```
 
    注：如需删除证书，可运行命令 `certutil -D -d sql:/etc/ipsec.d -n "Certificate Nickname"`。
@@ -190,10 +191,12 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 文件 `winclient.p12` 应该被安全的传送到 Windows 客户端计算机，并且导入到 Computer 证书存储。在导入 CA 证书后，它必须被放入（或移动到） "Trusted Root Certification Authorities" 目录的 "Certificates" 子目录中。
+1. 文件 `vpnclient.p12` 应该被安全的传送到 Windows 客户端计算机，并且导入到 Computer 证书存储。在导入 CA 证书后，它必须被放入（或移动到） "Trusted Root Certification Authorities" 目录的 "Certificates" 子目录中。
 
    详细的操作步骤：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+
+   Windows Phone 8.1 及以上版本用户： 首先导入 .p12 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
 
