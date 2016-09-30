@@ -154,7 +154,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    N
    ```
 
-1. 生成客户端证书，并且导出 p12 文件。该文件包含客户端证书，私钥以及 CA 证书：
+1. 生成客户端证书，并且导出 `.p12` 文件。该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
    $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
@@ -196,7 +196,10 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    详细的操作步骤：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   Windows Phone 8.1 及以上版本用户： 首先导入 .p12 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
+   Windows Phone 8.1 及以上版本用户： 首先导入 `.p12` 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
+
+   Android 4+ 用户请参见：   
+   https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
 

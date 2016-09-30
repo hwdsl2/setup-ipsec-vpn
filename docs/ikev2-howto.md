@@ -154,7 +154,7 @@ First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-
    N
    ```
 
-1. Generate client certificate(s), and export the p12 file that contains the client certificate, private key, and CA certificate:
+1. Generate client certificate(s), and export the `.p12` file that contains the client certificate, private key, and CA certificate:
 
    ```bash
    $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
@@ -196,7 +196,10 @@ First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-
    Detailed instructions:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   Users with Windows Phone 8.1 and above: First import the .p12 file, then follow <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">these instructions</a> to configure a certificate-based IKEv2 VPN.
+   Users with Windows Phone 8.1 and above: First import the `.p12` file, then follow <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">these instructions</a> to configure a certificate-based IKEv2 VPN.
+
+   Android 4+ users please refer to:   
+   https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
 
 1. On the Windows computer, add a new IKEv2 VPN connection.
 

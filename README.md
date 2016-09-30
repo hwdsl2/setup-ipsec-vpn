@@ -20,8 +20,6 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-  - [Ubuntu & Debian](#ubuntu--debian)
-  - [CentOS & RHEL](#centos--rhel)
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
 - [Upgrade Libreswan](#upgrade-libreswan)
@@ -117,15 +115,17 @@ Get your computer or device to use the VPN. Please refer to:
 
 <a href="docs/ikev2-howto.md" target="_blank">How To: IKEv2 VPN for Windows 7 and newer</a>
 
+If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-**Windows and Android 6.0/7.0 users**: If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
-
-If you wish to add, edit or remove VPN user accounts, refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
+**Windows and Android users**: If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 The same VPN account can be used by your multiple devices. However, due to a limitation of the IPsec protocol, if these devices are behind the same NAT (e.g. home router), they cannot simultaneously connect to the VPN server.
+
+If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 

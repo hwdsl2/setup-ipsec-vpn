@@ -20,8 +20,6 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - [功能特性](#功能特性)
 - [系统要求](#系统要求)
 - [安装说明](#安装说明)
-  - [Ubuntu & Debian](#ubuntu--debian)
-  - [CentOS & RHEL](#centos--rhel)
 - [下一步](#下一步)
 - [重要提示](#重要提示)
 - [升级Libreswan](#升级libreswan)
@@ -117,15 +115,17 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 <a href="docs/ikev2-howto-zh.md" target="_blank">如何配置 IKEv2 VPN: Windows 7 和更新版本</a>
 
+如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 和 Android 6.0/7.0 用户**： 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+**Windows 和 Android 用户**： 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果这些设备在同一个 NAT 后面（比如家用路由器），它们无法同时连接到 VPN 服务器。
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
-
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果上述设备属于同一个 NAT 网络（比如家用路由器），它们无法同时连接到 VPN 服务器。
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启服务器。
 

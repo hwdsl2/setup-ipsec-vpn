@@ -17,6 +17,11 @@
   * [Chromebook](#chromebook)
   * [Windows Phone](#windows-phone)
   * [Linux](#linux)
+* [故障排除](#故障排除)
+  * [Windows 错误 809](#windows-错误-809)
+  * [Windows 错误 628](#windows-错误-628)
+  * [Android 6.0 and 7.0](#android-60-and-70)
+  * [其它错误](#其它错误)
 
 ## Windows
 
@@ -32,7 +37,7 @@
 1. 返回 **网络与共享中心**。单击左侧的 **更改适配器设置**。
 1. 右键单击新创建的 VPN 连接，并选择 **属性**。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
+1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
@@ -58,7 +63,7 @@
 1. 右键单击新创建的 VPN 连接，并选择 **属性**。
 1. 单击 **选项** 选项卡，取消选中 **包括Windows登录域** 复选框。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
+1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
@@ -220,7 +225,10 @@ sudo route del default dev ppp0
 1. 右键单击系统托盘中的无线/网络图标，选择 **打开网络与共享中心**。
 1. 单击左侧的 **更改适配器设置**。右键单击新的 VPN 连接，并选择 **属性**。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 复选框，并且取消选中所有其它项。
+1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
+1. 单击 **高级设置** 按钮。
+1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
+1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
@@ -236,9 +244,9 @@ sudo route del default dev ppp0
 
 更多的故障排除信息请参见以下链接：
 
-https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-http://www.tp-link.com/en/faq-1029.html
+* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+* http://www.tp-link.com/en/faq-1029.html
 
 ## 致谢
 

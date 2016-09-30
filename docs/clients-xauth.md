@@ -97,7 +97,7 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 ## Credits
 
-This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
+This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
 
 ## License
 

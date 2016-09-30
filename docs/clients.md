@@ -17,6 +17,11 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
   * [Chromebook](#chromebook)
   * [Windows Phone](#windows-phone)
   * [Linux](#linux)
+* [Troubleshooting](#troubleshooting)
+  * [Windows Error 809](#windows-error-809)
+  * [Windows Error 628](#windows-error-628)
+  * [Android 6.0 and 7.0](#android-60-and-70)
+  * [Other Errors](#other-errors)
 
 ## Windows
 
@@ -32,7 +37,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
 1. Return to **Network and Sharing Center**. On the left, click **Change adapter settings**.
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Check "Challenge Handshake Authentication Protocol (CHAP)" and uncheck all others.
+1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -58,7 +63,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Check "Challenge Handshake Authentication Protocol (CHAP)" and uncheck all others.
+1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -220,7 +225,10 @@ To fix this error, please follow these steps:
 1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
 1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
-1. Click **Allow these protocols**. Check "Challenge Handshake Authentication Protocol (CHAP)" and uncheck all others.
+1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
+1. Click the **Advanced settings** button.
+1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
+1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
@@ -236,13 +244,13 @@ If you are unable to connect using Android 6.0 (Marshmallow) or 7.0 (Nougat), tr
 
 Refer to the links below for more troubleshooting tips:
 
-https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-http://www.tp-link.com/en/faq-1029.html
+* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+* http://www.tp-link.com/en/faq-1029.html
 
 ## Credits
 
-This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project by Joshua Lund and contributors.
+This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
 
 ## License
 
