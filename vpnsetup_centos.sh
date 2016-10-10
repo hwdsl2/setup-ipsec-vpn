@@ -56,15 +56,23 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-eth0_state=$(cat /sys/class/net/eth0/operstate 2>/dev/null)
-if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
+NET_IF0=${VPN_IFACE:-'eth0'}
+NET_IFS=${VPN_IFACE:-'eth+'}
+
+if_state=$(cat "/sys/class/net/$NET_IF0/operstate" 2>/dev/null)
+if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IF0" = "lo" ]; then
+  echo "Error: Network interface '$NET_IF0' is not available." >&2
 cat 1>&2 <<'EOF'
-Error: Network interface 'eth0' is not available.
 
-Please DO NOT run this script on your PC or Mac!
+DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
-Run 'cat /proc/net/dev' to find the active network interface,
-then use it to replace ALL 'eth0' and 'eth+' in this script.
+If running on a server, you may fix this error by first
+finding the active network interface:
+route | grep '^default' | grep -o '[^ ]*$'
+
+Then set this variable and re-run the script:
+export VPN_IFACE="YOUR_INTERFACE"
+
 EOF
   exit 1
 fi
@@ -124,7 +132,7 @@ PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
-check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig "$NET_IF0" | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
 
 # Add the EPEL repository
@@ -284,7 +292,7 @@ EOF
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
   /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
-cat >> /etc/sysctl.conf <<'EOF'
+cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
 kernel.msgmnb = 65536
@@ -301,11 +309,11 @@ net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.lo.send_redirects = 0
-net.ipv4.conf.eth0.send_redirects = 0
+net.ipv4.conf.$NET_IF0.send_redirects = 0
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.conf.lo.rp_filter = 0
-net.ipv4.conf.eth0.rp_filter = 0
+net.ipv4.conf.$NET_IF0.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 
@@ -320,9 +328,9 @@ fi
 ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" /etc/sysconfig/iptables; then
   ipt_flag=1
-elif ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+elif ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
   ipt_flag=1
-elif ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+elif ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
   ipt_flag=1
 fi
 
@@ -355,19 +363,19 @@ cat > /etc/sysconfig/iptables <<EOF
 # Uncomment to DROP traffic between VPN clients themselves
 # -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
--A FORWARD -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i ppp+ -o eth+ -j ACCEPT
+-A FORWARD -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i ppp+ -o "$NET_IFS" -j ACCEPT
 -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
--A FORWARD -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -s 192.168.43.0/24 -o eth+ -j ACCEPT
+-A FORWARD -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
 -A FORWARD -j DROP
 COMMIT
 *nat
 :PREROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source $PRIVATE_IP
--A POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
+-A POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source $PRIVATE_IP
+-A POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
 COMMIT
 EOF
   else
@@ -375,17 +383,17 @@ EOF
     iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
     iptables -I INPUT 3 -p udp --dport 1701 -j DROP
     iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-    iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-    iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
+    iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
     iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-    iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-    iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
+    iptables -I FORWARD 5 -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -I FORWARD 6 -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
     # Uncomment to DROP traffic between VPN clients themselves
     # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
     # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
     iptables -A FORWARD -j DROP
-    iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
-    iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
+    iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
+    iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP"
     echo "# Modified by hwdsl2 VPN script" > /etc/sysconfig/iptables
     iptables-save >> /etc/sysconfig/iptables
   fi
