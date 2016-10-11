@@ -116,8 +116,9 @@ fi
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
 swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
-wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
-[ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
+if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
+  exiterr "Cannot download Libreswan source."
+fi
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
@@ -127,8 +128,9 @@ make -s programs && make -s install
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-[ "$?" != "0" ] && exiterr "Libreswan $swan_ver failed to build."
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
+  exiterr "Libreswan $swan_ver failed to build."
+fi
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null

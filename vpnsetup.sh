@@ -3,8 +3,10 @@
 # Script for automatic setup of an IPsec VPN server on Ubuntu LTS and Debian 8.
 # Works on any dedicated server or Virtual Private Server (VPS) except OpenVZ.
 #
-# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS MEANT TO BE RUN
-# ON A DEDICATED SERVER OR VPS!
+# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
+#
+# The latest version of this script is available at:
+# https://github.com/hwdsl2/setup-ipsec-vpn
 #
 # Copyright (C) 2014-2016 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -32,9 +34,11 @@ YOUR_PASSWORD=''
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 
 exiterr()  { echo "Error: ${1}" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
+conf_bk() { /bin/cp -f "${1}" "${1}.old-$SYS_DT" 2>/dev/null; }
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
   printf %s "${1}" | tr -d '\n' | grep -Eq "$IP_REGEX"
@@ -164,8 +168,9 @@ swan_ver=3.18
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
 swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
-wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"
-[ "$?" != "0" ] && exiterr "Cannot download Libreswan source."
+if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
+  exiterr "Cannot download Libreswan source."
+fi
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
@@ -178,12 +183,12 @@ make -s programs && make -s install
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-[ "$?" != "0" ] && exiterr "Libreswan $swan_ver failed to build."
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
+  exiterr "Libreswan $swan_ver failed to build."
+fi
 
 # Create IPsec (Libreswan) config
-sys_dt="$(date +%Y-%m-%d-%H:%M:%S)"
-/bin/cp -f /etc/ipsec.conf "/etc/ipsec.conf.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -240,13 +245,13 @@ conn xauth-psk
 EOF
 
 # Specify IPsec PSK
-/bin/cp -f /etc/ipsec.secrets "/etc/ipsec.secrets.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
 $PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
-/bin/cp -f /etc/xl2tpd/xl2tpd.conf "/etc/xl2tpd/xl2tpd.conf.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/xl2tpd/xl2tpd.conf"
 cat > /etc/xl2tpd/xl2tpd.conf <<'EOF'
 [global]
 port = 1701
@@ -263,7 +268,7 @@ length bit = yes
 EOF
 
 # Set xl2tpd options
-/bin/cp -f /etc/ppp/options.xl2tpd "/etc/ppp/options.xl2tpd.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/ppp/options.xl2tpd"
 cat > /etc/ppp/options.xl2tpd <<'EOF'
 ipcp-accept-local
 ipcp-accept-remote
@@ -282,14 +287,14 @@ connect-delay 5000
 EOF
 
 # Create VPN credentials
-/bin/cp -f /etc/ppp/chap-secrets "/etc/ppp/chap-secrets.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/ppp/chap-secrets"
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
-/bin/cp -f /etc/ipsec.d/passwd "/etc/ipsec.d/passwd.old-$sys_dt" 2>/dev/null
+conf_bk "/etc/ipsec.d/passwd"
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
@@ -297,7 +302,7 @@ EOF
 
 # Update sysctl settings
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-  /bin/cp -f /etc/sysctl.conf "/etc/sysctl.conf.old-$sys_dt" 2>/dev/null
+  conf_bk "/etc/sysctl.conf"
 cat >> /etc/sysctl.conf <<EOF
 
 # Added by hwdsl2 VPN script
@@ -332,7 +337,8 @@ fi
 
 # Check if IPTables rules need updating
 ipt_flag=0
-if ! grep -qs "hwdsl2 VPN script" /etc/iptables.rules; then
+IPT_FILE="/etc/iptables.rules"
+if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
 elif ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
   ipt_flag=1
@@ -345,10 +351,10 @@ fi
 # - If *not* empty, insert only the required rules for the VPN.
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  iptables-save > "/etc/iptables.rules.old-$sys_dt"
+  iptables-save > "$IPT_FILE.old-$SYS_DT"
   sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
   if [ "$(iptables-save | grep -c '^\-')" = "0" ] && [ "$sshd_port" = "22" ]; then
-cat > /etc/iptables.rules <<EOF
+cat > "$IPT_FILE" <<EOF
 # Added by hwdsl2 VPN script
 *filter
 :INPUT ACCEPT [0:0]
@@ -401,13 +407,14 @@ EOF
     iptables -A FORWARD -j DROP
     iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
     iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP"
-    echo "# Modified by hwdsl2 VPN script" > /etc/iptables.rules
-    iptables-save >> /etc/iptables.rules
+    echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
+    iptables-save >> "$IPT_FILE"
   fi
   # Update rules for iptables-persistent
-  if [ -f /etc/iptables/rules.v4 ]; then
-    /bin/cp -f /etc/iptables/rules.v4 "/etc/iptables/rules.v4.old-$sys_dt"
-    /bin/cp -f /etc/iptables.rules /etc/iptables/rules.v4
+  IPT_FILE2="/etc/iptables/rules.v4"
+  if [ -f "$IPT_FILE2" ]; then
+    conf_bk "$IPT_FILE2"
+    /bin/cp -f "$IPT_FILE" "$IPT_FILE2"
   fi
 fi
 
@@ -421,7 +428,7 @@ EOF
 
 # Start services at boot
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-  /bin/cp -f /etc/rc.local "/etc/rc.local.old-$sys_dt" 2>/dev/null
+  conf_bk "/etc/rc.local"
   sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
 cat >> /etc/rc.local <<'EOF'
 
@@ -443,15 +450,12 @@ chmod +x /etc/network/if-pre-up.d/iptablesload
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
-iptables-restore < /etc/iptables.rules
+iptables-restore < "$IPT_FILE"
 
 # Restart services
-service fail2ban stop >/dev/null 2>&1
-service ipsec stop >/dev/null 2>&1
-service xl2tpd stop >/dev/null 2>&1
-service fail2ban start
-service ipsec start
-service xl2tpd start
+service fail2ban restart
+service ipsec restart
+service xl2tpd restart
 
 cat <<EOF
 
