@@ -113,7 +113,7 @@ Get your computer or device to use the VPN. Please refer to:
 <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>   
 <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth ("Cisco IPsec") VPN Clients</a>
 
-<a href="docs/ikev2-howto.md" target="_blank">How To: IKEv2 VPN for Windows 7 and newer</a>
+<a href="docs/ikev2-howto.md" target="_blank">How-To: IKEv2 VPN for Windows 7 and newer</a>
 
 If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 

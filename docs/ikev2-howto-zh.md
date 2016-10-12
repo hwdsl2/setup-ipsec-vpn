@@ -8,9 +8,16 @@
 
 ---
 
-Windows 7 和更新版本 （包括 Windows Phone 8.1 及以上） 支持 IKEv2 和 MOBIKE 标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 带来许多<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>，比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
-Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。除了 Windows 之外，它也可用于 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient" target="_blank">strongSwan Android VPN 客户端</a>。下面举例说明如何配置 IKEv2。
+Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
+
+- Windows 7, 8.x 和 10
+- Windows Phone 8.1 及以上
+- strongSwan Android VPN 客户端
+- <a href="https://github.com/gaomd/docker-ikev2-vpn-server">iOS (iPhone/iPad) 和 OS X (macOS)</a> <-- 请参见
+
+下面举例说明如何在 Libreswan 上配置 IKEv2。
 
 首先，请确保你已经成功地<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建了自己的 VPN 服务器</a>。以下命令必须用 `root` 账户运行。
 
@@ -191,23 +198,30 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 文件 `vpnclient.p12` 应该被安全的传送到 Windows 客户端计算机，并且导入到 Computer 证书存储。在导入 CA 证书后，它必须被放入（或移动到） "Trusted Root Certification Authorities" 目录的 "Certificates" 子目录中。
+1. 文件 `vpnclient.p12` 应该被安全地传送到 VPN 客户端设备。下一步：
 
-   详细的操作步骤：   
+   #### Windows 7, 8.x 和 10
+
+   将 `.p12` 文件导入到 Computer 证书存储。在导入 CA 证书后，它必须被放入 "Trusted Root Certification Authorities" 目录的 "Certificates" 子目录中。
+
+   详细的操作步骤：  
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   Windows Phone 8.1 及以上版本用户： 首先导入 `.p12` 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
-
-   Android 4+ 用户请参见：   
-   https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
-
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
+   在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-1. 启用新的 IKEv2 VPN 连接，并且开始使用自己的专属 VPN！
+   启用新的 IKEv2 VPN 连接，并且开始使用自己的专属 VPN！
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+
+   #### Windows Phone 8.1 及以上
+
+   首先导入 `.p12` 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
+
+   #### Android 4.x 和更新版本
+
+   请参见： https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
 
    连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
