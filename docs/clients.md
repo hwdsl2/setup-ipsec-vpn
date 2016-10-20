@@ -150,31 +150,149 @@ Once connected, you will see a VPN icon overlay on the network status icon. You 
 
 ## Windows Phone
 
-Users with Windows Phone 8.1 and newer, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. Please note that IPsec/L2TP support on this platform may have some issues. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Linux
 
 ### Ubuntu & Debian
 
-Follow the steps in <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn-on-ubuntu-16-04/" target="_blank">this tutorial</a>. Some corrections are required:
+Note: Instructions below are adapted from [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c).   
+Commands must be run as `root` on your VPN client computer.
 
-1. In `xl2tpd.conf`, remove the line `# your vpn server goes here`. 
-1. In `options.l2tpd.client`, replace `require-mschap-v2` with `require-chap`.
-1. Replace `sudo echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" > /var/run/xl2tpd/l2tp-control` with:
+To set up the VPN client, first install the following packages:
 
-   ```
-   echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" | sudo tee /var/run/xl2tpd/l2tp-control
-   ```
+```
+apt-get update
+apt-get install strongswan xl2tpd
+```
 
-1. Replace the last command `sudo route add -net default gw <vpn server local ip>` with:
+Create VPN variables (replace with actual values):
 
-   ```
-   sudo route add default dev ppp0
-   ```
+```
+VPN_SERVER_IP='YOUR_VPN_SERVER_IP'
+VPN_IPSEC_PSK='YOUR_IPSEC_PSK'
+```
 
-   If there is an error, check the output of `ifconfig` and replace `ppp0` above with `ppp1`, etc.
+Configure strongSwan:
+```
+cat > /etc/ipsec.conf <<EOF
+# ipsec.conf - strongSwan IPsec configuration file
 
-Once connected, verify that your traffic is being routed properly:
+# basic configuration
+
+config setup
+  # strictcrlpolicy=yes
+  # uniqueids = no
+
+# Add connections here.
+
+# Sample VPN connections
+
+conn %default
+  ikelifetime=60m
+  keylife=20m
+  rekeymargin=3m
+  keyingtries=1
+  keyexchange=ikev1
+  authby=secret
+  ike=aes128-sha1-modp1024,3des-sha1-modp1024!
+  esp=aes128-sha1-modp1024,3des-sha1-modp1024!
+
+conn myvpn
+  keyexchange=ikev1
+  left=%defaultroute
+  auto=add
+  authby=secret
+  type=transport
+  leftprotoport=17/1701
+  rightprotoport=17/1701
+  right=$VPN_SERVER_IP
+EOF
+
+cat > /etc/ipsec.secrets <<EOF
+: PSK "$VPN_IPSEC_PSK"
+EOF
+
+chmod 600 /etc/ipsec.secrets
+```
+
+Configure xl2tpd:
+```
+cat > /etc/xl2tpd/xl2tpd.conf <<EOF
+[lac myvpn]
+lns = $VPN_SERVER_IP
+ppp debug = yes
+pppoptfile = /etc/ppp/options.l2tpd.client
+length bit = yes
+EOF
+
+cat > /etc/ppp/options.l2tpd.client <<EOF
+ipcp-accept-local
+ipcp-accept-remote
+refuse-eap
+require-chap
+noccp
+noauth
+idle 1800
+mtu 1410
+mru 1410
+defaultroute
+usepeerdns
+debug
+lock
+connect-delay 5000
+EOF
+```
+
+The VPN client setup is now complete. Follow the steps below to connect.
+
+Create xl2tpd control file:
+```
+mkdir -p /var/run/xl2tpd
+touch /var/run/xl2tpd/l2tp-control
+```
+
+Restart services:
+```
+service strongswan restart
+service xl2tpd restart
+```
+
+Start the IPsec connection:
+```
+ipsec up myvpn
+```
+
+Start the L2TP connection (replace with your actual VPN username and password):
+```
+echo "c myvpn <username> <password>" > /var/run/xl2tpd/l2tp-control
+```
+
+Run `ifconfig` and check the output. You should now see a new interface `ppp0`.
+
+Check your existing default route:
+```
+ip route
+```
+
+Find this line in the output: `default via X.X.X.X ...`. Write down this gateway IP for use in the commands below.
+
+Exclude your VPN server's IP from the new default route (replace with actual value):
+```
+route add YOUR_VPN_SERVER_IP gw X.X.X.X
+```
+
+If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with actual value, found by searching "my ip" on Google):
+```
+route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
+```
+
+Add a new default route to start routing traffic via the VPN server：
+```
+route add default dev ppp0
+```
+
+The VPN connection is now complete. Verify that your traffic is being routed properly:
 ```
 wget -qO- http://whatismyip.akamai.com; echo
 ```
@@ -183,7 +301,13 @@ The above command should return `Your VPN Server IP`.
 
 To stop routing traffic via the VPN server:
 ```
-sudo route del default dev ppp0
+route del default dev ppp0
+```
+
+To disconnect:
+```
+echo "d myvpn" > /var/run/xl2tpd/l2tp-control
+ipsec down myvpn
 ```
 
 ### CentOS & Fedora
@@ -191,7 +315,7 @@ sudo route del default dev ppp0
 Refer to the Ubuntu/Debian section above, with these changes:
 
 1. Use `yum` instead of `apt-get` to install packages.
-1. In these systems, the `ipsec` command has been renamed to `strongswan`.
+1. Replace `ipsec up` and `ipsec down` with `strongswan up` and `strongswan down`, respectively.
 1. The files `ipsec.conf` and `ipsec.secrets` should be saved under `/etc/strongswan`.
 
 ### Other Linux

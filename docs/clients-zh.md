@@ -150,40 +150,165 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ## Windows Phone
 
-Windows Phone 8.1 和更新版本的用户可以尝试<a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a>。请注意，该平台的 IPsec/L2TP 支持可能有一些问题。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a> 的步骤操作。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## Linux
 
 ### Ubuntu & Debian
 
-按照 <a href="http://www.jasonernst.com/2016/06/21/l2tp-ipsec-vpn-on-ubuntu-16-04/" target="_blank">这个教程</a> 的步骤操作。需要更正以下项：
+注： 以下步骤是在 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c) 基础上修改。   
+这些命令必须在你的 VPN 客户端电脑上使用 `root` 账户运行。
 
-1. 在文件 `xl2tpd.conf` 中，删除这一行 `# your vpn server goes here`。
-1. 在文件 `options.l2tpd.client` 中，将 `require-mschap-v2` 换成 `require-chap`。
-1. 替换 `sudo echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" > /var/run/xl2tpd/l2tp-control` 为:
+要配置 VPN 客户端，首先安装以下软件包：
 
-   ```
-   echo "c XXX-YOUR-CONNECTION-NAME-XXX <user> <pass>" | sudo tee /var/run/xl2tpd/l2tp-control
-   ```
+```
+apt-get update
+apt-get install strongswan xl2tpd
+```
 
-1. 替换最后一个命令 `sudo route add -net default gw <vpn server local ip>` 为：
+创建 VPN 变量 （替换为你自己的值）：
 
-   ```
-   sudo route add default dev ppp0
-   ```
+```
+VPN_SERVER_IP='YOUR_VPN_SERVER_IP'
+VPN_IPSEC_PSK='YOUR_IPSEC_PSK'
+```
 
-   如果遇到错误，请检查 `ifconfig` 的输出并将上面的 `ppp0` 换成 `ppp1`，等等。
+配置 strongSwan：
+```
+cat > /etc/ipsec.conf <<EOF
+# ipsec.conf - strongSwan IPsec configuration file
 
-连接成功后，检查 VPN 是否正常工作：
+# basic configuration
+
+config setup
+  # strictcrlpolicy=yes
+  # uniqueids = no
+
+# Add connections here.
+
+# Sample VPN connections
+
+conn %default
+  ikelifetime=60m
+  keylife=20m
+  rekeymargin=3m
+  keyingtries=1
+  keyexchange=ikev1
+  authby=secret
+  ike=aes128-sha1-modp1024,3des-sha1-modp1024!
+  esp=aes128-sha1-modp1024,3des-sha1-modp1024!
+
+conn myvpn
+  keyexchange=ikev1
+  left=%defaultroute
+  auto=add
+  authby=secret
+  type=transport
+  leftprotoport=17/1701
+  rightprotoport=17/1701
+  right=$VPN_SERVER_IP
+EOF
+
+cat > /etc/ipsec.secrets <<EOF
+: PSK "$VPN_IPSEC_PSK"
+EOF
+
+chmod 600 /etc/ipsec.secrets
+```
+
+配置 xl2tpd：
+```
+cat > /etc/xl2tpd/xl2tpd.conf <<EOF
+[lac myvpn]
+lns = $VPN_SERVER_IP
+ppp debug = yes
+pppoptfile = /etc/ppp/options.l2tpd.client
+length bit = yes
+EOF
+
+cat > /etc/ppp/options.l2tpd.client <<EOF
+ipcp-accept-local
+ipcp-accept-remote
+refuse-eap
+require-chap
+noccp
+noauth
+idle 1800
+mtu 1410
+mru 1410
+defaultroute
+usepeerdns
+debug
+lock
+connect-delay 5000
+EOF
+```
+
+至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
+
+创建 xl2tpd 控制文件：
+```
+mkdir -p /var/run/xl2tpd
+touch /var/run/xl2tpd/l2tp-control
+```
+
+重启服务：
+```
+service strongswan restart
+service xl2tpd restart
+```
+
+开始 IPsec 连接：
+```
+ipsec up myvpn
+```
+
+开始 L2TP 连接 （替换为你自己的 VPN 用户名和密码）：
+```
+echo "c myvpn <username> <password>" > /var/run/xl2tpd/l2tp-control
+```
+
+运行 `ifconfig` 并且检查输出。现在你应该看到一个新的网络接口 `ppp0`。
+
+检查你现有的默认路由：
+```
+ip route
+```
+
+在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的命令中使用。
+
+从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
+```
+route add YOUR_VPN_SERVER_IP gw X.X.X.X
+```
+
+如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的值，可以在 https://www.ipchicken.com 获取）：
+```
+route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
+```
+
+添加一个新的默认路由，并且开始通过 VPN 服务器发送数据：
+```
+route add default dev ppp0
+```
+
+至此 VPN 连接已成功完成。检查 VPN 是否正常工作：
 ```
 wget -qO- http://whatismyip.akamai.com; echo
 ```
 
 以上命令应该返回 `你的 VPN 服务器 IP`。
 
+
 要停止通过 VPN 服务器发送数据：
 ```
-sudo route del default dev ppp0
+route del default dev ppp0
+```
+
+要断开连接：
+```
+echo "d myvpn" > /var/run/xl2tpd/l2tp-control
+ipsec down myvpn
 ```
 
 ### CentOS & Fedora
@@ -191,7 +316,7 @@ sudo route del default dev ppp0
 参照上面的 Ubuntu/Debian 部分，并进行以下改动：
 
 1. 使用 `yum` 而不是 `apt-get` 命令来安装软件包。
-1. 在这些系统中，`ipsec` 命令已经被重命名为 `strongswan`。
+1. 将 `ipsec up` 和 `ipsec down` 命令分别替换为 `strongswan up` 和 `strongswan down`。
 1. 文件 `ipsec.conf` 和 `ipsec.secrets` 应该保存在 `/etc/strongswan` 目录中。
 
 ### Other Linux
