@@ -265,7 +265,7 @@ ipsec up myvpn
 
 开始 L2TP 连接 （替换为你自己的 VPN 用户名和密码）：
 ```
-echo "c myvpn <username> <password>" > /var/run/xl2tpd/l2tp-control
+echo "c myvpn YOUR_USERNAME YOUR_PASSWORD" > /var/run/xl2tpd/l2tp-control
 ```
 
 运行 `ifconfig` 并且检查输出。现在你应该看到一个新的网络接口 `ppp0`。
@@ -275,14 +275,14 @@ echo "c myvpn <username> <password>" > /var/run/xl2tpd/l2tp-control
 ip route
 ```
 
-在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的命令中使用。
+在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的两个命令中使用。
 
 从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
 ```
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
-如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的值，可以在 https://www.ipchicken.com 获取）：
+如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的公有 IP，可在 <a href="https://www.ipchicken.com" target="_blank">这里</a> 查看）：
 ```
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
 ```
@@ -324,6 +324,8 @@ ipsec down myvpn
 如果你的系统提供 `strongswan` 软件包，请参见上面的两个部分。
 
 ## 故障排除
+
+*其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 ### Windows 错误 809
 

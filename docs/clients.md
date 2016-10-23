@@ -265,7 +265,7 @@ ipsec up myvpn
 
 Start the L2TP connection (replace with your actual VPN username and password):
 ```
-echo "c myvpn <username> <password>" > /var/run/xl2tpd/l2tp-control
+echo "c myvpn YOUR_USERNAME YOUR_PASSWORD" > /var/run/xl2tpd/l2tp-control
 ```
 
 Run `ifconfig` and check the output. You should now see a new interface `ppp0`.
@@ -275,14 +275,14 @@ Check your existing default route:
 ip route
 ```
 
-Find this line in the output: `default via X.X.X.X ...`. Write down this gateway IP for use in the commands below.
+Find this line in the output: `default via X.X.X.X ...`. Write down this gateway IP for use in the two commands below.
 
 Exclude your VPN server's IP from the new default route (replace with actual value):
 ```
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
-If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with actual value, found by searching "my ip" on Google):
+If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with your actual public IP <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">from here</a>):
 ```
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
 ```
@@ -323,6 +323,8 @@ Refer to the Ubuntu/Debian section above, with these changes:
 If your system provides the `strongswan` package, refer to the two sections above.
 
 ## Troubleshooting
+
+*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 ### Windows Error 809
 

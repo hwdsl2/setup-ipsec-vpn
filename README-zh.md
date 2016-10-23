@@ -121,6 +121,8 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 ## 重要提示
 
+*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
+
 **Windows 和 Android 用户**： 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果这些设备在同一个 NAT 后面（比如家用路由器），它们无法同时连接到 VPN 服务器。
