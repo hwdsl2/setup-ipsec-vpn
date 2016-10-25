@@ -154,23 +154,30 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 ## Linux
 
-### Ubuntu & Debian
-
-注： 以下步骤是在 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c) 基础上修改。   
-这些命令必须在你的 VPN 客户端电脑上使用 `root` 账户运行。
+注： 以下步骤是在 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c) 基础上修改。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 
 要配置 VPN 客户端，首先安装以下软件包：
 
 ```
+# Ubuntu & Debian
 apt-get update
-apt-get install strongswan xl2tpd
+apt-get -y install strongswan xl2tpd
+
+# CentOS & RHEL
+yum -y install epel-release
+yum -y install strongswan xl2tpd
+
+# Fedora
+yum -y install strongswan xl2tpd
 ```
 
 创建 VPN 变量 （替换为你自己的值）：
 
 ```
-VPN_SERVER_IP='YOUR_VPN_SERVER_IP'
-VPN_IPSEC_PSK='YOUR_IPSEC_PSK'
+VPN_SERVER_IP='your_vpn_server_ip'
+VPN_IPSEC_PSK='your_ipsec_pre_shared_key'
+VPN_USERNAME='your_vpn_username'
+VPN_PASSWORD='your_vpn_password'
 ```
 
 配置 strongSwan：
@@ -214,6 +221,12 @@ cat > /etc/ipsec.secrets <<EOF
 EOF
 
 chmod 600 /etc/ipsec.secrets
+
+# For CentOS/RHEL & Fedora ONLY
+mv /etc/strongswan/ipsec.conf /etc/strongswan/ipsec.conf.old 2>/dev/null
+mv /etc/strongswan/ipsec.secrets /etc/strongswan/ipsec.secrets.old 2>/dev/null
+ln -s /etc/ipsec.conf /etc/strongswan/ipsec.conf
+ln -s /etc/ipsec.secrets /etc/strongswan/ipsec.secrets
 ```
 
 配置 xl2tpd：
@@ -233,15 +246,19 @@ refuse-eap
 require-chap
 noccp
 noauth
-idle 1800
-mtu 1410
-mru 1410
+mtu 1280
+mru 1280
+noipdefault
 defaultroute
 usepeerdns
 debug
 lock
 connect-delay 5000
+name $VPN_USERNAME
+password $VPN_PASSWORD
 EOF
+
+chmod 600 /etc/ppp/options.l2tpd.client
 ```
 
 至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
@@ -260,12 +277,16 @@ service xl2tpd restart
 
 开始 IPsec 连接：
 ```
+# Ubuntu & Debian
 ipsec up myvpn
+
+# CentOS/RHEL & Fedora
+strongswan up myvpn
 ```
 
-开始 L2TP 连接 （替换为你自己的 VPN 用户名和密码）：
+开始 L2TP 连接：
 ```
-echo "c myvpn YOUR_USERNAME YOUR_PASSWORD" > /var/run/xl2tpd/l2tp-control
+echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 ```
 
 运行 `ifconfig` 并且检查输出。现在你应该看到一个新的网络接口 `ppp0`。
@@ -307,21 +328,14 @@ route del default dev ppp0
 
 要断开连接：
 ```
+# Ubuntu & Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 ipsec down myvpn
+
+# CentOS/RHEL & Fedora
+echo "d myvpn" > /var/run/xl2tpd/l2tp-control
+strongswan down myvpn
 ```
-
-### CentOS & Fedora
-
-参照上面的 Ubuntu/Debian 部分，并进行以下改动：
-
-1. 使用 `yum` 而不是 `apt-get` 命令来安装软件包。
-1. 将 `ipsec up` 和 `ipsec down` 命令分别替换为 `strongswan up` 和 `strongswan down`。
-1. 文件 `ipsec.conf` 和 `ipsec.secrets` 应该保存在 `/etc/strongswan` 目录中。
-
-### Other Linux
-
-如果你的系统提供 `strongswan` 软件包，请参见上面的两个部分。
 
 ## 故障排除
 

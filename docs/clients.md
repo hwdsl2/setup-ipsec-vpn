@@ -154,23 +154,30 @@ Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentra
 
 ## Linux
 
-### Ubuntu & Debian
-
-Note: Instructions below are adapted from [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c).   
-Commands must be run as `root` on your VPN client computer.
+Note: Instructions below are adapted from [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 
 ```
+# Ubuntu & Debian
 apt-get update
-apt-get install strongswan xl2tpd
+apt-get -y install strongswan xl2tpd
+
+# CentOS & RHEL
+yum -y install epel-release
+yum -y install strongswan xl2tpd
+
+# Fedora
+yum -y install strongswan xl2tpd
 ```
 
 Create VPN variables (replace with actual values):
 
 ```
-VPN_SERVER_IP='YOUR_VPN_SERVER_IP'
-VPN_IPSEC_PSK='YOUR_IPSEC_PSK'
+VPN_SERVER_IP='your_vpn_server_ip'
+VPN_IPSEC_PSK='your_ipsec_pre_shared_key'
+VPN_USERNAME='your_vpn_username'
+VPN_PASSWORD='your_vpn_password'
 ```
 
 Configure strongSwan:
@@ -214,6 +221,12 @@ cat > /etc/ipsec.secrets <<EOF
 EOF
 
 chmod 600 /etc/ipsec.secrets
+
+# For CentOS/RHEL & Fedora ONLY
+mv /etc/strongswan/ipsec.conf /etc/strongswan/ipsec.conf.old 2>/dev/null
+mv /etc/strongswan/ipsec.secrets /etc/strongswan/ipsec.secrets.old 2>/dev/null
+ln -s /etc/ipsec.conf /etc/strongswan/ipsec.conf
+ln -s /etc/ipsec.secrets /etc/strongswan/ipsec.secrets
 ```
 
 Configure xl2tpd:
@@ -233,15 +246,19 @@ refuse-eap
 require-chap
 noccp
 noauth
-idle 1800
-mtu 1410
-mru 1410
+mtu 1280
+mru 1280
+noipdefault
 defaultroute
 usepeerdns
 debug
 lock
 connect-delay 5000
+name $VPN_USERNAME
+password $VPN_PASSWORD
 EOF
+
+chmod 600 /etc/ppp/options.l2tpd.client
 ```
 
 The VPN client setup is now complete. Follow the steps below to connect.
@@ -260,12 +277,16 @@ service xl2tpd restart
 
 Start the IPsec connection:
 ```
+# Ubuntu & Debian
 ipsec up myvpn
+
+# CentOS/RHEL & Fedora
+strongswan up myvpn
 ```
 
-Start the L2TP connection (replace with your actual VPN username and password):
+Start the L2TP connection:
 ```
-echo "c myvpn YOUR_USERNAME YOUR_PASSWORD" > /var/run/xl2tpd/l2tp-control
+echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 ```
 
 Run `ifconfig` and check the output. You should now see a new interface `ppp0`.
@@ -306,21 +327,14 @@ route del default dev ppp0
 
 To disconnect:
 ```
+# Ubuntu & Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 ipsec down myvpn
+
+# CentOS/RHEL & Fedora
+echo "d myvpn" > /var/run/xl2tpd/l2tp-control
+strongswan down myvpn
 ```
-
-### CentOS & Fedora
-
-Refer to the Ubuntu/Debian section above, with these changes:
-
-1. Use `yum` instead of `apt-get` to install packages.
-1. Replace `ipsec up` and `ipsec down` with `strongswan up` and `strongswan down`, respectively.
-1. The files `ipsec.conf` and `ipsec.secrets` should be saved under `/etc/strongswan`.
-
-### Other Linux
-
-If your system provides the `strongswan` package, refer to the two sections above.
 
 ## Troubleshooting
 
