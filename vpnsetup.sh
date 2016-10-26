@@ -433,6 +433,11 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
+EOF
+  if grep -qs raspbian /etc/os-release; then
+    echo "sleep 30" >> /etc/rc.local
+  fi
+cat >> /etc/rc.local <<'EOF'
 service fail2ban restart || /bin/true
 service ipsec start
 service xl2tpd start
