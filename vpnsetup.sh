@@ -162,6 +162,8 @@ apt-get -yq install ppp xl2tpd || exiterr2
 
 # Install Fail2Ban to protect SSH server
 apt-get -yq install fail2ban || exiterr2
+update-rc.d fail2ban enable
+systemctl enable fail2ban 2>/dev/null
 
 # Compile and install Libreswan
 swan_ver=3.18
@@ -438,7 +440,6 @@ EOF
     echo "sleep 30" >> /etc/rc.local
   fi
 cat >> /etc/rc.local <<'EOF'
-service fail2ban restart || /bin/true
 service ipsec start
 service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward

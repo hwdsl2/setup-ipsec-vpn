@@ -108,7 +108,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2
-elif grep -qs "release 7" /etc/redhat-release; then
+else
   yum -y install libevent-devel systemd-devel || exiterr2
 fi
 

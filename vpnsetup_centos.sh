@@ -156,7 +156,7 @@ yum -y install fail2ban || exiterr2
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2
-elif grep -qs "release 7" /etc/redhat-release; then
+else
   yum -y install libevent-devel systemd-devel || exiterr2
 fi
 
@@ -408,13 +408,6 @@ fi
 # Create basic Fail2Ban rules
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 cat > /etc/fail2ban/jail.local <<'EOF'
-[DEFAULT]
-ignoreip = 127.0.0.1/8
-bantime  = 600
-findtime  = 600
-maxretry = 5
-backend = auto
-
 [ssh-iptables]
 enabled  = true
 filter   = sshd
@@ -424,13 +417,19 @@ EOF
 fi
 
 # Start services at boot
+if grep -qs "release 6" /etc/redhat-release; then
+  chkconfig iptables on
+  chkconfig fail2ban on
+else
+  systemctl --now mask firewalld
+  yum -y install iptables-services || exiterr2
+  systemctl enable iptables fail2ban
+fi
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   conf_bk "/etc/rc.local"
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
-iptables-restore < /etc/sysconfig/iptables
-service fail2ban restart
 service ipsec start
 service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
