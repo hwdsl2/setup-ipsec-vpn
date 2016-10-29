@@ -133,7 +133,6 @@ PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 
 # Check IPs for correct format
-check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
 check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig "$NET_IF0" | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
@@ -332,77 +331,35 @@ fi
 # Check if IPTables rules need updating
 ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
-if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
-  ipt_flag=1
-elif ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
-  ipt_flag=1
-elif ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" || \
+   ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null || \
+   ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
   ipt_flag=1
 fi
 
-# Create basic IPTables rules
-# - If IPTables is "empty", write out the entire new rule set.
-# - If *not* empty, insert only the required rules for the VPN.
+# Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   iptables-save > "$IPT_FILE.old-$SYS_DT"
-  sshd_port="$(ss -nlput | grep sshd | awk '{print $5}' | head -n 1 | grep -Eo '[0-9]{1,5}$')"
-  if [ "$(iptables-save | grep -c '^\-')" = "0" ] && [ "$sshd_port" = "22" ]; then
-cat > "$IPT_FILE" <<EOF
-# Added by hwdsl2 VPN script
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
--A INPUT -m conntrack --ctstate INVALID -j DROP
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A INPUT -i lo -j ACCEPT
--A INPUT -d 127.0.0.0/8 -j REJECT
--A INPUT -p icmp -j ACCEPT
--A INPUT -p udp --dport 67:68 --sport 67:68 -j ACCEPT
--A INPUT -p tcp --dport 22 -j ACCEPT
--A INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT
--A INPUT -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
--A INPUT -p udp --dport 1701 -j DROP
--A INPUT -j DROP
--A FORWARD -m conntrack --ctstate INVALID -j DROP
-# Uncomment to DROP traffic between VPN clients themselves
-# -A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
-# -A FORWARD -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
--A FORWARD -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i ppp+ -o "$NET_IFS" -j ACCEPT
--A FORWARD -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
--A FORWARD -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
--A FORWARD -j DROP
-COMMIT
-*nat
-:PREROUTING ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source $PRIVATE_IP
--A POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source $PRIVATE_IP
-COMMIT
-EOF
-  else
-    iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
-    iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-    iptables -I INPUT 3 -p udp --dport 1701 -j DROP
-    iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-    iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-    iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
-    iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-    iptables -I FORWARD 5 -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-    iptables -I FORWARD 6 -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
-    # Uncomment to DROP traffic between VPN clients themselves
-    # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
-    # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
-    iptables -A FORWARD -j DROP
-    iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
-    iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP"
-    echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
-    iptables-save >> "$IPT_FILE"
-  fi
+  iptables -I INPUT 1 -m conntrack --ctstate INVALID -j DROP
+  iptables -I INPUT 2 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I INPUT 3 -p udp -m multiport --dports 500,4500 -j ACCEPT
+  iptables -I INPUT 4 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+  iptables -I INPUT 5 -p udp --dport 1701 -j DROP
+  iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
+  iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
+  iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
+  iptables -I FORWARD 5 -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 6 -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
+  # Uncomment if you wish to disallow traffic between VPN clients themselves
+  # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
+  # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+  iptables -A FORWARD -j DROP
+  iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
+  iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP"
+  echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
+  iptables-save >> "$IPT_FILE"
 fi
 
 # Create basic Fail2Ban rules
@@ -452,9 +409,9 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 iptables-restore < "$IPT_FILE"
 
 # Restart services
-service fail2ban restart
-service ipsec restart
-service xl2tpd restart
+service fail2ban restart 2>/dev/null
+service ipsec restart 2>/dev/null
+service xl2tpd restart 2>/dev/null
 
 cat <<EOF
 
