@@ -24,7 +24,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
    ```bash
-   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
+   $ PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Your public IP is displayed)

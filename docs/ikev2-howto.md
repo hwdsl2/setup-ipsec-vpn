@@ -24,7 +24,7 @@ First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-
 1. Find the public and private IP of your server, and make sure they are not empty. It is OK if they are the same.
 
    ```bash
-   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
+   $ PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Your public IP is displayed)

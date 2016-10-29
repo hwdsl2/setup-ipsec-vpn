@@ -37,8 +37,8 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
 - 自动确定服务器的公网 IP 以及私有 IP 地址
-- 包括基本的 IPTables 防火墙规则和 `sysctl.conf` 优化设置
-- 测试通过： Ubuntu 16.04/14.04/12.04， Debian 8 和 CentOS 6/7
+- 包含 `sysctl.conf` 优化设置，以达到更佳的传输性能
+- 测试通过： Ubuntu 16.04/14.04/12.04， Debian 8 和 CentOS 7/6
 
 ## 系统要求
 
@@ -133,7 +133,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
 
-如果需要打开服务器上的其它端口，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
+如需更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
 
 在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
 

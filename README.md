@@ -37,8 +37,8 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Automatically determines public IP and private IP of server
-- Includes basic IPTables rules and `sysctl.conf` settings
-- Tested with Ubuntu 16.04/14.04/12.04, Debian 8 and CentOS 6 & 7
+- Includes `sysctl.conf` optimizations for improved performance
+- Tested with Ubuntu 16.04/14.04/12.04, Debian 8 and CentOS 7/6
 
 ## Requirements
 
@@ -133,7 +133,7 @@ Clients are set to use <a href="https://developers.google.com/speed/public-dns/"
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
-To open additional ports on the server, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
+To change the IPTables rules, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
 
 When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 
