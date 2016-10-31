@@ -50,7 +50,9 @@ if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ] && [ "$os_type" != "
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  exiterr "This script does not support OpenVZ VPS."
+  echo "Error: This script does not support OpenVZ VPS." >&2
+  echo "Try OpenVPN: https://github.com/Nyr/openvpn-install" >&2
+  exit 1
 fi
 
 if [ "$(id -u)" != 0 ]; then
@@ -68,12 +70,9 @@ cat 1>&2 <<'EOF'
 DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
 If running on a server, you may fix this error by first
-finding the active network interface:
-route | grep '^default' | grep -o '[^ ]*$'
+setting this variable and re-run the script:
 
-Then set this variable and re-run the script:
-export VPN_IFACE="YOUR_INTERFACE"
-
+export VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 EOF
   exit 1
 fi
@@ -161,8 +160,6 @@ apt-get -yq install ppp xl2tpd || exiterr2
 
 # Install Fail2Ban to protect SSH server
 apt-get -yq install fail2ban || exiterr2
-update-rc.d fail2ban enable
-systemctl enable fail2ban 2>/dev/null
 
 # Compile and install Libreswan
 swan_ver=3.18
@@ -377,7 +374,7 @@ if [ "$ipt_flag" = "1" ]; then
   fi
 fi
 
-# Load IPTables rules at system boot
+# Load IPTables rules at boot
 mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
@@ -386,22 +383,22 @@ exit 0
 EOF
 
 # Start services at boot
+update-rc.d fail2ban enable >/dev/null 2>&1
+systemctl enable fail2ban >/dev/null 2>&1
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   conf_bk "/etc/rc.local"
-  sed --follow-symlinks -i -e '/^exit 0/d' /etc/rc.local
+  sed --follow-symlinks -i '/^exit 0/d' /etc/rc.local
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
-EOF
-  if grep -qs raspbian /etc/os-release; then
-    echo "sleep 30" >> /etc/rc.local
-  fi
-cat >> /etc/rc.local <<'EOF'
 service ipsec start
 service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
+  if grep -qs raspbian /etc/os-release; then
+    sed --follow-symlinks -i '/hwdsl2 VPN script/a sleep 15' /etc/rc.local
+  fi
 fi
 
 # Reload sysctl.conf

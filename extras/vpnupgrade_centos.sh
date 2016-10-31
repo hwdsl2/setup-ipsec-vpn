@@ -20,10 +20,6 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 exiterr()  { echo "Error: ${1}" >&2; exit 1; }
 exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
 
-if [ ! -f /etc/redhat-release ]; then
-  exiterr "This script only supports CentOS/RHEL."
-fi
-
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
   exiterr "This script only supports CentOS/RHEL 6 and 7."
 fi

@@ -44,16 +44,14 @@ check_ip() {
   printf %s "${1}" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
-if [ ! -f /etc/redhat-release ]; then
-  exiterr "This script only supports CentOS/RHEL."
-fi
-
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
   exiterr "This script only supports CentOS/RHEL 6 and 7."
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  exiterr "This script does not support OpenVZ VPS."
+  echo "Error: This script does not support OpenVZ VPS." >&2
+  echo "Try OpenVPN: https://github.com/Nyr/openvpn-install" >&2
+  exit 1
 fi
 
 if [ "$(id -u)" != 0 ]; then
@@ -71,12 +69,9 @@ cat 1>&2 <<'EOF'
 DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
 If running on a server, you may fix this error by first
-finding the active network interface:
-route | grep '^default' | grep -o '[^ ]*$'
+setting this variable and re-run the script:
 
-Then set this variable and re-run the script:
-export VPN_IFACE="YOUR_INTERFACE"
-
+export VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 EOF
   exit 1
 fi
@@ -380,7 +375,7 @@ if grep -qs "release 6" /etc/redhat-release; then
 else
   systemctl --now mask firewalld
   yum -y install iptables-services || exiterr2
-  systemctl enable iptables fail2ban
+  systemctl enable iptables fail2ban >/dev/null 2>&1
 fi
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   conf_bk "/etc/rc.local"
