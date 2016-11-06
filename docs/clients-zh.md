@@ -20,7 +20,7 @@
 * [故障排除](#故障排除)
   * [Windows 错误 809](#windows-错误-809)
   * [Windows 错误 628](#windows-错误-628)
-  * [Android 6.0 and 7.0](#android-60-and-70)
+  * [Android 6 and 7](#android-6-and-7)
   * [其它错误](#其它错误)
 
 ## Windows
@@ -374,12 +374,12 @@ strongswan down myvpn
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
-### Android 6.0 and 7.0
+### Android 6 and 7
 
-如果你无法使用 Android 6.0 (Marshmallow) 或者 7.0 (Nougat) 连接，请尝试以下解决方案：
+如果你无法使用 Android 6 (Marshmallow) 或者 7 (Nougat) 连接：
 
-1. 单击 VPN 连接旁边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请看下一步。
-1. （注： 最新版本的 VPN 脚本已经包含这些更改） 编辑 VPN 服务器上的 `/etc/ipsec.conf`，并在 `ike=` 和 `phase2alg=` 两行结尾添加 `,aes256-sha2_256` 字样。然后在它们下面添加一行 `sha2-truncbug=yes`。每行开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+1. 单击 VPN 连接旁边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...`，然后在它下面添加一行 `sha2-truncbug=yes`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ### 其它错误
 

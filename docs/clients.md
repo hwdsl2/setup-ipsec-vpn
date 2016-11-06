@@ -20,7 +20,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
 * [Troubleshooting](#troubleshooting)
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
-  * [Android 6.0 and 7.0](#android-60-and-70)
+  * [Android 6 and 7](#android-6-and-7)
   * [Other Errors](#other-errors)
 
 ## Windows
@@ -373,12 +373,12 @@ To fix this error, please follow these steps:
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
-### Android 6.0 and 7.0
+### Android 6 and 7
 
-If you are unable to connect using Android 6.0 (Marshmallow) or 7.0 (Nougat), try these workarounds:
+If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 
-1. Tap the "Settings" icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, see the next step.
-1. (Note: The latest version of VPN scripts already includes these changes) Edit `/etc/ipsec.conf` on the VPN server and append `,aes256-sha2_256` to both `ike=` and `phase2alg=` lines. Then add a new line `sha2-truncbug=yes` immediately after those. Indent lines with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+1. Tap the "Settings" icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...`, and add a new line `sha2-truncbug=yes` immediately below it, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ### Other Errors
 
