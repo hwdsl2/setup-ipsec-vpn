@@ -13,11 +13,11 @@
 # Check https://libreswan.org for the latest version
 swan_ver=3.18
 
-### Do not edit below this line ###
+### DO NOT edit below this line ###
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
 os_type="$(lsb_release -si 2>/dev/null)"
@@ -37,13 +37,11 @@ if [ -z "$swan_ver" ]; then
   exiterr "Libreswan version 'swan_ver' not specified."
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"
-if [ "$?" != "0" ]; then
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-/usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"
-if [ "$?" = "0" ]; then
+if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
   echo "You already have Libreswan version $swan_ver installed! "
   echo "If you continue, the same version will be re-installed."
   echo

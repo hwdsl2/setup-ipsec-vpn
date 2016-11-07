@@ -36,12 +36,13 @@ YOUR_PASSWORD=''
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 
-exiterr()  { echo "Error: ${1}" >&2; exit 1; }
+exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
-conf_bk() { /bin/cp -f "${1}" "${1}.old-$SYS_DT" 2>/dev/null; }
+conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
+
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-  printf %s "${1}" | tr -d '\n' | grep -Eq "$IP_REGEX"
+  printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
 os_type="$(lsb_release -si 2>/dev/null)"
@@ -335,9 +336,9 @@ fi
 # Check if IPTables rules need updating
 ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
-if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" || \
-   ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null || \
-   ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
+   || ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
   ipt_flag=1
 fi
 

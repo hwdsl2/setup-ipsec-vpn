@@ -22,7 +22,7 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr() { echo "Error: $1" >&2; exit 1; }
 
 if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" != "7" ]; then
   exiterr "This script only supports Debian 7 (Wheezy)."
