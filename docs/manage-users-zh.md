@@ -4,8 +4,6 @@
 
 在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要添加，修改或者删除用户，请阅读本文档。
 
-**注：** 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果这些设备在同一个 NAT 后面（比如家用路由器），它们无法同时连接到 VPN 服务器，即使你创建多个用户也是如此。对于上述情形，你可以尝试使用 [Shadowsocks](https://github.com/shadowsocks/shadowsocks-libev) / [ShadowsocksR](https://github.com/breakwa11/shadowsocks-rss) 或者 [OpenVPN](https://github.com/Nyr/openvpn-install)。
-
 首先，IPsec PSK (预共享密钥) 保存在文件 `/etc/ipsec.secrets`。如果要更换一个新的 PSK，可以编辑此文件。
 
 ```bash

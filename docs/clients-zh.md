@@ -378,8 +378,10 @@ strongswan down myvpn
 
 如果你无法使用 Android 6 (Marshmallow) 或者 7 (Nougat) 连接：
 
-1. 单击 VPN 连接旁边的设置按钮，选择 "显示高级选项" 并且滚动到底部。如果选项 "兼容模式" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
+1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...`，然后在它下面添加一行 `sha2-truncbug=yes`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+
+![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### 其它错误
 

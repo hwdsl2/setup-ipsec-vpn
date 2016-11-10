@@ -1,9 +1,6 @@
 ﻿# IPsec VPN Server Auto Setup Scripts
 
-[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Author](https://static.ls20.com/travis-ci/author.svg)](#author) 
-[![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 Set up your own IPsec VPN server in just a few minutes, with both IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
@@ -125,7 +122,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 **Windows and Android users**: If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
-The same VPN account can be used by your multiple devices. However, due to a limitation of the IPsec protocol, if these devices are behind the same NAT (e.g. home router), they cannot simultaneously connect to the VPN server.
+The same VPN account can be used by your multiple devices. However, due to an IPsec limitation, only one device behind the same NAT (e.g. home router) can connect to the VPN server at a time. This applies even if you create multiple users.
 
 If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
 
@@ -133,7 +130,7 @@ Clients are set to use <a href="https://developers.google.com/speed/public-dns/"
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 & 4500, and TCP port 22 (for SSH).
 
-To change the IPTables rules, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
+To modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
 
 When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 

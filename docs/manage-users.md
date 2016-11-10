@@ -4,8 +4,6 @@
 
 By default, a single user account for VPN login is created. If you wish to add, edit or remove users, read this document.
 
-**Note:** The same VPN account can be used by your multiple devices. However, due to a limitation of the IPsec protocol, if these devices are behind the same NAT (e.g. home router), they cannot simultaneously connect to the VPN server. This applies even if you create multiple users. For the above use case, try [OpenVPN](https://github.com/Nyr/openvpn-install).
-
 First, the IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. To change to a new PSK, just edit this file. 
 
 ```bash

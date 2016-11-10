@@ -17,14 +17,14 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - strongSwan Android VPN client
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server">iOS (iPhone/iPad) and OS X (macOS)</a> <-- See link
 
-The following example shows how to configure IKEv2 with Libreswan.
+The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
-First, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>. Commands below must be run as `root`.
+Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>.
 
 1. Find the public and private IP of your server, and make sure they are not empty. It is OK if they are the same.
 
    ```bash
-   $ PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Your public IP is displayed)

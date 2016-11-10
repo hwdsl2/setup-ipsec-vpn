@@ -377,8 +377,10 @@ To fix this error, please follow these steps:
 
 If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 
-1. Tap the "Settings" icon next to your VPN profile. Select "Show Advanced Options" and scroll down to the bottom. If the option "Backwards-compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
+1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...`, and add a new line `sha2-truncbug=yes` immediately below it, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+
+![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Other Errors
 

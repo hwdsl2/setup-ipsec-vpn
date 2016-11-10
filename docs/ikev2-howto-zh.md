@@ -17,14 +17,14 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - strongSwan Android VPN 客户端
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server">iOS (iPhone/iPad) 和 OS X (macOS)</a> <-- 请参见
 
-下面举例说明如何在 Libreswan 上配置 IKEv2。
+下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
-首先，请确保你已经成功地<a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建了自己的 VPN 服务器</a>。以下命令必须用 `root` 账户运行。
+在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的 VPN 服务器</a>。
 
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
    ```bash
-   $ PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Your public IP is displayed)

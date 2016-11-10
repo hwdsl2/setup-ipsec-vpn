@@ -1,9 +1,6 @@
 ﻿# IPsec VPN 服务器一键安装脚本
 
-[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) 
-[![Author](https://static.ls20.com/travis-ci/author.svg)](#作者) 
-[![GitHub stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://static.ls20.com/travis-ci/setup-ipsec-vpn.svg)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 使用 Linux Shell 脚本一键快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu，Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
@@ -125,7 +122,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 **Windows 和 Android 用户**： 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果这些设备在同一个 NAT 后面（比如家用路由器），它们无法同时连接到 VPN 服务器。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 的局限性，在同一个 NAT 后面（比如家用路由器）一次只能连接一个设备到 VPN 服务器。即使你创建多个用户也是如此。
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 
@@ -133,7 +130,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>），请打开 UDP 端口 500 和 4500，以及 TCP 端口 22 （用于 SSH）。
 
-如需更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
+如果需要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
 
 在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
 
