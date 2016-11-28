@@ -70,10 +70,12 @@ cat 1>&2 <<'EOF'
 
 DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
-If running on a server, you may fix this error by first
-setting this variable and re-run the script:
+If running on a server, try this workaround:
 
-export VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
+VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
+EOF
+cat 1>&2 <<EOF
+sudo VPN_IFACE="\$VPN_IFACE" sh "$0"
 EOF
   exit 1
 fi
