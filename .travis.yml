@@ -13,3 +13,6 @@ script:
  - shellcheck *.sh extras/*.sh
  - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
  - sudo sh vpnsetup.sh
+ - sleep 15
+ - sudo netstat -anpu | grep pluto
+ - sudo netstat -anpu | grep xl2tpd
