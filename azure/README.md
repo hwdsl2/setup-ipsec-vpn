@@ -18,10 +18,10 @@ Press this button to start:
     <img src="../docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
 </a>
 
-Screenshot:
-
-![Azure Custom Deployment](custom_deployment_screenshot.png)
-
 ## Author
 
 Copyright (C) 2016 [Daniel Falkner](https://github.com/derdanu)
+
+## Screenshot
+
+![Azure Custom Deployment](custom_deployment_screenshot.png)

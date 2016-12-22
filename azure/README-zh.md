@@ -18,10 +18,10 @@
     <img src="../docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
 </a>
 
-屏幕截图：
-
-![Azure Custom Deployment](custom_deployment_screenshot.png)
-
 ## 作者
 
 版权所有 (C) 2016 [Daniel Falkner](https://github.com/derdanu)
+
+## 屏幕截图
+
+![Azure Custom Deployment](custom_deployment_screenshot.png)
