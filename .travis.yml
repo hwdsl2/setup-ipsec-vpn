@@ -16,3 +16,7 @@ script:
  - sleep 15
  - sudo netstat -anpu | grep pluto
  - sudo netstat -anpu | grep xl2tpd
+
+notifications:
+  email:
+    - linsongui@gmail.com
