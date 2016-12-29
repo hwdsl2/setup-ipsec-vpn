@@ -392,6 +392,7 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
+modprobe -q pppol2tp
 service ipsec start
 service xl2tpd start
 echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -414,6 +415,7 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 iptables-restore < "$IPT_FILE"
 
 # Restart services
+modprobe -q pppol2tp
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
