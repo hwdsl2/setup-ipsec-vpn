@@ -276,10 +276,8 @@ ms-dns 8.8.8.8
 ms-dns 8.8.4.4
 noccp
 auth
-crtscts
 mtu 1280
 mru 1280
-lock
 proxyarp
 lcp-echo-failure 4
 lcp-echo-interval 30
