@@ -176,7 +176,7 @@ yum -y install strongswan xl2tpd
 ```
 VPN_SERVER_IP='your_vpn_server_ip'
 VPN_IPSEC_PSK='your_ipsec_pre_shared_key'
-VPN_USERNAME='your_vpn_username'
+VPN_USER='your_vpn_username'
 VPN_PASSWORD='your_vpn_password'
 ```
 
@@ -251,10 +251,8 @@ mru 1280
 noipdefault
 defaultroute
 usepeerdns
-debug
-lock
 connect-delay 5000
-name $VPN_USERNAME
+name $VPN_USER
 password $VPN_PASSWORD
 EOF
 
