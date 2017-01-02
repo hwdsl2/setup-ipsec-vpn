@@ -10,6 +10,7 @@ addons:
     - shellcheck
 
 script:
+ - export SHELLCHECK_OPTS="-e SC1091"
  - shellcheck *.sh extras/*.sh
  - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
  - sudo sh vpnsetup.sh
