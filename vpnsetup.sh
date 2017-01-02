@@ -46,6 +46,9 @@ check_ip() {
 }
 
 os_type="$(lsb_release -si 2>/dev/null)"
+if [ -z "$os_type" ] && [ -f "/etc/lsb-release" ]; then
+  os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
+fi
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ] && [ "$os_type" != "Raspbian" ]; then
   exiterr "This script only supports Ubuntu/Debian."
 fi
