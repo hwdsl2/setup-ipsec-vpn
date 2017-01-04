@@ -387,16 +387,22 @@ exit 0
 EOF
 
 # Start services at boot
-update-rc.d fail2ban enable >/dev/null 2>&1
-systemctl enable fail2ban >/dev/null 2>&1
+for svc in fail2ban ipsec xl2tpd; do
+  update-rc.d "$svc" enable >/dev/null 2>&1
+  systemctl enable "$svc" >/dev/null 2>&1
+done
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-  conf_bk "/etc/rc.local"
-  sed --follow-symlinks -i '/^exit 0/d' /etc/rc.local
+  if [ -f /etc/rc.local ]; then
+    conf_bk "/etc/rc.local"
+    sed --follow-symlinks -i '/^exit 0/d' /etc/rc.local
+  else
+    echo '#!/bin/sh' > /etc/rc.local
+  fi
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
-service ipsec start
-service xl2tpd start
+service ipsec restart
+service xl2tpd restart
 echo 1 > /proc/sys/net/ipv4/ip_forward
 exit 0
 EOF
