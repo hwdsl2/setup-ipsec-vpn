@@ -371,13 +371,12 @@ fi
 
 # Start services at boot
 if grep -qs "release 6" /etc/redhat-release; then
-  for svc in iptables fail2ban ipsec xl2tpd; do
-    chkconfig "$svc" on
-  done
+  chkconfig iptables on
+  chkconfig fail2ban on
 else
   systemctl --now mask firewalld
   yum -y install iptables-services || exiterr2
-  systemctl enable iptables fail2ban ipsec xl2tpd >/dev/null 2>&1
+  systemctl enable iptables fail2ban >/dev/null 2>&1
 fi
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
