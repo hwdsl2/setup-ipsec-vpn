@@ -14,6 +14,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 #### Table of Contents
 
+- [Quick start](#quick-start)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -24,6 +25,24 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Uninstallation](#uninstallation)
 - [See also](#see-also)
 - [License](#license)
+
+## Quick start
+
+First, prepare your Linux server* with a fresh install of Ubuntu LTS, Debian 8 or CentOS 7/6.
+
+Use this one-liner to set up an IPsec VPN server:
+
+```bash
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+
+If using CentOS, replace `https://git.io/vpnsetup` above with `https://git.io/vpnsetup-centos`.
+
+Your VPN login details will be randomly generated, and displayed on the screen when finished.
+
+For other installation options and how to set up VPN clients, read the sections below.
+
+\* A dedicated server or Virtual Private Server (VPS). OpenVZ VPS is NOT supported.
 
 ## Features
 
@@ -48,7 +67,7 @@ Please refer to <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubu
 
 **-OR-**
 
-A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is NOT supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is NOT supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.rackspace.com" target="_blank">Rackspace</a> and <a href="http://vcloud.vmware.com" target="_blank">VMware vCloud Air</a>.
 

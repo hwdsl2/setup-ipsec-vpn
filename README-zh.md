@@ -14,6 +14,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 #### 目录
 
+- [快速开始](#快速开始)
 - [功能特性](#功能特性)
 - [系统要求](#系统要求)
 - [安装说明](#安装说明)
@@ -24,6 +25,24 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - [卸载说明](#卸载说明)
 - [另见](#另见)
 - [授权协议](#授权协议)
+
+## 快速开始
+
+首先，在你的 Linux 服务器* 上全新安装一个 Ubuntu LTS，Debian 8 或者 CentOS 7/6 系统。
+
+使用以下命令快速搭建 IPsec VPN 服务器：
+
+```bash
+wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+
+对于 CentOS 系统，将上面的 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
+
+你的 VPN 登录凭证将会被自动随机生成，并在安装完成后在屏幕上显示。
+
+如需了解其它安装选项，以及如何配置 VPN 客户端，请阅读以下部分。
+
+\* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。
 
 ## 功能特性
 
