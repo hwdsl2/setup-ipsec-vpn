@@ -151,6 +151,7 @@ if grep -qs "release 6" /etc/redhat-release; then
   yum -y install libevent2-devel || exiterr2
 else
   yum -y install libevent-devel systemd-devel || exiterr2
+  yum -y install iptables-services || exiterr2
 fi
 
 print_status "Installing Fail2Ban to protect SSH..."
@@ -382,9 +383,8 @@ if grep -qs "release 6" /etc/redhat-release; then
   chkconfig iptables on
   chkconfig fail2ban on
 else
-  systemctl --now mask firewalld
-  yum -y install iptables-services || exiterr2
-  systemctl enable iptables fail2ban
+  systemctl --now mask firewalld 2>/dev/null
+  systemctl enable iptables fail2ban 2>/dev/null
 fi
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
