@@ -39,6 +39,7 @@ SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
+print_status() { echo; echo "## $1"; echo; }
 
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
@@ -88,8 +89,7 @@ fi
 [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials not set by user. Generating random PSK and password..."
-  echo
+  print_status "VPN credentials not set by user. Generating random PSK and password..."
   VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
@@ -105,7 +105,7 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
 cat <<'EOF'
 IMPORTANT: Workaround required for Debian 7 (Wheezy).
 You must first run the script at: https://git.io/vpndeb7
@@ -117,28 +117,27 @@ EOF
   sleep 30
 fi
 
-echo "VPN setup in progress... Please be patient."
-echo
+print_status "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
-# Update package index
+print_status "Populating apt-get cache..."
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yq update || exiterr "'apt-get update' failed."
 
-# Make sure basic commands exist
+print_status "Installing packages required for setup..."
+
 apt-get -yq install wget dnsutils openssl || exiterr2
 apt-get -yq install iproute gawk grep sed net-tools || exiterr2
 
+print_status "Trying to auto discover IPs of this server..."
+
 cat <<'EOF'
-
-Trying to auto discover IPs of this server...
-
 In case the script hangs here for more than a few minutes,
 use Ctrl-C to interrupt. Then edit it and manually enter IPs.
-
 EOF
 
 # In case auto IP discovery fails, you may manually enter server IPs here.
@@ -156,7 +155,8 @@ check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script a
 check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig "$NET_IF0" | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
 
-# Install necessary packages
+print_status "Installing packages required for the VPN..."
+
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
   libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make \
@@ -164,10 +164,12 @@ apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
 apt-get -yq --no-install-recommends install xmlto || exiterr2
 apt-get -yq install ppp xl2tpd || exiterr2
 
-# Install Fail2Ban to protect SSH server
+print_status "Installing Fail2Ban to protect SSH..."
+
 apt-get -yq install fail2ban || exiterr2
 
-# Compile and install Libreswan
+print_status "Compiling and installing Libreswan..."
+
 swan_ver=3.18
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
@@ -190,6 +192,8 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
+
+print_status "Creating VPN configuration..."
 
 # Create IPsec (Libreswan) config
 conf_bk "/etc/ipsec.conf"
@@ -302,7 +306,8 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-# Update sysctl settings
+print_status "Updating sysctl settings..."
+
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
   conf_bk "/etc/sysctl.conf"
 cat >> /etc/sysctl.conf <<EOF
@@ -336,6 +341,8 @@ net.ipv4.tcp_rmem = 10240 87380 12582912
 net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
+
+print_status "Updating IPTables rules..."
 
 # Check if IPTables rules need updating
 ipt_flag=0
@@ -378,7 +385,8 @@ if [ "$ipt_flag" = "1" ]; then
   fi
 fi
 
-# Load IPTables rules at boot
+print_status "Enabling services on boot..."
+
 mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
@@ -386,10 +394,9 @@ iptables-restore < /etc/iptables.rules
 exit 0
 EOF
 
-# Start services at boot
 for svc in fail2ban ipsec xl2tpd; do
   update-rc.d "$svc" enable >/dev/null 2>&1
-  systemctl enable "$svc" >/dev/null 2>&1
+  systemctl enable "$svc" 2>/dev/null
 done
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
@@ -410,6 +417,8 @@ EOF
     sed --follow-symlinks -i '/hwdsl2 VPN script/a sleep 15' /etc/rc.local
   fi
 fi
+
+print_status "Starting services..."
 
 # Reload sysctl.conf
 sysctl -e -q -p

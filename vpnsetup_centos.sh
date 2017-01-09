@@ -39,6 +39,7 @@ SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
+print_status() { echo; echo "## $1"; echo; }
 
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
@@ -84,8 +85,7 @@ fi
 [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials not set by user. Generating random PSK and password..."
-  echo
+  print_status "VPN credentials not set by user. Generating random PSK and password..."
   VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
@@ -101,24 +101,22 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-echo "VPN setup in progress... Please be patient."
-echo
+print_status "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
-# Make sure basic commands exist
+print_status "Installing packages required for setup..."
+
 yum -y install wget bind-utils openssl || exiterr2
 yum -y install iproute gawk grep sed net-tools || exiterr2
 
+print_status "Trying to auto discover IPs of this server..."
+
 cat <<'EOF'
-
-Trying to auto discover IPs of this server...
-
 In case the script hangs here for more than a few minutes,
 use Ctrl-C to interrupt. Then edit it and manually enter IPs.
-
 EOF
 
 # In case auto IP discovery fails, you may manually enter server IPs here.
@@ -136,20 +134,18 @@ check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script a
 check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig "$NET_IF0" | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
 
-# Add the EPEL repository
+print_status "Adding the EPEL repository..."
+
 yum -y install epel-release || exiterr2
 
-# Install necessary packages
+print_status "Installing packages required for the VPN..."
+
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
   curl-devel flex bison gcc make \
   fipscheck-devel unbound-devel xmlto || exiterr2
 yum -y install ppp xl2tpd || exiterr2
 
-# Install Fail2Ban to protect SSH server
-yum -y install fail2ban || exiterr2
-
-# Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2
@@ -157,7 +153,12 @@ else
   yum -y install libevent-devel systemd-devel || exiterr2
 fi
 
-# Compile and install Libreswan
+print_status "Installing Fail2Ban to protect SSH..."
+
+yum -y install fail2ban || exiterr2
+
+print_status "Compiling and installing Libreswan..."
+
 swan_ver=3.18
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
@@ -177,6 +178,8 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
+
+print_status "Creating VPN configuration..."
 
 # Create IPsec (Libreswan) config
 conf_bk "/etc/ipsec.conf"
@@ -289,7 +292,8 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-# Update sysctl settings
+print_status "Updating sysctl settings..."
+
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
   conf_bk "/etc/sysctl.conf"
 cat >> /etc/sysctl.conf <<EOF
@@ -323,6 +327,8 @@ net.ipv4.tcp_rmem = 10240 87380 12582912
 net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
+
+print_status "Updating IPTables rules..."
 
 # Check if IPTables rules need updating
 ipt_flag=0
@@ -358,7 +364,8 @@ if [ "$ipt_flag" = "1" ]; then
   iptables-save >> "$IPT_FILE"
 fi
 
-# Create basic Fail2Ban rules
+print_status "Creating basic Fail2Ban rules..."
+
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 cat > /etc/fail2ban/jail.local <<'EOF'
 [ssh-iptables]
@@ -369,14 +376,15 @@ logpath  = /var/log/secure
 EOF
 fi
 
-# Start services at boot
+print_status "Enabling services on boot..."
+
 if grep -qs "release 6" /etc/redhat-release; then
   chkconfig iptables on
   chkconfig fail2ban on
 else
   systemctl --now mask firewalld
   yum -y install iptables-services || exiterr2
-  systemctl enable iptables fail2ban >/dev/null 2>&1
+  systemctl enable iptables fail2ban
 fi
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
@@ -393,6 +401,8 @@ service xl2tpd restart
 echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 fi
+
+print_status "Starting services..."
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null

@@ -72,7 +72,7 @@ Your existing VPN configuration files will NOT be modified.
 
 EOF
 
-if [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "7" ]; then
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
 cat <<'EOF'
 IMPORTANT: Workaround required for Debian 7 (Wheezy).
 You must first run the script at: https://git.io/vpndeb7
