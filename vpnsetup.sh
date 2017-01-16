@@ -132,6 +132,7 @@ print_status "Installing packages required for setup..."
 
 apt-get -yq install wget dnsutils openssl || exiterr2
 apt-get -yq install iproute gawk grep sed net-tools || exiterr2
+apt-get -yq install bc || exiterr2
 
 print_status "Trying to auto discover IPs of this server..."
 
@@ -342,6 +343,60 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
+print_status "Creating quota/ip-up.local/ip-down.local..."
+
+cat > /etc/ppp/quota <<EOF
+#
+# This is the quota file
+# The 1st field is ther username
+# The 2nd field is the quota (in MB). "*" means unlimited.
+# Sample:
+# username  1000
+#
+$VPN_USER   *
+
+EOF
+
+conf_bk "/etc/ppp/ip-up.local"
+cat > /etc/ppp/ip-up.local <<'EOF'
+#!/bin/sh
+VPNUSAGE_FILE=/var/log/vpnusage.log
+VPNQUOTA_FILE=/etc/ppp/quota
+LOG_FILE=/var/log/vpn.log
+# Check quota
+QUOTA=`awk '$1=="'${PEERNAME}'" {print $2}' $VPNQUOTA_FILE`
+CURRENT_USAGE=`awk -F, '$2~/'${PEERNAME}'/ { sum = sum + $3 } END { printf ("%.2f", sum/1024/1024)}' $VPNUSAGE_FILE`
+if [ "$QUOTA"x = "*x" ]
+then
+    echo "[CONN] `date -d today +%F_%T` ${PEERNAME}: Current usage $CURRENT_USAGE M is within the quota unlimited. Connected" >> $LOG_FILE
+    exit 0
+fi
+if [ `expr $CURRENT_USAGE \< $QUOTA` -eq 1 ]
+then
+    echo "[CONN] `date -d today +%F_%T` ${PEERNAME}: Current Usage $CURRENT_USAGE M is within the quota $QUOTA M. Connected" >> $LOG_FILE
+else
+    echo "[TERM] `date -d today +%F_%T` ${PEERNAME}: Current Usage $CURRENT_USAGE M is over the quota $QUOTA M. Force terminate" >> $LOG_FILE
+    kill $PPPD_PID
+fi
+EOF
+
+conf_bk "/etc/ppp/ip-down.local"
+cat > /etc/ppp/ip-down.local <<'EOF'
+#!/bin/sh
+VPNUSAGE_FILE=/var/log/vpnusage.log
+LOG_FILE=/var/log/vpn.log
+sum_bytes=$(($BYTES_SENT+$BYTES_RCVD))
+sum=$(printf "%.2f" `echo "scale=2;$sum_bytes/1024/1024"|bc`)
+ave=`echo "scale=2;$sum_bytes/1024/$CONNECT_TIME"|bc`
+
+echo "[CLOS] `date -d today +%F_%T` ${PEERNAME}: Total online $CONNECT_TIME seconds, transferred $sum MB ($ave KB/s)." >> $LOG_FILE
+echo "`date -d today +%F_%T` , $PEERNAME , $sum_bytes , $CONNECT_TIME" >> $VPNUSAGE_FILE
+EOF
+
+chmod +x /etc/ppp/ip-up.local
+chmod +x /etc/ppp/ip-down.local
+
+
 print_status "Updating IPTables rules..."
 
 # Check if IPTables rules need updating
@@ -458,5 +513,3 @@ Setup VPN clients: https://git.io/vpnclients
 EOF
 
 exit 0
-
-
