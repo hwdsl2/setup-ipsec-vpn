@@ -58,10 +58,19 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      ikev2=insist
      rekey=no
      fragmentation=yes
-     forceencaps=yes
      ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256
      phase2alg=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256
    EOF
+   ```
+
+   We need to add one more line to that file, based on your Libreswan version. Please run command:
+
+   ```bash
+   $ if /usr/local/sbin/ipsec --version | grep -qs -F "3.19"; then
+       echo " encapsulation=yes" >> /etc/ipsec.conf
+     else
+       echo " forceencaps=yes" >> /etc/ipsec.conf
+     fi
    ```
 
 1. Generate Certificate Authority (CA) and VPN server certificates:   

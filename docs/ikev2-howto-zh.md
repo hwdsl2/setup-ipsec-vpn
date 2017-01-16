@@ -58,10 +58,19 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
      ikev2=insist
      rekey=no
      fragmentation=yes
-     forceencaps=yes
      ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256
      phase2alg=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256
    EOF
+   ```
+
+   还需要在该文件中添加一行，根据 Libreswan 的版本而不同。请运行以下命令：
+
+   ```bash
+   $ if /usr/local/sbin/ipsec --version | grep -qs -F "3.19"; then
+       echo " encapsulation=yes" >> /etc/ipsec.conf
+     else
+       echo " forceencaps=yes" >> /etc/ipsec.conf
+     fi
    ```
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：   
