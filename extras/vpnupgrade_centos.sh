@@ -40,7 +40,7 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
+if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
   echo "You already have Libreswan version $swan_ver installed! "
   echo "If you continue, the same version will be re-installed."
   echo
@@ -141,7 +141,7 @@ make -s programs && make -s install
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
-if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
 
