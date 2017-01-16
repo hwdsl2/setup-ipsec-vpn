@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-swan_ver=3.18
+swan_ver=3.19
 
 ### DO NOT edit below this line ###
 
@@ -68,7 +68,26 @@ Welcome! This script will build and install Libreswan $swan_ver on your server.
 Additional packages required for Libreswan compilation will also be installed.
 
 This is intended for use on servers running an older version of Libreswan.
-Your existing VPN configuration files will NOT be modified.
+
+EOF
+
+cat <<'EOF'
+!!! IMPORTANT NOTE !!!
+
+The new Libreswan version 3.19 requires some configuration changes.
+This script will make the following changes to your /etc/ipsec.conf:
+
+Replace this line:
+  auth=esp
+with the following:
+  phase2=esp
+
+Replace this line:
+  forceencaps=yes
+with the following:
+  encapsulation=yes
+
+Your other VPN configuration files will not be modified.
 
 EOF
 
@@ -133,6 +152,9 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
+
+# Update ipsec.conf options
+sed -i.old -e "s/auth=esp/phase2=esp/" -e "s/forceencaps=yes/encapsulation=yes/" /etc/ipsec.conf
 
 # Restart IPsec service
 service ipsec restart

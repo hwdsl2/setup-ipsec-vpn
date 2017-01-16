@@ -170,7 +170,7 @@ apt-get -yq install fail2ban || exiterr2
 
 print_status "Compiling and installing Libreswan..."
 
-swan_ver=3.18
+swan_ver=3.19
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://download.libreswan.org/$swan_file"
 swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
@@ -201,7 +201,6 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
-  nat_traversal=yes
   virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
   protostack=netkey
   nhelpers=0
@@ -212,7 +211,7 @@ conn shared
   left=$PRIVATE_IP
   leftid=$PUBLIC_IP
   right=%any
-  forceencaps=yes
+  encapsulation=yes
   authby=secret
   pfs=no
   rekey=no
@@ -231,7 +230,7 @@ conn l2tp-psk
   leftprotoport=17/1701
   rightprotoport=17/%any
   type=transport
-  auth=esp
+  phase2=esp
   also=shared
 
 conn xauth-psk
