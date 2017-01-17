@@ -7,7 +7,7 @@
 # IMPORTANT: These unofficial packages may not receive security updates compared to
 # official Debian packages. They could contain vulnerabilities. Use at your own risk!
 #
-# Copyright (C) 2015-2016 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2015-2017 Lin Song <linsongui@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
