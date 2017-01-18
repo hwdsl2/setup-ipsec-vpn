@@ -15,7 +15,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - Windows 7, 8.x 和 10
 - Windows Phone 8.1 及以上
 - strongSwan Android VPN 客户端
-- <a href="https://github.com/gaomd/docker-ikev2-vpn-server">iOS (iPhone/iPad) 和 OS X (macOS)</a> <-- 请参见
+- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">iOS (iPhone/iPad) 和 OS X (macOS)</a> <-- 请参见
 
 下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
@@ -223,6 +223,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    启用新的 IKEv2 VPN 连接，并且开始使用自己的专属 VPN！
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+
+   （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
 
    #### Windows Phone 8.1 及以上
 

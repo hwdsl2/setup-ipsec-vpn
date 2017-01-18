@@ -138,9 +138,9 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 *Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows and Android users**: If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+For **Windows users**, this <a href="docs/clients.md#windows-error-809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec limitation, only one device behind the same NAT (e.g. home router) can connect to the VPN server at a time. This applies even if you create multiple users.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a> if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router).
 
 If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
 

@@ -138,9 +138,9 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 
 *其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows 和 Android 用户**： 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#windows-错误-809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 的局限性，在同一个 NAT 后面（比如家用路由器）一次只能连接一个设备到 VPN 服务器。即使你创建多个用户也是如此。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果你需要同时连接在同一个 NAT 后面（比如家用路由器）的多个设备到 VPN 服务器，你必须仅使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth 模式</a>。
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 

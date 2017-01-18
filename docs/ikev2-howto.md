@@ -15,7 +15,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - Windows 7, 8.x and 10
 - Windows Phone 8.1 and above
 - strongSwan Android VPN client
-- <a href="https://github.com/gaomd/docker-ikev2-vpn-server">iOS (iPhone/iPad) and OS X (macOS)</a> <-- See link
+- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">iOS (iPhone/iPad) and OS X (macOS)</a> <-- See link
 
 The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
@@ -223,6 +223,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    Start the new IKEv2 VPN connection, and enjoy your own VPN!
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+
+   (Optional) To enable stronger ciphers, you may add <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
    #### Windows Phone 8.1 and above
 
