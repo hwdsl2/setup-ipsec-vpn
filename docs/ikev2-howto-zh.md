@@ -19,7 +19,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
-在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">搭建自己的 VPN 服务器</a>。
+在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
 
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
@@ -27,9 +27,9 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
-   (Your public IP is displayed)
+   （检查显示的 public IP）
    $ echo "$PRIVATE_IP"
-   (Your private IP is displayed)
+   （检查显示的 private IP）
    ```
 
 1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接:
@@ -175,7 +175,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```bash
    $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
 
-   -- repeat same extensions as above --
+   -- 重复与上面相同的 extensions --
 
    $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
@@ -238,7 +238,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 已知问题
 
-Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误 "Error 809"，或者可能在连接后无法打开任何网站。如果出现这些问题，请首先尝试 <a href="clients-zh.md#故障排除" target="_blank">这个解决方案</a>。如果仍然无法解决，请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
+Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误，或者可能在连接后无法打开任何网站。如果出现这些问题，请首先尝试 <a href="clients-zh.md#故障排除" target="_blank">这个解决方案</a>。如果仍然无法解决，请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
 
 ## 参考链接
 

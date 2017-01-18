@@ -27,9 +27,9 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
-   (Your public IP is displayed)
+   (Check the displayed public IP)
    $ echo "$PRIVATE_IP"
-   (Your private IP is displayed)
+   (Check the displayed private IP)
    ```
 
 1. Add a new IKEv2 connection to `/etc/ipsec.conf`:
@@ -224,7 +224,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   (Optional) To enable stronger ciphers, you may add <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
+   (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
    #### Windows Phone 8.1 and above
 
@@ -238,7 +238,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 ## Known Issues
 
-The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail with "Error 809", or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode instead.
+The built-in VPN client in Windows 7 and newer does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail, or you may be unable to open any website after connecting. If this happens, first try <a href="clients.md#troubleshooting" target="_blank">this workaround</a>. If it doesn't work, please connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode instead.
 
 ## References
 
