@@ -87,6 +87,9 @@ Replace this line:
 with the following:
   encapsulation=yes
 
+Re-add "MODP1024" to the list of allowed "ike=" ciphers.
+(Removed from the default list in Libreswan 3.19)
+
 Your other VPN configuration files will not be modified.
 
 EOF
@@ -154,7 +157,10 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
 fi
 
 # Update ipsec.conf options
-sed -i.old -e "s/auth=esp/phase2=esp/" -e "s/forceencaps=yes/encapsulation=yes/" /etc/ipsec.conf
+sed -i.old -e "s/auth=esp/phase2=esp/" -e "s/forceencaps=yes/encapsulation=yes/" \
+    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes256-sha2_512,aes256-sha2_512;modp1024,aes256-sha2_256,aes256-sha2_256;modp1024/" \
+    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes256-sha2_256,aes256-sha2_256;modp1024/" \
+    /etc/ipsec.conf
 
 # Restart IPsec service
 service ipsec restart
