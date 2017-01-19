@@ -219,8 +219,8 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
-  ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes256-sha2_512,aes256-sha2_512;modp1024,aes256-sha2_256,aes256-sha2_256;modp1024
-  phase2alg=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256
+  ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024
+  phase2alg=3des-sha1,aes-sha1,aes-sha2
   sha2-truncbug=yes
 
 conn l2tp-psk

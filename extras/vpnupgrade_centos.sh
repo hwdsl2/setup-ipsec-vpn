@@ -83,8 +83,9 @@ Replace this line:
 with the following:
   encapsulation=yes
 
-Re-add "MODP1024" to the list of allowed "ike=" ciphers.
-(Removed from the default list in Libreswan 3.19)
+Consolidate VPN ciphers for "ike=" and "phase2alg=".
+Re-add "MODP1024" to the list of allowed "ike=" ciphers,
+which was removed from defaults in Libreswan 3.19.
 
 Your other VPN configuration files will not be modified.
 
@@ -155,9 +156,10 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Update ipsec.conf options
 sed -i.old -e "s/auth=esp/phase2=esp/" -e "s/forceencaps=yes/encapsulation=yes/" \
-    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes256-sha2_512,aes256-sha2_512;modp1024,aes256-sha2_256,aes256-sha2_256;modp1024/" \
-    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes256-sha2_256,aes256-sha2_256;modp1024/" \
-    /etc/ipsec.conf
+    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024/" \
+    -e "s/ike=3des-sha1,aes-sha1,aes256-sha2_256/ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024/" \
+    -e "s/phase2alg=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256/phase2alg=3des-sha1,aes-sha1,aes-sha2/" \
+    -e "s/phase2alg=3des-sha1,aes-sha1,aes256-sha2_256/phase2alg=3des-sha1,aes-sha1,aes-sha2/" /etc/ipsec.conf
 
 # Restart IPsec service
 service ipsec restart
