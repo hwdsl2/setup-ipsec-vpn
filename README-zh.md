@@ -180,6 +180,7 @@ wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">IPsec VPN Server on Docker</a>
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
+- <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
 - <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
 - <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
