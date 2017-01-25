@@ -387,6 +387,14 @@ If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 
 ### Other Errors
 
+First, you may try restarting services on the VPN server:
+```
+service ipsec restart
+service xl2tpd restart
+```
+
+If using Docker, run `docker restart ipsec-vpn-server`.
+
 For additional troubleshooting tips, refer to the links below:
 
 https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   

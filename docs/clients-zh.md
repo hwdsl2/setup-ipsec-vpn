@@ -388,6 +388,14 @@ strongswan down myvpn
 
 ### 其它错误
 
+首先，你可以尝试重启 VPN 服务器上的相关服务：
+```
+service ipsec restart
+service xl2tpd restart
+```
+
+如果你使用 Docker，请运行 `docker restart ipsec-vpn-server`。
+
 更多的故障排除信息请参见以下链接：
 
 https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
