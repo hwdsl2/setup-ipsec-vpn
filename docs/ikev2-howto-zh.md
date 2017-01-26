@@ -175,7 +175,82 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```bash
    $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
 
-   -- 重复与上面相同的 extensions --
+   A random seed must be generated that will be used in the
+   creation of your key.  One of the easiest ways to create a
+   random seed is to use the timing of keystrokes on a keyboard.
+
+   To begin, type keys on the keyboard until this progress meter
+   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
+
+   Continue typing until the progress meter is full:
+
+   |************************************************************|
+
+   Finished.  Press enter to continue:
+
+   Generating key.  This may take a few moments...
+
+                   0 - Digital Signature
+                   1 - Non-repudiation
+                   2 - Key encipherment
+                   3 - Data encipherment
+                   4 - Key agreement
+                   5 - Cert signing key
+                   6 - CRL signing key
+                   Other to finish
+    > 0
+                   0 - Digital Signature
+                   1 - Non-repudiation
+                   2 - Key encipherment
+                   3 - Data encipherment
+                   4 - Key agreement
+                   5 - Cert signing key
+                   6 - CRL signing key
+                   Other to finish
+    > 2
+                   0 - Digital Signature
+                   1 - Non-repudiation
+                   2 - Key encipherment
+                   3 - Data encipherment
+                   4 - Key agreement
+                   5 - Cert signing key
+                   6 - CRL signing key
+                   Other to finish
+    > 8
+   Is this a critical extension [y/N]?
+   N
+                   0 - Server Auth
+                   1 - Client Auth
+                   2 - Code Signing
+                   3 - Email Protection
+                   4 - Timestamp
+                   5 - OCSP Responder
+                   6 - Step-up
+                   7 - Microsoft Trust List Signing
+                   Other to finish
+    > 0
+                   0 - Server Auth
+                   1 - Client Auth
+                   2 - Code Signing
+                   3 - Email Protection
+                   4 - Timestamp
+                   5 - OCSP Responder
+                   6 - Step-up
+                   7 - Microsoft Trust List Signing
+                   Other to finish
+    > 1
+                   0 - Server Auth
+                   1 - Client Auth
+                   2 - Code Signing
+                   3 - Email Protection
+                   4 - Timestamp
+                   5 - OCSP Responder
+                   6 - Step-up
+                   7 - Microsoft Trust List Signing
+                   Other to finish
+    > 8
+   Is this a critical extension [y/N]?
+   N
 
    $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
@@ -211,7 +286,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### Windows 7, 8.x 和 10
 
-   将 `.p12` 文件导入到 Computer 证书存储。在导入 CA 证书后，它必须被放入 "Trusted Root Certification Authorities" 目录的 "Certificates" 子目录中。
+   将 `.p12` 文件导入到 "Computer account" 证书存储。在导入证书后，你必须确保将客户端证书放在 "Personal -> Certificates" 目录中，并且将 CA 证书放在 "Trusted Root Certification Authorities -> Certificates" 目录中。
 
    详细的操作步骤：  
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
