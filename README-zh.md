@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 
-使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu/Debian/CentOS 系统。你只需要提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu/Debian/CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
@@ -28,7 +28,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器* 上全新安装一个 Ubuntu LTS，Debian 8 或者 CentOS 7/6 系统。
+首先，在你的 Linux 服务器* 上全新安装一个 Ubuntu LTS, Debian 8 或者 CentOS 7/6 系统。
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -36,11 +36,11 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-对于 CentOS 系统，将上面的 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
+如果使用 CentOS，请将上面的地址换成 `https://git.io/vpnsetup-centos`。
 
-你的 VPN 登录凭证将会被自动随机生成，并在安装完成后在屏幕上显示。
+你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
 
-如需了解其它安装选项，以及如何配置 VPN 客户端，请阅读以下部分。
+如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
 
 \* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。
 
@@ -69,7 +69,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 不受支持，用户可以尝试使用 <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
-这也包括各种公共云服务中的 Linux 虚拟机，比如 <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.rackspace.com" target="_blank">Rackspace</a> 和 <a href="http://vcloud.vmware.com" target="_blank">VMware vCloud Air</a>。
+这也包括各种公共云服务中的 Linux 虚拟机，比如 <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a> 和 <a href="https://www.rackspace.com" target="_blank">Rackspace</a>。
 
 <a href="azure/README-zh.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
@@ -111,8 +111,6 @@ VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 ```
 
-DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">分步指南</a>，由 Tony Tran 编写。
-
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ### CentOS & RHEL
@@ -128,7 +126,7 @@ DigitalOcean 用户可以参考这个<a href="https://usefulpcguide.com/17318/cr
 <a href="docs/clients-zh.md" target="_blank">配置 IPsec/L2TP VPN 客户端</a>   
 <a href="docs/clients-xauth-zh.md" target="_blank">配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端</a>
 
-<a href="docs/ikev2-howto-zh.md" target="_blank">如何配置 IKEv2 VPN: Windows 7 和更新版本</a>
+<a href="docs/ikev2-howto-zh.md" target="_blank">如何配置 IKEv2 VPN: Windows 和 Android</a>
 
 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 

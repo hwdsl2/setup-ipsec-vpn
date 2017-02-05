@@ -22,6 +22,7 @@
   * [Windows 错误 628](#windows-错误-628)
   * [Android 6 and 7](#android-6-and-7)
   * [其它错误](#其它错误)
+  * [额外的步骤](#额外的步骤)
 
 ## Windows
 
@@ -162,7 +163,7 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 要配置 VPN 客户端，首先安装以下软件包：
 
-```
+```bash
 # Ubuntu & Debian
 apt-get update
 apt-get -y install strongswan xl2tpd
@@ -177,7 +178,7 @@ yum -y install strongswan xl2tpd
 
 创建 VPN 变量 （替换为你自己的值）：
 
-```
+```bash
 VPN_SERVER_IP='your_vpn_server_ip'
 VPN_IPSEC_PSK='your_ipsec_pre_shared_key'
 VPN_USER='your_vpn_username'
@@ -185,7 +186,7 @@ VPN_PASSWORD='your_vpn_password'
 ```
 
 配置 strongSwan：
-```
+```bash
 cat > /etc/ipsec.conf <<EOF
 # ipsec.conf - strongSwan IPsec configuration file
 
@@ -234,7 +235,7 @@ ln -s /etc/ipsec.secrets /etc/strongswan/ipsec.secrets
 ```
 
 配置 xl2tpd：
-```
+```bash
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [lac myvpn]
 lns = $VPN_SERVER_IP
@@ -266,19 +267,19 @@ chmod 600 /etc/ppp/options.l2tpd.client
 至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
 
 创建 xl2tpd 控制文件：
-```
+```bash
 mkdir -p /var/run/xl2tpd
 touch /var/run/xl2tpd/l2tp-control
 ```
 
 重启服务：
-```
+```bash
 service strongswan restart
 service xl2tpd restart
 ```
 
 开始 IPsec 连接：
-```
+```bash
 # Ubuntu & Debian
 ipsec up myvpn
 
@@ -287,36 +288,36 @@ strongswan up myvpn
 ```
 
 开始 L2TP 连接：
-```
+```bash
 echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 ```
 
 运行 `ifconfig` 并且检查输出。现在你应该看到一个新的网络接口 `ppp0`。
 
 检查你现有的默认路由：
-```
+```bash
 ip route
 ```
 
 在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的两个命令中使用。
 
 从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
-```
+```bash
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
 如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的公有 IP，可在 <a href="https://www.ipchicken.com" target="_blank">这里</a> 查看）：
-```
+```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
 ```
 
 添加一个新的默认路由，并且开始通过 VPN 服务器发送数据：
-```
+```bash
 route add default dev ppp0
 ```
 
 至此 VPN 连接已成功完成。检查 VPN 是否正常工作：
-```
+```bash
 wget -qO- http://ipv4.icanhazip.com; echo
 ```
 
@@ -324,12 +325,12 @@ wget -qO- http://ipv4.icanhazip.com; echo
 
 
 要停止通过 VPN 服务器发送数据：
-```
+```bash
 route del default dev ppp0
 ```
 
 要断开连接：
-```
+```bash
 # Ubuntu & Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 ipsec down myvpn
@@ -388,19 +389,42 @@ strongswan down myvpn
 
 ### 其它错误
 
-首先，你可以尝试重启 VPN 服务器上的相关服务：
-```
+更多的相关信息请参见以下链接：
+
+* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+* http://www.tp-link.com/en/faq-1029.html
+
+### 额外的步骤
+
+首先，重启 VPN 服务器上的相关服务：
+```bash
 service ipsec restart
 service xl2tpd restart
 ```
 
 如果你使用 Docker，请运行 `docker restart ipsec-vpn-server`。
 
-更多的故障排除信息请参见以下链接：
+然后重启你的 VPN 客户端设备，并重试连接。如果仍然无法连接，可以尝试删除并重新创建 VPN 连接，按照本文档中的步骤操作。请确保输入了正确的 VPN 登录凭证。
 
-https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-http://www.tp-link.com/en/faq-1029.html
+检查 Libreswan (IPsec) 日志是否有错误：
+```bash
+# Ubuntu & Debian
+grep pluto /var/log/auth.log
+# CentOS & RHEL
+grep pluto /var/log/secure
+```
+
+查看 IPsec VPN 服务器状态：
+```bash
+ipsec status
+ipsec verify
+```
+
+显示当前已建立的 VPN 连接：
+```bash
+ipsec whack --trafficstatus
+```
 
 ## 致谢
 

@@ -15,7 +15,7 @@ Follow these steps to remove the VPN. Commands must be run as `root`, or with `s
 
 ## First step
 
-```
+```bash
 service ipsec stop
 service xl2tpd stop
 rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec
@@ -69,7 +69,7 @@ Remove these config files:
 
 Copy and paste for fast removal:
 
-```
+```bash
 rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
       /etc/pam.d/pluto /etc/sysconfig/pluto /etc/default/pluto
 rm -rf /etc/ipsec.d /etc/xl2tpd

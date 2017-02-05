@@ -1,4 +1,4 @@
-﻿# 如何配置 IKEv2 VPN: Windows 7 和更新版本
+﻿# 如何配置 IKEv2 VPN: Windows 和 Android
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -15,11 +15,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - Windows 7, 8.x 和 10
 - Windows Phone 8.1 及以上
 - strongSwan Android VPN 客户端
-- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">iOS (iPhone/iPad) 和 OS X (macOS)</a> <-- 请参见
+- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">iOS (iPhone/iPad) 和 macOS</a> <-- 另见
 
 下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
-在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
+在继续之前，请确保你已经成功 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
 
 1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
 
@@ -63,14 +63,22 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-   还需要在该文件中添加一行，根据 Libreswan 的版本而不同。请运行以下命令：
+   还需要在该文件中添加一行，首先查看你的 Libreswan 版本：
 
    ```bash
-   $ if /usr/local/sbin/ipsec --version | grep -qs -F "3.19"; then
-       echo " encapsulation=yes" >> /etc/ipsec.conf
-     else
-       echo " forceencaps=yes" >> /etc/ipsec.conf
-     fi
+   $ ipsec --version
+   ```
+
+   对于 Libreswan 3.19 或以上版本，请运行：
+
+   ```bash
+   $ echo " encapsulation=yes" >> /etc/ipsec.conf
+   ```
+
+   对于 Libreswan 3.18 或以下版本，请运行：
+
+   ```bash
+   $ echo " forceencaps=yes" >> /etc/ipsec.conf
    ```
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：   
@@ -100,7 +108,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Is this a critical extension [y/N]?
    N
 
-   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "$PUBLIC_IP"
+   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
+      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
 
    A random seed must be generated that will be used in the
    creation of your key.  One of the easiest ways to create a
@@ -116,64 +125,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Finished.  Press enter to continue:
 
    Generating key.  This may take a few moments...
-
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 0
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 2
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 8
-   Is this a critical extension [y/N]?
-   N
-                   0 - Server Auth
-                   1 - Client Auth
-                   2 - Code Signing
-                   3 - Email Protection
-                   4 - Timestamp
-                   5 - OCSP Responder
-                   6 - Step-up
-                   7 - Microsoft Trust List Signing
-                   Other to finish
-    > 0
-                   0 - Server Auth
-                   1 - Client Auth
-                   2 - Code Signing
-                   3 - Email Protection
-                   4 - Timestamp
-                   5 - OCSP Responder
-                   6 - Step-up
-                   7 - Microsoft Trust List Signing
-                   Other to finish
-    > 8
-   Is this a critical extension [y/N]?
-   N
    ```
 
 1. 生成客户端证书，并且导出 `.p12` 文件。该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
-   $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," -1 -6 -8 "vpnclient"
+   $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
+      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
 
    A random seed must be generated that will be used in the
    creation of your key.  One of the easiest ways to create a
@@ -189,68 +147,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Finished.  Press enter to continue:
 
    Generating key.  This may take a few moments...
-
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 0
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 2
-                   0 - Digital Signature
-                   1 - Non-repudiation
-                   2 - Key encipherment
-                   3 - Data encipherment
-                   4 - Key agreement
-                   5 - Cert signing key
-                   6 - CRL signing key
-                   Other to finish
-    > 8
-   Is this a critical extension [y/N]?
-   N
-                   0 - Server Auth
-                   1 - Client Auth
-                   2 - Code Signing
-                   3 - Email Protection
-                   4 - Timestamp
-                   5 - OCSP Responder
-                   6 - Step-up
-                   7 - Microsoft Trust List Signing
-                   Other to finish
-    > 0
-                   0 - Server Auth
-                   1 - Client Auth
-                   2 - Code Signing
-                   3 - Email Protection
-                   4 - Timestamp
-                   5 - OCSP Responder
-                   6 - Step-up
-                   7 - Microsoft Trust List Signing
-                   Other to finish
-    > 1
-                   0 - Server Auth
-                   1 - Client Auth
-                   2 - Code Signing
-                   3 - Email Protection
-                   4 - Timestamp
-                   5 - OCSP Responder
-                   6 - Step-up
-                   7 - Microsoft Trust List Signing
-                   Other to finish
-    > 8
-   Is this a critical extension [y/N]?
-   N
 
    $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
@@ -259,7 +155,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   可以重复该步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。
+   重复这个步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。请注意，如果你需要同时连接多个客户端，则必须为每个客户端生成唯一的证书。
 
 1. 证书数据库现在应该包含以下内容：
 
@@ -274,7 +170,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    vpnclient                                          u,u,u
    ```
 
-   注：如需删除证书，可运行命令 `certutil -D -d sql:/etc/ipsec.d -n "Certificate Nickname"`。
+   注：如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">这里</a>。
 
 1. 重启 IPsec 服务：
 
@@ -286,34 +182,38 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### Windows 7, 8.x 和 10
 
-   将 `.p12` 文件导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+   1. 将 `.p12` 文件导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-   详细的操作步骤：  
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+      请按照以下链接的步骤操作：   
+      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：
+   1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
+      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   1. 启用新的 IKEv2 VPN 连接，并且开始使用 VPN！   
+      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   启用新的 IKEv2 VPN 连接，并且开始使用自己的专属 VPN！
+   1. （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
 
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+   #### Android 4.x 和更新版本
 
-   （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
+   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a>。
+   1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
+   1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP`。
+   1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
+   1. 单击添加一个 **User certificate**，然后单击 **Install**。
+   1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。
+   1. 保存新的 VPN 连接，然后单击它开始连接。
 
    #### Windows Phone 8.1 及以上
 
    首先导入 `.p12` 文件，然后参照 <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">这些说明</a> 配置一个基于证书的 IKEv2 VPN。
 
-   #### Android 4.x 和更新版本
-
-   请参见： https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
-
-   连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+1. 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 已知问题
 
-Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误，或者可能在连接后无法打开任何网站。如果出现这些问题，请首先尝试 <a href="clients-zh.md#故障排除" target="_blank">这个解决方案</a>。如果仍然无法解决，请使用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或者 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
+Windows 自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试 <a href="clients-zh.md#故障排除" target="_blank">修改注册表</a>，或者换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
 
 ## 参考链接
 
@@ -321,3 +221,4 @@ Windows 7 和更新版本自带的 VPN 客户端不支持 IKEv2 fragmentation。
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/Windows7
+* https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient

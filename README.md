@@ -36,7 +36,7 @@ Use this one-liner to set up an IPsec VPN server:
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 
-If using CentOS, replace `https://git.io/vpnsetup` above with `https://git.io/vpnsetup-centos`.
+If using CentOS, replace the link above with `https://git.io/vpnsetup-centos`.
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
 
@@ -63,13 +63,13 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 
-Please refer to <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>.
+Please see <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>.
 
 **-OR-**
 
 A dedicated server or Virtual Private Server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is NOT supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
-This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.rackspace.com" target="_blank">Rackspace</a> and <a href="http://vcloud.vmware.com" target="_blank">VMware vCloud Air</a>.
+These also include Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
 <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
@@ -111,8 +111,6 @@ VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' sh vpnsetup.sh
 ```
 
-DigitalOcean users may refer to this <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">step-by-step guide</a> by Tony Tran.
-
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ### CentOS & RHEL
@@ -128,7 +126,7 @@ Get your computer or device to use the VPN. Please refer to:
 <a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>   
 <a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth ("Cisco IPsec") VPN Clients</a>
 
-<a href="docs/ikev2-howto.md" target="_blank">How-To: IKEv2 VPN for Windows 7 and newer</a>
+<a href="docs/ikev2-howto.md" target="_blank">How-To: IKEv2 VPN for Windows and Android</a>
 
 If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
