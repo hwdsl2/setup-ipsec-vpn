@@ -82,7 +82,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：   
-   注： 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
+   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
 
    ```bash
    $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
@@ -170,7 +170,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    vpnclient                                          u,u,u
    ```
 
-   注：如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">这里</a>。
+   **注：** 如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">这里</a>。
 
 1. 重启 IPsec 服务：
 

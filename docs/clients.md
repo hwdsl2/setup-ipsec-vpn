@@ -44,7 +44,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-Note: A one-time registry change is required before connecting. See details below.
+**Note:** A one-time registry change is required before connecting. See details below.
 
 ### Windows 7, Vista and XP
 
@@ -72,7 +72,7 @@ Note: A one-time registry change is required before connecting. See details belo
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-Note: This <a href="#windows-error-809">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
+**Note:** This <a href="#windows-error-809">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 

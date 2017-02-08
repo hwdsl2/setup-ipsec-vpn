@@ -82,7 +82,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    ```
 
 1. Generate Certificate Authority (CA) and VPN server certificates:   
-   Note: Specify the certificate validity period (in months) using "-v". e.g. "-v 36".
+   **Note:** Specify the certificate validity period (in months) using "-v". e.g. "-v 36".
 
    ```bash
    $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
@@ -170,7 +170,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    vpnclient                                          u,u,u
    ```
 
-   Note: To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete it, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">this page</a>.
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete it, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">this page</a>.
 
 1. Restart IPsec service:
 
