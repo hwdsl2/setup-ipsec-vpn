@@ -72,9 +72,9 @@ This is intended for use on servers running an older version of Libreswan.
 EOF
 
 cat <<'EOF'
-!!! IMPORTANT NOTE !!!
+IMPORTANT NOTES:
 
-The new Libreswan version 3.19 requires some configuration changes.
+Libreswan versions 3.19 and newer require some configuration changes.
 This script will make the following changes to your /etc/ipsec.conf:
 
 Replace this line:
@@ -89,7 +89,7 @@ with the following:
 
 Consolidate VPN ciphers for "ike=" and "phase2alg=".
 Re-add "MODP1024" to the list of allowed "ike=" ciphers,
-which was removed from defaults in Libreswan 3.19.
+which was removed from the defaults in Libreswan 3.19.
 
 Your other VPN configuration files will not be modified.
 
@@ -157,15 +157,14 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
 
-# Update ipsec.conf options
+# Update ipsec.conf for Libreswan 3.19 and newer
 IKE_NEW="  ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
 PHASE2_NEW="  phase2alg=3des-sha1,aes-sha1,aes-sha2"
-sed -i.old -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
+sed -i".old-$(date +%Y-%m-%d-%H:%M:%S)" \
+    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
-    -e "s/^[[:space:]]\+ike=3des-sha1,aes-sha1\$/$IKE_NEW/" \
-    -e "s/^[[:space:]]\+ike=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256\$/$IKE_NEW/" \
-    -e "s/^[[:space:]]\+phase2alg=3des-sha1,aes-sha1\$/$PHASE2_NEW/" \
-    -e "s/^[[:space:]]\+phase2alg=3des-sha1,aes-sha1,aes256-sha2_512,aes256-sha2_256\$/$PHASE2_NEW/" /etc/ipsec.conf
+    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/" \
+    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/" /etc/ipsec.conf
 
 # Restart IPsec service
 service ipsec restart
