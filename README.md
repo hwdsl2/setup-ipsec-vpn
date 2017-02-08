@@ -75,6 +75,8 @@ These also include Linux VMs in public clouds, such as <a href="https://blog.ls2
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
+Advanced users can set up the VPN server on a $35 <a href="https://www.raspberrypi.org/blog/raspberry-pi-3-on-sale/" target="_blank">Raspberry Pi 3</a>. Read more at <a href="https://blog.elasticbyte.net/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">Justin's blog</a>.
+
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
 ## Installation

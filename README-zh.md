@@ -75,6 +75,8 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
+高级用户可以尝试在 <a href="https://www.raspberrypi.org/blog/raspberry-pi-3-on-sale/" target="_blank">树莓派 3</a> 上搭建 VPN 服务器。更多信息请见 <a href="https://blog.elasticbyte.net/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">Justin 的博客</a>。
+
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
 ## 安装说明
