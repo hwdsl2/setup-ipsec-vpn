@@ -20,7 +20,7 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally faster tha
 **Note:** You may also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
 
 1. Download and install the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN client</a>.   
-   **Note:** This VPN client does NOT support Windows 10.
+   **Note:** This VPN client supports Windows 2K/XP/Vista/7/8.
 1. Click Start Menu -> All Programs -> ShrewSoft VPN Client -> VPN Access Manager
 1. Click the **Add (+)** button on toolbar.
 1. Enter `Your VPN Server IP` in the **Host Name or IP Address** field.
