@@ -51,7 +51,6 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
-- 自动确定服务器的公网 IP 以及私有 IP 地址
 - 包含 `sysctl.conf` 优化设置，以达到更佳的传输性能
 - 测试通过： Ubuntu 16.04/14.04/12.04， Debian 8 和 CentOS 7/6
 

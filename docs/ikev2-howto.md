@@ -21,15 +21,12 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
 Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>.
 
-1. Find the public and private IP of your server, and make sure they are not empty. It is OK if they are the same.
+1. Find the public IP of your server, and make sure it is correct.
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    (Check the displayed public IP)
-   $ echo "$PRIVATE_IP"
-   (Check the displayed private IP)
    ```
 
 1. Add a new IKEv2 connection to `/etc/ipsec.conf`:
@@ -38,7 +35,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ cat >> /etc/ipsec.conf <<EOF
 
    conn ikev2-cp
-     left=$PRIVATE_IP
+     left=%defaultroute
      leftcert=$PUBLIC_IP
      leftid=@$PUBLIC_IP
      leftsendcert=always

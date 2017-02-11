@@ -112,27 +112,22 @@ print_status "Installing packages required for setup..."
 yum -y install wget bind-utils openssl || exiterr2
 yum -y install iproute gawk grep sed net-tools || exiterr2
 
-print_status "Trying to auto discover IPs of this server..."
+print_status "Trying to auto discover IP of this server..."
 
 cat <<'EOF'
 In case the script hangs here for more than a few minutes,
-use Ctrl-C to interrupt. Then edit it and manually enter IPs.
+use Ctrl-C to interrupt. Then edit it and manually enter IP.
 EOF
 
-# In case auto IP discovery fails, you may manually enter server IPs here.
-# If your server only has a public IP, put that public IP on both lines.
+# In case auto IP discovery fails, enter this server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
-PRIVATE_IP=${VPN_PRIVATE_IP:-''}
 
-# Try to auto discover IPs of this server
+# Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 
-# Check IPs for correct format
+# Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter IPs."
-check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig "$NET_IF0" | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
-check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP. Edit the script and manually enter IPs."
+check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter it."
 
 print_status "Adding the EPEL repository..."
 
@@ -195,7 +190,7 @@ config setup
   uniqueids=no
 
 conn shared
-  left=$PRIVATE_IP
+  left=%defaultroute
   leftid=$PUBLIC_IP
   right=%any
   encapsulation=yes
@@ -212,8 +207,6 @@ conn shared
 
 conn l2tp-psk
   auto=add
-  leftsubnet=$PRIVATE_IP/32
-  leftnexthop=%defaultroute
   leftprotoport=17/1701
   rightprotoport=17/%any
   type=transport
@@ -241,7 +234,7 @@ EOF
 # Specify IPsec PSK
 conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
-$PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
+%any  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
@@ -334,8 +327,8 @@ print_status "Updating IPTables rules..."
 ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP" 2>/dev/null; then
+   || ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j MASQUERADE 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
   ipt_flag=1
 fi
 
@@ -358,8 +351,8 @@ if [ "$ipt_flag" = "1" ]; then
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
   # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
-  iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j SNAT --to-source "$PRIVATE_IP"
+  iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 fi

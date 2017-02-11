@@ -7,7 +7,7 @@ By default, a single user account for VPN login is created. If you wish to add, 
 First, the IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. To change to a new PSK, just edit this file. 
 
 ```bash
-<VPN Server IP>  %any  : PSK "<VPN IPsec PSK>"
+%any  %any  : PSK "<VPN IPsec PSK>"
 ```
 
 For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:

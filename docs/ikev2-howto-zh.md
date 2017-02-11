@@ -21,15 +21,12 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 在继续之前，请确保你已经成功 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
 
-1. 获取服务器的公共和私有 IP 地址，并确保它们的值非空。注意，这两个 IP 地址可以相同。
+1. 获取服务器的公共 IP 地址，并检查它是否正确。
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
    $ echo "$PUBLIC_IP"
    （检查显示的 public IP）
-   $ echo "$PRIVATE_IP"
-   （检查显示的 private IP）
    ```
 
 1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接:
@@ -38,7 +35,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ cat >> /etc/ipsec.conf <<EOF
 
    conn ikev2-cp
-     left=$PRIVATE_IP
+     left=%defaultroute
      leftcert=$PUBLIC_IP
      leftid=@$PUBLIC_IP
      leftsendcert=always

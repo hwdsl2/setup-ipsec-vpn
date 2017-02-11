@@ -51,7 +51,6 @@ For other installation options and how to set up VPN clients, read the sections 
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
-- Automatically determines public IP and private IP of server
 - Includes `sysctl.conf` optimizations for improved performance
 - Tested with Ubuntu 16.04/14.04/12.04, Debian 8 and CentOS 7/6
 

@@ -7,7 +7,7 @@
 首先，IPsec PSK (预共享密钥) 保存在文件 `/etc/ipsec.secrets`。如果要更换一个新的 PSK，可以编辑此文件。
 
 ```bash
-<VPN Server IP>  %any  : PSK "<VPN IPsec PSK>"
+%any  %any  : PSK "<VPN IPsec PSK>"
 ```
 
 对于 `IPsec/L2TP`，VPN 用户账户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
