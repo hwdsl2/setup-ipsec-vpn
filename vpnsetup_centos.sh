@@ -39,7 +39,7 @@ SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
-print_status() { echo; echo "## $1"; echo; }
+bigecho() { echo; echo "## $1"; echo; }
 
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
@@ -62,7 +62,6 @@ fi
 
 NET_IF0=${VPN_IFACE:-'eth0'}
 NET_IFS=${VPN_IFACE:-'eth+'}
-
 if_state=$(cat "/sys/class/net/$NET_IF0/operstate" 2>/dev/null)
 if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IF0" = "lo" ]; then
   echo "Error: Network interface '$NET_IF0' is not available." >&2
@@ -85,7 +84,7 @@ fi
 [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  print_status "VPN credentials not set by user. Generating random PSK and password..."
+  bigecho "VPN credentials not set by user. Generating random PSK and password..."
   VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
@@ -101,25 +100,25 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-print_status "VPN setup in progress... Please be patient."
+bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
-print_status "Installing packages required for setup..."
+bigecho "Installing packages required for setup..."
 
 yum -y install wget bind-utils openssl || exiterr2
 yum -y install iproute gawk grep sed net-tools || exiterr2
 
-print_status "Trying to auto discover IP of this server..."
+bigecho "Trying to auto discover IP of this server..."
 
 cat <<'EOF'
 In case the script hangs here for more than a few minutes,
 use Ctrl-C to interrupt. Then edit it and manually enter IP.
 EOF
 
-# In case auto IP discovery fails, enter this server's public IP here.
+# In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
 # Try to auto discover IP of this server
@@ -129,11 +128,11 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter it."
 
-print_status "Adding the EPEL repository..."
+bigecho "Adding the EPEL repository..."
 
 yum -y install epel-release || exiterr2
 
-print_status "Installing packages required for the VPN..."
+bigecho "Installing packages required for the VPN..."
 
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
@@ -149,11 +148,11 @@ else
   yum -y install iptables-services || exiterr2
 fi
 
-print_status "Installing Fail2Ban to protect SSH..."
+bigecho "Installing Fail2Ban to protect SSH..."
 
 yum -y install fail2ban || exiterr2
 
-print_status "Compiling and installing Libreswan..."
+bigecho "Compiling and installing Libreswan..."
 
 swan_ver=3.19
 swan_file="libreswan-$swan_ver.tar.gz"
@@ -175,7 +174,15 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
 
-print_status "Creating VPN configuration..."
+bigecho "Creating VPN configuration..."
+
+L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
+L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
+L2TP_POOL=${VPN_L2TP_POOL:-'192.168.42.10-192.168.42.250'}
+XAUTH_NET=${VPN_XAUTH_NET:-'192.168.43.0/24'}
+XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
+DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
+DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
 # Create IPsec (Libreswan) config
 conf_bk "/etc/ipsec.conf"
@@ -183,7 +190,7 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
-  virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
+  virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
   protostack=netkey
   nhelpers=0
   interfaces=%defaultroute
@@ -216,9 +223,9 @@ conn l2tp-psk
 conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
-  rightaddresspool=192.168.43.10-192.168.43.250
-  modecfgdns1=8.8.8.8
-  modecfgdns2=8.8.4.4
+  rightaddresspool=$XAUTH_POOL
+  modecfgdns1=$DNS_SRV1
+  modecfgdns2=$DNS_SRV2
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -239,13 +246,13 @@ EOF
 
 # Create xl2tpd config
 conf_bk "/etc/xl2tpd/xl2tpd.conf"
-cat > /etc/xl2tpd/xl2tpd.conf <<'EOF'
+cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
 
 [lns default]
-ip range = 192.168.42.10-192.168.42.250
-local ip = 192.168.42.1
+ip range = $L2TP_POOL
+local ip = $L2TP_LOCAL
 require chap = yes
 refuse pap = yes
 require authentication = yes
@@ -256,11 +263,11 @@ EOF
 
 # Set xl2tpd options
 conf_bk "/etc/ppp/options.xl2tpd"
-cat > /etc/ppp/options.xl2tpd <<'EOF'
+cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
-ms-dns 8.8.8.8
-ms-dns 8.8.4.4
+ms-dns $DNS_SRV1
+ms-dns $DNS_SRV2
 noccp
 auth
 mtu 1280
@@ -285,7 +292,7 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-print_status "Updating sysctl settings..."
+bigecho "Updating sysctl settings..."
 
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
   conf_bk "/etc/sysctl.conf"
@@ -321,14 +328,14 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-print_status "Updating IPTables rules..."
+bigecho "Updating IPTables rules..."
 
 # Check if IPTables rules need updating
 ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFS" -j MASQUERADE 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
   ipt_flag=1
 fi
 
@@ -344,20 +351,20 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
   iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
-  iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-  iptables -I FORWARD 5 -i "$NET_IFS" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s 192.168.43.0/24 -o "$NET_IFS" -j ACCEPT
+  iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
+  iptables -I FORWARD 5 -i "$NET_IFS" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFS" -j ACCEPT
   # Uncomment if you wish to disallow traffic between VPN clients themselves
-  # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
-  # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+  # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
+  # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$NET_IFS" -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFS" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 fi
 
-print_status "Creating basic Fail2Ban rules..."
+bigecho "Creating basic Fail2Ban rules..."
 
 if [ ! -f /etc/fail2ban/jail.local ] ; then
 cat > /etc/fail2ban/jail.local <<'EOF'
@@ -369,7 +376,7 @@ logpath  = /var/log/secure
 EOF
 fi
 
-print_status "Enabling services on boot..."
+bigecho "Enabling services on boot..."
 
 if grep -qs "release 6" /etc/redhat-release; then
   chkconfig iptables on
@@ -394,7 +401,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 EOF
 fi
 
-print_status "Starting services..."
+bigecho "Starting services..."
 
 # Restore SELinux contexts
 restorecon /etc/ipsec.d/*db 2>/dev/null
