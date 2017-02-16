@@ -418,6 +418,15 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 # Apply new IPTables rules
 iptables-restore < "$IPT_FILE"
 
+# Fix xl2tpd on CentOS 7 for providers such as Linode,
+# where kernel module "l2tp_ppp" is unavailable
+if grep -qs "release 7" /etc/redhat-release; then
+  if ! modprobe -q l2tp_ppp; then
+    sed -i '/ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
+    systemctl daemon-reload
+  fi
+fi
+
 # Restart services
 modprobe -q pppol2tp
 mkdir -p /var/run/fail2ban
