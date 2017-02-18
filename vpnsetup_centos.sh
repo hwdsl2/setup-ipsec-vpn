@@ -343,11 +343,12 @@ fi
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   iptables-save > "$IPT_FILE.old-$SYS_DT"
-  iptables -I INPUT 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I INPUT 2 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I INPUT 3 -p udp -m multiport --dports 500,4500 -j ACCEPT
-  iptables -I INPUT 4 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-  iptables -I INPUT 5 -p udp --dport 1701 -j DROP
+  iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
+  iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
+  iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I INPUT 4 -p udp -m multiport --dports 500,4500 -j ACCEPT
+  iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+  iptables -I INPUT 6 -p udp --dport 1701 -j DROP
   iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
   iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
