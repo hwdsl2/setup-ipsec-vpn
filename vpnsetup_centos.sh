@@ -430,7 +430,6 @@ fi
 
 # Restart services
 modprobe -q pppol2tp
-mkdir -p /var/run/fail2ban
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
