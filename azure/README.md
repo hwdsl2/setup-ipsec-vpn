@@ -1,4 +1,4 @@
-﻿# Deploy to Microsoft Azure
+# Deploy to Microsoft Azure
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 

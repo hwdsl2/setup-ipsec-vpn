@@ -1,4 +1,4 @@
-﻿# Configure IPsec/L2TP VPN Clients
+# Configure IPsec/L2TP VPN Clients
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 

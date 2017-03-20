@@ -1,4 +1,4 @@
-﻿# IPsec VPN Server Auto Setup Scripts
+# IPsec VPN Server Auto Setup Scripts
 
 [![Build Status](https://travis-ci.org/hwdsl2/setup-ipsec-vpn.svg?branch=master)](https://travis-ci.org/hwdsl2/setup-ipsec-vpn) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
@@ -139,7 +139,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 For **Windows users**, this <a href="docs/clients.md#windows-error-809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>. Also, your server must run [Libreswan 3.19](#upgrade-libreswan) or newer.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>. Also, your server must run [Libreswan 3.19](#upgrade-libreswan) or newer versions.
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/networking#firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN.
 

@@ -1,4 +1,4 @@
-﻿# Uninstall the VPN
+# Uninstall the VPN
 
 *Read this in other languages: [English](uninstall.md), [简体中文](uninstall-zh.md).*
 

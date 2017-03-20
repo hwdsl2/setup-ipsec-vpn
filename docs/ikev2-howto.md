@@ -1,4 +1,4 @@
-﻿# How-To: IKEv2 VPN for Windows and Android
+# How-To: IKEv2 VPN for Windows and Android
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -152,7 +152,9 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   Repeat this step for additional VPN clients, but replace every `vpnclient` with `vpnclient2`, etc. Please note: If you wish to connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+   Repeat this step for additional VPN clients, but replace every `vpnclient` with `vpnclient2`, etc.
+
+   **Note:** If you wish to connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
 
 1. The database should now contain:
 
@@ -167,7 +169,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    vpnclient                                          u,u,u
    ```
 
-   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete it, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">this page</a>.
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">this page</a>.
 
 1. Restart IPsec service:
 
@@ -181,7 +183,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. Import the `.p12` file to the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-      Follow the instructions at this link:   
+      Detailed instructions:   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
    1. On the Windows computer, add a new IKEv2 VPN connection：   

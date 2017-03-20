@@ -1,4 +1,4 @@
-﻿# 卸载 VPN
+# 卸载 VPN
 
 *其他语言版本: [English](uninstall.md), [简体中文](uninstall-zh.md).*
 

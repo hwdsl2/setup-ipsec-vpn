@@ -1,4 +1,4 @@
-﻿# 配置 IPsec/XAuth VPN 客户端
+# 配置 IPsec/XAuth VPN 客户端
 
 *其他语言版本: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
 

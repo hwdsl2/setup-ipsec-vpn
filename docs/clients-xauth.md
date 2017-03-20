@@ -1,4 +1,4 @@
-﻿# Configure IPsec/XAuth VPN Clients
+# Configure IPsec/XAuth VPN Clients
 
 *Read this in other languages: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
 

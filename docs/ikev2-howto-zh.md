@@ -1,4 +1,4 @@
-﻿# 如何配置 IKEv2 VPN: Windows 和 Android
+# 如何配置 IKEv2 VPN: Windows 和 Android
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -152,7 +152,9 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   重复这个步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。请注意，如果你需要同时连接多个客户端，则必须为每个客户端生成唯一的证书。
+   重复这个步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。
+
+   **注：** 如果你需要同时连接多个客户端，则必须为每一个客户端生成唯一的证书。
 
 1. 证书数据库现在应该包含以下内容：
 
@@ -167,7 +169,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    vpnclient                                          u,u,u
    ```
 
-   **注：** 如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">这里</a>。
+   **注：** 如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除一个证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">这里</a>。
 
 1. 重启 IPsec 服务：
 
@@ -181,7 +183,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    1. 将 `.p12` 文件导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-      请按照以下链接的步骤操作：   
+      详细的操作步骤：   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
    1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
@@ -200,7 +202,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
    1. 单击添加一个 **User certificate**，然后单击 **Install**。
    1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。
-   1. 保存新的 VPN 连接，然后单击它开始连接。
+   1. 保存新的 VPN 连接，然后单击它以开始连接。
 
    #### Windows Phone 8.1 及以上
 
