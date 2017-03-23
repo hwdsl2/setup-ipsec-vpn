@@ -21,8 +21,11 @@ exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
 os_type="$(lsb_release -si 2>/dev/null)"
-if [ -z "$os_type" ] && [ -f "/etc/lsb-release" ]; then
-  os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
+if [ -z "$os_type" ]; then
+  [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && echo "$ID")"
+  [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
+  [ "$os_type" = "debian" ] && os_type=Debian
+  [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
 fi
 if [ "$os_type" != "Ubuntu" ] && [ "$os_type" != "Debian" ] && [ "$os_type" != "Raspbian" ]; then
   exiterr "This script only supports Ubuntu/Debian."
