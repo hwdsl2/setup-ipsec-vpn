@@ -46,6 +46,13 @@ check_ip() {
   printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+if [ ! -x  /usr/bin/lsb_release ]
+then
+    echo "The lsb_release command was not found." >&2
+    echo "Installing lsb-release, Please Wait..."
+    apt-get -y install lsb-release || exiterr2
+fi
+
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ -z "$os_type" ] && [ -f "/etc/lsb-release" ]; then
   os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
