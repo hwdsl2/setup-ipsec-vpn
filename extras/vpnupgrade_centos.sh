@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-swan_ver=3.19
+swan_ver=3.20
 
 ### DO NOT edit below this line ###
 
@@ -131,8 +131,8 @@ fi
 
 # Compile and install Libreswan
 swan_file="libreswan-$swan_ver.tar.gz"
-swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exiterr "Cannot download Libreswan source."
 fi

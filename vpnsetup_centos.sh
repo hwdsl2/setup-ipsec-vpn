@@ -154,10 +154,10 @@ yum -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-swan_ver=3.19
+swan_ver=3.20
 swan_file="libreswan-$swan_ver.tar.gz"
-swan_url1="https://download.libreswan.org/$swan_file"
-swan_url2="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exiterr "Cannot download Libreswan source."
 fi
