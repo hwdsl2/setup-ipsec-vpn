@@ -394,6 +394,10 @@ For additional information, refer to the links below:
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
 * http://www.tp-link.com/en/faq-1029.html
 
+### Connecting to VPN through a router
+
+If you are experiencing issues with VPN being connected to your wi-fi router (or having wired connection through it), please check out its settings. Router must have enabled options for remote management with IPSEC. Having this feature in off state will block connections to your IPSEC VPN server. So you must allow this kind of connections. 
+
 ### Additional steps
 
 First, restart services on the VPN server:
