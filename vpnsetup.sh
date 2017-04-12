@@ -71,17 +71,15 @@ NET_IF0=${VPN_IFACE:-'eth0'}
 NET_IFS=${VPN_IFACE:-'eth+'}
 if_state=$(cat "/sys/class/net/$NET_IF0/operstate" 2>/dev/null)
 if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IF0" = "lo" ]; then
-  echo "Error: Network interface '$NET_IF0' is not available." >&2
+  printf "Error: Network interface '%s' is not available.\n" "$NET_IF0" >&2
+  printf '\n%s\n' "DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!" >&2
+  printf '\n%s\n\n' "If running on a server, try this workaround:" >&2
 cat 1>&2 <<'EOF'
-
-DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
-
-If running on a server, try this workaround:
-
 VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 EOF
 cat 1>&2 <<EOF
 sudo VPN_IFACE="\$VPN_IFACE" sh "$0"
+
 EOF
   exit 1
 fi
