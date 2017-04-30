@@ -60,19 +60,20 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-NET_IF0=${VPN_IFACE:-'eth0'}
-NET_IFS=${VPN_IFACE:-'eth+'}
-if_state=$(cat "/sys/class/net/$NET_IF0/operstate" 2>/dev/null)
-if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IF0" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n" "$NET_IF0" >&2
-  printf '\n%s\n' "DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!" >&2
-  printf '\n%s\n\n' "If running on a server, try this workaround:" >&2
+NET_IFACE=${VPN_NET_IFACE:-'eth0'}
+
+if_state=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
+if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
+  printf "Error: Network interface '%s' is not available.\n\n" "$NET_IFACE" >&2
 cat 1>&2 <<'EOF'
-VPN_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
+DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
+
+If running on a server, please re-run the script using
+the following commands:
+ VPN_NET_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 EOF
 cat 1>&2 <<EOF
-sudo VPN_IFACE="\$VPN_IFACE" sh "$0"
-
+ sudo VPN_NET_IFACE="\$VPN_NET_IFACE" sh "$0"
 EOF
   exit 1
 fi
@@ -315,11 +316,11 @@ net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.lo.send_redirects = 0
-net.ipv4.conf.$NET_IF0.send_redirects = 0
+net.ipv4.conf.$NET_IFACE.send_redirects = 0
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.conf.lo.rp_filter = 0
-net.ipv4.conf.$NET_IF0.rp_filter = 0
+net.ipv4.conf.$NET_IFACE.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 
@@ -336,8 +337,8 @@ bigecho "Updating IPTables rules..."
 ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFS" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
   ipt_flag=1
 fi
 
@@ -352,17 +353,17 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
   iptables -I INPUT 6 -p udp --dport 1701 -j DROP
   iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I FORWARD 2 -i "$NET_IFS" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFS" -j ACCEPT
+  iptables -I FORWARD 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
-  iptables -I FORWARD 5 -i "$NET_IFS" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFS" -j ACCEPT
+  iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
   # Uncomment if you wish to disallow traffic between VPN clients themselves
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
   # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFS" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFS" -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 fi
