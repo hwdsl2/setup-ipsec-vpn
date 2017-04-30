@@ -67,8 +67,9 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-NET_IF0=${VPN_IFACE:-'eth0'}
-NET_IFS=${VPN_IFACE:-'eth+'}
+NET_IF_BASE='eth'
+NET_IF0=${VPN_IFACE:-NET_IF_BASE'0'}
+NET_IFS=${VPN_IFACE:-NET_IF_BASE'+'}
 if_state=$(cat "/sys/class/net/$NET_IF0/operstate" 2>/dev/null)
 if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IF0" = "lo" ]; then
   printf "Error: Network interface '%s' is not available.\n" "$NET_IF0" >&2
