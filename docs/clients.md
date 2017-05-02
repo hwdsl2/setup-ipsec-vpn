@@ -186,6 +186,7 @@ VPN_PASSWORD='your_vpn_password'
 ```
 
 Configure strongSwan:
+
 ```bash
 cat > /etc/ipsec.conf <<EOF
 # ipsec.conf - strongSwan IPsec configuration file
@@ -235,6 +236,7 @@ ln -s /etc/ipsec.secrets /etc/strongswan/ipsec.secrets
 ```
 
 Configure xl2tpd:
+
 ```bash
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [lac myvpn]
@@ -267,18 +269,21 @@ chmod 600 /etc/ppp/options.l2tpd.client
 The VPN client setup is now complete. Follow the steps below to connect.
 
 Create xl2tpd control file:
+
 ```bash
 mkdir -p /var/run/xl2tpd
 touch /var/run/xl2tpd/l2tp-control
 ```
 
 Restart services:
+
 ```bash
 service strongswan restart
 service xl2tpd restart
 ```
 
 Start the IPsec connection:
+
 ```bash
 # Ubuntu & Debian
 ipsec up myvpn
@@ -288,6 +293,7 @@ strongswan up myvpn
 ```
 
 Start the L2TP connection:
+
 ```bash
 echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 ```
@@ -295,6 +301,7 @@ echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 Run `ifconfig` and check the output. You should now see a new interface `ppp0`.
 
 Check your existing default route:
+
 ```bash
 ip route
 ```
@@ -302,21 +309,25 @@ ip route
 Find this line in the output: `default via X.X.X.X ...`. Write down this gateway IP for use in the two commands below.
 
 Exclude your VPN server's IP from the new default route (replace with actual value):
+
 ```bash
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
 If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with your actual public IP <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">from here</a>):
+
 ```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
 ```
 
 Add a new default route to start routing traffic via the VPN server：
+
 ```bash
 route add default dev ppp0
 ```
 
 The VPN connection is now complete. Verify that your traffic is being routed properly:
+
 ```bash
 wget -qO- http://ipv4.icanhazip.com; echo
 ```
@@ -324,11 +335,13 @@ wget -qO- http://ipv4.icanhazip.com; echo
 The above command should return `Your VPN Server IP`.
 
 To stop routing traffic via the VPN server:
+
 ```bash
 route del default dev ppp0
 ```
 
 To disconnect:
+
 ```bash
 # Ubuntu & Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
@@ -382,13 +395,14 @@ If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
 1. **Note:** The latest versions of VPN scripts already include these changes.   
-   Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...`, and add a new line `sha2-truncbug=yes` immediately below it, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+   1. (For Android 7.1.2 and above) Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>)
+   1. Edit `/etc/ipsec.conf` on the VPN server. Find `phase2alg=...` and add a new line `sha2-truncbug=yes` immediately below it, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Other errors
 
-For additional information, refer to the links below:
+If you encounter other errors, refer to the links below:
 
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
@@ -396,7 +410,10 @@ For additional information, refer to the links below:
 
 ### Additional steps
 
+Please try these additional troubleshooting steps:
+
 First, restart services on the VPN server:
+
 ```bash
 service ipsec restart
 service xl2tpd restart
@@ -407,6 +424,7 @@ If using Docker, run `docker restart ipsec-vpn-server`.
 Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
 
 Check the Libreswan (IPsec) log for errors:
+
 ```bash
 # Ubuntu & Debian
 grep pluto /var/log/auth.log
@@ -415,12 +433,14 @@ grep pluto /var/log/secure
 ```
 
 Check status of the IPsec VPN server:
+
 ```bash
 ipsec status
 ipsec verify
 ```
 
 Show current established VPN connections:
+
 ```bash
 ipsec whack --trafficstatus
 ```

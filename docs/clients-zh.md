@@ -186,6 +186,7 @@ VPN_PASSWORD='your_vpn_password'
 ```
 
 配置 strongSwan：
+
 ```bash
 cat > /etc/ipsec.conf <<EOF
 # ipsec.conf - strongSwan IPsec configuration file
@@ -235,6 +236,7 @@ ln -s /etc/ipsec.secrets /etc/strongswan/ipsec.secrets
 ```
 
 配置 xl2tpd：
+
 ```bash
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [lac myvpn]
@@ -267,18 +269,21 @@ chmod 600 /etc/ppp/options.l2tpd.client
 至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
 
 创建 xl2tpd 控制文件：
+
 ```bash
 mkdir -p /var/run/xl2tpd
 touch /var/run/xl2tpd/l2tp-control
 ```
 
 重启服务：
+
 ```bash
 service strongswan restart
 service xl2tpd restart
 ```
 
 开始 IPsec 连接：
+
 ```bash
 # Ubuntu & Debian
 ipsec up myvpn
@@ -288,6 +293,7 @@ strongswan up myvpn
 ```
 
 开始 L2TP 连接：
+
 ```bash
 echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 ```
@@ -295,6 +301,7 @@ echo "c myvpn" > /var/run/xl2tpd/l2tp-control
 运行 `ifconfig` 并且检查输出。现在你应该看到一个新的网络接口 `ppp0`。
 
 检查你现有的默认路由：
+
 ```bash
 ip route
 ```
@@ -302,21 +309,25 @@ ip route
 在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的两个命令中使用。
 
 从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
+
 ```bash
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
 如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的公有 IP，可在 <a href="https://www.ipchicken.com" target="_blank">这里</a> 查看）：
+
 ```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
 ```
 
 添加一个新的默认路由，并且开始通过 VPN 服务器发送数据：
+
 ```bash
 route add default dev ppp0
 ```
 
 至此 VPN 连接已成功完成。检查 VPN 是否正常工作：
+
 ```bash
 wget -qO- http://ipv4.icanhazip.com; echo
 ```
@@ -325,11 +336,13 @@ wget -qO- http://ipv4.icanhazip.com; echo
 
 
 要停止通过 VPN 服务器发送数据：
+
 ```bash
 route del default dev ppp0
 ```
 
 要断开连接：
+
 ```bash
 # Ubuntu & Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
@@ -383,13 +396,14 @@ strongswan down myvpn
 
 1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
 1. **注：** 最新版本的 VPN 脚本已经包含这些更改。   
-   编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...`，然后在它下面添加一行 `sha2-truncbug=yes`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+   1. （适用于 Android 7.1.2 及以上版本）编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `ike=` 和 `phase2alg=` 两行的末尾添加 `,aes256-sha2_512` 字样。保存修改并运行 `service ipsec restart`。(<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">参见</a>)
+   1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 并在它下面紧接着添加一行 `sha2-truncbug=yes`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### 其它错误
 
-更多的相关信息请参见以下链接：
+如果你遇到其它错误，请参见以下链接：
 
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
@@ -397,7 +411,10 @@ strongswan down myvpn
 
 ### 额外的步骤
 
+请尝试下面这些额外的故障排除步骤：
+
 首先，重启 VPN 服务器上的相关服务：
+
 ```bash
 service ipsec restart
 service xl2tpd restart
@@ -408,6 +425,7 @@ service xl2tpd restart
 然后重启你的 VPN 客户端设备，并重试连接。如果仍然无法连接，可以尝试删除并重新创建 VPN 连接，按照本文档中的步骤操作。请确保输入了正确的 VPN 登录凭证。
 
 检查 Libreswan (IPsec) 日志是否有错误：
+
 ```bash
 # Ubuntu & Debian
 grep pluto /var/log/auth.log
@@ -416,12 +434,14 @@ grep pluto /var/log/secure
 ```
 
 查看 IPsec VPN 服务器状态：
+
 ```bash
 ipsec status
 ipsec verify
 ```
 
 显示当前已建立的 VPN 连接：
+
 ```bash
 ipsec whack --trafficstatus
 ```
