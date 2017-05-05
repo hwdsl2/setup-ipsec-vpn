@@ -394,9 +394,9 @@ To fix this error, please follow these steps:
 If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
-1. **Note:** The latest versions of VPN scripts already include these changes.   
-   1. (For Android 7.1.2 and above) Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>)
-   1. Edit `/etc/ipsec.conf` on the VPN server. Find `phase2alg=...` and add a new line `sha2-truncbug=yes` immediately below it, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+1. **Note:** The latest version of VPN scripts already includes this change.   
+   (For Android 7.1.2 and newer) Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>)
+1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 

@@ -395,9 +395,9 @@ strongswan down myvpn
 如果你无法使用 Android 6 (Marshmallow) 或者 7 (Nougat) 连接：
 
 1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
-1. **注：** 最新版本的 VPN 脚本已经包含这些更改。   
-   1. （适用于 Android 7.1.2 及以上版本）编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `ike=` 和 `phase2alg=` 两行的末尾添加 `,aes256-sha2_512` 字样。保存修改并运行 `service ipsec restart`。(<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">参见</a>)
-   1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 并在它下面紧接着添加一行 `sha2-truncbug=yes`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+1. **注：** 最新版本的 VPN 脚本已经包含这个更改。   
+   （适用于 Android 7.1.2 及以上版本） 编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `ike=` 和 `phase2alg=` 两行的末尾添加 `,aes256-sha2_512` 字样。保存修改并运行 `service ipsec restart`。(<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">参见</a>)
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
