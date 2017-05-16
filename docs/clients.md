@@ -21,6 +21,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
   * [Android 6 and 7](#android-6-and-7)
+  * [Chromebook](#chromebook)
   * [Other errors](#other-errors)
   * [Additional steps](#additional-steps)
 
@@ -399,6 +400,10 @@ If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
 1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
+
+### Chromebook
+
+Chromebook users: If you are unable to connect, try <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=707139#c58" target="_blank">this workaround</a>. Alternatively, edit `/etc/ipsec.conf` on the VPN server, find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
 
 ### Other errors
 

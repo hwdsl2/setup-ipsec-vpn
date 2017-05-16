@@ -21,6 +21,7 @@
   * [Windows 错误 809](#windows-错误-809)
   * [Windows 错误 628](#windows-错误-628)
   * [Android 6 and 7](#android-6-and-7)
+  * [Chromebook](#chromebook)
   * [其它错误](#其它错误)
   * [额外的步骤](#额外的步骤)
 
@@ -400,6 +401,10 @@ strongswan down myvpn
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
+
+### Chromebook
+
+Chromebook 用户： 如果你无法连接，请尝试 <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=707139#c58" target="_blank">这个解决方案</a>。或者你也可以尝试编辑 VPN 服务器上的 `/etc/ipsec.conf`，找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
 
 ### 其它错误
 
