@@ -61,20 +61,36 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 NET_IFACE=${VPN_NET_IFACE:-'eth0'}
+DEF_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 
-if_state=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
-if [ -z "$if_state" ] || [ "$if_state" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n\n" "$NET_IFACE" >&2
-cat 1>&2 <<'EOF'
+if_state1=$(cat "/sys/class/net/$DEF_IFACE/operstate" 2>/dev/null)
+if [ -z "$VPN_NET_IFACE" ] && [ -n "$if_state1" ] && [ "$if_state1" != "down" ]; then
+  case "$DEF_IFACE" in
+    wlan*)
+      printf "Error: Default network interface '%s' detected.\n\n" "$DEF_IFACE" >&2
+cat 1>&2 <<EOF
 DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
-If running on a server, please re-run the script using
-the following commands:
- VPN_NET_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
+If you are certain that this script is running on a server,
+please re-run it using the following command:
+ sudo VPN_NET_IFACE="$DEF_IFACE" sh "$0"
 EOF
+      exit 1
+      ;;
+  esac
+  NET_IFACE="$DEF_IFACE"
+fi
+
+if_state2=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
+if [ -z "$if_state2" ] || [ "$if_state2" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
+  printf "Error: Network interface '%s' is not available.\n\n" "$NET_IFACE" >&2
+  if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
- sudo VPN_NET_IFACE="\$VPN_NET_IFACE" sh "$0"
+This script is unable to detect your server's default network interface.
+You may manually re-run it using the following command:
+ sudo VPN_NET_IFACE="YOUR_DEFAULT_NETWORK_INTERFACE" sh "$0"
 EOF
+  fi
   exit 1
 fi
 
