@@ -65,19 +65,22 @@ DEF_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
 
 if_state1=$(cat "/sys/class/net/$DEF_IFACE/operstate" 2>/dev/null)
 if [ -z "$VPN_NET_IFACE" ] && [ -n "$if_state1" ] && [ "$if_state1" != "down" ]; then
-  case "$DEF_IFACE" in
-    wlan*)
-      printf "Error: Default network interface '%s' detected.\n\n" "$DEF_IFACE" >&2
+  if ! grep -qs raspbian /etc/os-release; then
+    case "$DEF_IFACE" in
+      wlan*)
 cat 1>&2 <<EOF
+Error: Default network interface '$DEF_IFACE' detected.
+
 DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 
 If you are certain that this script is running on a server,
-please re-run it using the following command:
+you may re-run it using the following command:
  sudo VPN_NET_IFACE="$DEF_IFACE" sh "$0"
 EOF
-      exit 1
-      ;;
-  esac
+        exit 1
+        ;;
+    esac
+  fi
   NET_IFACE="$DEF_IFACE"
 fi
 
@@ -109,7 +112,7 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
-if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -qs '[^ -~]\+'; then
+if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
@@ -189,7 +192,7 @@ make -s programs && make -s install
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
-if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qs -F "$swan_ver"; then
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$swan_ver"; then
   exiterr "Libreswan $swan_ver failed to build."
 fi
 
