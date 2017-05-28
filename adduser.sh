@@ -10,7 +10,7 @@ fi
 echo "Enter password"
 read -r password
 password=$(openssl passwd -1 "$password")
-echo $username":"$password":xauth-psk" >> /etc/ipsec.d/passwd
+echo "$username:$password:xauth-psk" >> /etc/ipsec.d/passwd
 if grep "^$username:" /etc/ipsec.d/passwd
 then
   echo "Success to add"
