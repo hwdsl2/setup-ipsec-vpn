@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Enter username"
 read username
 if grep "^"$username":" /etc/ipsec.d/passwd
