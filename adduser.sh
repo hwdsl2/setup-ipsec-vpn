@@ -1,17 +1,17 @@
 #!/bin/bash
 
 echo "Enter username"
-read username
-if grep "^"$username":" /etc/ipsec.d/passwd
+read -r username
+if grep "^$username:" /etc/ipsec.d/passwd
 then
-  echo "username exist"
+  echo "Username already exist"
   exit 1
 fi
 echo "Enter password"
-read password
+read -r password
 password=$(openssl passwd -1 "$password")
 echo $username":"$password":xauth-psk" >> /etc/ipsec.d/passwd
-if grep "^"$username":" /etc/ipsec.d/passwd
+if grep "^$username:" /etc/ipsec.d/passwd
 then
   echo "Success to add"
 else
