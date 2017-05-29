@@ -1,7 +1,6 @@
 language: bash
 
 sudo: required
-dist: trusty
 
 addons:
   apt:
@@ -21,8 +20,7 @@ script:
   - sudo netstat -anpu | grep pluto
   - sudo netstat -anpu | grep xl2tpd
   - sudo grep 'vpn_psk' /etc/ipsec.secrets
-  - sudo grep 'vpn_user' /etc/ppp/chap-secrets
-  - sudo grep 'vpn_pass' /etc/ppp/chap-secrets
+  - sudo grep '"vpn_user" l2tpd "vpn_pass"' /etc/ppp/chap-secrets
   - sudo grep 'vpn_user' /etc/ipsec.d/passwd
   - sudo sh vpnsetup.sh
   - sleep 10
@@ -36,8 +34,7 @@ script:
   - sudo netstat -anpu | grep pluto
   - sudo netstat -anpu | grep xl2tpd
   - sudo grep 'vpn_psk' /etc/ipsec.secrets
-  - sudo grep 'vpn_user' /etc/ppp/chap-secrets
-  - sudo grep 'vpn_pass' /etc/ppp/chap-secrets
+  - sudo grep '"vpn_user" l2tpd "vpn_pass"' /etc/ppp/chap-secrets
   - sudo grep 'vpn_user' /etc/ipsec.d/passwd
 
 notifications:
