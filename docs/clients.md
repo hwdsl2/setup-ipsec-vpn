@@ -154,13 +154,15 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
+If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+
 ## Windows Phone
 
 Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Linux
 
-Note: Instructions below are adapted from [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
+Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 
@@ -268,6 +270,8 @@ chmod 600 /etc/ppp/options.l2tpd.client
 ```
 
 The VPN client setup is now complete. Follow the steps below to connect.
+
+**Note:** You must repeat all steps below every time you try to connect to the VPN.
 
 Create xl2tpd control file:
 

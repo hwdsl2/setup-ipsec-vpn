@@ -154,13 +154,15 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 
 VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
+如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
+
 ## Windows Phone
 
 Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a> 的步骤操作。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## Linux
 
-注： 以下步骤是在 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c) 基础上修改。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
+以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 
 要配置 VPN 客户端，首先安装以下软件包：
 
@@ -268,6 +270,8 @@ chmod 600 /etc/ppp/options.l2tpd.client
 ```
 
 至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
+
+**注：** 当你每次尝试连接到 VPN 时，必须重复下面的所有步骤。
 
 创建 xl2tpd 控制文件：
 
