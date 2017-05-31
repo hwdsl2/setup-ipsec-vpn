@@ -8,9 +8,9 @@ Customizable with the following options:
 
  - Username for VPN and SSH
  - Password for VPN and SSH
- - IPsec Pre-Shared Key
+ - IPsec Pre-Shared Key for VPN
  - Operating System Image (Debian 8 or Ubuntu 16.04 LTS)
- - Virtual Machine Size (Default: Standard_A0)
+ - Virtual Machine Size (Default: Basic_A0)
 
 Press this button to start:
 
@@ -18,8 +18,9 @@ Press this button to start:
     <img src="../docs/images/azure-deploy-button.png" alt="Deploy to Azure" />
 </a>
 
-## Author
+## Authors
 
+Copyright (C) 2017 Lin Song   
 Copyright (C) 2016 [Daniel Falkner](https://github.com/derdanu)
 
 ## Screenshot

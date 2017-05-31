@@ -6,36 +6,41 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "User name for SSH and VPN"
+        "description": "Username for VPN and SSH"
       }
     },
     "password": {
       "type": "securestring",
       "metadata": {
-        "description": "User password for SSH and VPN"
+        "description": "Password for VPN and SSH"
       }
     },
    "preSharedKey": {
       "type": "securestring",
       "metadata": {
-        "description": "Pre-Shared Key for VPN"
+        "description": "IPsec Pre-Shared Key for VPN"
       }
     },
     "image": {
       "type": "string",
       "allowedValues": [
-        "ubuntu",
-        "debian"
+        "ubuntu1604",
+        "debian8"
       ],
-      "defaultValue": "debian",
+      "defaultValue": "debian8",
       "metadata": {
-        "description": "OS to use. Debian or Ubuntu"
+        "description": "OS to use. Debian 8 or Ubuntu 16.04 LTS"
       }
     },
     "VMSize": {
       "type": "string",
-      "defaultValue": "Standard_A0",
+      "defaultValue": "Basic_A0",
       "allowedValues": [
+        "Basic_A0",
+        "Basic_A1",
+        "Basic_A2",
+        "Basic_A3",
+        "Basic_A4",
         "Standard_A0",
         "Standard_A1",
         "Standard_A2",
@@ -44,11 +49,6 @@
         "Standard_A5",
         "Standard_A6",
         "Standard_A7",
-        "Basic_A0",
-        "Basic_A1",
-        "Basic_A2",
-        "Basic_A3",
-        "Basic_A4",
         "Standard_D1",
         "Standard_D2",
         "Standard_D3",
@@ -71,13 +71,13 @@
     "vhdStorageType": "Standard_LRS",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "SubnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
-    "ubuntu": {
+    "ubuntu1604": {
       "publisher": "Canonical",
       "offer": "UbuntuServer",
       "sku": "16.04-LTS",
       "version": "latest"
     },
-    "debian": {
+    "debian8": {
       "publisher": "credativ",
       "offer": "Debian",
       "sku": "8",
@@ -210,9 +210,10 @@
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtensions",
-        "type": "CustomScriptForLinux",
-        "typeHandlerVersion": "1.3",
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [ "[variables('installScriptURL')]" ],
           "commandToExecute": "[variables('installCommand')]"

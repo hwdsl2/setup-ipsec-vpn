@@ -8,9 +8,9 @@
 
  - Username for VPN and SSH （用户名）
  - Password for VPN and SSH （密码）
- - IPsec Pre-Shared Key （IPsec 预共享密钥）
+ - IPsec Pre-Shared Key for VPN （IPsec 预共享密钥）
  - Operating System Image （操作系统镜像，Debian 8 或 Ubuntu 16.04 LTS）
- - Virtual Machine Size （虚拟机大小，默认值： Standard_A0）
+ - Virtual Machine Size （虚拟机大小，默认值： Basic_A0）
 
 请单击以下按钮开始：
 
@@ -20,6 +20,7 @@
 
 ## 作者
 
+版权所有 (C) 2017 Lin Song   
 版权所有 (C) 2016 [Daniel Falkner](https://github.com/derdanu)
 
 ## 屏幕截图
