@@ -159,8 +159,8 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$swan_ver"; then
 fi
 
 # Update ipsec.conf for Libreswan 3.19 and newer
-IKE_NEW="  ike=3des-sha1,3des-sha1;modp1024,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512"
-PHASE2_NEW="  phase2alg=3des-sha1,aes-sha1,aes-sha2,aes256-sha2_512"
+IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512"
+PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
 sed -i".old-$(date +%Y-%m-%d-%H:%M:%S)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
