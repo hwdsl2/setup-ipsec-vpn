@@ -21,13 +21,15 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
 Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>.
 
-1. Find the public IP of your server, and make sure it is correct.
+1. Find the VPN server's public IP, save it to a variable and check.
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ echo "$PUBLIC_IP"
    (Check the displayed public IP)
    ```
+
+   **Note:** Alternatively, you may specify the server's DNS name here. e.g. `PUBLIC_IP=myvpn.example.com`.
 
 1. Add a new IKEv2 connection to `/etc/ipsec.conf`:
 
@@ -78,8 +80,9 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ echo " forceencaps=yes" >> /etc/ipsec.conf
    ```
 
-1. Generate Certificate Authority (CA) and VPN server certificates:   
-   **Note:** Specify the certificate validity period (in months) using "-v". e.g. "-v 36".
+1. Generate Certificate Authority (CA) and VPN server certificates:
+
+   **Note:** Specify the certificate validity period (in months) using "-v". e.g. "-v 36". In addition, if you specified the server's DNS name (instead of its IP address) in step 1 above, replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` with `--extSAN "dns:$PUBLIC_IP"` in the command below.
 
    ```bash
    $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2

@@ -21,13 +21,15 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 在继续之前，请确保你已经成功 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
 
-1. 获取服务器的公共 IP 地址，并检查它是否正确。
+1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
    $ echo "$PUBLIC_IP"
-   （检查显示的 public IP）
+   （检查显示的公共 IP）
    ```
+
+   **注：** 另外，在这里你也可以指定 VPN 服务器的域名。例如： `PUBLIC_IP=myvpn.example.com`。
 
 1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接:
 
@@ -78,8 +80,9 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ echo " forceencaps=yes" >> /etc/ipsec.conf
    ```
 
-1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：   
-   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
+1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：
+
+   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。另外，如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则需要将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
 
    ```bash
    $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
