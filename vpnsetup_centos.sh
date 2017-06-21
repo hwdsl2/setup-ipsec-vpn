@@ -61,13 +61,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 NET_IFACE=${VPN_NET_IFACE:-'eth0'}
-DEF_IFACE="$(route | grep '^default' | grep -o '[^ ]*$')"
+DEF_IFACE="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
+[ -z "$DEF_IFACE" ] && DEF_IFACE="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
 if_state1=$(cat "/sys/class/net/$DEF_IFACE/operstate" 2>/dev/null)
 if [ -z "$VPN_NET_IFACE" ] && [ -n "$if_state1" ] && [ "$if_state1" != "down" ]; then
   if ! grep -qs raspbian /etc/os-release; then
     case "$DEF_IFACE" in
-      wlan*)
+      wl*)
 cat 1>&2 <<EOF
 Error: Default network interface '$DEF_IFACE' detected.
 
