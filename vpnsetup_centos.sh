@@ -418,10 +418,11 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
+(sleep 15
 modprobe -q pppol2tp
 service ipsec restart
 service xl2tpd restart
-echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_forward)&
 EOF
 fi
 

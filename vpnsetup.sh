@@ -432,14 +432,12 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
+(sleep 15
 service ipsec start
 service xl2tpd start
-echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_forward)&
 exit 0
 EOF
-  if grep -qs raspbian /etc/os-release; then
-    sed --follow-symlinks -i '/hwdsl2 VPN script/a sleep 15' /etc/rc.local
-  fi
 fi
 
 bigecho "Starting services..."
