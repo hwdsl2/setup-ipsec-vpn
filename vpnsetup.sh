@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script for automatic setup of an IPsec VPN server on Ubuntu LTS and Debian.
-# Works on any dedicated server or Virtual Private Server (VPS) except OpenVZ.
+# Works on any dedicated server or virtual private server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -76,12 +76,9 @@ if [ -z "$VPN_NET_IFACE" ] && [ -n "$if_state1" ] && [ "$if_state1" != "down" ];
       wl*)
 cat 1>&2 <<EOF
 Error: Default network interface '$DEF_IFACE' detected.
-
-DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
-
-If you are certain that this script is running on a server,
-you may re-run it using the following command:
- sudo VPN_NET_IFACE="$DEF_IFACE" sh "$0"
+>> DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! <<
+If you are certain that this script is running on a server, re-run it with:
+  sudo VPN_NET_IFACE="$DEF_IFACE" sh "$0"
 EOF
         exit 1
         ;;
@@ -92,12 +89,12 @@ fi
 
 if_state2=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
 if [ -z "$if_state2" ] || [ "$if_state2" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n\n" "$NET_IFACE" >&2
+  printf "Error: Network interface '%s' is not available.\n" "$NET_IFACE" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
-This script is unable to detect your server's default network interface.
-You may manually re-run it using the following command:
- sudo VPN_NET_IFACE="YOUR_DEFAULT_NETWORK_INTERFACE" sh "$0"
+Unable to detect your server's default network interface.
+You may manually re-run this script with:
+  sudo VPN_NET_IFACE="your_default_network_interface" sh "$0"
 EOF
   fi
   exit 1
