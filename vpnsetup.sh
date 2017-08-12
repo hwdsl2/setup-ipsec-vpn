@@ -218,6 +218,19 @@ XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
+# Verify the xl2tpd options file position 
+XL2TPD_OPTIONS='/etc/ppp/options.xl2tpd'
+XL2TPD_OPTIONS_ALTERNATIVE1=${XL2TPD_OPTIONS}
+XL2TPD_OPTIONS_ALTERNATIVE2='/etc/ppp/options'
+
+if ! [ -f "$XL2TPD_OPTIONS" ]; then
+    XL2TPD_OPTIONS=${XL2TPD_OPTIONS_ALTERNATIVE2}
+fi
+
+if ! [ -f "$XL2TPD_OPTIONS" ]; then
+    exiterr "Cannot find the configure file for xl2ptd at either $XL2TPD_OPTIONS_ALTERNATIVE1 or $XL2TPD_OPTIONS_ALTERNATIVE2"
+fi
+
 # Create IPsec (Libreswan) config
 conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
@@ -291,13 +304,13 @@ require chap = yes
 refuse pap = yes
 require authentication = yes
 name = l2tpd
-pppoptfile = /etc/ppp/options.xl2tpd
+pppoptfile = $XL2TPD_OPTIONS
 length bit = yes
 EOF
 
 # Set xl2tpd options
-conf_bk "/etc/ppp/options.xl2tpd"
-cat > /etc/ppp/options.xl2tpd <<EOF
+conf_bk "$XL2TPD_OPTIONS"
+cat > ${XL2TPD_OPTIONS} <<EOF
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns $DNS_SRV1
