@@ -66,7 +66,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 **-或者-**
 
-一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。另外也可使用 Debian 7 (Wheezy)，但是必须首先运行<a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">另一个脚本</a>。 OpenVZ VPS 不受支持，用户可以尝试使用 <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
+一个专用服务器，或者基于 KVM/Xen 的虚拟专用服务器 (VPS)，全新安装以上操作系统之一。OpenVZ VPS 不受支持，用户可以尝试使用比如 <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a> 或者 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 这也包括各种公共云服务中的 Linux 虚拟机，比如 <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.ovh.com/us/vps/" target="_blank">OVH</a> 和 <a href="https://www.rackspace.com" target="_blank">Rackspace</a>。
 
@@ -180,10 +180,7 @@ wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
-- <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
-- <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
-- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
 ## 授权协议
 

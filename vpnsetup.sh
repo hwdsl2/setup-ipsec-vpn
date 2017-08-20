@@ -55,6 +55,10 @@ if ! printf %s "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbia
   exiterr "This script only supports Ubuntu/Debian."
 fi
 
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
+  exiterr "This script does not support Debian 7 (Wheezy)."
+fi
+
 if [ -f /proc/user_beancounters ]; then
   echo "Error: This script does not support OpenVZ VPS." >&2
   echo "Try OpenVPN: https://github.com/Nyr/openvpn-install" >&2
@@ -124,18 +128,6 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     exiterr "VPN credentials must not contain the following characters: \\ \" '"
     ;;
 esac
-
-if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
-cat <<'EOF'
-IMPORTANT: Workaround required for Debian 7 (Wheezy).
-You must first run the script at: https://git.io/vpndeb7
-If not already done so, press Ctrl-C to interrupt now.
-
-Continuing in 30 seconds ...
-
-EOF
-  sleep 30
-fi
 
 bigecho "VPN setup in progress... Please be patient."
 

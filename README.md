@@ -66,7 +66,7 @@ Please see <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-1
 
 **-OR-**
 
-A dedicated server or virtual private server (VPS), freshly installed with one of the above OS. In addition, Debian 7 (Wheezy) can also be used with <a href="extras/vpnsetup-debian-7-workaround.sh" target="_blank">this workaround</a>. OpenVZ VPS is NOT supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or KVM/Xen-based virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> or <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>.
 
 This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.ovh.com/us/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
@@ -180,10 +180,7 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 - <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
 - <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
-- <a href="https://github.com/SoftEtherVPN/SoftEtherVPN" target="_blank">SoftEther VPN</a>
-- <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
-- <a href="https://github.com/philpl/setup-strong-strongswan" target="_blank">Setup strongSwan</a>
 
 ## License
 

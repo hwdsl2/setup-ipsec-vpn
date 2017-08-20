@@ -29,6 +29,10 @@ if ! printf %s "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbia
   exiterr "This script only supports Ubuntu/Debian."
 fi
 
+if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
+  exiterr "This script does not support Debian 7 (Wheezy)."
+fi
+
 if [ -f /proc/user_beancounters ]; then
   exiterr "This script does not support OpenVZ VPS."
 fi
@@ -95,15 +99,6 @@ which was removed from the defaults in Libreswan 3.19.
 Your other VPN configuration files will not be modified.
 
 EOF
-
-if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
-cat <<'EOF'
-IMPORTANT: Workaround required for Debian 7 (Wheezy).
-You must first run the script at: https://git.io/vpndeb7
-Continue only after completing this workaround.
-
-EOF
-fi
 
 printf "Do you wish to continue? [y/N] "
 read -r response
