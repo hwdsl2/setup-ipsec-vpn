@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-swan_ver=3.20
+swan_ver=3.21
 
 ### DO NOT edit below this line ###
 
@@ -139,7 +139,10 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
-echo "WERROR_CFLAGS =" > Makefile.inc.local
+cat > Makefile.inc.local <<'EOF'
+WERROR_CFLAGS =
+USE_DNSSEC = false
+EOF
 make -s programs && make -s install
 
 # Verify the install and clean up

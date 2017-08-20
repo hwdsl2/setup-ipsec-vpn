@@ -185,7 +185,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-swan_ver=3.20
+swan_ver=3.21
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -195,7 +195,10 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$swan_ver"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
-echo "WERROR_CFLAGS =" > Makefile.inc.local
+cat > Makefile.inc.local <<'EOF'
+WERROR_CFLAGS =
+USE_DNSSEC = false
+EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
