@@ -242,6 +242,8 @@ conn l2tp-psk
   type=transport
   phase2=esp
   also=shared
+  leftnexthop=%defaultroute
+  rightnexthop=%defaultroute
 
 conn xauth-psk
   auto=add
@@ -259,6 +261,8 @@ conn xauth-psk
   ikev2=never
   cisco-unity=yes
   also=shared
+  leftnexthop=%defaultroute
+  rightnexthop=%defaultroute
 EOF
 
 # Specify IPsec PSK
