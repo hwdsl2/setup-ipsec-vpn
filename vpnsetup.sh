@@ -425,8 +425,8 @@ cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
 (sleep 15
-service ipsec start
-service xl2tpd start
+service ipsec restart
+service xl2tpd restart
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
 exit 0
 EOF
@@ -448,6 +448,15 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
+
+# Workaround for Raspbian 9
+if grep -qs raspbian /etc/os-release; then
+  if [ "$(sed 's/\..*//' /etc/debian_version)" = "9" ]; then
+    PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+    check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
+    service ipsec restart
+  fi
+fi
 
 cat <<EOF
 
