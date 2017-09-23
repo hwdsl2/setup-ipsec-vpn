@@ -267,6 +267,12 @@ conn xauth-psk
   also=shared
 EOF
 
+# Workaround for Raspbian 9
+if grep -qs 'Raspbian GNU/Linux 9' /etc/os-release; then
+  PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+  check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
+fi
+
 # Specify IPsec PSK
 conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
@@ -448,15 +454,6 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
-
-# Workaround for Raspbian 9
-if grep -qs raspbian /etc/os-release; then
-  if [ "$(sed 's/\..*//' /etc/debian_version)" = "9" ]; then
-    PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
-    check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
-    service ipsec restart
-  fi
-fi
 
 cat <<EOF
 
