@@ -41,3 +41,9 @@ When finished, restart services:
 service ipsec restart
 service xl2tpd restart
 ```
+
+# Add User with Shell Script
+
+```bash
+wget https://git.io/vdLfU -O vpnadduser.sh && chmod 755 ./vpnadduser.sh && ./vpnadduser.sh
+```

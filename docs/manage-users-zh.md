@@ -41,3 +41,9 @@ openssl passwd -1 'your_vpn_password_1'
 service ipsec restart
 service xl2tpd restart
 ```
+
+# 使用Shell脚本添加用户
+
+```bash
+wget https://git.io/vdLfU -O vpnadduser.sh && chmod 755 ./vpnadduser.sh && ./vpnadduser.sh
+```
