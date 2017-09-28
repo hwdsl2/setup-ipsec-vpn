@@ -168,7 +168,6 @@ apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
   libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make \
   libunbound-dev libnss3-tools libevent-dev || exiterr2
-apt-get -yq --no-install-recommends install xmlto || exiterr2
 apt-get -yq install ppp xl2tpd || exiterr2
 
 bigecho "Installing Fail2Ban to protect SSH..."
@@ -194,7 +193,7 @@ EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
-make -s programs && make -s install
+make -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."

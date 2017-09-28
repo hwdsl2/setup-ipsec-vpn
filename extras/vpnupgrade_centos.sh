@@ -119,7 +119,7 @@ yum -y install epel-release || exiterr2
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
   curl-devel flex bison gcc make \
-  fipscheck-devel unbound-devel xmlto || exiterr2
+  fipscheck-devel unbound-devel || exiterr2
 
 # Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
@@ -143,7 +143,7 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
 EOF
-make -s programs && make -s install
+make -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
