@@ -188,7 +188,9 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
 EOF
-make -s base && make -s install-base
+NPROCS="$(grep -c ^processor /proc/cpuinfo)"
+[ -z "$NPROCS" ] && NPROCS=1
+make "-j$((NPROCS+1))" -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."

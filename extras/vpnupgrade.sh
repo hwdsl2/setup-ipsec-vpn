@@ -146,7 +146,9 @@ EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
-make -s base && make -s install-base
+NPROCS="$(grep -c ^processor /proc/cpuinfo)"
+[ -z "$NPROCS" ] && NPROCS=1
+make "-j$((NPROCS+1))" -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
