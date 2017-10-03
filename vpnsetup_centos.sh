@@ -157,7 +157,7 @@ bigecho "Installing packages required for the VPN..."
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
   curl-devel flex bison gcc make \
-  fipscheck-devel unbound-devel || exiterr2
+  fipscheck-devel || exiterr2
 yum -y install ppp xl2tpd || exiterr2
 
 if grep -qs "release 6" /etc/redhat-release; then

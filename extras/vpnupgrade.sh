@@ -127,7 +127,7 @@ apt-get -yq install wget || exiterr2
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
   libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make \
-  libunbound-dev libnss3-tools libevent-dev || exiterr2
+  libnss3-tools libevent-dev || exiterr2
 
 # Compile and install Libreswan
 swan_file="libreswan-$swan_ver.tar.gz"

@@ -119,7 +119,7 @@ yum -y install epel-release || exiterr2
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
   curl-devel flex bison gcc make \
-  fipscheck-devel unbound-devel || exiterr2
+  fipscheck-devel || exiterr2
 
 # Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
