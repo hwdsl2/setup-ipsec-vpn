@@ -20,7 +20,7 @@ An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" ta
 * [Troubleshooting](#troubleshooting)
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
-  * [Android 6 and 7](#android-6-and-7)
+  * [Android 6 and above](#android-6-and-above)
   * [Chromebook](#chromebook)
   * [Other errors](#other-errors)
   * [Additional steps](#additional-steps)
@@ -319,7 +319,7 @@ Exclude your VPN server's IP from the new default route (replace with actual val
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
-If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with your actual public IP <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">from here</a>):
+If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">actual value</a>):
 
 ```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
@@ -394,13 +394,12 @@ To fix this error, please follow these steps:
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
-### Android 6 and 7
+### Android 6 and above
 
-If you are unable to connect using Android 6 (Marshmallow) or 7 (Nougat):
+If you are unable to connect using Android 6 or above:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
-1. **Note:** The latest version of VPN scripts already includes this change.   
-   (For Android 7.1.2 and newer) Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>)
+1. (For Android 7.1.2 and newer) Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>) Note that the latest version of VPN scripts already includes this change.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`, indented with two spaces. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
@@ -413,9 +412,9 @@ Chromebook users: If you are unable to connect, try <a href="https://bugs.chromi
 
 If you encounter other errors, refer to the links below:
 
+* http://www.tp-link.com/en/faq-1029.html
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-* http://www.tp-link.com/en/faq-1029.html
 
 ### Additional steps
 
@@ -432,13 +431,16 @@ If using Docker, run `docker restart ipsec-vpn-server`.
 
 Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
 
-Check the Libreswan (IPsec) log for errors:
+Check the Libreswan (IPsec) and xl2tpd logs for errors:
 
 ```bash
 # Ubuntu & Debian
 grep pluto /var/log/auth.log
+grep xl2tpd /var/log/syslog
+
 # CentOS & RHEL
 grep pluto /var/log/secure
+grep xl2tpd /var/log/messages
 ```
 
 Check status of the IPsec VPN server:

@@ -28,7 +28,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Quick start
 
-First, prepare your Linux server* with a fresh install of Ubuntu LTS, Debian or CentOS.
+First, prepare your Linux server[*](#quick-start-note) with a fresh install of Ubuntu LTS, Debian or CentOS.
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -42,6 +42,7 @@ Your VPN login details will be randomly generated, and displayed on the screen w
 
 For other installation options and how to set up VPN clients, read the sections below.
 
+<a name="quick-start-note"></a>
 \* A dedicated server or virtual private server (VPS). OpenVZ VPS is not supported.
 
 ## Features
@@ -68,7 +69,7 @@ Please see <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-1
 
 A dedicated server or KVM/Xen-based virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> or <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>.
 
-This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="http://www.softlayer.com/" target="_blank">IBM SoftLayer</a>, <a href="https://www.ovh.com/us/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
+This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://amazonlightsail.com" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud-computing/bluemix/virtual-servers" target="_blank">IBM Bluemix</a>, <a href="https://www.ovh.com/us/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
 <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://www.linode.com/stackscripts/view/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
@@ -124,10 +125,11 @@ Follow the same steps as above, but replace `https://git.io/vpnsetup` with `http
 
 Get your computer or device to use the VPN. Please refer to:
 
-<a href="docs/clients.md" target="_blank">Configure IPsec/L2TP VPN Clients</a>   
-<a href="docs/clients-xauth.md" target="_blank">Configure IPsec/XAuth ("Cisco IPsec") VPN Clients</a>
+<a href="docs/clients.md" target="_blank">**Configure IPsec/L2TP VPN Clients**</a>
 
-<a href="docs/ikev2-howto.md" target="_blank">How-To: IKEv2 VPN for Windows and Android</a>
+<a href="docs/clients-xauth.md" target="_blank">**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**</a>
+
+<a href="docs/ikev2-howto.md" target="_blank">**How-To: IKEv2 VPN for Windows and Android**</a>
 
 If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
@@ -139,7 +141,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 For **Windows users**, this <a href="docs/clients.md#windows-error-809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>. Also, your server must run [Libreswan 3.19 or newer](#upgrade-libreswan).
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>.
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/compute/docs/vpc/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN.
 
@@ -155,7 +157,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `swan_ver` variable as necessary. Check installed version: `ipsec --version`.
+The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `swan_ver` variable as necessary. Check which version is installed: `ipsec --version`.
 
 ```bash
 # Ubuntu & Debian
