@@ -379,7 +379,7 @@ strongswan down myvpn
   ```
 
 - 某些 Windows 系统默认禁用了 IPSec 加密, 此时也会导致连接失败. 可通过该命令启用 IPSec
-  ```console
+  ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
   ```
 
