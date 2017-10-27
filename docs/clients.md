@@ -377,6 +377,12 @@ To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/T
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
 
+Although uncommon, some Windows systems disable IPsec encryption, causing the connection to fail. To re-enable it, run the following command and reboot your PC.
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
+```
+
 ### Windows Error 628
 
 > The connection was terminated by the remote computer before it could be completed.
