@@ -177,6 +177,9 @@ apt-get -yq install fail2ban || exiterr2
 bigecho "Compiling and installing Libreswan..."
 
 swan_ver=3.22
+if grep -qs raspbian /etc/os-release; then
+  swan_ver=3.21
+fi
 swan_file="libreswan-$swan_ver.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
