@@ -149,6 +149,8 @@ If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-u
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 
+Using L2TP kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 16.04, Debian 9, CentOS 7 and 6. Ubuntu 16.04 users should install the `` linux-image-extra-`uname -r` `` package and restart the `xl2tpd` service.
+
 To modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
 
 When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.

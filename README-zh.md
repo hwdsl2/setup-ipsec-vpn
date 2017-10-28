@@ -149,6 +149,8 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启服务器。
 
+使用 L2TP 内核支持有助于提高 IPsec/L2TP 性能。它在以下系统上可用： Ubuntu 16.04, Debian 9, CentOS 7 和 6。 Ubuntu 16.04 用户需要安装 `` linux-image-extra-`uname -r` `` 软件包并且重启 `xl2tpd` 服务。
+
 如果需要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS)。然后重启服务器。
 
 在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
