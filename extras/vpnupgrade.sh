@@ -20,6 +20,8 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
 
+vpnupgrade() {
+
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ -z "$os_type" ]; then
   [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && echo "$ID")"
@@ -192,5 +194,10 @@ service ipsec restart
 echo
 echo "Libreswan $swan_ver was installed successfully! "
 echo
+
+}
+
+## Defer setup until we have the complete script
+vpnupgrade "$@"
 
 exit 0

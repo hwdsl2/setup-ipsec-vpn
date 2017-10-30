@@ -34,17 +34,18 @@ YOUR_PASSWORD=''
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
-conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
+conf_bk() { /bin/cp -f "$1" "$1.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null; }
 bigecho() { echo; echo "## $1"; echo; }
 
 check_ip() {
-  IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+  IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
   printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
+
+vpnsetup() {
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ -z "$os_type" ]; then
@@ -69,31 +70,31 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-NET_IFACE=${VPN_NET_IFACE:-'eth0'}
-DEF_IFACE="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
-[ -z "$DEF_IFACE" ] && DEF_IFACE="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
+net_iface=${VPN_NET_IFACE:-'eth0'}
+def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
+[ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
-if_state1=$(cat "/sys/class/net/$DEF_IFACE/operstate" 2>/dev/null)
-if [ -z "$VPN_NET_IFACE" ] && [ -n "$if_state1" ] && [ "$if_state1" != "down" ]; then
+def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
+if [ -z "$VPN_NET_IFACE" ] && [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
   if ! grep -qs raspbian /etc/os-release; then
-    case "$DEF_IFACE" in
+    case "$def_iface" in
       wl*)
 cat 1>&2 <<EOF
-Error: Default network interface '$DEF_IFACE' detected.
+Error: Default network interface '$def_iface' detected.
 >> DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! <<
 If you are certain that this script is running on a server, re-run it with:
-  sudo VPN_NET_IFACE="$DEF_IFACE" sh "$0"
+  sudo VPN_NET_IFACE="$def_iface" sh "$0"
 EOF
         exit 1
         ;;
     esac
   fi
-  NET_IFACE="$DEF_IFACE"
+  net_iface="$def_iface"
 fi
 
-if_state2=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
-if [ -z "$if_state2" ] || [ "$if_state2" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n" "$NET_IFACE" >&2
+net_iface_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
+if [ -z "$net_iface_state" ] || [ "$net_iface_state" = "down" ] || [ "$net_iface" = "lo" ]; then
+  printf "Error: Network interface '%s' is not available.\n" "$net_iface" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
 Unable to detect your server's default network interface.
@@ -359,8 +360,8 @@ net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.$NET_IFACE.send_redirects = 0
-net.ipv4.conf.$NET_IFACE.rp_filter = 0
+net.ipv4.conf.$net_iface.send_redirects = 0
+net.ipv4.conf.$net_iface.rp_filter = 0
 
 net.core.wmem_max = 12582912
 net.core.rmem_max = 12582912
@@ -375,15 +376,15 @@ bigecho "Updating IPTables rules..."
 ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$net_iface" -j MASQUERADE 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$net_iface" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
   ipt_flag=1
 fi
 
 # Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  iptables-save > "$IPT_FILE.old-$SYS_DT"
+  iptables-save > "$IPT_FILE.old-$(date +%Y-%m-%d-%H:%M:%S)"
   iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
   iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
@@ -391,17 +392,17 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
   iptables -I INPUT 6 -p udp --dport 1701 -j DROP
   iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I FORWARD 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
+  iptables -I FORWARD 2 -i "$net_iface" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 3 -i ppp+ -o "$net_iface" -j ACCEPT
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
-  iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+  iptables -I FORWARD 5 -i "$net_iface" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$net_iface" -j ACCEPT
   # Uncomment if you wish to disallow traffic between VPN clients themselves
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
   # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$net_iface" -m policy --dir out --pol none -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$net_iface" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 
@@ -483,5 +484,10 @@ Setup VPN clients: https://git.io/vpnclients
 ================================================
 
 EOF
+
+}
+
+## Defer setup until we have the complete script
+vpnsetup "$@"
 
 exit 0

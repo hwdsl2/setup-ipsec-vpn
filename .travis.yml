@@ -11,7 +11,7 @@ addons:
     - shellcheck
 
 script:
-  - export SHELLCHECK_OPTS="-e SC1091"
+  - export SHELLCHECK_OPTS="-e SC1091,SC1117"
   - shellcheck *.sh extras/*.sh
   - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
   - sudo VPN_IPSEC_PSK='vpn_psk'
