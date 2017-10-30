@@ -138,6 +138,14 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 bigecho "Populating apt-get cache..."
 
+count=0
+while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
+  [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
+  count=$((count+1))
+  printf %s .
+  sleep 3
+done
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yq update || exiterr "'apt-get update' failed."
 
