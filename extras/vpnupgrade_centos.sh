@@ -11,14 +11,14 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-swan_ver=3.22
+SWAN_VER=3.22
 
 ### DO NOT edit below this line ###
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
-exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
+exiterr2() { exiterr "'yum install' failed."; }
 
 vpnupgrade() {
 
@@ -27,23 +27,23 @@ if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  exiterr "This script does not support OpenVZ VPS."
+  exiterr "OpenVZ VPS is not supported."
 fi
 
 if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-if [ -z "$swan_ver" ]; then
-  exiterr "Libreswan version 'swan_ver' not specified."
+if [ -z "$SWAN_VER" ]; then
+  exiterr "Libreswan version 'SWAN_VER' not specified."
 fi
 
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$swan_ver"; then
-  echo "You already have Libreswan version $swan_ver installed! "
+if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+  echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
   echo
   printf "Do you wish to continue anyway? [y/N] "
@@ -62,7 +62,7 @@ fi
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $swan_ver on your server.
+Welcome! This script will build and install Libreswan $SWAN_VER on your server.
 Additional packages required for Libreswan compilation will also be installed.
 
 This is intended for use on servers running an older version of Libreswan.
@@ -119,11 +119,9 @@ yum -y install epel-release || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
-  libcap-ng-devel libselinux-devel \
-  curl-devel flex bison gcc make \
-  fipscheck-devel || exiterr2
+  libcap-ng-devel libselinux-devel curl-devel \
+  flex bison gcc make fipscheck-devel || exiterr2
 
-# Install libevent2 and systemd-devel
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum -y install libevent2-devel || exiterr2
@@ -132,15 +130,15 @@ else
 fi
 
 # Compile and install Libreswan
-swan_file="libreswan-$swan_ver.tar.gz"
-swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_file="libreswan-$SWAN_VER.tar.gz"
+swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exiterr "Cannot download Libreswan source."
 fi
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
+cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -151,9 +149,9 @@ make "-j$((NPROCS+1))" -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
-if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$swan_ver"; then
-  exiterr "Libreswan $swan_ver failed to build."
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+  exiterr "Libreswan $SWAN_VER failed to build."
 fi
 
 # Restore SELinux contexts
@@ -164,7 +162,7 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 # Update ipsec.conf for Libreswan 3.19 and newer
 IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512"
 PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
-sed -i".old-$(date +%Y-%m-%d-%H:%M:%S)" \
+sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
     -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/" \
@@ -174,7 +172,7 @@ sed -i".old-$(date +%Y-%m-%d-%H:%M:%S)" \
 service ipsec restart
 
 echo
-echo "Libreswan $swan_ver was installed successfully! "
+echo "Libreswan $SWAN_VER was installed successfully! "
 echo
 
 }

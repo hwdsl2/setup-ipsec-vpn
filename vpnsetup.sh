@@ -22,7 +22,7 @@
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
 # - All values MUST be placed inside 'single quotes'
-# - DO NOT use these characters within values:  \ " '
+# - DO NOT use these special characters within values: \ " '
 
 YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
@@ -36,13 +36,13 @@ YOUR_PASSWORD=''
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
-exiterr2() { echo "Error: 'apt-get install' failed." >&2; exit 1; }
-conf_bk() { /bin/cp -f "$1" "$1.old-$(date +%Y-%m-%d-%H:%M:%S)" 2>/dev/null; }
+exiterr2() { exiterr "'apt-get install' failed."; }
+conf_bk() { /bin/cp -f "$1" "$1.old-$(date +%F-%T)" 2>/dev/null; }
 bigecho() { echo; echo "## $1"; echo; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
-  printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
 vpnsetup() {
@@ -52,18 +52,16 @@ if [ -z "$os_type" ]; then
   [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && echo "$ID")"
   [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
 fi
-if ! printf %s "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
-  exiterr "This script only supports Ubuntu/Debian."
+if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
+  exiterr "This script only supports Ubuntu and Debian."
 fi
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
-  exiterr "This script does not support Debian 7 (Wheezy)."
+  exiterr "Debian 7 is not supported."
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  echo "Error: This script does not support OpenVZ VPS." >&2
-  echo "Try OpenVPN: https://github.com/Nyr/openvpn-install" >&2
-  exit 1
+  exiterr "OpenVZ VPS is not supported. Try OpenVPN: github.com/Nyr/openvpn-install"
 fi
 
 if [ "$(id -u)" != 0 ]; then
@@ -75,17 +73,11 @@ def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
 def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
-if [ -z "$VPN_NET_IFACE" ] && [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
+if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
   if ! grep -qs raspbian /etc/os-release; then
     case "$def_iface" in
       wl*)
-cat 1>&2 <<EOF
-Error: Default network interface '$def_iface' detected.
->> DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! <<
-If you are certain that this script is running on a server, re-run it with:
-  sudo VPN_NET_IFACE="$def_iface" sh "$0"
-EOF
-        exit 1
+        exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
         ;;
     esac
   fi
@@ -97,9 +89,8 @@ if [ -z "$net_iface_state" ] || [ "$net_iface_state" = "down" ] || [ "$net_iface
   printf "Error: Network interface '%s' is not available.\n" "$net_iface" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
-Unable to detect your server's default network interface.
-You may manually re-run this script with:
-  sudo VPN_NET_IFACE="your_default_network_interface" sh "$0"
+Unable to detect the default network interface. Manually re-run this script with:
+  sudo VPN_NET_IFACE="your_default_interface_name" sh "$0"
 EOF
   fi
   exit 1
@@ -120,13 +111,13 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
-if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
 case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
   *[\\\"\']*)
-    exiterr "VPN credentials must not contain the following characters: \\ \" '"
+    exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
 esac
 
@@ -138,11 +129,12 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 bigecho "Populating apt-get cache..."
 
+# Wait up to 60s for apt/dpkg lock
 count=0
 while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
   [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
   count=$((count+1))
-  printf %s .
+  printf '%s' '.'
   sleep 3
 done
 
@@ -151,14 +143,14 @@ apt-get -yq update || exiterr "'apt-get update' failed."
 
 bigecho "Installing packages required for setup..."
 
-apt-get -yq install wget dnsutils openssl || exiterr2
-apt-get -yq install iproute gawk grep sed net-tools || exiterr2
+apt-get -yq install wget dnsutils openssl \
+  iproute gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 
 cat <<'EOF'
 In case the script hangs here for more than a few minutes,
-use Ctrl-C to interrupt. Then edit it and manually enter IP.
+press Ctrl-C to abort. Then edit it and manually enter IP.
 EOF
 
 # In case auto IP discovery fails, enter server's public IP here.
@@ -169,15 +161,14 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
 # Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter it."
+check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
 bigecho "Installing packages required for the VPN..."
 
-apt-get -yq install libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
-  libcap-ng-dev libcap-ng-utils libselinux1-dev \
-  libcurl4-nss-dev flex bison gcc make \
-  libnss3-tools libevent-dev || exiterr2
-apt-get -yq install ppp xl2tpd || exiterr2
+apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
+  libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
+  libcurl4-nss-dev flex bison gcc make libnss3-tools \
+  libevent-dev ppp xl2tpd || exiterr2
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
@@ -185,19 +176,20 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-swan_ver=3.22
-if grep -qs raspbian /etc/os-release; then
-  swan_ver=3.21
+if ! grep -qs raspbian /etc/os-release; then
+  SWAN_VER=3.22
+else
+  SWAN_VER=3.21
 fi
-swan_file="libreswan-$swan_ver.tar.gz"
-swan_url1="https://github.com/libreswan/libreswan/archive/v$swan_ver.tar.gz"
+swan_file="libreswan-$SWAN_VER.tar.gz"
+swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exiterr "Cannot download Libreswan source."
 fi
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$swan_ver" || exiterr "Cannot enter Libreswan source dir."
+cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -211,9 +203,9 @@ make "-j$((NPROCS+1))" -s base && make -s install-base
 
 # Verify the install and clean up
 cd /opt/src || exiterr "Cannot enter /opt/src."
-/bin/rm -rf "/opt/src/libreswan-$swan_ver"
-if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$swan_ver"; then
-  exiterr "Libreswan $swan_ver failed to build."
+/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+  exiterr "Libreswan $SWAN_VER failed to build."
 fi
 
 bigecho "Creating VPN configuration..."
@@ -329,8 +321,6 @@ EOF
 # Create VPN credentials
 conf_bk "/etc/ppp/chap-secrets"
 cat > /etc/ppp/chap-secrets <<EOF
-# Secrets for authentication using CHAP
-# client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
@@ -392,7 +382,7 @@ fi
 # Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  iptables-save > "$IPT_FILE.old-$(date +%Y-%m-%d-%H:%M:%S)"
+  iptables-save > "$IPT_FILE.old-$(date +%F-%T)"
   iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
   iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
