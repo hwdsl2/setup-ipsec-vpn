@@ -34,10 +34,11 @@ YOUR_PASSWORD=''
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SYS_DT="$(date +%F-%T)"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { exiterr "'apt-get install' failed."; }
-conf_bk() { /bin/cp -f "$1" "$1.old-$(date +%F-%T)" 2>/dev/null; }
+conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 bigecho() { echo; echo "## $1"; echo; }
 
 check_ip() {
@@ -382,7 +383,7 @@ fi
 # Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  iptables-save > "$IPT_FILE.old-$(date +%F-%T)"
+  iptables-save > "$IPT_FILE.old-$SYS_DT"
   iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
   iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
