@@ -279,6 +279,11 @@ if grep -qs 'Raspbian GNU/Linux 9' /etc/os-release; then
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
 fi
 
+# Remove unsupported ESP algorithm on Raspbian
+if grep -qs raspbian /etc/os-release; then
+  sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
+fi
+
 # Specify IPsec PSK
 conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
