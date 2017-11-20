@@ -115,18 +115,22 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 yum -y install wget || exiterr2
 
 # Add the EPEL repository
-yum -y install epel-release || exiterr2
+epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
+yum -y install epel-release || yum -y install "$epel_url" || exiterr2
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel \
-  flex bison gcc make fipscheck-devel || exiterr2
+  flex bison gcc make || exiterr2
 
+OPT1='--enablerepo=*server-optional*'
+OPT2='--enablerepo=*releases-optional*'
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
-  yum -y install libevent2-devel || exiterr2
+  yum "$OPT1" "$OPT2" -y install libevent2-devel fipscheck-devel || exiterr2
 else
-  yum -y install libevent-devel systemd-devel || exiterr2
+  yum -y install systemd-devel || exiterr2
+  yum "$OPT1" "$OPT2" -y install libevent-devel fipscheck-devel || exiterr2
 fi
 
 # Compile and install Libreswan
