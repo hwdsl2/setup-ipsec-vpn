@@ -51,6 +51,26 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
+if [ "$SWAN_VER" = "3.22" ]; then
+  if grep -qs raspbian /etc/os-release; then
+    echo "Note: For Raspberry Pi systems, this script will install Libreswan"
+    echo "version 3.21 instead of 3.22, to avoid some recent bugs."
+    echo
+    printf "Do you wish to continue? [y/N] "
+    read -r response
+    case $response in
+      [yY][eE][sS]|[yY])
+        echo
+        SWAN_VER=3.21
+        ;;
+      *)
+        echo "Aborting."
+        exit 1
+        ;;
+    esac
+  fi
+fi
+
 if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
@@ -141,7 +161,7 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
-sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
+[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
