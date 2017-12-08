@@ -20,7 +20,7 @@
 * [故障排除](#故障排除)
   * [Windows 错误 809](#windows-错误-809)
   * [Windows 错误 628](#windows-错误-628)
-  * [Android 6 and 7](#android-6-and-7)
+  * [Android 6 及以上版本](#android-6-及以上版本)
   * [Chromebook](#chromebook)
   * [其它错误](#其它错误)
   * [额外的步骤](#额外的步骤)
@@ -182,10 +182,10 @@ yum -y install strongswan xl2tpd
 创建 VPN 变量 （替换为你自己的值）：
 
 ```bash
-VPN_SERVER_IP='your_vpn_server_ip'
-VPN_IPSEC_PSK='your_ipsec_pre_shared_key'
-VPN_USER='your_vpn_username'
-VPN_PASSWORD='your_vpn_password'
+VPN_SERVER_IP='你的VPN服务器IP'
+VPN_IPSEC_PSK='你的IPsec预共享密钥'
+VPN_USER='你的VPN用户名'
+VPN_PASSWORD='你的VPN密码'
 ```
 
 配置 strongSwan：
@@ -316,13 +316,13 @@ ip route
 从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
 
 ```bash
-route add YOUR_VPN_SERVER_IP gw X.X.X.X
+route add 你的VPN服务器IP gw X.X.X.X
 ```
 
-如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为你自己的公有 IP，可在 <a href="https://www.ipchicken.com" target="_blank">这里</a> 查看）：
+如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你的本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为<a href="https://www.ipchicken.com" target="_blank">实际值</a>）：
 
 ```bash
-route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
+route add 你的本地电脑的公有IP gw X.X.X.X
 ```
 
 添加一个新的默认路由，并且开始通过 VPN 服务器发送数据：
@@ -378,6 +378,12 @@ strongswan down myvpn
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
 
+另外，某些个别的 Windows 系统禁用了 IPsec 加密，此时也会导致连接失败。要重新启用它，可以运行以下命令并重启计算机。
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
+```
+
 ### Windows 错误 628
 
 > 在连接完成前，连接被远程计算机终止。
@@ -395,13 +401,12 @@ strongswan down myvpn
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
-### Android 6 and 7
+### Android 6 及以上版本
 
-如果你无法使用 Android 6 (Marshmallow) 或者 7 (Nougat) 连接：
+如果你无法使用 Android 6 或以上版本连接：
 
 1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
-1. **注：** 最新版本的 VPN 脚本已经包含这个更改。   
-   （适用于 Android 7.1.2 及以上版本） 编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `ike=` 和 `phase2alg=` 两行的末尾添加 `,aes256-sha2_512` 字样。保存修改并运行 `service ipsec restart`。(<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">参见</a>)
+1. （适用于 Android 7.1.2 及以上版本） 编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `ike=` 和 `phase2alg=` 两行的末尾添加 `,aes256-sha2_512` 字样。保存修改并运行 `service ipsec restart`。(<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">参见</a>) 注：最新版本的 VPN 脚本已经包含这个更改。
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`，开头必须空两格。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
@@ -414,9 +419,9 @@ Chromebook 用户： 如果你无法连接，请尝试 <a href="https://bugs.chr
 
 如果你遇到其它错误，请参见以下链接：
 
+* http://www.tp-link.com/en/faq-1029.html
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-* http://www.tp-link.com/en/faq-1029.html
 
 ### 额外的步骤
 
@@ -433,13 +438,16 @@ service xl2tpd restart
 
 然后重启你的 VPN 客户端设备，并重试连接。如果仍然无法连接，可以尝试删除并重新创建 VPN 连接，按照本文档中的步骤操作。请确保输入了正确的 VPN 登录凭证。
 
-检查 Libreswan (IPsec) 日志是否有错误：
+检查 Libreswan (IPsec) 和 xl2tpd 日志是否有错误：
 
 ```bash
 # Ubuntu & Debian
 grep pluto /var/log/auth.log
+grep xl2tpd /var/log/syslog
+
 # CentOS & RHEL
 grep pluto /var/log/secure
+grep xl2tpd /var/log/messages
 ```
 
 查看 IPsec VPN 服务器状态：
