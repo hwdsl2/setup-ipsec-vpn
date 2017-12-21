@@ -18,7 +18,7 @@ For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format
 ... ...
 ```
 
-You can add more users, use one line for each user. DO NOT use these characters within values: `\ " '`
+You can add more users, use one line for each user. DO NOT use these special characters within values: `\ " '`
 
 For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/passwd`. The format of this file is:
 
