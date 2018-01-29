@@ -51,26 +51,6 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-if [ "$SWAN_VER" != "3.21" ]; then
-  if grep -qs raspbian /etc/os-release; then
-    echo "Note: For Raspberry Pi systems, this script will install Libreswan"
-    echo "version 3.21 instead of $SWAN_VER, to avoid some recent bugs."
-    echo
-    printf "Do you wish to continue? [y/N] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY])
-        echo
-        SWAN_VER=3.21
-        ;;
-      *)
-        echo "Aborting."
-        exit 1
-        ;;
-    esac
-  fi
-fi
-
 if /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
