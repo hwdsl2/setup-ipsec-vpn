@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-SWAN_VER=3.22
+SWAN_VER=3.23
 
 ### DO NOT edit below this line ###
 
@@ -143,7 +143,7 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
-[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
+sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
