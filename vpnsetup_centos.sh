@@ -66,13 +66,11 @@ def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 
 def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
-  if ! grep -qs raspbian /etc/os-release; then
-    case "$def_iface" in
-      wl*)
-        exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
-        ;;
-    esac
-  fi
+  case "$def_iface" in
+    wl*)
+      exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
+      ;;
+  esac
   net_iface="$def_iface"
 fi
 
