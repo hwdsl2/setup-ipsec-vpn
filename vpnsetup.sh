@@ -75,7 +75,7 @@ def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 
 def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
-  if ! grep -qs raspbian /etc/os-release; then
+  if [ "$(uname -m | cut -c1-3)" != "arm" ]; then
     case "$def_iface" in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -268,14 +268,12 @@ conn xauth-psk
   also=shared
 EOF
 
-# Workaround for Raspbian 9
-if grep -qs 'Raspbian GNU/Linux 9' /etc/os-release; then
+# Workarounds for systems with ARM CPU (e.g. Raspberry Pi)
+# - Set "left" to private IP instead of "%defaultroute"
+# - Remove unsupported ESP algorithm
+if [ "$(uname -m | cut -c1-3)" = "arm" ]; then
   PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
-fi
-
-# Remove unsupported ESP algorithm on Raspbian
-if grep -qs raspbian /etc/os-release; then
   sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
 fi
 
