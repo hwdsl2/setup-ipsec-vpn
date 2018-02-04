@@ -15,6 +15,7 @@ script:
   - export SHELLCHECK_OPTS="-e SC1091,SC1117"
   - shellcheck *.sh extras/*.sh
   - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
+  - sed -i "/^make/s/^make.*$/make base \&\& make install-base/" vpnsetup.sh
   - sudo VPN_IPSEC_PSK='vpn_psk'
     VPN_USER='vpn_user'
     VPN_PASSWORD='vpn_pass' sh vpnsetup.sh
