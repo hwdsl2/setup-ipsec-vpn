@@ -179,6 +179,16 @@ echo
 echo "Libreswan $SWAN_VER was installed successfully! "
 echo
 
+cat <<'EOF'
+Note: Users upgrading to Libreswan 3.23 or newer should edit
+  "/etc/ipsec.conf" and replace these two lines:
+    modecfgdns1=DNS_SERVER_1
+    modecfgdns2=DNS_SERVER_2
+  with a single line like this:
+    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+  Then run "service ipsec restart".
+EOF
+
 }
 
 ## Defer setup until we have the complete script
