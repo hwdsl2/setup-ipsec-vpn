@@ -35,7 +35,7 @@ Passwords in this file are salted and hashed. This step can be done using e.g. t
 openssl passwd -1 'your_vpn_password_1'
 ```
 
-When finished, restart services:
+Finally, restart services if you changed to a new PSK. For add, edit or remove VPN users, a restart is normally not required.
 
 ```bash
 service ipsec restart

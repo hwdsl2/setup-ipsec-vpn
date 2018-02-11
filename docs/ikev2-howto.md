@@ -47,8 +47,6 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      rightaddresspool=192.168.43.10-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
-     modecfgdns1=8.8.8.8
-     modecfgdns2=8.8.4.4
      narrowing=yes
      dpddelay=30
      dpdtimeout=120
@@ -62,22 +60,39 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    EOF
    ```
 
-   We need to add one more line to that file. First check your Libreswan version:
+   We need to add a few more lines to that file. First check your Libreswan version:
 
    ```bash
    $ ipsec --version
    ```
 
-   For Libreswan 3.19 and newer, run command:
+   For Libreswan 3.23 and newer, run command:
 
    ```bash
-   $ echo " encapsulation=yes" >> /etc/ipsec.conf
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
+   ```
+
+   For Libreswan 3.19-3.22, run command:
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns1=8.8.8.8
+     modecfgdns2=8.8.4.4
+     encapsulation=yes
+   EOF
    ```
 
    For Libreswan 3.18 and older, run command:
 
    ```bash
-   $ echo " forceencaps=yes" >> /etc/ipsec.conf
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns1=8.8.8.8
+     modecfgdns2=8.8.4.4
+     forceencaps=yes
+   EOF
    ```
 
 1. Generate Certificate Authority (CA) and VPN server certificates:

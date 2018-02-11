@@ -47,8 +47,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
      rightaddresspool=192.168.43.10-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
-     modecfgdns1=8.8.8.8
-     modecfgdns2=8.8.4.4
      narrowing=yes
      dpddelay=30
      dpdtimeout=120
@@ -62,22 +60,39 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-   还需要在该文件中添加一行，首先查看你的 Libreswan 版本：
+   还需要在该文件中添加一些行。首先查看你的 Libreswan 版本：
 
    ```bash
    $ ipsec --version
    ```
 
-   对于 Libreswan 3.19 或以上版本，请运行：
+   对于 Libreswan 3.23 或更新版本，请运行：
 
    ```bash
-   $ echo " encapsulation=yes" >> /etc/ipsec.conf
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
    ```
 
-   对于 Libreswan 3.18 或以下版本，请运行：
+   对于 Libreswan 3.19-3.22，请运行：
 
    ```bash
-   $ echo " forceencaps=yes" >> /etc/ipsec.conf
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns1=8.8.8.8
+     modecfgdns2=8.8.4.4
+     encapsulation=yes
+   EOF
+   ```
+
+   对于 Libreswan 3.18 或更早版本，请运行：
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns1=8.8.8.8
+     modecfgdns2=8.8.4.4
+     forceencaps=yes
+   EOF
    ```
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：

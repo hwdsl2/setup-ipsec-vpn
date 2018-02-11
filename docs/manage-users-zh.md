@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
-在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要添加，修改或者删除用户，请阅读本文档。
+在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要添加，更改或者删除用户，请阅读本文档。
 
 首先，IPsec PSK (预共享密钥) 保存在文件 `/etc/ipsec.secrets` 中。如果要更换一个新的 PSK，可以编辑此文件。所有的 VPN 用户将共享同一个 IPsec PSK。
 
@@ -35,7 +35,7 @@
 openssl passwd -1 '你的VPN密码1'
 ```
 
-在完成后重启服务：
+最后，如果你更换了新的 PSK，则需要重启服务。对于添加，更改或者删除 VPN 用户，一般不需重启。
 
 ```bash
 service ipsec restart
