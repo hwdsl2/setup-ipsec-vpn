@@ -272,7 +272,7 @@ chmod 600 /etc/ppp/options.l2tpd.client
 至此 VPN 客户端配置已完成。按照下面的步骤进行连接。
 
 **注：** 当你每次尝试连接到 VPN 时，必须重复下面的所有步骤。
-我们提供了一个[简易的脚本](extras/linux-client.sh),你可以略过下面步骤,你需要修改脚本中SERVER_IP的值更换为你自己的服务器公有ip值。
+我们提供了一个[简易的脚本](/extras/linux-client.sh),你可以略过下面步骤,你需要修改脚本中SERVER_IP的值更换为你自己的服务器公有ip值。
 
 创建 xl2tpd 控制文件：
 
