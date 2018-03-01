@@ -272,6 +272,7 @@ chmod 600 /etc/ppp/options.l2tpd.client
 The VPN client setup is now complete. Follow the steps below to connect.
 
 **Note:** You must repeat all steps below every time you try to connect to the VPN.
+We have provided a [EasyScript](/extras/linux-client.sh), you can skip the following steps, you need to change the value of the SERVER_IP script to your own server public ip value.
 
 Create xl2tpd control file:
 
