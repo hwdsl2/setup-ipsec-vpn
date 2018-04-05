@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VPN_USER="greatvpn"
-VPN_PASSWORD="greatvpn"
+VPN_USER=""
+VPN_PASSWORD=""
 
 function read_user()
 {
