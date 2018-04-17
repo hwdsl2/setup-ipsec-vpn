@@ -53,7 +53,7 @@ if [ -z "$os_type" ]; then
   [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && echo "$ID")"
   [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
 fi
-if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
+if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian -e kali; then
   exiterr "This script only supports Ubuntu and Debian."
 fi
 
@@ -144,8 +144,13 @@ apt-get -yq update || exiterr "'apt-get update' failed."
 
 bigecho "Installing packages required for setup..."
 
-apt-get -yq install wget dnsutils openssl \
-  iproute gawk grep sed net-tools || exiterr2
+if  printf '%s' "$os_type" | head -n 1 | grep -qiF -e kali; then
+  apt-get -yq install wget dnsutils openssl \
+    iproute2 gawk grep sed net-tools || exiterr2
+else
+  apt-get -yq install wget dnsutils openssl \
+    iproute gawk grep sed net-tools || exiterr2
+fi
 
 bigecho "Trying to auto discover IP of this server..."
 
