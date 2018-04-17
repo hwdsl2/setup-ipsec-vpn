@@ -152,9 +152,6 @@ else
     iproute gawk grep sed net-tools || exiterr2
 fi
 
-apt-get -yq install wget dnsutils openssl \
-  iproute gawk grep sed net-tools || exiterr2
-
 bigecho "Trying to auto discover IP of this server..."
 
 cat <<'EOF'
