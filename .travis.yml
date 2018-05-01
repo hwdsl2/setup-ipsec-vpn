@@ -1,44 +1,12 @@
 language: bash
 
-sudo: required
+sudo: false
 dist: trusty
-group: deprecated-2017Q4
-
-addons:
-  apt:
-    sources:
-    - debian-sid
-    packages:
-    - shellcheck
 
 script:
   - export SHELLCHECK_OPTS="-e SC1091,SC1117"
+  - shellcheck --version
   - shellcheck *.sh extras/*.sh
-  - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
-  - sed -i "s/^make .* install-base$/make base \&\& make install-base/" vpnsetup.sh
-  - sudo VPN_IPSEC_PSK='vpn_psk'
-    VPN_USER='vpn_user'
-    VPN_PASSWORD='vpn_pass' sh vpnsetup.sh
-  - sleep 10
-  - sudo netstat -anpu | grep pluto
-  - sudo netstat -anpu | grep xl2tpd
-  - sudo grep 'vpn_psk' /etc/ipsec.secrets
-  - sudo grep '"vpn_user" l2tpd "vpn_pass"' /etc/ppp/chap-secrets
-  - sudo grep 'vpn_user' /etc/ipsec.d/passwd
-  - sudo sh vpnsetup.sh
-  - sleep 10
-  - sudo netstat -anpu | grep pluto
-  - sudo netstat -anpu | grep xl2tpd
-  - sed -i -e "/^YOUR_IPSEC_PSK/s/''/'vpn_psk'/"
-           -e "/^YOUR_USERNAME/s/''/'vpn_user'/"
-           -e "/^YOUR_PASSWORD/s/''/'vpn_pass'/" vpnsetup.sh
-  - sudo sh vpnsetup.sh
-  - sleep 10
-  - sudo netstat -anpu | grep pluto
-  - sudo netstat -anpu | grep xl2tpd
-  - sudo grep 'vpn_psk' /etc/ipsec.secrets
-  - sudo grep '"vpn_user" l2tpd "vpn_pass"' /etc/ppp/chap-secrets
-  - sudo grep 'vpn_user' /etc/ipsec.d/passwd
 
 notifications:
   email:
