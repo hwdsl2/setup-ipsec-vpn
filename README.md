@@ -28,7 +28,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Quick start
 
-First, prepare your Linux server[*](#quick-start-note) with a fresh install of Ubuntu LTS, Debian or CentOS.
+First, prepare your Linux server[*](#quick-start-note) with a fresh install of Ubuntu 16.04/14.04 LTS, Debian or CentOS.
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -76,6 +76,8 @@ This also includes Linux VMs in public clouds, such as <a href="https://blog.ls2
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
 Advanced users can set up the VPN server on a $35 <a href="https://blog.elasticbyte.net/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">Raspberry Pi 3</a>.
+
+**Note:** Ubuntu 18.04 is not yet supported due to an xl2tpd <a href="https://github.com/xelerance/xl2tpd/issues/147" target="_blank">issue</a> with Linux 4.15 kernels.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
