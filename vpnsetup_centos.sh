@@ -120,7 +120,7 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 bigecho "Installing packages required for setup..."
 
 yum -y install wget bind-utils openssl \
-  iproute gawk grep sed net-tools || exiterr2
+  iptables iproute gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 

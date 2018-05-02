@@ -145,7 +145,7 @@ apt-get -yq update || exiterr "'apt-get update' failed."
 bigecho "Installing packages required for setup..."
 
 apt-get -yq install wget dnsutils openssl \
-  iproute2 gawk grep sed net-tools || exiterr2
+  iptables iproute2 gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 
