@@ -60,6 +60,14 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
+case "$(uname -r)" in
+  4.15*)
+    if grep -qs "release 6" /etc/redhat-release; then
+      exiterr "Linux kernel 4.15 is not supported due to an xl2tpd bug."
+    fi
+    ;;
+esac
+
 net_iface=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
