@@ -449,7 +449,7 @@ cat >> /etc/rc.local <<'EOF'
 (sleep 15
 service ipsec restart
 service xl2tpd restart
-[ -f "/usr/sbin/netplan" ] && iptables-restore < /etc/iptables.rules
+[ -f "/usr/sbin/netplan" ] && { iptables-restore < /etc/iptables.rules; service fail2ban restart; }
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
 exit 0
 EOF
