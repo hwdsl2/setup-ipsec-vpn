@@ -61,9 +61,9 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$(uname -r)" in
-  4.15*)
+  4.14*|4.15*)
     if grep -qs "release 6" /etc/redhat-release; then
-      exiterr "Linux kernel 4.15 is not supported due to an xl2tpd bug."
+      exiterr "Linux kernels 4.14/4.15 are not yet supported due to an xl2tpd bug."
     fi
     ;;
 esac
