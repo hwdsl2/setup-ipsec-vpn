@@ -245,9 +245,9 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
-  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512
-  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512
-  sha2-truncbug=yes
+  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024
+  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2
+  sha2-truncbug=no
 
 conn l2tp-psk
   auto=add
@@ -276,11 +276,9 @@ EOF
 
 # Workarounds for systems with ARM CPU (e.g. Raspberry Pi)
 # - Set "left" to private IP instead of "%defaultroute"
-# - Remove unsupported ESP algorithm
 if [ "$(uname -m | cut -c1-3)" = "arm" ]; then
   PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
-  sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
 fi
 
 # Specify IPsec PSK

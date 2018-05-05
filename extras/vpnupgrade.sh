@@ -161,8 +161,8 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
 fi
 
 # Update ipsec.conf for Libreswan 3.19 and newer
-IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512"
-PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
+IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
+PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2"
 if [ "$(uname -m | cut -c1-3)" = "arm" ]; then
   PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2"
 fi
