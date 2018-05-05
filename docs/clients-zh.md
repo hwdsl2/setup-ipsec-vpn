@@ -471,7 +471,7 @@ ipsec whack --trafficstatus
 
 注： 这个协议仅适用于本文档。
 
-版权所有 (C) 2016-2017 Lin Song   
+版权所有 (C) 2016-2018 Lin Song   
 基于 <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">Joshua Lund 的工作</a> (版权所有 2014-2016)
 
 本程序为自由软件，在自由软件联盟发布的<a href="https://www.gnu.org/licenses/gpl.html" target="_blank"> GNU 通用公共许可协议</a>的约束下，你可以对其进行再发布及修改。协议版本为第三版或（随你）更新的版本。

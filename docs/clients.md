@@ -470,7 +470,7 @@ This document was adapted from the <a href="https://github.com/jlund/streisand" 
 
 Note: This license applies to this document only.
 
-Copyright (C) 2016-2017 Lin Song   
+Copyright (C) 2016-2018 Lin Song   
 Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
