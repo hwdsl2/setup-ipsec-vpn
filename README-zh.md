@@ -58,7 +58,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ## 系统要求
 
 一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些映像 (AMIs):
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial) or 14.04 (Trusty)</a>
+- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial) or 14.04 (Trusty)</a>[*](#ubuntu-1804-note)
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 9 (Stretch) or 8 (Jessie)</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
@@ -77,7 +77,8 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 高级用户可以在 $35 <a href="https://blog.elasticbyte.net/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">Raspberry Pi 3</a> 上搭建 VPN 服务器。
 
-**注：** 目前脚本还不支持 Ubuntu 18.04，因为一个 xl2tpd 与 Linux 4.15 内核兼容性的 <a href="https://github.com/xelerance/xl2tpd/issues/147" target="_blank">问题</a>。
+<a name="ubuntu-1804-note"></a>
+\***注：** 目前脚本还不支持 Ubuntu 18.04，因为一个 xl2tpd 与 Linux 内核 4.15 兼容性的 <a href="https://github.com/xelerance/xl2tpd/issues/147" target="_blank">问题</a>。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
