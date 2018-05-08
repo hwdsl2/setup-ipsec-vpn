@@ -1,4 +1,4 @@
-# How-To: IKEv2 VPN for Windows and Android
+# How-To: IKEv2 VPN for Windows 7 and above
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -10,14 +10,7 @@
 
 Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability. In addition, IKEv2 supports connecting multiple devices simultaneously from behind the same NAT (e.g. home router) to the VPN server.
 
-Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
-
-- Windows 7, 8.x and 10
-- Windows Phone 8.1 and above
-- strongSwan Android VPN client
-- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">iOS (iPhone/iPad) and macOS</a> <-- See also
-
-The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
+Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
 Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>.
 
@@ -44,6 +37,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      leftsubnet=0.0.0.0/0
      leftrsasigkey=%cert
      right=%any
+     rightid=%fromcert
      rightaddresspool=192.168.43.10-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
@@ -212,20 +206,6 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
-   #### Android 4.x and newer
-
-   1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
-   1. Launch the VPN client and tap **Add VPN Profile**.
-   1. Enter `Your VPN Server IP` in the **Server** field.
-   1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
-   1. Tap to add a **User certificate**, then tap **Install**.
-   1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.
-   1. Save the new VPN connection, then tap to connect.
-
-   #### Windows Phone 8.1 and above
-
-   First import the `.p12` file, then follow <a href="https://technet.microsoft.com/en-us/windows/dn673608.aspx" target="_blank">these instructions</a> to configure a certificate-based IKEv2 VPN.
-
 1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Known Issues
@@ -238,4 +218,3 @@ The built-in VPN client in Windows does not support IKEv2 fragmentation. On some
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/Windows7
-* https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
