@@ -6,8 +6,6 @@
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
-An alternative <a href="https://usefulpcguide.com/17318/create-your-own-vpn/" target="_blank">setup guide</a> with images is available, written by Tony Tran.
-
 ---
 * Platforms
   * [Windows](#windows)
@@ -405,14 +403,13 @@ To fix this error, please follow these steps:
 If you are unable to connect using Android 6 or above:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=no` and replace it with `sha2-truncbug=yes`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>) If still unable to connect, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Append `,aes256-sha2_512` to the end of both `ike=` and `phase2alg=` lines. Save the file and run `service ipsec restart`. (<a href="https://github.com/hwdsl2/setup-ipsec-vpn/commit/f58afbc84ba421216ca2615d3e3654902e9a1852" target="_blank">Ref</a>)
+1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Chromebook
 
-Chromebook users: If you are unable to connect, try <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this workaround</a>.
+Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Please note that this fix may break VPN connectivity from your other devices. Edit `/etc/ipsec.conf` on the VPN server. Find `phase2alg=...` and replace it with `phase2alg=aes_gcm-null`. Save the file and run `service ipsec restart`.
 
 ### Other errors
 
