@@ -25,7 +25,8 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally faster tha
 1. Click the **Add (+)** button on toolbar.
 1. Enter `Your VPN Server IP` in the **Host Name or IP Address** field.
 1. Click the **Authentication** tab. Select **Mutual PSK + XAuth** from the **Authentication Method** drop-down menu.
-1. Click the **Credentials** tab below. Enter `Your VPN IPsec PSK` in the **Pre Shared Key** field.
+1. Under the **Local Identity** sub-tab, select **IP Address** from the **Identification Type** drop-down menu.
+1. Click the **Credentials** sub-tab. Enter `Your VPN IPsec PSK` in the **Pre Shared Key** field.
 1. Click the **Phase 1** tab. Select **main** from the **Exchange Type** drop-down menu.
 1. Click the **Phase 2** tab. Select **sha1** from the **HMAC Algorithm** drop-down menu.
 1. Click **Save** to save the VPN connection details.
