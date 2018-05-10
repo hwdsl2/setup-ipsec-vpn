@@ -19,7 +19,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
   * [Android 6 and above](#android-6-and-above)
-  * [Chromebook](#chromebook)
+  * [Chromebook issues](#chromebook-issues)
   * [Other errors](#other-errors)
   * [Additional steps](#additional-steps)
 
@@ -407,9 +407,9 @@ If you are unable to connect using Android 6 or above:
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
-### Chromebook
+### Chromebook issues
 
-Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Please note that this fix may break VPN connectivity from your other devices. Edit `/etc/ipsec.conf` on the VPN server. Find `phase2alg=...` and replace it with `phase2alg=aes_gcm-null`. Save the file and run `service ipsec restart`.
+Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
 
 ### Other errors
 

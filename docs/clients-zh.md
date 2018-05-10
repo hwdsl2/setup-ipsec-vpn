@@ -19,7 +19,7 @@
   * [Windows 错误 809](#windows-错误-809)
   * [Windows 错误 628](#windows-错误-628)
   * [Android 6 及以上版本](#android-6-及以上版本)
-  * [Chromebook](#chromebook)
+  * [Chromebook 连接问题](#chromebook-连接问题)
   * [其它错误](#其它错误)
   * [额外的步骤](#额外的步骤)
 
@@ -408,9 +408,9 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSe
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
-### Chromebook
+### Chromebook 连接问题
 
-Chromebook 用户： 如果你无法连接，请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">这个 Issue</a>。请注意，这个解决方案可能会导致你的其它设备无法连接到 VPN。编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 并将它替换为 `phase2alg=aes_gcm-null`。保存修改并运行 `service ipsec restart`。
+Chromebook 用户： 如果你无法连接，请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">这个 Issue</a>。编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
 
 ### 其它错误
 
