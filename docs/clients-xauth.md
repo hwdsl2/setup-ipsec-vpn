@@ -102,6 +102,21 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 Example is based on Ubuntu 18.04 but may be adapted to any linux flavour.
 
+For unknown reason XAuth password file authentication doesn't work with `vpnc`, so script uses `pam` authentication.
+This requires you to connect with existing system users/passwords.
+Please check [libreswan documentation](https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv1_XAUTH_with_PSK#Aggressive_Mode) to get acquainted with PAM auth and aggressive connection mode that `vpnc` can only use.
+The easiest way is to create some user with no shell access and use that for VPN.
+On the VPN server execute:
+```bash
+sudo useradd -s /usr/sbin/nologin -r vpnuser
+```
+This will create system user `vpnuser` with no shell access and no home directory.
+And now set this user some password.
+
+```bash
+sudo passwd vpnuser
+```
+
 1. Install `vpnc` and corresponding network manager plugin:
     ```bash
     sudo apt-get install network-manager-vpnc network-manager-vpnc-gnome vpnc
@@ -110,8 +125,8 @@ Example is based on Ubuntu 18.04 but may be adapted to any linux flavour.
 
 1. If you haven't set `VPN_GROUP` variable during setup, then set **Group Name** to `group`. All other parameters should be set as following:  
 **Gateway** - `Your VPN Server IP`  
-**User name** - `Your VPN Username`  
-**User password** - `Your VPN Password`  
+**User name** - `Your VPN Username of system user`  
+**User password** - `Your VPN Password of system user`  
 **Group password** - `Your VPN IPsec PSK`
 1. Save and connect to your new VPN.
 
