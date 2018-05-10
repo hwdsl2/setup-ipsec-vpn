@@ -27,6 +27,7 @@
 YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
+YOUR_GROUP=''
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
@@ -106,6 +107,7 @@ fi
 [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
 [ -n "$YOUR_USERNAME" ] && VPN_USER="$YOUR_USERNAME"
 [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
+VPN_GROUP="${YOUR_GROUP:-group}"
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   bigecho "VPN credentials not set by user. Generating random PSK and password..."
@@ -272,6 +274,24 @@ conn xauth-psk
   ikev2=never
   cisco-unity=yes
   also=shared
+
+conn xauth-psk-vpnc
+  auto=add
+  leftsubnet=0.0.0.0/0
+  rightaddresspool=$XAUTH_POOL
+  modecfgdns="$DNS_SRV1, $DNS_SRV2"
+  leftxauthserver=yes
+  rightxauthclient=yes
+  leftmodecfgserver=yes
+  rightmodecfgclient=yes
+  modecfgpull=yes
+  xauthby=pam
+  ike-frag=yes
+  ikev2=never
+  cisco-unity=yes
+  also=shared
+  rightid=@[$VPN_GROUP]
+  aggrmode=yes
 EOF
 
 # Workarounds for systems with ARM CPU (e.g. Raspberry Pi)

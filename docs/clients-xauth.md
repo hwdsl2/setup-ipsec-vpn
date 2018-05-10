@@ -14,6 +14,7 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally faster tha
   * [OS X (macOS)](#os-x)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
+  * [Linux](#linux)
 
 ## Windows
 
@@ -96,6 +97,28 @@ If you get an error when trying to connect, see <a href="clients.md#troubleshoot
 1. Slide the **VPN** switch ON.
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+## Linux
+
+Example is based on Ubuntu 18.04 but may be adapted to any linux flavour.
+
+1. Install `vpnc` and corresponding network manager plugin:
+    ```bash
+    sudo apt-get install network-manager-vpnc network-manager-vpnc-gnome vpnc
+    ```
+1. Add new VPN connection of type **Cisco Compatible VPN (vpnc)** to network connections.
+
+1. If you haven't set `VPN_GROUP` variable during setup, then set **Group Name** to `group`. All other parameters should be set as following:  
+**Gateway** - `Your VPN Server IP`  
+**User name** - `Your VPN Username`  
+**User password** - `Your VPN Password`  
+**Group password** - `Your VPN IPsec PSK`
+1. Save and connect to your new VPN.
+
+Alternatively you can connect with command line: `vpnc --gateway <your server ip> --id <your vpn group> --username <your vpn username>`
+
+Please also check https://help.ubuntu.com/community/VPNClient#VPNC for details how VPNC can be configured in Ubuntu.
+
 
 ## Credits
 
