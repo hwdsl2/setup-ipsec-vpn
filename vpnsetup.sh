@@ -81,7 +81,7 @@ def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 
 def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
-  if [ "$(uname -m | cut -c1-3)" != "arm" ]; then
+  if ! uname -m | grep -qi '^arm'; then
     case "$def_iface" in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -274,9 +274,8 @@ conn xauth-psk
   also=shared
 EOF
 
-# Workarounds for systems with ARM CPU (e.g. Raspberry Pi)
-# - Set "left" to private IP instead of "%defaultroute"
-if [ "$(uname -m | cut -c1-3)" = "arm" ]; then
+# Workaround for Raspberry Pi
+if uname -m | grep -qi '^arm'; then
   PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
 fi
