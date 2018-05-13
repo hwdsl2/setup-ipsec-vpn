@@ -134,16 +134,18 @@ bigecho "VPN setup in progress... Please be patient."
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
-bigecho "Populating apt-get cache..."
-
-# Wait up to 60s for apt/dpkg lock
 count=0
-while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
-  [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
+while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1 \
+  || lsof /var/lib/apt/lists/lock >/dev/null 2>&1 \
+  || lsof /var/lib/dpkg/lock >/dev/null 2>&1; do
+  [ "$count" = "0" ] && bigecho "Waiting for apt to be available..."
+  [ "$count" -ge "60" ] && exiterr "Could not get apt/dpkg lock."
   count=$((count+1))
   printf '%s' '.'
   sleep 3
 done
+
+bigecho "Populating apt-get cache..."
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yq update || exiterr "'apt-get update' failed."
