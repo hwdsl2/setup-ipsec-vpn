@@ -181,7 +181,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    vpnclient                                          u,u,u
    ```
 
-   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/zesty/man1/certutil.1.html" target="_blank">this page</a>.
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
 
 1. Restart IPsec service:
 
@@ -206,7 +206,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
-1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Known Issues
 

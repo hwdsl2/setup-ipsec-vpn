@@ -35,7 +35,7 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally faster tha
 1. Enter `Your VPN Password` in the **Password** field.
 1. Click **Connect**.
 
-Once connected, you will see **tunnel enabled** in the VPN Connect status window. Click the "Network" tab, and confirm that **Established - 1** is displayed under "Security Associations". You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see **tunnel enabled** in the VPN Connect status window. Click the "Network" tab, and confirm that **Established - 1** is displayed under "Security Associations". You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
@@ -57,7 +57,7 @@ If you get an error when trying to connect, see <a href="clients.md#troubleshoot
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Apply** to save the VPN connection information.
 
-To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Android
 
@@ -77,7 +77,7 @@ To connect to the VPN: Use the menu bar icon, or go to the Network section of Sy
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
@@ -95,18 +95,18 @@ If you get an error when trying to connect, see <a href="clients.md#troubleshoot
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
 
-Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Credits
 
-This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
+This document was adapted from the <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
 
 ## License
 
 Note: This license applies to this document only.
 
 Copyright (C) 2016-2018 Lin Song   
-Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
+Based on <a href="https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
