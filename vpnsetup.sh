@@ -70,8 +70,13 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$(uname -r)" in
-  4.14*|4.15*)
-    exiterr "Linux kernels 4.14/4.15 are not yet supported due to an xl2tpd bug."
+  4.14*)
+    if uname -m | grep -qi '^arm'; then
+      exiterr "Linux kernel 4.14 is not supported due to an xl2tpd issue."
+    fi
+    ;;
+  4.15*)
+    exiterr "Linux kernel 4.15 is not supported due to an xl2tpd issue."
     ;;
 esac
 
