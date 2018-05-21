@@ -281,8 +281,7 @@ conn xauth-psk
   also=shared
 EOF
 
-# Workaround for Raspberry Pi
-if uname -m | grep -qi '^arm'; then
+if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
   PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
 fi

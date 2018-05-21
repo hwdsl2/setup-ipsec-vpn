@@ -262,6 +262,11 @@ conn xauth-psk
   also=shared
 EOF
 
+if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
+  PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+  check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
+fi
+
 # Specify IPsec PSK
 conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
