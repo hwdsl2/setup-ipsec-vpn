@@ -69,17 +69,6 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-case "$(uname -r)" in
-  4.14*)
-    if uname -m | grep -qi '^arm'; then
-      exiterr "Linux kernel 4.14 is not supported due to an xl2tpd issue."
-    fi
-    ;;
-  4.15*)
-    exiterr "Linux kernel 4.15 is not supported due to an xl2tpd issue."
-    ;;
-esac
-
 net_iface=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
@@ -183,6 +172,25 @@ apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
   libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make libnss3-tools \
   libevent-dev ppp xl2tpd || exiterr2
+
+case "$(uname -r)" in
+  4.14*|4.15*)
+    L2TP_VER=1.3.12
+    l2tp_file="xl2tpd-$L2TP_VER.tar.gz"
+    l2tp_url1="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
+    l2tp_url2="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd/xl2tpd_$L2TP_VER.orig.tar.gz"
+    apt-get -yq install libpcap0.8-dev || exiterr2
+    if ! { wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url1" || wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url2"; }; then
+      exiterr "Cannot download xl2tpd source."
+    fi
+    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+    tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
+    cd "xl2tpd-$L2TP_VER" || exiterr "Cannot enter xl2tpd source dir."
+    make -s 2>/dev/null && PREFIX=/usr make -s install
+    cd /opt/src || exiterr "Cannot enter /opt/src."
+    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+    ;;
+esac
 
 bigecho "Installing Fail2Ban to protect SSH..."
 

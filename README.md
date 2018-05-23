@@ -28,7 +28,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Quick start
 
-First, prepare your Linux server[*](#quick-start-note) with a fresh install of Ubuntu 16.04/14.04 LTS, Debian or CentOS.
+First, prepare your Linux server[*](#quick-start-note) with a fresh install of Ubuntu LTS, Debian or CentOS.
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -58,7 +58,7 @@ For other installation options and how to set up VPN clients, read the sections 
 ## Requirements
 
 A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, from these images (AMIs):
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial) or 14.04 (Trusty)</a> [*](#ubuntu-1804-note)
+- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial) or 14.04 (Trusty)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 9 (Stretch) or 8 (Jessie)</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
@@ -76,9 +76,6 @@ This also includes Linux VMs in public clouds, such as <a href="https://blog.ls2
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
 Advanced users can set up the VPN server on a $35 <a href="https://blog.elasticbyte.net/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">Raspberry Pi 3</a>.
-
-<a name="ubuntu-1804-note"></a>
-\* **Note:** Ubuntu 18.04 is not yet supported due to an xl2tpd <a href="https://github.com/xelerance/xl2tpd/issues/147" target="_blank">issue</a>. Use <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">this Docker image</a> instead.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
