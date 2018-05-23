@@ -72,8 +72,8 @@ net_iface=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
-def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
-if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
+def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
+if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
   case "$def_iface" in
     wl*)
       exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -82,13 +82,13 @@ if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
   net_iface="$def_iface"
 fi
 
-net_iface_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
-if [ -z "$net_iface_state" ] || [ "$net_iface_state" = "down" ] || [ "$net_iface" = "lo" ]; then
+net_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
+if [ -z "$net_state" ] || [ "$net_state" = "down" ] || [ "$net_iface" = "lo" ]; then
   printf "Error: Network interface '%s' is not available.\n" "$net_iface" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
-Unable to detect the default network interface. Manually re-run this script with:
-  sudo VPN_NET_IFACE="your_default_interface_name" sh "$0"
+Could not detect the default network interface. Re-run this script with:
+  sudo VPN_NET_IFACE="default_interface_name" sh "$0"
 EOF
   fi
   exit 1
@@ -123,7 +123,7 @@ bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 
 bigecho "Installing packages required for setup..."
 
@@ -140,10 +140,8 @@ EOF
 # In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
-# Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
 
-# Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
@@ -179,11 +177,11 @@ swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exiterr "Cannot download Libreswan source."
+  exit 1
 fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
+cd "libreswan-$SWAN_VER" || exit 1
 sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
@@ -193,8 +191,7 @@ NPROCS="$(grep -c ^processor /proc/cpuinfo)"
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
 
-# Verify the install and clean up
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
@@ -210,7 +207,7 @@ XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
-# Create IPsec (Libreswan) config
+# Create IPsec config
 conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -360,7 +357,7 @@ fi
 
 bigecho "Updating IPTables rules..."
 
-# Check if IPTables rules need updating
+# Check if rules need updating
 ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \

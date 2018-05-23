@@ -118,7 +118,7 @@ esac
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 
 # Update package index and install Wget
 export DEBIAN_FRONTEND=noninteractive
@@ -136,11 +136,11 @@ swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exiterr "Cannot download Libreswan source."
+  exit 1
 fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
+cd "libreswan-$SWAN_VER" || exit 1
 sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
@@ -154,7 +154,7 @@ NPROCS="$(grep -c ^processor /proc/cpuinfo)"
 make "-j$((NPROCS+1))" -s base && make -s install-base
 
 # Verify the install and clean up
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
