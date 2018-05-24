@@ -60,14 +60,6 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-case "$(uname -r)" in
-  4.15*)
-    if grep -qs "release 6" /etc/redhat-release; then
-      exiterr "Linux kernel 4.15 is not supported due to an xl2tpd issue."
-    fi
-    ;;
-esac
-
 net_iface=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
@@ -165,6 +157,26 @@ else
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$OPT1" "$OPT2" -y install libevent-devel fipscheck-devel || exiterr2
 fi
+
+case "$(uname -r)" in
+  4.14*|4.15*)
+    if grep -qs "release 6" /etc/redhat-release; then
+      L2TP_VER=1.3.12
+      l2tp_file="xl2tpd-$L2TP_VER.tar.gz"
+      l2tp_url1="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
+      l2tp_url2="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd/xl2tpd_$L2TP_VER.orig.tar.gz"
+      yum "$OPT1" "$OPT2" -y install libpcap-devel || exiterr2
+      if ! { wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url1" || wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url2"; }; then
+        exit 1
+      fi
+      /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+      tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
+      cd "xl2tpd-$L2TP_VER" && make -s 2>/dev/null && PREFIX=/usr make -s install
+      cd /opt/src || exit 1
+      /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+    fi
+    ;;
+esac
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
