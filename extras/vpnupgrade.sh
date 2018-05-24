@@ -162,7 +162,10 @@ fi
 
 # Update ipsec.conf for Libreswan 3.19 and newer
 IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
-PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2"
+PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
+if uname -m | grep -qi '^arm'; then
+  PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2"
+fi
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
