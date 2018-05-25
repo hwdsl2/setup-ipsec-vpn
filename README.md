@@ -53,12 +53,12 @@ For other installation options and how to set up VPN clients, read the sections 
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Includes `sysctl.conf` optimizations for improved performance
-- Tested with Ubuntu 16.04/14.04, Debian 9/8 and CentOS 7/6
+- Tested with Ubuntu 18.04/16.04/14.04, Debian 9/8 and CentOS 7/6
 
 ## Requirements
 
 A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, from these images (AMIs):
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 16.04 (Xenial) or 14.04 (Trusty)</a>
+- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 18.04 (Bionic), 16.04 (Xenial) or 14.04 (Trusty)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 9 (Stretch) or 8 (Jessie)</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
@@ -149,7 +149,7 @@ If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-u
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 
-Using L2TP kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 16.04, Debian 9, CentOS 7 and 6. Ubuntu 16.04 users should install the `` linux-image-extra-`uname -r` `` package and restart the `xl2tpd` service.
+Using kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 18.04/16.04, Debian 9 and CentOS 7/6. Ubuntu users need to install the `` linux-image-extra-`uname -r` `` package and run `service xl2tpd restart`.
 
 To modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS). Then reboot your server.
 
