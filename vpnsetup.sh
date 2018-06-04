@@ -287,7 +287,7 @@ conn xauth-psk
 EOF
 
 if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
-  PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+  PRIVATE_IP=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
 fi
 
