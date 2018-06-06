@@ -196,7 +196,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.23
+SWAN_VER=3.22
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -206,7 +206,7 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-sed -i '/docker-targets\.mk/d' Makefile
+sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -273,7 +273,8 @@ conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns="$DNS_SRV1, $DNS_SRV2"
+  modecfgdns1=$DNS_SRV1
+  modecfgdns2=$DNS_SRV2
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes

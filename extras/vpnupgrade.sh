@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Check https://libreswan.org for the latest version
-SWAN_VER=3.23
+SWAN_VER=3.22
 
 ### DO NOT edit below this line ###
 
@@ -78,6 +78,15 @@ This is intended for use on servers running an older version of Libreswan.
 
 EOF
 
+if [ "$SWAN_VER" = "3.23" ]; then
+cat <<'EOF'
+WARNING: Libreswan 3.23 has an issue with connecting multiple IPsec/XAuth
+         VPN clients from behind the same NAT (e.g. home router).
+         Do not upgrade to 3.23 if your use cases include the above.
+
+EOF
+fi
+
 cat <<'EOF'
 IMPORTANT NOTES:
 
@@ -141,6 +150,7 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
+[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
 sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
@@ -179,15 +189,20 @@ echo
 echo "Libreswan $SWAN_VER was installed successfully! "
 echo
 
+case "$SWAN_VER" in
+  3.2[3-9])
 cat <<'EOF'
-Note: Users upgrading to Libreswan 3.23 or newer should edit
-  "/etc/ipsec.conf" and replace these two lines:
-    modecfgdns1=DNS_SERVER_1
-    modecfgdns2=DNS_SERVER_2
-  with a single line like this:
-    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
-  Then run "service ipsec restart".
+NOTE: Users upgrading to Libreswan 3.23 or newer should edit
+      "/etc/ipsec.conf" and replace these two lines:
+          modecfgdns1=DNS_SERVER_1
+          modecfgdns2=DNS_SERVER_2
+      with a single line like this:
+          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+      Then run "service ipsec restart".
+
 EOF
+    ;;
+esac
 
 }
 
