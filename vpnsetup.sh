@@ -475,6 +475,7 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 iptables-restore < "$IPT_FILE"
 
 # Restart services
+mkdir -p /run/pluto
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null

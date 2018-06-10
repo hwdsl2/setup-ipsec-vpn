@@ -183,6 +183,7 @@ sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/" /etc/ipsec.conf
 
 # Restart IPsec service
+mkdir -p /run/pluto
 service ipsec restart
 
 echo

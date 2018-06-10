@@ -469,6 +469,7 @@ if grep -qs "release 7" /etc/redhat-release; then
 fi
 
 # Restart services
+mkdir -p /run/pluto
 modprobe -q pppol2tp
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
