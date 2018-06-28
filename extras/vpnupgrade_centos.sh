@@ -38,10 +38,6 @@ if [ -z "$SWAN_VER" ]; then
   exiterr "Libreswan version 'SWAN_VER' not specified."
 fi
 
-if [ "$SWAN_VER" = "3.25" ]; then
-  exiterr "Libreswan 3.25 is not yet supported."
-fi
-
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
@@ -170,6 +166,7 @@ sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 NPROCS="$(grep -c ^processor /proc/cpuinfo)"
 [ -z "$NPROCS" ] && NPROCS=1
