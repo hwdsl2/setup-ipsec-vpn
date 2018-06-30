@@ -38,6 +38,12 @@ if [ -z "$SWAN_VER" ]; then
   exiterr "Libreswan version 'SWAN_VER' not specified."
 fi
 
+case "$SWAN_VER" in
+  3.24|3.2[6-9])
+    exiterr "Libreswan version $SWAN_VER is not available."
+    ;;
+esac
+
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
@@ -80,11 +86,11 @@ Version to be installed: Libreswan $SWAN_VER
 
 EOF
 
-if [ "$SWAN_VER" = "3.23" ]; then
+if [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ]; then
 cat <<'EOF'
-WARNING: Libreswan 3.23 has an issue with connecting multiple IPsec/XAuth
-         VPN clients from behind the same NAT (e.g. home router).
-         Do not upgrade to 3.23 if your use cases include the above.
+WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
+         IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
+         DO NOT upgrade to 3.23/3.25 if your use cases include the above.
 
 EOF
 fi
@@ -94,14 +100,14 @@ NOTE: Libreswan versions 3.19 and newer require some configuration changes.
       This script will make the following changes to your /etc/ipsec.conf:
 
       Replace this line:
-        auth=esp
+          auth=esp
       with the following:
-        phase2=esp
+          phase2=esp
 
       Replace this line:
-        forceencaps=yes
+          forceencaps=yes
       with the following:
-        encapsulation=yes
+          encapsulation=yes
 
       Consolidate VPN ciphers for "ike=" and "phase2alg=".
       Re-add "MODP1024" to the list of allowed "ike=" ciphers,
@@ -204,12 +210,11 @@ echo
 case "$SWAN_VER" in
   3.2[3-9])
 cat <<'EOF'
-NOTE: Users upgrading to Libreswan 3.23 or newer should edit
-      "/etc/ipsec.conf" and replace these two lines:
-        modecfgdns1=DNS_SERVER_1
-        modecfgdns2=DNS_SERVER_2
+NOTE: Users upgrading to Libreswan 3.23 or newer should edit "/etc/ipsec.conf" and replace these two lines:
+          modecfgdns1=DNS_SERVER_1
+          modecfgdns2=DNS_SERVER_2
       with a single line like this:
-        modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
       Then run "service ipsec restart".
 
 EOF
@@ -218,12 +223,11 @@ esac
 
 if [ "$is_downgrade_to_322" = "1" ]; then
 cat <<'EOF'
-NOTE: Users downgrading to Libreswan 3.22 should edit
-      "/etc/ipsec.conf" and replace this line:
-        modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+NOTE: Users downgrading to Libreswan 3.22 should edit "/etc/ipsec.conf" and replace this line:
+          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
       with two lines like this:
-        modecfgdns1=DNS_SERVER_1
-        modecfgdns2=DNS_SERVER_2
+          modecfgdns1=DNS_SERVER_1
+          modecfgdns2=DNS_SERVER_2
       Then run "service ipsec restart".
 
 EOF
