@@ -73,7 +73,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 
 **Note:** This <a href="#windows-error-809">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
@@ -96,7 +96,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
-To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Android
 
@@ -115,7 +115,7 @@ To connect to the VPN: Use the menu bar icon, or go to the Network section of Sy
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
@@ -133,7 +133,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
 
-Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Chromebook
 
@@ -150,15 +150,127 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 1. Enter `Your VPN Password` for the **Password**.
 1. Click **Connect**.
 
-Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## Windows Phone
 
-Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. You can verify that your traffic is being routed properly by <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Linux
+
+See [Linux VPN Clients](#linux-vpn-clients).
+
+## Troubleshooting
+
+*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
+
+### Windows Error 809
+
+> The network connection between your computer and the VPN server could not be established because the remote server is not responding.
+
+To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. **You must reboot your PC when finished.**
+
+- For Windows Vista, 7, 8.x and 10 ([download .reg file](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
+
+  ```console
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
+  ```
+
+- For Windows XP ONLY ([download .reg file](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_XP_ONLY_Reboot_Required.reg))
+
+  ```console
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
+  ```
+
+Although uncommon, some Windows systems disable IPsec encryption, causing the connection to fail. To re-enable it, run the following command and reboot your PC.
+
+- For Windows XP, Vista, 7, 8.x and 10 ([download .reg file](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
+
+  ```console
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
+  ```
+
+### Windows Error 628
+
+> The connection was terminated by the remote computer before it could be completed.
+
+To fix this error, please follow these steps:
+
+1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
+1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
+1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
+1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
+1. Click the **Advanced settings** button.
+1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
+1. Click **OK** to close the **Advanced settings**.
+1. Click **OK** to save the VPN connection details.
+
+![Select CHAP in VPN connection properties](images/vpn-properties.png)
+
+### Android 6 and above
+
+If you are unable to connect using Android 6 or above:
+
+1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+
+![Android VPN workaround](images/vpn-profile-Android.png)
+
+### Chromebook issues
+
+Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
+
+### Other errors
+
+If you encounter other errors, refer to the links below:
+
+* http://www.tp-link.com/en/faq-1029.html
+* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
+* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+
+### Additional steps
+
+Please try these additional troubleshooting steps:
+
+First, restart services on the VPN server:
+
+```bash
+service ipsec restart
+service xl2tpd restart
+```
+
+If using Docker, run `docker restart ipsec-vpn-server`.
+
+Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
+
+Check the Libreswan (IPsec) and xl2tpd logs for errors:
+
+```bash
+# Ubuntu & Debian
+grep pluto /var/log/auth.log
+grep xl2tpd /var/log/syslog
+
+# CentOS & RHEL
+grep pluto /var/log/secure
+grep xl2tpd /var/log/messages
+```
+
+Check status of the IPsec VPN server:
+
+```bash
+ipsec status
+ipsec verify
+```
+
+Show current established VPN connections:
+
+```bash
+ipsec whack --trafficstatus
+```
+
+## Linux VPN Clients
 
 Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
@@ -317,7 +429,7 @@ Exclude your VPN server's IP from the new default route (replace with actual val
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
-If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with <a href="https://encrypted.google.com/search?q=my+ip" target="_blank">actual value</a>):
+If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with <a href="https://www.google.com/search?q=my+ip" target="_blank">actual value</a>):
 
 ```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
@@ -355,120 +467,16 @@ echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 strongswan down myvpn
 ```
 
-## Troubleshooting
-
-*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
-
-### Windows Error 809
-
-> The network connection between your computer and the VPN server could not be established because the remote server is not responding.
-
-To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Refer to the linked web page, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. When finished, reboot your PC.
-
-- For Windows Vista, 7, 8.x and 10
-  ```console
-  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
-  ```
-
-- For Windows XP ONLY
-  ```console
-  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
-  ```
-
-Although uncommon, some Windows systems disable IPsec encryption, causing the connection to fail. To re-enable it, run the following command and reboot your PC.
-
-```console
-REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
-```
-
-### Windows Error 628
-
-> The connection was terminated by the remote computer before it could be completed.
-
-To fix this error, please follow these steps:
-
-1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
-1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
-1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
-1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
-1. Click the **Advanced settings** button.
-1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
-1. Click **OK** to close the **Advanced settings**.
-1. Click **OK** to save the VPN connection details.
-
-![Select CHAP in VPN connection properties](images/vpn-properties.png)
-
-### Android 6 and above
-
-If you are unable to connect using Android 6 or above:
-
-1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
-
-![Android VPN workaround](images/vpn-profile-Android.png)
-
-### Chromebook issues
-
-Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
-
-### Other errors
-
-If you encounter other errors, refer to the links below:
-
-* http://www.tp-link.com/en/faq-1029.html
-* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
-
-### Additional steps
-
-Please try these additional troubleshooting steps:
-
-First, restart services on the VPN server:
-
-```bash
-service ipsec restart
-service xl2tpd restart
-```
-
-If using Docker, run `docker restart ipsec-vpn-server`.
-
-Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
-
-Check the Libreswan (IPsec) and xl2tpd logs for errors:
-
-```bash
-# Ubuntu & Debian
-grep pluto /var/log/auth.log
-grep xl2tpd /var/log/syslog
-
-# CentOS & RHEL
-grep pluto /var/log/secure
-grep xl2tpd /var/log/messages
-```
-
-Check status of the IPsec VPN server:
-
-```bash
-ipsec status
-ipsec verify
-```
-
-Show current established VPN connections:
-
-```bash
-ipsec whack --trafficstatus
-```
-
 ## Credits
 
-This document was adapted from the <a href="https://github.com/jlund/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
+This document was adapted from the <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
 
 ## License
 
 Note: This license applies to this document only.
 
 Copyright (C) 2016-2018 Lin Song   
-Based on <a href="https://github.com/jlund/streisand/blob/master/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
+Based on <a href="https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
