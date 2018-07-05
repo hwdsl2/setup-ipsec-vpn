@@ -144,18 +144,22 @@ yum -y install epel-release || yum -y install "$epel_url" || exiterr2
 
 bigecho "Installing packages required for the VPN..."
 
+REPO1='--enablerepo=epel'
+REPO2='--enablerepo=*server-optional*'
+REPO3='--enablerepo=*releases-optional*'
+
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel \
-  flex bison gcc make ppp xl2tpd || exiterr2
+  flex bison gcc make ppp || exiterr2
 
-OPT1='--enablerepo=*server-optional*'
-OPT2='--enablerepo=*releases-optional*'
+yum "$REPO1" -y install xl2tpd || exiterr2
+
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
-  yum "$OPT1" "$OPT2" -y install libevent2-devel fipscheck-devel || exiterr2
+  yum "$REPO2" "$REPO3" -y install libevent2-devel fipscheck-devel || exiterr2
 else
   yum -y install systemd-devel iptables-services || exiterr2
-  yum "$OPT1" "$OPT2" -y install libevent-devel fipscheck-devel || exiterr2
+  yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 fi
 
 case "$(uname -r)" in
@@ -165,7 +169,7 @@ case "$(uname -r)" in
       l2tp_file="xl2tpd-$L2TP_VER.tar.gz"
       l2tp_url1="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
       l2tp_url2="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd/xl2tpd_$L2TP_VER.orig.tar.gz"
-      yum "$OPT1" "$OPT2" -y install libpcap-devel || exiterr2
+      yum "$REPO2" "$REPO3" -y install libpcap-devel || exiterr2
       if ! { wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url1" || wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url2"; }; then
         exit 1
       fi
@@ -180,7 +184,7 @@ esac
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
-yum -y install fail2ban || exiterr2
+yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 

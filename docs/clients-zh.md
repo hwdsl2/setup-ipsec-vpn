@@ -283,7 +283,7 @@ apt-get -y install strongswan xl2tpd
 
 # CentOS & RHEL
 yum -y install epel-release
-yum -y install strongswan xl2tpd
+yum --enablerepo=epel -y install strongswan xl2tpd
 
 # Fedora
 yum -y install strongswan xl2tpd

@@ -147,14 +147,14 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel \
   flex bison gcc make || exiterr2
 
-OPT1='--enablerepo=*server-optional*'
-OPT2='--enablerepo=*releases-optional*'
+REPO1='--enablerepo=*server-optional*'
+REPO2='--enablerepo=*releases-optional*'
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
-  yum "$OPT1" "$OPT2" -y install libevent2-devel fipscheck-devel || exiterr2
+  yum "$REPO1" "$REPO2" -y install libevent2-devel fipscheck-devel || exiterr2
 else
   yum -y install systemd-devel || exiterr2
-  yum "$OPT1" "$OPT2" -y install libevent-devel fipscheck-devel || exiterr2
+  yum "$REPO1" "$REPO2" -y install libevent-devel fipscheck-devel || exiterr2
 fi
 
 # Compile and install Libreswan
