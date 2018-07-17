@@ -20,6 +20,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Windows Error 628](#windows-error-628)
   * [Android 6 and above](#android-6-and-above)
   * [Chromebook issues](#chromebook-issues)
+  * [Windows 10 upgrades](#windows-10-upgrades)
   * [Other errors](#other-errors)
   * [Additional steps](#additional-steps)
 
@@ -214,6 +215,7 @@ To fix this error, please follow these steps:
 If you are unable to connect using Android 6 or above:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Save the file and run `service ipsec restart`. If still unable to connect, try the next step.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
@@ -221,6 +223,10 @@ If you are unable to connect using Android 6 or above:
 ### Chromebook issues
 
 Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
+
+### Windows 10 upgrades
+
+After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix for [Windows Error 809](#windows-error-809) and reboot. Refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/376" target="_blank">this issue</a> for more information.
 
 ### Other errors
 
