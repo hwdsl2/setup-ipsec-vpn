@@ -204,7 +204,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    1. Start the new IKEv2 VPN connection, and enjoy your VPN!   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
+   1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
 1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
@@ -217,4 +217,4 @@ The built-in VPN client in Windows does not support IKEv2 fragmentation. On some
 * https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
-* https://wiki.strongswan.org/projects/strongswan/wiki/Windows7
+* https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients

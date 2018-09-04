@@ -204,7 +204,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    1. 启用新的 IKEv2 VPN 连接，并且开始使用 VPN！   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   1. （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Windows7#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
+   1. （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
 
 1. 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -217,4 +217,4 @@ Windows 自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络�
 * https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
-* https://wiki.strongswan.org/projects/strongswan/wiki/Windows7
+* https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients

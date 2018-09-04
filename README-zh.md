@@ -143,7 +143,7 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth 模式</a>。
 
-对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。
+对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。
 
@@ -167,6 +167,8 @@ wget https://git.io/vpnupgrade -O vpnupgrade.sh
 # CentOS & RHEL
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 ```
+
+:warning: VPN 脚本默认安装 Libreswan 3.22，因为新版本 3.23 和 3.25 存在问题，从而不能同时连接在同一个 NAT （比如家用路由器）后面的多个 IPsec/XAuth VPN 客户端。
 
 ## 问题和反馈
 

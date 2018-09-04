@@ -143,7 +143,7 @@ For **Windows users**, this <a href="docs/clients.md#windows-error-809" target="
 
 The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>.
 
-For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN.
+For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
 If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>.
 
@@ -167,6 +167,8 @@ wget https://git.io/vpnupgrade -O vpnupgrade.sh
 # CentOS & RHEL
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 ```
+
+:warning: The VPN scripts install Libreswan 3.22 by default, because newer versions 3.23 and 3.25 have issues with connecting multiple IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
 
 ## Bugs & Questions
 
