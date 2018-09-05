@@ -173,20 +173,22 @@ apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
   libevent-dev ppp xl2tpd || exiterr2
 
 case "$(uname -r)" in
-  4.14*|4.15*)
-    L2TP_VER=1.3.12
-    l2tp_file="xl2tpd-$L2TP_VER.tar.gz"
-    l2tp_url1="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
-    l2tp_url2="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd/xl2tpd_$L2TP_VER.orig.tar.gz"
-    apt-get -yq install libpcap0.8-dev || exiterr2
-    if ! { wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url1" || wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url2"; }; then
-      exit 1
+  4.1[456]*)
+    if ! printf '%s' "$os_type" | head -n 1 | grep -qiF ubuntu; then
+      L2TP_VER=1.3.12
+      l2tp_dir="xl2tpd-$L2TP_VER"
+      l2tp_file="$l2tp_dir.tar.gz"
+      l2tp_url="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
+      apt-get -yq install libpcap0.8-dev || exiterr2
+      if ! wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url"; then
+        exit 1
+      fi
+      /bin/rm -rf "/opt/src/$l2tp_dir"
+      tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
+      cd "$l2tp_dir" && make -s 2>/dev/null && PREFIX=/usr make -s install
+      cd /opt/src || exit 1
+      /bin/rm -rf "/opt/src/$l2tp_dir"
     fi
-    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
-    tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
-    cd "xl2tpd-$L2TP_VER" && make -s 2>/dev/null && PREFIX=/usr make -s install
-    cd /opt/src || exit 1
-    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
     ;;
 esac
 
