@@ -54,22 +54,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-   还需要在该文件中添加一些行。首先查看你的 Libreswan 版本：
+   还需要在该文件中添加一些行。首先查看你的 Libreswan 版本，然后运行以下命令之一：
 
    ```bash
    $ ipsec --version
    ```
 
-   对于 Libreswan 3.23 或更新版本，请运行：
-
-   ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
-     encapsulation=yes
-   EOF
-   ```
-
-   对于 Libreswan 3.19-3.22，请运行：
+   如果是 Libreswan 3.19-3.22：
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
@@ -79,7 +70,16 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-   对于 Libreswan 3.18 或更早版本，请运行：
+   如果是 Libreswan 3.23 或更新版本：
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
+   ```
+
+   如果是 Libreswan 3.18 或更早版本：
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
@@ -91,97 +91,77 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：
 
-   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。另外，如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则需要将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
+   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。另外，如果你在上面的第一步使用了服务器的域名而不是 IP 地址，则需要将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
 
    ```bash
-   $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -x -n "Example CA" \
+     -s "O=Example,CN=Example CA" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t "CT,," -2
 
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
+     Generating key.  This may take a few moments...
 
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
+     Is this a CA certificate [y/N]?
+     y
+     Enter the path length constraint, enter to skip [<0 for unlimited path]: >
+     Is this a critical extension [y/N]?
+     N
+   ```
 
-   Continue typing until the progress meter is full:
+   ```bash
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -c "Example CA" -n "$PUBLIC_IP" \
+     -s "O=Example,CN=$PUBLIC_IP" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t ",," \
+     --keyUsage digitalSignature,keyEncipherment \
+     --extKeyUsage serverAuth \
+     --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
 
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
-
-   Is this a CA certificate [y/N]?
-   y
-   Enter the path length constraint, enter to skip [<0 for unlimited path]: >
-   Is this a critical extension [y/N]?
-   N
-
-   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
-      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
-
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
-
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
-
-   Continue typing until the progress meter is full:
-
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
+     Generating key.  This may take a few moments...
    ```
 
 1. 生成客户端证书，并且导出 `.p12` 文件。该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
-   $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
-      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -c "Example CA" -n "vpnclient" \
+     -s "O=Example,CN=vpnclient" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t ",," \
+     --keyUsage digitalSignature,keyEncipherment \
+     --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
 
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
-
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
-
-   Continue typing until the progress meter is full:
-
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
-
-   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
-
-   Enter password for PKCS12 file:
-   Re-enter password:
-   pk12util: PKCS12 EXPORT SUCCESSFUL
+     Generating key.  This may take a few moments...
    ```
 
-   重复这个步骤来为更多的客户端生成证书，但必须把所有的 `vpnclient` 换成 `vpnclient2`，等等。
+   ```bash
+   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
-   **注：** 如果你需要同时连接多个客户端，则必须为每一个客户端生成唯一的证书。
+     Enter password for PKCS12 file:
+     Re-enter password:
+     pk12util: PKCS12 EXPORT SUCCESSFUL
+   ```
+
+   你可以重复本步骤来为更多的客户端生成证书。将所有的 `vpnclient` 换成 `vpnclient2`，等等。
+
+   **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
 
 1. 证书数据库现在应该包含以下内容：
 
    ```bash
    $ certutil -L -d sql:/etc/ipsec.d
 
-   Certificate Nickname                               Trust Attributes
-                                                      SSL,S/MIME,JAR/XPI
+     Certificate Nickname                               Trust Attributes
+                                                        SSL,S/MIME,JAR/XPI
 
-   Example CA                                         CTu,u,u
-   ($PUBLIC_IP)                                       u,u,u
-   vpnclient                                          u,u,u
+     Example CA                                         CTu,u,u
+     ($PUBLIC_IP)                                       u,u,u
+     vpnclient                                          u,u,u
    ```
 
-   **注：** 如需显示证书，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除一个证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">这里</a>。
+   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除一个证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">这里</a>。
 
 1. 重启 IPsec 服务：
 
@@ -189,7 +169,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 文件 `vpnclient.p12` 应该被安全地传送到 VPN 客户端设备。下一步：
+1. 将文件 `vpnclient.p12` 安全地传送到 VPN 客户端设备。下一步：
 
    #### Windows 7, 8.x 和 10
 
@@ -201,10 +181,10 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   1. 启用新的 IKEv2 VPN 连接，并且开始使用 VPN！   
+   1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   1. （可选步骤） 如需启用更安全的加密方式，可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
+   1. （可选步骤） 如需启用更安全的加密方式，你可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
 
 1. 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 

@@ -4,7 +4,7 @@
 
 ---
 
-**IMPORTANT:** This guide is for **advanced users** only. Other users please use <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a>.
+**Important:** This guide is for **advanced users** only. Other users please use <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a>.
 
 ---
 
@@ -54,22 +54,13 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    EOF
    ```
 
-   We need to add a few more lines to that file. First check your Libreswan version:
+   We need to add a few more lines to that file. First check your Libreswan version, then run one of the following commands:
 
    ```bash
    $ ipsec --version
    ```
 
-   For Libreswan 3.23 and newer, run command:
-
-   ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
-     encapsulation=yes
-   EOF
-   ```
-
-   For Libreswan 3.19-3.22, run command:
+   For Libreswan 3.19-3.22:
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
@@ -79,7 +70,16 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    EOF
    ```
 
-   For Libreswan 3.18 and older, run command:
+   For Libreswan 3.23 and newer:
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
+   ```
+
+   For Libreswan 3.18 and older:
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
@@ -91,94 +91,74 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. Generate Certificate Authority (CA) and VPN server certificates:
 
-   **Note:** Specify the certificate validity period (in months) using "-v". e.g. "-v 36". In addition, if you specified the server's DNS name (instead of its IP address) in step 1 above, replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` with `--extSAN "dns:$PUBLIC_IP"` in the command below.
+   **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 36". Also, if you used the server's DNS name instead of its IP address in step 1 above, replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` in the command below with `--extSAN "dns:$PUBLIC_IP"`.
 
    ```bash
-   $ certutil -S -x -n "Example CA" -s "O=Example,CN=Example CA" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t "CT,," -2
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -x -n "Example CA" \
+     -s "O=Example,CN=Example CA" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t "CT,," -2
 
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
+     Generating key.  This may take a few moments...
 
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
+     Is this a CA certificate [y/N]?
+     y
+     Enter the path length constraint, enter to skip [<0 for unlimited path]: >
+     Is this a critical extension [y/N]?
+     N
+   ```
 
-   Continue typing until the progress meter is full:
+   ```bash
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -c "Example CA" -n "$PUBLIC_IP" \
+     -s "O=Example,CN=$PUBLIC_IP" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t ",," \
+     --keyUsage digitalSignature,keyEncipherment \
+     --extKeyUsage serverAuth \
+     --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
 
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
-
-   Is this a CA certificate [y/N]?
-   y
-   Enter the path length constraint, enter to skip [<0 for unlimited path]: >
-   Is this a critical extension [y/N]?
-   N
-
-   $ certutil -S -c "Example CA" -n "$PUBLIC_IP" -s "O=Example,CN=$PUBLIC_IP" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
-      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
-
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
-
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
-
-   Continue typing until the progress meter is full:
-
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
+     Generating key.  This may take a few moments...
    ```
 
 1. Generate client certificate(s), and export the `.p12` file that contains the client certificate, private key, and CA certificate:
 
    ```bash
-   $ certutil -S -c "Example CA" -n "vpnclient" -s "O=Example,CN=vpnclient" -k rsa -g 4096 -v 36 -d sql:/etc/ipsec.d -t ",," \
-      --keyUsage digitalSignature,keyEncipherment --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
+   $ certutil -z <(head -c 1024 /dev/urandom) \
+     -S -c "Example CA" -n "vpnclient" \
+     -s "O=Example,CN=vpnclient" \
+     -k rsa -g 4096 -v 36 \
+     -d sql:/etc/ipsec.d -t ",," \
+     --keyUsage digitalSignature,keyEncipherment \
+     --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
 
-   A random seed must be generated that will be used in the
-   creation of your key.  One of the easiest ways to create a
-   random seed is to use the timing of keystrokes on a keyboard.
-
-   To begin, type keys on the keyboard until this progress meter
-   is full.  DO NOT USE THE AUTOREPEAT FUNCTION ON YOUR KEYBOARD!
-
-   Continue typing until the progress meter is full:
-
-   |************************************************************|
-
-   Finished.  Press enter to continue:
-
-   Generating key.  This may take a few moments...
-
-   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
-
-   Enter password for PKCS12 file:
-   Re-enter password:
-   pk12util: PKCS12 EXPORT SUCCESSFUL
+     Generating key.  This may take a few moments...
    ```
 
-   Repeat this step for additional VPN clients, but replace every `vpnclient` with `vpnclient2`, etc.
+   ```bash
+   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
 
-   **Note:** If you wish to connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+     Enter password for PKCS12 file:
+     Re-enter password:
+     pk12util: PKCS12 EXPORT SUCCESSFUL
+   ```
+
+   Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
+
+   **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
 
 1. The database should now contain:
 
    ```bash
    $ certutil -L -d sql:/etc/ipsec.d
 
-   Certificate Nickname                               Trust Attributes
-                                                      SSL,S/MIME,JAR/XPI
+     Certificate Nickname                               Trust Attributes
+                                                        SSL,S/MIME,JAR/XPI
 
-   Example CA                                         CTu,u,u
-   ($PUBLIC_IP)                                       u,u,u
-   vpnclient                                          u,u,u
+     Example CA                                         CTu,u,u
+     ($PUBLIC_IP)                                       u,u,u
+     vpnclient                                          u,u,u
    ```
 
    **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
@@ -198,10 +178,10 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
       Detailed instructions:   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   1. On the Windows computer, add a new IKEv2 VPN connection：   
+   1. On the Windows computer, add a new IKEv2 VPN connection:   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   1. Start the new IKEv2 VPN connection, and enjoy your VPN!   
+   1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
    1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
