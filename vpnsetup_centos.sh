@@ -188,6 +188,8 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
+# Note: DO NOT EDIT. To install a different Libreswan version,
+# run the upgrade scripts in this repo after install.
 SWAN_VER=3.22
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
