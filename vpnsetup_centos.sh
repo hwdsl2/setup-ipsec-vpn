@@ -170,9 +170,7 @@ case "$(uname -r)" in
       l2tp_file="$l2tp_dir.tar.gz"
       l2tp_url="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
       yum "$REPO2" "$REPO3" -y install libpcap-devel || exiterr2
-      if ! wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url"; then
-        exit 1
-      fi
+      wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url" || exit 1
       /bin/rm -rf "/opt/src/$l2tp_dir"
       tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
       cd "$l2tp_dir" && make -s 2>/dev/null && PREFIX=/usr make -s install
@@ -188,8 +186,6 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-# Note: DO NOT EDIT. To install a different Libreswan version,
-# run the upgrade scripts in this repo after install.
 SWAN_VER=3.22
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
@@ -200,10 +196,12 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
+[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
+sed -i '/docker-targets\.mk/d' Makefile
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 NPROCS="$(grep -c ^processor /proc/cpuinfo)"
 [ -z "$NPROCS" ] && NPROCS=1
@@ -277,6 +275,13 @@ conn xauth-psk
   cisco-unity=yes
   also=shared
 EOF
+
+case "$SWAN_VER" in
+  3.2[35])
+    sed -i "/modecfgdns/d" /etc/ipsec.conf
+    echo "  modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"" >> /etc/ipsec.conf
+    ;;
+esac
 
 if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
   PRIVATE_IP=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}')
