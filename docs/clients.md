@@ -18,9 +18,10 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 * [Troubleshooting](#troubleshooting)
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
+  * [Windows 10 version 1803](#windows-10-version-1803)
+  * [macOS VPN traffic](#macos-vpn-traffic)
   * [Android 6 and above](#android-6-and-above)
   * [Chromebook issues](#chromebook-issues)
-  * [Windows 10 upgrades](#windows-10-upgrades)
   * [Other errors](#other-errors)
   * [Additional steps](#additional-steps)
 
@@ -93,7 +94,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. In the **Machine Authentication** section, select the **Shared Secret** radio button and enter `Your VPN IPsec PSK`.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
-1. Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked.
+1. **(Important)** Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked.
 1. Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
@@ -210,23 +211,29 @@ To fix this error, please follow these steps:
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
+### Windows 10 version 1803
+
+If you are unable to connect using Windows 10 version 1803 or above, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Then find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
+
+Also, after upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix for [Windows Error 809](#windows-error-809) and reboot.
+
+### macOS VPN traffic
+
+OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
+
 ### Android 6 and above
 
-If you are unable to connect using Android 6 or above:
+If you are unable to connect using Android 6 or above, try these steps in order:
 
-1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists, enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Save the file and run `service ipsec restart`. If still unable to connect, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>)
+1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>). If still unable to connect, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Save the file and run `service ipsec restart`.
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Chromebook issues
 
-Chromebook users: If you are unable to connect, refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">this issue</a>. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
-
-### Windows 10 upgrades
-
-After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix for [Windows Error 809](#windows-error-809) and reboot. Refer to <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/376" target="_blank">this issue</a> for more information.
+Chromebook users: If you are unable to connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
 
 ### Other errors
 

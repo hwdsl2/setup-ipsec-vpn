@@ -18,9 +18,10 @@
 * [故障排除](#故障排除)
   * [Windows 错误 809](#windows-错误-809)
   * [Windows 错误 628](#windows-错误-628)
+  * [Windows 10 版本 1803](#windows-10-版本-1803)
+  * [macOS VPN 流量](#macos-vpn-流量)
   * [Android 6 及以上版本](#android-6-及以上版本)
   * [Chromebook 连接问题](#chromebook-连接问题)
-  * [Windows 10 升级](#windows-10-升级)
   * [其它错误](#其它错误)
   * [额外的步骤](#额外的步骤)
 
@@ -93,7 +94,7 @@
 1. 在 **机器鉴定** 部分，选择 **共享的密钥** 单选按钮，然后输入`你的 VPN IPsec PSK`。
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
-1. 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
+1. **（重要）** 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
 1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
 1. 单击 **好** 关闭高级设置，然后单击 **应用** 保存VPN连接信息。
 
@@ -210,23 +211,29 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
 
+### Windows 10 版本 1803
+
+如果你无法使用 Windows 10 版本 1803 或以上连接，尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 一行并在末尾加上 `,aes256-sha2_256` 字样。然后找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
+
+另外，在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
+
+### macOS VPN 流量
+
+OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [OS X](#os-x) 部分并完成这一步：单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。然后重新连接 VPN。
+
 ### Android 6 及以上版本
 
-如果你无法使用 Android 6 或以上版本连接：
+如果你无法使用 Android 6 或以上版本连接，按顺序尝试以下步骤：
 
-1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在，请启用它并重试连接。如果不存在，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 一行并在末尾加上 `,aes256-sha2_256` 字样。保存修改并运行 `service ipsec restart`。如果仍然无法连接，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。(<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
+1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（看下图），请启用它并重试连接。如果不存在，请尝试下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)。如果仍然无法连接，请尝试下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 一行并在末尾加上 `,aes256-sha2_256` 字样。保存修改并运行 `service ipsec restart`。
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Chromebook 连接问题
 
-Chromebook 用户： 如果你无法连接，请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/265" target="_blank">这个 Issue</a>。编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
-
-### Windows 10 升级
-
-在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。更多信息请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/376" target="_blank">这个 Issue</a>。
+Chromebook 用户： 如果你无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
 
 ### 其它错误
 
