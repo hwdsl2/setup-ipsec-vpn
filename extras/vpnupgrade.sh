@@ -47,11 +47,15 @@ if [ -z "$SWAN_VER" ]; then
   exiterr "Libreswan version 'SWAN_VER' not specified."
 fi
 
+swan_ver_is_supported=0
 case "$SWAN_VER" in
-  3.24|3.2[6-9])
-    exiterr "Libreswan version $SWAN_VER is not available."
+  3.19|3.2[01235])
+    swan_ver_is_supported=1
     ;;
 esac
+if [ "$swan_ver_is_supported" != "1" ]; then
+  exiterr "Libreswan version $SWAN_VER is not supported."
+fi
 
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
@@ -75,12 +79,23 @@ if printf '%s' "$ipsec_ver" | grep -qF "$SWAN_VER"; then
   esac
 fi
 
-is_downgrade_to_322=0
-if [ "$SWAN_VER" = "3.22" ]; then
-  if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
-    is_downgrade_to_322=1
-  fi
-fi
+is_upgrade_to_323_or_newer=0
+case "$SWAN_VER" in
+  3.2[35])
+    if ! printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
+      is_upgrade_to_323_or_newer=1
+    fi
+    ;;
+esac
+
+is_downgrade_to_322_or_older=0
+case "$SWAN_VER" in
+  3.19|3.2[012])
+    if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
+      is_downgrade_to_322_or_older=1
+    fi
+    ;;
+esac
 
 clear
 
@@ -95,34 +110,28 @@ Version to be installed: Libreswan $SWAN_VER
 
 EOF
 
-if [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ]; then
+case "$SWAN_VER" in
+  3.2[35])
 cat <<'EOF'
 WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
-         IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-         DO NOT upgrade to 3.23/3.25 if your use cases include the above.
+  IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
+  DO NOT upgrade to 3.23/3.25 if your use cases include the above.
 
 EOF
-fi
+    ;;
+esac
 
 cat <<'EOF'
 NOTE: Libreswan versions 3.19 and newer require some configuration changes.
-      This script will make the following changes to your /etc/ipsec.conf:
+  This script will make the following updates to your /etc/ipsec.conf:
 
-      Replace this line:
-          auth=esp
-      with the following:
-          phase2=esp
+  1. Replace "auth=esp" with "phase2=esp"
+  2. Replace "forceencaps=yes" with "encapsulation=yes"
+  3. Consolidate VPN ciphers for "ike=" and "phase2alg=",
+     re-add "MODP1024" to the list of allowed "ike=" ciphers,
+     which was removed from the defaults in Libreswan 3.19.
 
-      Replace this line:
-          forceencaps=yes
-      with the following:
-          encapsulation=yes
-
-      Consolidate VPN ciphers for "ike=" and "phase2alg=".
-      Re-add "MODP1024" to the list of allowed "ike=" ciphers,
-      which was removed from the defaults in Libreswan 3.19.
-
-      Your other VPN configuration files will not be modified.
+  Your other VPN configuration files will not be modified.
 
 EOF
 
@@ -186,7 +195,7 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
 fi
 
-# Update ipsec.conf for Libreswan 3.19 and newer
+# Update ipsec.conf
 IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
 PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
 if uname -m | grep -qi '^arm'; then
@@ -206,28 +215,36 @@ echo
 echo "Libreswan $SWAN_VER was installed successfully! "
 echo
 
-case "$SWAN_VER" in
-  3.2[3-9])
+if [ "$is_upgrade_to_323_or_newer" = "1" ]; then
 cat <<'EOF'
-NOTE: Users upgrading to Libreswan 3.23 or newer should edit "/etc/ipsec.conf" and replace these two lines:
-          modecfgdns1=DNS_SERVER_1
-          modecfgdns2=DNS_SERVER_2
-      with a single line like this:
-          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
-      Then run "service ipsec restart".
+IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit
+  /etc/ipsec.conf and replace these two lines:
+
+    modecfgdns1=DNS_SERVER_1
+    modecfgdns2=DNS_SERVER_2
+
+  with a single line like this:
+
+    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+  Then run "service ipsec restart".
 
 EOF
-    ;;
-esac
+fi
 
-if [ "$is_downgrade_to_322" = "1" ]; then
+if [ "$is_downgrade_to_322_or_older" = "1" ]; then
 cat <<'EOF'
-NOTE: Users downgrading to Libreswan 3.22 should edit "/etc/ipsec.conf" and replace this line:
-          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
-      with two lines like this:
-          modecfgdns1=DNS_SERVER_1
-          modecfgdns2=DNS_SERVER_2
-      Then run "service ipsec restart".
+IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit
+  /etc/ipsec.conf and replace this line:
+
+    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+  with two lines like this:
+
+    modecfgdns1=DNS_SERVER_1
+    modecfgdns2=DNS_SERVER_2
+
+  Then run "service ipsec restart".
 
 EOF
 fi
