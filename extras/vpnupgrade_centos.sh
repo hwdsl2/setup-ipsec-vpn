@@ -49,6 +49,7 @@ if [ "$swan_ver_is_supported" != "1" ]; then
 fi
 
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
+ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
@@ -96,8 +97,8 @@ Additional packages required for compilation will also be installed.
 
 It is intended for upgrading servers to a newer Libreswan version.
 
-Current version: $ipsec_ver
-Version to be installed: Libreswan $SWAN_VER
+Current version:    $ipsec_ver_short
+Version to install: Libreswan $SWAN_VER
 
 EOF
 
@@ -105,8 +106,8 @@ case "$SWAN_VER" in
   3.2[35])
 cat <<'EOF'
 WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
-  IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-  DO NOT upgrade to 3.23/3.25 if your use cases include the above.
+    IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
+    DO NOT upgrade to 3.23/3.25 if your use cases include the above.
 
 EOF
     ;;
@@ -114,15 +115,15 @@ esac
 
 cat <<'EOF'
 NOTE: Libreswan versions 3.19 and newer require some configuration changes.
-  This script will make the following updates to your /etc/ipsec.conf:
+    This script will make the following updates to your /etc/ipsec.conf:
 
-  1. Replace "auth=esp" with "phase2=esp"
-  2. Replace "forceencaps=yes" with "encapsulation=yes"
-  3. Consolidate VPN ciphers for "ike=" and "phase2alg=",
-     re-add "MODP1024" to the list of allowed "ike=" ciphers,
-     which was removed from the defaults in Libreswan 3.19.
+    1. Replace "auth=esp" with "phase2=esp"
+    2. Replace "forceencaps=yes" with "encapsulation=yes"
+    3. Consolidate VPN ciphers for "ike=" and "phase2alg=",
+       re-add "MODP1024" to the list of allowed "ike=" ciphers,
+       which was removed from the defaults in Libreswan 3.19.
 
-  Your other VPN configuration files will not be modified.
+    Your other VPN configuration files will not be modified.
 
 EOF
 
@@ -212,40 +213,47 @@ sed -i".old-$(date +%F-%T)" \
 mkdir -p /run/pluto
 service ipsec restart
 
-echo
-echo "Libreswan $SWAN_VER was installed successfully! "
-echo
+cat <<EOF
+
+
+===================================================
+
+Libreswan $SWAN_VER has been successfully installed!
+
+===================================================
+
+EOF
 
 if [ "$is_upgrade_to_323_or_newer" = "1" ]; then
 cat <<'EOF'
-IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit
-  /etc/ipsec.conf and replace these two lines:
+IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
+    and replace these two lines:
 
-    modecfgdns1=DNS_SERVER_1
-    modecfgdns2=DNS_SERVER_2
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
 
-  with a single line like this:
+    with a single line like this:
 
-    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
 
-  Then run "service ipsec restart".
+    Then run "service ipsec restart".
 
 EOF
 fi
 
 if [ "$is_downgrade_to_322_or_older" = "1" ]; then
 cat <<'EOF'
-IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit
-  /etc/ipsec.conf and replace this line:
+IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit /etc/ipsec.conf
+    and replace this line:
 
-    modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
 
-  with two lines like this:
+    with two lines like this:
 
-    modecfgdns1=DNS_SERVER_1
-    modecfgdns2=DNS_SERVER_2
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
 
-  Then run "service ipsec restart".
+    Then run "service ipsec restart".
 
 EOF
 fi
