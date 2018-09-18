@@ -10,7 +10,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Check https://libreswan.org for the latest version
+# Specify which Libreswan version to install. See: https://libreswan.org
 SWAN_VER=3.22
 
 ### DO NOT edit below this line ###
@@ -43,19 +43,14 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-if [ -z "$SWAN_VER" ]; then
-  exiterr "Libreswan version 'SWAN_VER' not specified."
-fi
-
-swan_ver_is_supported=0
 case "$SWAN_VER" in
   3.19|3.2[01235])
-    swan_ver_is_supported=1
+    /bin/true
+    ;;
+  *)
+    exiterr "Libreswan version '$SWAN_VER' is not supported."
     ;;
 esac
-if [ "$swan_ver_is_supported" != "1" ]; then
-  exiterr "Libreswan version $SWAN_VER is not supported."
-fi
 
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
 ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"

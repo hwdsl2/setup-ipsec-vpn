@@ -36,6 +36,8 @@ YOUR_PASSWORD=''
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 SYS_DT="$(date +%F-%T)"
 
+SWAN_VER=3.22
+
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { exiterr "'apt-get install' failed."; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
@@ -69,7 +71,16 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-net_iface=${VPN_NET_IFACE:-'eth0'}
+case "$SWAN_VER" in
+  3.19|3.2[01235])
+    /bin/true
+    ;;
+  *)
+    exiterr "Libreswan version '$SWAN_VER' is not supported."
+    ;;
+esac
+
+NET_IFACE=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
@@ -82,12 +93,12 @@ if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
         ;;
     esac
   fi
-  net_iface="$def_iface"
+  NET_IFACE="$def_iface"
 fi
 
-net_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
-if [ -z "$net_state" ] || [ "$net_state" = "down" ] || [ "$net_iface" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n" "$net_iface" >&2
+net_state=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
+if [ -z "$net_state" ] || [ "$net_state" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
+  printf "Error: Network interface '%s' is not available.\n" "$NET_IFACE" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
 Could not detect the default network interface. Re-run this script with:
@@ -196,7 +207,6 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.22
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -386,8 +396,8 @@ net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.$net_iface.send_redirects = 0
-net.ipv4.conf.$net_iface.rp_filter = 0
+net.ipv4.conf.$NET_IFACE.send_redirects = 0
+net.ipv4.conf.$NET_IFACE.rp_filter = 0
 
 net.core.wmem_max = 12582912
 net.core.rmem_max = 12582912
@@ -402,8 +412,8 @@ bigecho "Updating IPTables rules..."
 ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$net_iface" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$net_iface" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
+   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
   ipt_flag=1
 fi
 
@@ -418,17 +428,17 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
   iptables -I INPUT 6 -p udp --dport 1701 -j DROP
   iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I FORWARD 2 -i "$net_iface" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 3 -i ppp+ -o "$net_iface" -j ACCEPT
+  iptables -I FORWARD 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
-  iptables -I FORWARD 5 -i "$net_iface" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$net_iface" -j ACCEPT
+  iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
   # Uncomment if you wish to disallow traffic between VPN clients themselves
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
   # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$net_iface" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$net_iface" -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 
