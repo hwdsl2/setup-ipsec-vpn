@@ -48,6 +48,25 @@ EOF
     ;;
 esac
 
+dns_state=0
+case "$SWAN_VER" in
+  3.2[356])
+    DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+    DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+    [ -n "$DNS_SRV1" ] && dns_state=2
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
+    [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" != "1" ] && dns_state=0
+    ;;
+  3.19|3.2[012])
+    DNS_SRVS=$(grep "modecfgdns=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    DNS_SRV1=$(printf '%s' "$DNS_SRVS" | cut -d ',' -f 1)
+    DNS_SRV2=$(printf '%s' "$DNS_SRVS" | cut -d ',' -f 2 | sed 's/^ *//')
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" != "$DNS_SRV2" ] && dns_state=3
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" = "$DNS_SRV2" ]  && dns_state=4
+    [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" != "1" ] && dns_state=0
+    ;;
+esac
+
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
 ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
@@ -70,24 +89,6 @@ if printf '%s' "$ipsec_ver" | grep -qF "$SWAN_VER"; then
       ;;
   esac
 fi
-
-is_upgrade_to_323_or_newer=0
-case "$SWAN_VER" in
-  3.2[356])
-    if ! printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25" -e "3.26"; then
-      is_upgrade_to_323_or_newer=1
-    fi
-    ;;
-esac
-
-is_downgrade_to_322_or_older=0
-case "$SWAN_VER" in
-  3.19|3.2[012])
-    if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25" -e "3.26"; then
-      is_downgrade_to_322_or_older=1
-    fi
-    ;;
-esac
 
 clear
 
@@ -121,7 +122,22 @@ NOTE: Libreswan versions 3.19 and newer require some configuration changes.
     2. Replace "forceencaps=yes" with "encapsulation=yes"
     3. Consolidate VPN ciphers for "ike=" and "phase2alg=",
        re-add "MODP1024" to the list of allowed "ike=" ciphers,
-       which was removed from the defaults in Libreswan 3.19.
+       which was removed from the defaults in Libreswan 3.19
+EOF
+
+if [ "$dns_state" = "1" ] || [ "$dns_state" = "2" ]; then
+cat <<'EOF'
+    4. Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
+EOF
+fi
+
+if [ "$dns_state" = "3" ] || [ "$dns_state" = "4" ]; then
+cat <<'EOF'
+    4. Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
+EOF
+fi
+
+cat <<'EOF'
 
     Your other VPN configuration files will not be modified.
 
@@ -145,9 +161,6 @@ esac
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
-# Install Wget
-yum -y install wget || exiterr2
-
 # Add the EPEL repository
 epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
 yum -y install epel-release || yum -y install "$epel_url" || exiterr2
@@ -155,7 +168,7 @@ yum -y install epel-release || yum -y install "$epel_url" || exiterr2
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel \
-  flex bison gcc make || exiterr2
+  flex bison gcc make wget sed || exiterr2
 
 REPO1='--enablerepo=*server-optional*'
 REPO2='--enablerepo=*releases-optional*'
@@ -206,11 +219,24 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 # Update ipsec.conf
 IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
 PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
+
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
     -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/" \
     -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/" /etc/ipsec.conf
+
+if [ "$dns_state" = "1" ]; then
+  sed -i -e "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"/" \
+      -e "/modecfgdns2/d" /etc/ipsec.conf
+elif [ "$dns_state" = "2" ]; then
+  sed -i "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1\"/" /etc/ipsec.conf
+elif [ "$dns_state" = "3" ]; then
+  sed -i "/modecfgdns=/a \  modecfgdns2=$DNS_SRV2" /etc/ipsec.conf
+  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+elif [ "$dns_state" = "4" ]; then
+  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+fi
 
 # Restart IPsec service
 mkdir -p /run/pluto
@@ -226,40 +252,6 @@ Libreswan $SWAN_VER has been successfully installed!
 ===================================================
 
 EOF
-
-if [ "$is_upgrade_to_323_or_newer" = "1" ]; then
-cat <<'EOF'
-IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit
-    /etc/ipsec.conf and replace these two lines:
-
-      modecfgdns1=8.8.8.8
-      modecfgdns2=8.8.4.4
-
-    with a single line like this:
-
-      modecfgdns="8.8.8.8, 8.8.4.4"
-
-    Then run "sudo service ipsec restart".
-
-EOF
-fi
-
-if [ "$is_downgrade_to_322_or_older" = "1" ]; then
-cat <<'EOF'
-IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit
-    /etc/ipsec.conf and replace this line:
-
-      modecfgdns="8.8.8.8, 8.8.4.4"
-
-    with two lines like this:
-
-      modecfgdns1=8.8.8.8
-      modecfgdns2=8.8.4.4
-
-    Then run "sudo service ipsec restart".
-
-EOF
-fi
 
 }
 
