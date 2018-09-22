@@ -60,21 +60,21 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ ipsec --version
    ```
 
+   如果是 Libreswan 3.23 或更新版本：
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
+   ```
+
    如果是 Libreswan 3.19-3.22：
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
-     encapsulation=yes
-   EOF
-   ```
-
-   如果是 Libreswan 3.23 或更新版本：
-
-   ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
    EOF
    ```

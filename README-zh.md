@@ -168,8 +168,6 @@ wget https://git.io/vpnupgrade -O vpnupgrade.sh
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 ```
 
-:warning: VPN 脚本默认安装 Libreswan 3.22，因为新版本 3.23 和 3.25 存在问题，从而不能同时连接在同一个 NAT （比如家用路由器）后面的多个 IPsec/XAuth VPN 客户端。
-
 ## 问题和反馈
 
 - 有问题需要提问？请先搜索已有的留言，在 <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">这个 Gist</a> 以及 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">我的博客</a>。

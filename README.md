@@ -168,8 +168,6 @@ wget https://git.io/vpnupgrade -O vpnupgrade.sh
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
 ```
 
-:warning: The VPN scripts install Libreswan 3.22 by default, because newer versions 3.23 and 3.25 have issues with connecting multiple IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-
 ## Bugs & Questions
 
 - Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.

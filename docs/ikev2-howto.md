@@ -60,21 +60,21 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ ipsec --version
    ```
 
+   For Libreswan 3.23 and newer:
+
+   ```bash
+   $ cat >> /etc/ipsec.conf <<EOF
+     modecfgdns="8.8.8.8, 8.8.4.4"
+     encapsulation=yes
+   EOF
+   ```
+
    For Libreswan 3.19-3.22:
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
-     encapsulation=yes
-   EOF
-   ```
-
-   For Libreswan 3.23 and newer:
-
-   ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
    EOF
    ```
