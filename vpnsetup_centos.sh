@@ -36,8 +36,6 @@ YOUR_PASSWORD=''
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 SYS_DT="$(date +%F-%T)"
 
-SWAN_VER=3.22
-
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { exiterr "'yum install' failed."; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
@@ -61,15 +59,6 @@ fi
 if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
-
-case "$SWAN_VER" in
-  3.19|3.2[01235])
-    /bin/true
-    ;;
-  *)
-    exiterr "Libreswan version '$SWAN_VER' is not supported."
-    ;;
-esac
 
 NET_IFACE=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
@@ -197,6 +186,7 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
+SWAN_VER=3.26
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -206,11 +196,12 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
-sed -i '/docker-targets\.mk/d' Makefile
+sed -i 's/-lfreebl //' mk/config.mk
+sed -i '/blapi\.h/d' programs/pluto/keys.c
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_DH31 = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 NPROCS="$(grep -c ^processor /proc/cpuinfo)"
@@ -272,8 +263,7 @@ conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns1=$DNS_SRV1
-  modecfgdns2=$DNS_SRV2
+  modecfgdns="$DNS_SRV1, $DNS_SRV2"
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -285,13 +275,6 @@ conn xauth-psk
   cisco-unity=yes
   also=shared
 EOF
-
-case "$SWAN_VER" in
-  3.2[35])
-    sed -i "/modecfgdns/d" /etc/ipsec.conf
-    echo "  modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"" >> /etc/ipsec.conf
-    ;;
-esac
 
 if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
   PRIVATE_IP=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}')

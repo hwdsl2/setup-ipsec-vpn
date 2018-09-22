@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.22
+SWAN_VER=3.26
 
 ### DO NOT edit below this line ###
 
@@ -44,11 +44,16 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[01235])
+  3.19|3.2[012356])
     /bin/true
     ;;
   *)
-    exiterr "Libreswan version '$SWAN_VER' is not supported."
+cat 1>&2 <<EOF
+Error: Libreswan version '$SWAN_VER' is not supported.
+  This script can install one of these Libreswan versions:
+  3.19-3.23, 3.25 and 3.26
+EOF
+    exit 1
     ;;
 esac
 
@@ -77,8 +82,8 @@ fi
 
 is_upgrade_to_323_or_newer=0
 case "$SWAN_VER" in
-  3.2[35])
-    if ! printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
+  3.2[356])
+    if ! printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25" -e "3.26"; then
       is_upgrade_to_323_or_newer=1
     fi
     ;;
@@ -87,7 +92,7 @@ esac
 is_downgrade_to_322_or_older=0
 case "$SWAN_VER" in
   3.19|3.2[012])
-    if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
+    if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25" -e "3.26"; then
       is_downgrade_to_322_or_older=1
     fi
     ;;
@@ -171,10 +176,13 @@ fi
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
-sed -i '/docker-targets\.mk/d' Makefile
+[ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
+[ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
+[ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_DH31 = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
@@ -220,34 +228,34 @@ EOF
 
 if [ "$is_upgrade_to_323_or_newer" = "1" ]; then
 cat <<'EOF'
-IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
-    and replace these two lines:
+IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit
+    /etc/ipsec.conf and replace these two lines:
 
-      modecfgdns1=DNS_SERVER_1
-      modecfgdns2=DNS_SERVER_2
+      modecfgdns1=8.8.8.8
+      modecfgdns2=8.8.4.4
 
     with a single line like this:
 
-      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+      modecfgdns="8.8.8.8, 8.8.4.4"
 
-    Then run "service ipsec restart".
+    Then run "sudo service ipsec restart".
 
 EOF
 fi
 
 if [ "$is_downgrade_to_322_or_older" = "1" ]; then
 cat <<'EOF'
-IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit /etc/ipsec.conf
-    and replace this line:
+IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit
+    /etc/ipsec.conf and replace this line:
 
-      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+      modecfgdns="8.8.8.8, 8.8.4.4"
 
     with two lines like this:
 
-      modecfgdns1=DNS_SERVER_1
-      modecfgdns2=DNS_SERVER_2
+      modecfgdns1=8.8.8.8
+      modecfgdns2=8.8.4.4
 
-    Then run "service ipsec restart".
+    Then run "sudo service ipsec restart".
 
 EOF
 fi
