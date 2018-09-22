@@ -1,4 +1,4 @@
-# 如何配置 IKEv2 VPN: Windows 7 和更新版本
+# 如何配置 IKEv2 VPN: Windows 和 Android
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -10,9 +10,14 @@
 
 Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。另外，IKEv2 支持同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器。
 
-Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
-在继续之前，请确保你已经成功 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>。
+- Windows 7, 8.x 和 10
+- strongSwan Android VPN 客户端
+
+下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+
+在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且已经将 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级到最新版本</a>。
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
@@ -186,11 +191,22 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    1. （可选步骤） 如需启用更安全的加密方式，你可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
 
+   #### Android 4.x 和更新版本
+
+   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a>。
+   1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
+   1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP`。
+   1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
+   1. 单击 **Select user certificate**，然后单击 **Install certificate**。
+   1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。
+   1. 保存新的 VPN 连接，然后单击它以开始连接。
+
 1. 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 已知问题
 
-Windows 自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试 <a href="clients-zh.md#故障排除" target="_blank">修改注册表</a>，或者换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
 ## 参考链接
 
@@ -198,3 +214,4 @@ Windows 自带的 VPN 客户端不支持 IKEv2 fragmentation。在有些网络�
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients
+* https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient

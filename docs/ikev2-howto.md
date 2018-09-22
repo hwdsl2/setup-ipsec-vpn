@@ -1,4 +1,4 @@
-# How-To: IKEv2 VPN for Windows 7 and above
+# How-To: IKEv2 VPN for Windows and Android
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -10,9 +10,14 @@
 
 Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability. In addition, IKEv2 supports connecting multiple devices simultaneously from behind the same NAT (e.g. home router) to the VPN server.
 
-Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
+Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
-Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>.
+- Windows 7, 8.x and 10
+- strongSwan Android VPN client
+
+The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
+
+Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>, and upgraded Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">to the latest version</a>.
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
@@ -186,11 +191,22 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
 
+   #### Android 4.x and newer
+
+   1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+   1. Launch the VPN client and tap **Add VPN Profile**.
+   1. Enter `Your VPN Server IP` in the **Server** field.
+   1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
+   1. Tap **Select user certificate**, then tap **Install certificate**.
+   1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.
+   1. Save the new VPN connection, then tap to connect.
+
 1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ## Known Issues
 
-The built-in VPN client in Windows does not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may try <a href="clients.md#troubleshooting" target="_blank">this registry fix</a>, or connect using <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode instead.
+1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
+1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
 
 ## References
 
@@ -198,3 +214,4 @@ The built-in VPN client in Windows does not support IKEv2 fragmentation. On some
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients
+* https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
