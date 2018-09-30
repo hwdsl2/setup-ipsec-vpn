@@ -13,7 +13,7 @@ Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
 - Windows 7, 8.x 和 10
-- strongSwan Android VPN 客户端
+- Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 
 下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
@@ -29,7 +29,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    **注：** 另外，在这里你也可以指定 VPN 服务器的域名。例如： `PUBLIC_IP=myvpn.example.com`。
 
-1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接:
+1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接：
 
    ```bash
    $ cat >> /etc/ipsec.conf <<EOF
@@ -189,11 +189,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   1. （可选步骤） 如需启用更安全的加密方式，你可以添加 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这个注册表键</a> 并重启。
+   1. （可选步骤） 如需启用更强的加密算法，你可以添加注册表键 `NegotiateDH2048_AES256` 并重启。更多信息请看<a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
    #### Android 4.x 和更新版本
 
-   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a>。
+   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
    1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
    1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP`。
    1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。

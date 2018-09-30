@@ -13,7 +13,7 @@ Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agil
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
 - Windows 7, 8.x and 10
-- strongSwan Android VPN client
+- Android 4.x and newer (using the strongSwan VPN client)
 
 The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
@@ -189,7 +189,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   1. (Optional) You may enable stronger ciphers by adding <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">this registry key</a> and reboot.
+   1. (Optional) You may enable stronger ciphers by adding the registry key `NegotiateDH2048_AES256` and reboot. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
    #### Android 4.x and newer
 

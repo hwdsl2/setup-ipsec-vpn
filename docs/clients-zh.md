@@ -2,9 +2,9 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-*注: 你也可以使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。*
+*注： 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。*
 
-在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>之后，你可以按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
+在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
 ---
 * 平台名称
@@ -26,6 +26,8 @@
   * [额外的步骤](#额外的步骤)
 
 ## Windows
+
+**注：** 你也可以配置并且使用更新的 [IKEv2 模式](ikev2-howto-zh.md) 连接。
 
 ### Windows 10 and 8.x
 
@@ -81,6 +83,8 @@
 
 ## OS X
 
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
 1. 从 **接口** 下拉菜单选择 **VPN**。
@@ -102,6 +106,8 @@
 
 ## Android
 
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
+
 1. 启动 **设置** 应用程序。
 1. 在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
@@ -122,6 +128,8 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 ## iOS
+
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
