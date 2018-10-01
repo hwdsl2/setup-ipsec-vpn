@@ -55,7 +55,7 @@ case "$SWAN_VER" in
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
     [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
-    [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" != "1" ] && dns_state=0
+    [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=5
     ;;
   3.19|3.2[012])
     DNS_SRVS=$(grep "modecfgdns=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
@@ -63,7 +63,7 @@ case "$SWAN_VER" in
     DNS_SRV2=$(printf '%s' "$DNS_SRVS" | cut -d ',' -f 2 | sed 's/^ *//')
     [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" != "$DNS_SRV2" ] && dns_state=3
     [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" = "$DNS_SRV2" ]  && dns_state=4
-    [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" != "1" ] && dns_state=0
+    [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" -gt "1" ] && dns_state=6
     ;;
 esac
 
@@ -221,10 +221,10 @@ IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;
 PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
 
 sed -i".old-$(date +%F-%T)" \
-    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
-    -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
-    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/" \
-    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/" /etc/ipsec.conf
+    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
+    -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/g" \
+    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/g" \
+    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/g" /etc/ipsec.conf
 
 if [ "$dns_state" = "1" ]; then
   sed -i -e "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"/" \
@@ -252,6 +252,38 @@ Libreswan $SWAN_VER has been successfully installed!
 ===================================================
 
 EOF
+
+if [ "$dns_state" = "5" ]; then
+cat <<'EOF'
+IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
+    and replace all occurrences of these two lines:
+
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
+
+    with a single line like this:
+
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+    Then run "sudo service ipsec restart".
+
+EOF
+elif [ "$dns_state" = "6" ]; then
+cat <<'EOF'
+IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit /etc/ipsec.conf
+    and replace all occurrences of this line:
+
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+    with two lines like this:
+
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
+
+    Then run "sudo service ipsec restart".
+
+EOF
+fi
 
 }
 
