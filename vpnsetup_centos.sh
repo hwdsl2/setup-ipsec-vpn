@@ -186,7 +186,7 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.26
+SWAN_VER=3.27
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -196,8 +196,6 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-sed -i 's/-lfreebl //' mk/config.mk
-sed -i '/blapi\.h/d' programs/pluto/keys.c
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -275,11 +273,6 @@ conn xauth-psk
   cisco-unity=yes
   also=shared
 EOF
-
-if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
-  PRIVATE_IP=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}')
-  check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
-fi
 
 # Specify IPsec PSK
 conf_bk "/etc/ipsec.secrets"

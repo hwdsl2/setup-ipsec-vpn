@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.26
+SWAN_VER=3.27
 
 ### DO NOT edit below this line ###
 
@@ -35,14 +35,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[012356])
+  3.19|3.2[0123567])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
-  This script can install one of these Libreswan versions:
-  3.19-3.23, 3.25 and 3.26
+  This script can install one of the following versions:
+  3.19-3.23, 3.25-3.26 and 3.27
 EOF
     exit 1
     ;;
@@ -50,7 +50,7 @@ esac
 
 dns_state=0
 case "$SWAN_VER" in
-  3.2[356])
+  3.2[3567])
     DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
@@ -93,7 +93,7 @@ fi
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $SWAN_VER on your server.
+Welcome! This script will build and install Libreswan on your server.
 Additional packages required for compilation will also be installed.
 
 It is intended for upgrading servers to a newer Libreswan version.
