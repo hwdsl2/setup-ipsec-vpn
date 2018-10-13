@@ -129,7 +129,7 @@ VPN_PASSWORD='你的VPN密码' sh vpnsetup.sh
 
 <a href="docs/clients-xauth-zh.md" target="_blank">**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**</a>
 
-<a href="docs/ikev2-howto-zh.md" target="_blank">**如何配置 IKEv2 VPN: Windows 和 Android**</a>
+<a href="docs/ikev2-howto-zh.md" target="_blank">**如何配置 IKEv2 VPN: Windows, Android 和 iOS**</a>
 
 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 

@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-*注： 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。*
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
@@ -129,7 +129,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 
 ## iOS
 
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -140,7 +140,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
 1. 在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 启用 **发送所有流量** 选项。
-1. 单击右上角的 **存储**。
+1. 单击右上角的 **完成**。
 1. 启用 **VPN** 连接。
 
 VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。

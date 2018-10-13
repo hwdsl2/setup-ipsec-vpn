@@ -1,4 +1,4 @@
-# How-To: IKEv2 VPN for Windows and Android
+# How-To: IKEv2 VPN for Windows, Android and iOS
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -14,6 +14,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 - Windows 7, 8.x and 10
 - Android 4.x and newer (using the strongSwan VPN client)
+- iOS (iPhone/iPad)
 
 The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
@@ -43,7 +44,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      leftrsasigkey=%cert
      right=%any
      rightid=%fromcert
-     rightaddresspool=192.168.43.10-192.168.43.250
+     rightaddresspool=192.168.43.150-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
      narrowing=yes
@@ -104,14 +105,16 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      -s "O=Example,CN=Example CA" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t "CT,," -2
+   ```
 
-     Generating key.  This may take a few moments...
+   ```
+   Generating key.  This may take a few moments...
 
-     Is this a CA certificate [y/N]?
-     y
-     Enter the path length constraint, enter to skip [<0 for unlimited path]: >
-     Is this a critical extension [y/N]?
-     N
+   Is this a CA certificate [y/N]?
+   y
+   Enter the path length constraint, enter to skip [<0 for unlimited path]: >
+   Is this a critical extension [y/N]?
+   N
    ```
 
    ```bash
@@ -123,11 +126,13 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth \
      --extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"
-
-     Generating key.  This may take a few moments...
    ```
 
-1. Generate client certificate(s), and export the `.p12` file that contains the client certificate, private key, and CA certificate:
+   ```
+   Generating key.  This may take a few moments...
+   ```
+
+1. Generate client certificate(s), export the CA certificate and the `.p12` file that contains the client certificate, private key, and CA certificate:
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -137,19 +142,29 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
+   ```
 
-     Generating key.  This may take a few moments...
+   ```
+   Generating key.  This may take a few moments...
    ```
 
    ```bash
-   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
-
-     Enter password for PKCS12 file:
-     Re-enter password:
-     pk12util: PKCS12 EXPORT SUCCESSFUL
+   $ certutil -L -d sql:/etc/ipsec.d -n "Example CA" -a -o vpnca.cer
    ```
 
-   Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
+   **Note:** This `vpnca.cer` file is only required for iOS clients.
+
+   ```bash
+   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
+   ```
+
+   ```
+   Enter password for PKCS12 file:
+   Re-enter password:
+   pk12util: PKCS12 EXPORT SUCCESSFUL
+   ```
+
+   Enter a secure password to protect the exported `.p12` file. Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
 
    **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
 
@@ -157,18 +172,20 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ certutil -L -d sql:/etc/ipsec.d
+   ```
 
-     Certificate Nickname                               Trust Attributes
-                                                        SSL,S/MIME,JAR/XPI
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
 
-     Example CA                                         CTu,u,u
-     ($PUBLIC_IP)                                       u,u,u
-     vpnclient                                          u,u,u
+   Example CA                                         CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient                                          u,u,u
    ```
 
    **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
 
-1. Restart IPsec service:
+1. **Restart IPsec service**:
 
    ```bash
    $ service ipsec restart
@@ -195,11 +212,28 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
    1. Launch the VPN client and tap **Add VPN Profile**.
-   1. Enter `Your VPN Server IP` in the **Server** field.
+   1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
    1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
    1. Tap **Select user certificate**, then tap **Install certificate**.
    1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.
    1. Save the new VPN connection, then tap to connect.
+
+   #### iOS (iPhone/iPad)
+
+   First, send both `vpnca.cer` and `vpnclient.p12` (exported from step 4 above) to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `Example CA` are listed under Settings -> General -> Profiles.
+
+   1. Go to Settings -> General -> VPN.
+   1. Tap **Add VPN Configuration...**.
+   1. Tap **Type**. Select **IKEv2** and go back.
+   1. Tap **Description** and enter anything you like.
+   1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
+   1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
+   1. Leave the **Local ID** field blank.
+   1. Tap **User Authentication**. Select **None** and go back.
+   1. Make sure the **Use Certificate** switch is ON.
+   1. Tap **Certificate**. Select **vpnclient** and go back.
+   1. Tap **Done**.
+   1. Slide the **VPN** switch ON.
 
 1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
@@ -207,6 +241,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
+1. The `.p12` file cannot have an empty password when importing into an iOS device. To resolve this issue, follow instructions in step 4 to re-export the file with a secure password.
 
 ## References
 
