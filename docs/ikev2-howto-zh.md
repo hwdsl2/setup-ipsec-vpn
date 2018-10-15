@@ -44,7 +44,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
      leftrsasigkey=%cert
      right=%any
      rightid=%fromcert
-     rightaddresspool=192.168.43.150-192.168.43.250
+     rightaddresspool=192.168.43.10-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
      narrowing=yes
@@ -101,8 +101,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -x -n "Example CA" \
-     -s "O=Example,CN=Example CA" \
+     -S -x -n "IKEv2 VPN CA" \
+     -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t "CT,," -2
    ```
@@ -119,8 +119,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -c "Example CA" -n "$PUBLIC_IP" \
-     -s "O=Example,CN=$PUBLIC_IP" \
+     -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
+     -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
@@ -136,8 +136,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -c "Example CA" -n "vpnclient" \
-     -s "O=Example,CN=vpnclient" \
+     -S -c "IKEv2 VPN CA" -n "vpnclient" \
+     -s "O=IKEv2 VPN,CN=vpnclient" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
@@ -149,7 +149,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "Example CA" -a -o vpnca.cer
+   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
    ```
 
    **注：** 这个 `vpnca.cer` 文件仅需要在 iOS 客户端上使用。
@@ -178,7 +178,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Certificate Nickname                               Trust Attributes
                                                       SSL,S/MIME,JAR/XPI
 
-   Example CA                                         CTu,u,u
+   IKEv2 VPN CA                                       CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
    vpnclient                                          u,u,u
    ```
@@ -191,7 +191,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 将文件 `vpnclient.p12` 安全地传送到 VPN 客户端设备。下一步：
+1. 将文件 `vpnclient.p12` 安全地传送到 VPN 客户端设备。然后按照你的操作系统对应的步骤操作。**注：** 如果你在上面的第一步指定了服务器的域名，则需要在 **Server** 和 **Remote ID** 字段中输入域名而不是 IP 地址。
 
    #### Windows 7, 8.x 和 10
 
@@ -220,7 +220,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### iOS (iPhone/iPad)
 
-   首先，将你在上面的步骤 4 中导出的两个文件 `vpnca.cer` and `vpnclient.p12` 以电子邮件附件的形式发送给你自己，然后在 iOS 邮件应用中点击它们并逐个导入为 iOS 配置描述文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入。在完成之后，检查并确保 `vpnclient` 和 `Example CA` 都显示在设置 -> 通用 -> 描述文件中。
+   首先，将你在上面的步骤 4 中导出的两个文件 `vpnca.cer` and `vpnclient.p12` 以电子邮件附件的形式发送给你自己，然后在 iOS 邮件应用中点击它们并逐个导入为 iOS 配置描述文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
    1. 进入设置 -> 通用 -> VPN。
    1. 单击 **添加VPN配置...**。

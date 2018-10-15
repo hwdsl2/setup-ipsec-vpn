@@ -44,7 +44,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      leftrsasigkey=%cert
      right=%any
      rightid=%fromcert
-     rightaddresspool=192.168.43.150-192.168.43.250
+     rightaddresspool=192.168.43.10-192.168.43.250
      rightca=%same
      rightrsasigkey=%cert
      narrowing=yes
@@ -101,8 +101,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -x -n "Example CA" \
-     -s "O=Example,CN=Example CA" \
+     -S -x -n "IKEv2 VPN CA" \
+     -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t "CT,," -2
    ```
@@ -119,8 +119,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -c "Example CA" -n "$PUBLIC_IP" \
-     -s "O=Example,CN=$PUBLIC_IP" \
+     -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
+     -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
@@ -136,8 +136,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
-     -S -c "Example CA" -n "vpnclient" \
-     -s "O=Example,CN=vpnclient" \
+     -S -c "IKEv2 VPN CA" -n "vpnclient" \
+     -s "O=IKEv2 VPN,CN=vpnclient" \
      -k rsa -g 4096 -v 36 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
@@ -149,7 +149,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    ```
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "Example CA" -a -o vpnca.cer
+   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
    ```
 
    **Note:** This `vpnca.cer` file is only required for iOS clients.
@@ -178,7 +178,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    Certificate Nickname                               Trust Attributes
                                                       SSL,S/MIME,JAR/XPI
 
-   Example CA                                         CTu,u,u
+   IKEv2 VPN CA                                       CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
    vpnclient                                          u,u,u
    ```
@@ -191,7 +191,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ service ipsec restart
    ```
 
-1. The `vpnclient.p12` file should then be securely transferred to the VPN client device. Next steps:
+1. The `vpnclient.p12` file should then be securely transferred to the VPN client device. Next, follow instructions for your operating system. **Note:** If you specified your server's DNS name in step 1 above, enter the DNS name instead of IP address in the **Server** and **Remote ID** fields.
 
    #### Windows 7, 8.x and 10
 
@@ -220,7 +220,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    #### iOS (iPhone/iPad)
 
-   First, send both `vpnca.cer` and `vpnclient.p12` (exported from step 4 above) to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `Example CA` are listed under Settings -> General -> Profiles.
+   First, send both `vpnca.cer` and `vpnclient.p12` (exported from step 4 above) to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
 
    1. Go to Settings -> General -> VPN.
    1. Tap **Add VPN Configuration...**.
