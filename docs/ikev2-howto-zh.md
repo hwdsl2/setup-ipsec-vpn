@@ -1,4 +1,4 @@
-# 如何配置 IKEv2 VPN: Windows, Android 和 iOS
+# 如何配置 IKEv2 VPN: Windows, macOS, Android 和 iOS
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -13,6 +13,7 @@ Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
 - Windows 7, 8.x 和 10
+- OS X (macOS)
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 - iOS (iPhone/iPad)
 
@@ -132,7 +133,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Generating key.  This may take a few moments...
    ```
 
-1. 生成客户端证书，导出 CA 证书以及 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书：
+1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -149,12 +150,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
-   ```
-
-   **注：** 这个 `vpnca.cer` 文件仅需要在 iOS 客户端上使用。
-
-   ```bash
    $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
    ```
 
@@ -164,9 +159,15 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   指定一个安全的密码以保护导出的 `.p12` 文件。你可以重复本步骤来为更多的客户端生成证书。将所有的 `vpnclient` 换成 `vpnclient2`，等等。
+   指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 设备时，该密码不能为空）。你可以重复本步骤来为更多的客户端生成证书。将所有的 `vpnclient` 换成 `vpnclient2`，等等。
 
    **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
+
+1. （适用于 macOS 和 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
+
+   ```bash
+   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   ```
 
 1. 证书数据库现在应该包含以下内容：
 
@@ -191,11 +192,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 将文件 `vpnclient.p12` 安全地传送到 VPN 客户端设备。然后按照你的操作系统对应的步骤操作。**注：** 如果你在上面的第一步指定了服务器的域名，则需要在 **Server** 和 **Remote ID** 字段中输入域名而不是 IP 地址。
+1. 按照你的操作系统对应的步骤操作。请注意，如果你在上面的第一步指定了服务器的域名，则需要在 **服务器地址** 和 **远程 ID** 字段中输入该域名而不是 IP 地址。
 
    #### Windows 7, 8.x 和 10
 
-   1. 将 `.p12` 文件导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+   1. 将文件 `vpnclient.p12` 安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
       详细的操作步骤：   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
@@ -208,9 +209,30 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    1. （可选步骤） 如需启用更强的加密算法，你可以添加注册表键 `NegotiateDH2048_AES256` 并重启。更多信息请看<a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
+   #### OS X (macOS)
+
+   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 Mac，然后双击它们并逐个导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击刚才导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。 
+
+   1. 打开系统偏好设置并转到网络部分。
+   1. 在窗口左下角单击 **+** 按钮。
+   1. 从 **接口** 下拉菜单选择 **VPN**。
+   1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
+   1. 在 **服务名称** 字段中输入任意内容。
+   1. 单击 **创建**。
+   1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+   1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+   1. 保持 **本地 ID** 字段空白。
+   1. 单击 **鉴定设置...** 按钮。
+   1. 从 **鉴定设置** 下拉菜单中选择 **无**。
+   1. 选择 **证书** 单选按钮，然后选择 **vpnclient** 证书。
+   1. 单击 **好**。
+   1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
+   1. 单击 **应用** 保存VPN连接信息。
+   1. 单击 **连接**。
+
    #### Android 4.x 和更新版本
 
-   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+   1. 将文件 `vpnclient.p12` 安全地传送到你的设备，然后从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
    1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
    1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
    1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
@@ -220,7 +242,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### iOS (iPhone/iPad)
 
-   首先，将你在上面的步骤 4 中导出的两个文件 `vpnca.cer` and `vpnclient.p12` 以电子邮件附件的形式发送给你自己，然后在 iOS 邮件应用中点击它们并逐个导入为 iOS 配置描述文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 以电子邮件附件的形式发送给你自己，然后在 iOS 邮件应用中点击它们并逐个导入为 iOS 配置描述文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
    1. 进入设置 -> 通用 -> VPN。
    1. 单击 **添加VPN配置...**。
@@ -241,7 +263,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级</a>到版本 3.26 或以上。
-1. 在导入到 iOS 设备时，`.p12` 文件的密码不能为空。要解决这个问题，按照步骤 4 中的命令重新导出 `.p12` 文件并指定一个安全的密码。
 
 ## 参考链接
 

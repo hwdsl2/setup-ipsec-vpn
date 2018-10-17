@@ -1,4 +1,4 @@
-# How-To: IKEv2 VPN for Windows, Android and iOS
+# How-To: IKEv2 VPN for Windows, macOS, Android and iOS
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -13,6 +13,7 @@ Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agil
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
 - Windows 7, 8.x and 10
+- OS X (macOS)
 - Android 4.x and newer (using the strongSwan VPN client)
 - iOS (iPhone/iPad)
 
@@ -132,7 +133,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    Generating key.  This may take a few moments...
    ```
 
-1. Generate client certificate(s), export the CA certificate and the `.p12` file that contains the client certificate, private key, and CA certificate:
+1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate:
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -149,12 +150,6 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    ```
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
-   ```
-
-   **Note:** This `vpnca.cer` file is only required for iOS clients.
-
-   ```bash
    $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
    ```
 
@@ -164,9 +159,15 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   Enter a secure password to protect the exported `.p12` file. Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
+   Enter a secure password to protect the exported `.p12` file (when importing into an iOS device, this password cannot be empty). Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
 
    **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+
+1. (For macOS and iOS clients) Export the CA certificate as `vpnca.cer`:
+
+   ```bash
+   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   ```
 
 1. The database should now contain:
 
@@ -191,11 +192,11 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ service ipsec restart
    ```
 
-1. The `vpnclient.p12` file should then be securely transferred to the VPN client device. Next, follow instructions for your operating system. **Note:** If you specified your server's DNS name in step 1 above, enter the DNS name instead of IP address in the **Server** and **Remote ID** fields.
+1. Follow instructions for your operating system. Note that if you specified your server's DNS name in step 1 above, enter the DNS name instead of IP address in the **Server** and **Remote ID** fields.
 
    #### Windows 7, 8.x and 10
 
-   1. Import the `.p12` file to the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+   1. Securely transfer `vpnclient.p12` to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
       Detailed instructions:   
       https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
@@ -208,9 +209,30 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    1. (Optional) You may enable stronger ciphers by adding the registry key `NegotiateDH2048_AES256` and reboot. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
+   #### OS X (macOS)
+
+   First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your Mac, then double-click to import them one by one into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
+
+   1. Open System Preferences and go to the Network section.
+   1. Click the **+** button in the lower-left corner of the window.
+   1. Select **VPN** from the **Interface** drop-down menu.
+   1. Select **IKEv2** from the **VPN Type** drop-down menu.
+   1. Enter anything you like for the **Service Name**.
+   1. Click **Create**.
+   1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.
+   1. Enter `Your VPN Server IP` (or DNS name) for the **Remote ID**.
+   1. Leave the **Local ID** field blank.
+   1. Click the **Authentication Settings...** button.
+   1. Select **None** from the **Authentication Settings** drop-down menu.
+   1. Select the **Certificate** radio button, then select the **vpnclient** certificate.
+   1. Click **OK**.
+   1. Check the **Show VPN status in menu bar** checkbox.
+   1. Click **Apply** to save the VPN connection information.
+   1. Click **Connect**.
+
    #### Android 4.x and newer
 
-   1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+   1. Securely transfer `vpnclient.p12` to your device. Then install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
    1. Launch the VPN client and tap **Add VPN Profile**.
    1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
    1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
@@ -220,7 +242,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    #### iOS (iPhone/iPad)
 
-   First, send both `vpnca.cer` and `vpnclient.p12` (exported from step 4 above) to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+   First, send both `vpnca.cer` and `vpnclient.p12` to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import them in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
 
    1. Go to Settings -> General -> VPN.
    1. Tap **Add VPN Configuration...**.
@@ -241,7 +263,6 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
-1. The `.p12` file cannot have an empty password when importing into an iOS device. To resolve this issue, follow instructions in step 4 to re-export the file with a secure password.
 
 ## References
 

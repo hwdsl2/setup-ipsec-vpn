@@ -83,7 +83,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## OS X
 
-**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.

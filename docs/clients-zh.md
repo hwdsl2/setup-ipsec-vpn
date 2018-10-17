@@ -83,7 +83,7 @@
 
 ## OS X
 
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
