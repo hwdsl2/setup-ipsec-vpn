@@ -434,10 +434,34 @@ iptables-restore < /etc/iptables.rules
 exit 0
 EOF
 
+if [ -f /usr/sbin/netplan ]; then
+  mkdir -p /etc/systemd/system
+cat > /etc/systemd/system/load-iptables-rules.service <<'EOF'
+[Unit]
+Description = Load /etc/iptables.rules
+DefaultDependencies=no
+
+Before=network-pre.target
+Wants=network-pre.target
+
+Wants=systemd-modules-load.service local-fs.target
+After=systemd-modules-load.service local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/network/if-pre-up.d/iptablesload
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable load-iptables-rules 2>/dev/null
+fi
+
 for svc in fail2ban ipsec xl2tpd; do
   update-rc.d "$svc" enable >/dev/null 2>&1
   systemctl enable "$svc" 2>/dev/null
 done
+
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
     conf_bk "/etc/rc.local"
@@ -451,7 +475,6 @@ cat >> /etc/rc.local <<'EOF'
 (sleep 15
 service ipsec restart
 service xl2tpd restart
-[ -f "/usr/sbin/netplan" ] && { iptables-restore < /etc/iptables.rules; service fail2ban restart; }
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
 exit 0
 EOF
