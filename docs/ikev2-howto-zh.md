@@ -25,7 +25,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ echo "$PUBLIC_IP"
+   $ printf '%s' "$PUBLIC_IP"
    （检查显示的公共 IP）
    ```
 

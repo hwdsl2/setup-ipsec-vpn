@@ -25,7 +25,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ echo "$PUBLIC_IP"
+   $ printf '%s' "$PUBLIC_IP"
    (Check the displayed public IP)
    ```
 

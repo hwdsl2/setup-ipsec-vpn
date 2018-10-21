@@ -423,6 +423,7 @@ else
   systemctl --now mask firewalld 2>/dev/null
   systemctl enable iptables fail2ban 2>/dev/null
 fi
+
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
     conf_bk "/etc/rc.local"
