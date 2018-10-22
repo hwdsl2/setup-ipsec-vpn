@@ -434,7 +434,8 @@ iptables-restore < /etc/iptables.rules
 exit 0
 EOF
 
-if [ -f /usr/sbin/netplan ]; then
+IPT_PST="/usr/share/netfilter-persistent/plugins.d/15-ip4tables"
+if [ -f /usr/sbin/netplan ] && [ ! -f "$IPT_PST" ]; then
   mkdir -p /etc/systemd/system
 cat > /etc/systemd/system/load-iptables-rules.service <<'EOF'
 [Unit]
