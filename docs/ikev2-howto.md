@@ -25,7 +25,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ printf '%s' "$PUBLIC_IP"
+   $ printf '%s\n' "$PUBLIC_IP"
    (Check the displayed public IP)
    ```
 
@@ -98,7 +98,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. Generate Certificate Authority (CA) and VPN server certificates:
 
-   **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 36". Also, if you used the server's DNS name instead of its IP address in step 1 above, replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` in the command below with `--extSAN "dns:$PUBLIC_IP"`.
+   **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 36".
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -117,6 +117,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    Is this a critical extension [y/N]?
    N
    ```
+
+   **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` in the command below with `--extSAN "dns:$PUBLIC_IP"`.
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -192,7 +194,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ service ipsec restart
    ```
 
-1. Follow instructions for your operating system. Note that if you specified your server's DNS name in step 1 above, enter the DNS name instead of IP address in the **Server** and **Remote ID** fields.
+1. Follow instructions below for your operating system. **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
 
    #### Windows 7, 8.x and 10
 

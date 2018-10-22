@@ -25,7 +25,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ printf '%s' "$PUBLIC_IP"
+   $ printf '%s\n' "$PUBLIC_IP"
    （检查显示的公共 IP）
    ```
 
@@ -98,7 +98,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：
 
-   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。另外，如果你在上面的第一步使用了服务器的域名而不是 IP 地址，则需要将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
+   **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -117,6 +117,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Is this a critical extension [y/N]?
    N
    ```
+
+   **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
 
    ```bash
    $ certutil -z <(head -c 1024 /dev/urandom) \
@@ -192,7 +194,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ service ipsec restart
    ```
 
-1. 按照你的操作系统对应的步骤操作。请注意，如果你在上面的第一步指定了服务器的域名，则需要在 **服务器地址** 和 **远程 ID** 字段中输入该域名而不是 IP 地址。
+1. 按照下面你的操作系统对应的步骤操作。**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
 
    #### Windows 7, 8.x 和 10
 
