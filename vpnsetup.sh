@@ -387,6 +387,7 @@ bigecho "Updating IPTables rules..."
 # Check if rules need updating
 ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
+IPT_FILE2="/etc/iptables/rules.v4"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
    || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
    || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
@@ -418,7 +419,6 @@ if [ "$ipt_flag" = "1" ]; then
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 
-  IPT_FILE2="/etc/iptables/rules.v4"
   if [ -f "$IPT_FILE2" ]; then
     conf_bk "$IPT_FILE2"
     /bin/cp -f "$IPT_FILE" "$IPT_FILE2"
@@ -427,16 +427,25 @@ fi
 
 bigecho "Enabling services on boot..."
 
-mkdir -p /etc/network/if-pre-up.d
+# Check for iptables-persistent
+IPT_PST="/etc/init.d/iptables-persistent"
+IPT_PST2="/usr/share/netfilter-persistent/plugins.d/15-ip4tables"
+ipt_load=1
+if [ -f "$IPT_FILE2" ] && { [ -f "$IPT_PST" ] || [ -f "$IPT_PST2" ]; }; then
+  ipt_load=0
+fi
+
+if [ "$ipt_load" = "1" ]; then
+  mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
 exit 0
 EOF
+  chmod +x /etc/network/if-pre-up.d/iptablesload
 
-IPT_PST="/usr/share/netfilter-persistent/plugins.d/15-ip4tables"
-if [ -f /usr/sbin/netplan ] && [ ! -f "$IPT_PST" ]; then
-  mkdir -p /etc/systemd/system
+  if [ -f /usr/sbin/netplan ]; then
+    mkdir -p /etc/systemd/system
 cat > /etc/systemd/system/load-iptables-rules.service <<'EOF'
 [Unit]
 Description = Load /etc/iptables.rules
@@ -455,7 +464,8 @@ ExecStart=/etc/network/if-pre-up.d/iptablesload
 [Install]
 WantedBy=multi-user.target
 EOF
-  systemctl enable load-iptables-rules 2>/dev/null
+    systemctl enable load-iptables-rules 2>/dev/null
+  fi
 fi
 
 for svc in fail2ban ipsec xl2tpd; do
@@ -487,7 +497,7 @@ bigecho "Starting services..."
 sysctl -e -q -p
 
 # Update file attributes
-chmod +x /etc/rc.local /etc/network/if-pre-up.d/iptablesload
+chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
