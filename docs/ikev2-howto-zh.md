@@ -57,7 +57,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
      rekey=no
      fragmentation=yes
      ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024
-     phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2
+     phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes_gcm-null
    EOF
    ```
 
@@ -73,6 +73,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ cat >> /etc/ipsec.conf <<EOF
      modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
+     mobike=yes
    EOF
    ```
 
