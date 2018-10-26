@@ -8,7 +8,7 @@
 
 ---
 
-Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability. In addition, IKEv2 supports connecting multiple devices simultaneously from behind the same NAT (e.g. home router) to the VPN server.
+Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
@@ -189,7 +189,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
 
-1. **Restart IPsec service**:
+1. **(Important) Restart IPsec service**:
 
    ```bash
    $ service ipsec restart
@@ -266,6 +266,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
+1. Connecting multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router) is not supported at this time. For this use case, please instead use <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 
 ## References
 

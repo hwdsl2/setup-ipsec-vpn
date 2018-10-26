@@ -8,7 +8,7 @@
 
 ---
 
-Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。另外，IKEv2 支持同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器。
+Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
@@ -189,7 +189,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除一个证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">这里</a>。
 
-1. **重启 IPsec 服务**：
+1. **（重要）重启 IPsec 服务**：
 
    ```bash
    $ service ipsec restart
@@ -266,6 +266,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级</a>到版本 3.26 或以上。
+1. 目前还不支持同时连接在同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端。对于这个用例，请换用 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 
 ## 参考链接
 
