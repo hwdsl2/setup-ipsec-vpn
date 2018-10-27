@@ -102,6 +102,8 @@ nano -w vpnsetup.sh
 sudo sh vpnsetup.sh
 ```
 
+**注：** 不要在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
+
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
 ```bash
