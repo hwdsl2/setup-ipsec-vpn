@@ -221,7 +221,7 @@ To fix this error, please follow these steps:
 
 ### Windows 10 version 1803
 
-If you are unable to connect using Windows 10 version 1803 or above, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Then find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
+If you are unable to connect using Windows 10 version 1803 or above: Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
 
 Also, after upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix for [Windows Error 809](#windows-error-809) and reboot.
 
@@ -231,11 +231,10 @@ OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but y
 
 ### Android 6 and above
 
-If you are unable to connect using Android 6 or above, try these steps in order:
+If you are unable to connect using Android 6 or above:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>). If still unable to connect, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes256-sha2_256` at the end. Save the file and run `service ipsec restart`.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value (between `yes` and `no`). Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>).
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 

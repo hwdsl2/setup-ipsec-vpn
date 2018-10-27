@@ -221,7 +221,7 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 ### Windows 10 版本 1803
 
-如果你无法使用 Windows 10 版本 1803 或以上连接，尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 一行并在末尾加上 `,aes256-sha2_256` 字样。然后找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
+如果你无法使用 Windows 10 版本 1803 或以上连接：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 一行并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
 
 另外，在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
 
@@ -231,11 +231,10 @@ OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是
 
 ### Android 6 及以上版本
 
-如果你无法使用 Android 6 或以上版本连接，按顺序尝试以下步骤：
+如果你无法使用 Android 6 或以上版本连接：
 
 1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（看下图），请启用它并重试连接。如果不存在，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)。如果仍然无法连接，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `phase2alg=...` 一行并在末尾加上 `,aes256-sha2_256` 字样。保存修改并运行 `service ipsec restart`。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug` 一行并将它的值在 `yes` 和 `no` 之间切换。保存修改并运行 `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 

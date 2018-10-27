@@ -56,8 +56,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
      ikev2=insist
      rekey=no
      fragmentation=yes
-     ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024
-     phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes_gcm-null
+     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+     phase2alg=aes_gcm256-null,aes_gcm128-null,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
    EOF
    ```
 
