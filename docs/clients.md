@@ -234,7 +234,7 @@ OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but y
 If you are unable to connect using Android 6 or above:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value (between `yes` and `no`). Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>).
+1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>).
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 

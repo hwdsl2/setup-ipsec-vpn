@@ -121,18 +121,17 @@ NOTE: Libreswan versions 3.19 and newer require some configuration changes.
     1. Replace "auth=esp" with "phase2=esp"
     2. Replace "forceencaps=yes" with "encapsulation=yes"
     3. Optimize VPN ciphers for "ike=" and "phase2alg="
-    4. Replace "sha2-truncbug=yes" with "sha2-truncbug=no"
 EOF
 
 if [ "$dns_state" = "1" ] || [ "$dns_state" = "2" ]; then
 cat <<'EOF'
-    5. Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
+    4. Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
 EOF
 fi
 
 if [ "$dns_state" = "3" ] || [ "$dns_state" = "4" ]; then
 cat <<'EOF'
-    5. Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
+    4. Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
 EOF
 fi
 
@@ -217,12 +216,11 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Update ipsec.conf
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
-PHASE2_NEW="  phase2alg=aes_gcm256-null,aes_gcm128-null,aes256-sha2_512,aes128-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+PHASE2_NEW="  phase2alg=aes_gcm256-null,aes_gcm128-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
 
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/g" \
-    -e "s/^[[:space:]]\+sha2-truncbug=yes\$/  sha2-truncbug=no/g" \
     -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/g" \
     -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/g" /etc/ipsec.conf
 
