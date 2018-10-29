@@ -18,7 +18,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 * [Troubleshooting](#troubleshooting)
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
-  * [Windows 10 version 1803](#windows-10-version-1803)
+  * [Windows 10 upgrades](#windows-10-upgrades)
   * [macOS VPN traffic](#macos-vpn-traffic)
   * [Android 6 and above](#android-6-and-above)
   * [Chromebook issues](#chromebook-issues)
@@ -32,7 +32,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 ### Windows 10 and 8.x
 
 1. Right-click on the wireless/network icon in your system tray.
-1. Select **Open Network and Sharing Center**.
+1. Select **Open Network and Sharing Center**. Or, if using Windows 10 version 1709 or newer, select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**.
 1. Click **Set up a new connection or network**.
 1. Select **Connect to a workplace** and click **Next**.
 1. Click **Use my Internet connection (VPN)**.
@@ -41,7 +41,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Return to **Network and Sharing Center**. On the left, click **Change adapter settings**.
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
+1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -69,7 +69,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
+1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -103,6 +103,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## Android
 
@@ -144,6 +146,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Slide the **VPN** switch ON.
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## Chromebook
 
@@ -211,7 +215,7 @@ To fix this error, please follow these steps:
 1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
 1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
-1. Click **Allow these protocols**. Be sure to select the "Challenge Handshake Authentication Protocol (CHAP)" checkbox.
+1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -219,11 +223,9 @@ To fix this error, please follow these steps:
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
 
-### Windows 10 version 1803
+### Windows 10 upgrades
 
-If you are unable to connect using Windows 10 version 1803 or above: Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
-
-Also, after upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix for [Windows Error 809](#windows-error-809) and reboot.
+After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix above for [Windows Error 809](#windows-error-809) and reboot.
 
 ### macOS VPN traffic
 
@@ -341,8 +343,8 @@ conn %default
   keyingtries=1
   keyexchange=ikev1
   authby=secret
-  ike=aes128-sha1-modp1024,3des-sha1-modp1024!
-  esp=aes128-sha1-modp1024,3des-sha1-modp1024!
+  ike=aes256-sha1-modp2048,aes128-sha1-modp2048!
+  esp=aes256-sha1-modp2048,aes128-sha1-modp2048!
 
 conn myvpn
   keyexchange=ikev1
