@@ -235,7 +235,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### Android 4.x 和更新版本
 
-   1. 将文件 `vpnclient.p12` 安全地传送到你的设备，然后从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+   1. 将文件 `vpnclient.p12` 安全地传送到你的 Android 设备。
+   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
    1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
    1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
    1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
@@ -245,7 +246,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    #### iOS (iPhone/iPad)
 
-   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 以电子邮件附件的形式发送给你自己，然后在 iOS 邮件应用中点击它们并逐个导入为 iOS 配置描述文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。你可以使用 AirDrop （隔空投送）来传输文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
    1. 进入设置 -> 通用 -> VPN。
    1. 单击 **添加VPN配置...**。

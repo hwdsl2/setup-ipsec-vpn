@@ -235,7 +235,8 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    #### Android 4.x and newer
 
-   1. Securely transfer `vpnclient.p12` to your device. Then install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+   1. Securely transfer `vpnclient.p12` to your Android device.
+   1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
    1. Launch the VPN client and tap **Add VPN Profile**.
    1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
    1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
@@ -245,7 +246,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    #### iOS (iPhone/iPad)
 
-   First, send both `vpnca.cer` and `vpnclient.p12` to yourself as email attachments, then click to import them one by one as iOS profiles in the iOS Mail app. Alternatively, host the files on a secure website of yours, then download and import them in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+   First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use AirDrop. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
 
    1. Go to Settings -> General -> VPN.
    1. Tap **Add VPN Configuration...**.
