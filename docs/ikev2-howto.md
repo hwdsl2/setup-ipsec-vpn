@@ -73,9 +73,11 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    $ cat >> /etc/ipsec.conf <<EOF
      modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
-     mobike=yes
+     mobike=no
    EOF
    ```
+
+   **Note:** If your server runs Debian or CentOS and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. DO NOT enable this option on Ubuntu systems.
 
    For Libreswan 3.19-3.22:
 

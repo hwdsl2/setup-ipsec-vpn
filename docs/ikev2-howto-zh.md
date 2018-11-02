@@ -73,9 +73,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    $ cat >> /etc/ipsec.conf <<EOF
      modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
-     mobike=yes
+     mobike=no
    EOF
    ```
+
+   **注：** 如果你的服务器运行 Debian 或者 CentOS，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要**在 Ubuntu 系统上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 
