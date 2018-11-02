@@ -216,7 +216,7 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 # Update ipsec.conf
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
-PHASE2_NEW="  phase2alg=aes_gcm256-null,aes_gcm128-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+PHASE2_NEW="  phase2alg=aes_gcm-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
 
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
