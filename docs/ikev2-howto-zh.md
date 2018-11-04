@@ -165,7 +165,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 设备时，该密码不能为空）。你可以重复本步骤来为更多的客户端生成证书。将所有的 `vpnclient` 换成 `vpnclient2`，等等。
+   指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 或 macOS 设备时，该密码不能为空）。你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。
 
    **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
 

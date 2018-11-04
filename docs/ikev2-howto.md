@@ -165,7 +165,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   Enter a secure password to protect the exported `.p12` file (when importing into an iOS device, this password cannot be empty). Repeat this step to generate certificates for additional VPN clients. Replace every `vpnclient` with `vpnclient2`, etc.
+   Enter a secure password to protect the exported `.p12` file (when importing into an iOS or macOS device, this password cannot be empty). You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc.
 
    **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
 
