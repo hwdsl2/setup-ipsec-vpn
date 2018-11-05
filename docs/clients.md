@@ -19,6 +19,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Windows Error 809](#windows-error-809)
   * [Windows Error 628](#windows-error-628)
   * [Windows 10 upgrades](#windows-10-upgrades)
+  * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
   * [macOS VPN traffic](#macos-vpn-traffic)
   * [Android 6 and above](#android-6-and-above)
   * [Chromebook issues](#chromebook-issues)
@@ -226,6 +227,10 @@ To fix this error, please follow these steps:
 ### Windows 10 upgrades
 
 After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix above for [Windows Error 809](#windows-error-809) and reboot.
+
+### Windows 8/10 DNS leaks
+
+Windows 8.x and 10 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter is from the local network segment. To fix, you may either <a href="https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/" target="_blank">disable smart multi-homed name resolution</a>, or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). Reboot your PC when finished.
 
 ### macOS VPN traffic
 
