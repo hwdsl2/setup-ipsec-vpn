@@ -48,6 +48,15 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
+另外，除了按照以上步骤操作，你也可以运行下面的 Windows PowerShell 命令来创建 VPN 连接。将 `你的 VPN 服务器 IP` 和 `你的 VPN IPsec PSK` 换成你自己的值，用单引号括起来：
+
+```console
+# 不保存命令行历史记录
+Set-PSReadlineOption –HistorySaveStyle SaveNothing
+# 创建 VPN 连接
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk '你的 VPN IPsec PSK' -Force -RememberCredential -PassThru
+```
+
 **注：** 在首次连接之前需要修改一次注册表。请参见下面的说明。
 
 ### Windows 7, Vista and XP

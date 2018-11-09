@@ -48,6 +48,15 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
+Alternatively, instead of following the steps above, you may create the VPN connection using these Windows PowerShell commands. Replace `Your VPN Server IP` and `Your VPN IPsec PSK` with your own values, enclosed in single quotes:
+
+```console
+# Disable persistent command history
+Set-PSReadlineOption –HistorySaveStyle SaveNothing
+# Create VPN connection
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk 'Your VPN IPsec PSK' -Force -RememberCredential -PassThru
+```
+
 **Note:** A one-time registry change is required before connecting. See details below.
 
 ### Windows 7, Vista and XP
