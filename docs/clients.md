@@ -241,6 +241,8 @@ After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-
 
 Windows 8.x and 10 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter are from the local network segment. To fix, you may either <a href="https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/" target="_blank">disable smart multi-homed name resolution</a>, or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). When finished, <a href="https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-" target="_blank">clear the DNS cache</a> and reboot your PC.
 
+In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to <a href="https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">disable IPv6</a> in Windows.
+
 ### macOS VPN traffic
 
 OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
