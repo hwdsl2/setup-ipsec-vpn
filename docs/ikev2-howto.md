@@ -78,7 +78,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    EOF
    ```
 
-   **Note:** If your server runs Debian or CentOS and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. DO NOT enable this option on Ubuntu systems.
+   **Note:** If your server runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. DO NOT enable this option on Ubuntu systems.
 
    For Libreswan 3.19-3.22:
 
