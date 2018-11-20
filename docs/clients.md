@@ -190,6 +190,16 @@ See [Linux VPN Clients](#linux-vpn-clients).
 
 *Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
+* [Windows Error 809](#windows-error-809)
+* [Windows Error 628](#windows-error-628)
+* [Windows 10 upgrades](#windows-10-upgrades)
+* [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
+* [macOS VPN traffic](#macos-vpn-traffic)
+* [Android 6 and above](#android-6-and-above)
+* [Chromebook issues](#chromebook-issues)
+* [Other errors](#other-errors)
+* [Additional steps](#additional-steps)
+
 ### Windows Error 809
 
 > The network connection between your computer and the VPN server could not be established because the remote server is not responding.

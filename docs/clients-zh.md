@@ -190,6 +190,16 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 *其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
+* [Windows 错误 809](#windows-错误-809)
+* [Windows 错误 628](#windows-错误-628)
+* [Windows 10 升级](#windows-10-升级)
+* [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
+* [macOS VPN 流量](#macos-vpn-流量)
+* [Android 6 及以上版本](#android-6-及以上版本)
+* [Chromebook 连接问题](#chromebook-连接问题)
+* [其它错误](#其它错误)
+* [额外的步骤](#额外的步骤)
+
 ### Windows 错误 809
 
 > 无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。

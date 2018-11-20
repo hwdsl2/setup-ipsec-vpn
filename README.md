@@ -152,7 +152,7 @@ If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-u
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then reboot your server.
 
-Using kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 18.04/16.04, Debian 9 and CentOS 7/6. Ubuntu users need to install the `` linux-image-extra-`uname -r` `` package and run `service xl2tpd restart`.
+Using kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 18.04/16.04, Debian 9 and CentOS 7/6. Ubuntu users: Install `linux-modules-extra-$(uname -r)` (or `linux-image-extra`), then run `service xl2tpd restart`.
 
 To modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
 
