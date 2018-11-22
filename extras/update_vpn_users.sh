@@ -113,6 +113,8 @@ done
 
 cat <<'EOF'
 
+Write these down. You'll need them to connect!
+
 ==================================================
 
 EOF
