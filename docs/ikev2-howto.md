@@ -24,17 +24,19 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 1. Find the VPN server's public IP, save it to a variable and check.
 
    ```bash
-   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ printf '%s\n' "$PUBLIC_IP"
-   (Check the displayed public IP)
+   PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+   [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+   printf '%s\n' "$PUBLIC_IP"
    ```
+
+   Check to make sure the output matches the server's public IP. This variable is required in the steps below.
 
    **Note:** Alternatively, you may specify the server's DNS name here. e.g. `PUBLIC_IP=myvpn.example.com`.
 
 1. Add a new IKEv2 connection to `/etc/ipsec.conf`:
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
@@ -65,13 +67,13 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    We need to add a few more lines to that file. First check your Libreswan version, then run one of the following commands:
 
    ```bash
-   $ ipsec --version
+   ipsec --version
    ```
 
    For Libreswan 3.23 and newer:
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
      mobike=no
@@ -83,7 +85,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    For Libreswan 3.19-3.22:
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      encapsulation=yes
@@ -93,7 +95,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    For Libreswan 3.18 and older:
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      forceencaps=yes
@@ -105,7 +107,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 36".
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
      -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
      -k rsa -g 4096 -v 36 \
@@ -125,7 +127,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` in the command below with `--extSAN "dns:$PUBLIC_IP"`.
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
      -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
      -k rsa -g 4096 -v 36 \
@@ -142,7 +144,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate:
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
      -s "O=IKEv2 VPN,CN=vpnclient" \
      -k rsa -g 4096 -v 36 \
@@ -156,7 +158,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    ```
 
    ```bash
-   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
+   pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
    ```
 
    ```
@@ -172,13 +174,13 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 1. (For macOS and iOS clients) Export the CA certificate as `vpnca.cer`:
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
    ```
 
 1. The database should now contain:
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d
+   certutil -L -d sql:/etc/ipsec.d
    ```
 
    ```
@@ -195,10 +197,12 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 1. **(Important) Restart IPsec service**:
 
    ```bash
-   $ service ipsec restart
+   service ipsec restart
    ```
 
-1. Follow instructions below for your operating system. **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
+1. Follow instructions below for your operating system.
+
+   **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
 
    #### Windows 7, 8.x and 10
 

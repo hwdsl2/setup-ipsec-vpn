@@ -24,17 +24,19 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
    ```bash
-   $ PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-   $ printf '%s\n' "$PUBLIC_IP"
-   （检查显示的公共 IP）
+   PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+   [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+   printf '%s\n' "$PUBLIC_IP"
    ```
+
+   检查并确保以上命令的输出与服务器的公共 IP 一致。该变量将在以下步骤中使用。
 
    **注：** 另外，在这里你也可以指定 VPN 服务器的域名。例如： `PUBLIC_IP=myvpn.example.com`。
 
 1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接：
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
@@ -65,13 +67,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    还需要在该文件中添加一些行。首先查看你的 Libreswan 版本，然后运行以下命令之一：
 
    ```bash
-   $ ipsec --version
+   ipsec --version
    ```
 
    如果是 Libreswan 3.23 或更新版本：
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns="8.8.8.8, 8.8.4.4"
      encapsulation=yes
      mobike=no
@@ -83,7 +85,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    如果是 Libreswan 3.19-3.22：
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      encapsulation=yes
@@ -93,7 +95,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    如果是 Libreswan 3.18 或更早版本：
 
    ```bash
-   $ cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      forceencaps=yes
@@ -105,7 +107,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 36"。
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
      -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
      -k rsa -g 4096 -v 36 \
@@ -125,7 +127,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
      -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
      -k rsa -g 4096 -v 36 \
@@ -142,7 +144,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书：
 
    ```bash
-   $ certutil -z <(head -c 1024 /dev/urandom) \
+   certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
      -s "O=IKEv2 VPN,CN=vpnclient" \
      -k rsa -g 4096 -v 36 \
@@ -156,7 +158,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```
 
    ```bash
-   $ pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
+   pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
    ```
 
    ```
@@ -172,13 +174,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. （适用于 macOS 和 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
    ```
 
 1. 证书数据库现在应该包含以下内容：
 
    ```bash
-   $ certutil -L -d sql:/etc/ipsec.d
+   certutil -L -d sql:/etc/ipsec.d
    ```
 
    ```
@@ -195,10 +197,12 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. **（重要）重启 IPsec 服务**：
 
    ```bash
-   $ service ipsec restart
+   service ipsec restart
    ```
 
-1. 按照下面你的操作系统对应的步骤操作。**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
+1. 按照下面你的操作系统对应的步骤操作。
+
+   **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
 
    #### Windows 7, 8.x 和 10
 
