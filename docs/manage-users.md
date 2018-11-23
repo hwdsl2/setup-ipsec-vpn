@@ -13,7 +13,13 @@ You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](htt
 Add a new VPN user or update an existing user with a new password.
 
 ```bash
+# Download the script
 wget -O add_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/add_vpn_user.sh
+```
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
 sudo sh add_vpn_user.sh 'username_to_add' 'password_to_add'
 ```
 
@@ -22,7 +28,13 @@ sudo sh add_vpn_user.sh 'username_to_add' 'password_to_add'
 Delete the specified VPN user.
 
 ```bash
+# Download the script
 wget -O del_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/del_vpn_user.sh
+```
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
 sudo sh del_vpn_user.sh 'username_to_delete'
 ```
 
@@ -31,6 +43,7 @@ sudo sh del_vpn_user.sh 'username_to_delete'
 Remove all existing VPN users and replace with the list of users you specify.
 
 ```bash
+# Download the script
 wget -O update_vpn_users.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/update_vpn_users.sh
 ```
 

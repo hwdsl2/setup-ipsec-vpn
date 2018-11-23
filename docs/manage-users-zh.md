@@ -13,7 +13,13 @@
 添加一个新 VPN 用户，或者为一个已有的 VPN 用户更新密码。
 
 ```bash
+# 下载脚本
 wget -O add_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/add_vpn_user.sh
+```
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
 sudo sh add_vpn_user.sh 'username_to_add' 'password_to_add'
 ```
 
@@ -22,7 +28,13 @@ sudo sh add_vpn_user.sh 'username_to_add' 'password_to_add'
 删除指定的 VPN 用户。
 
 ```bash
+# 下载脚本
 wget -O del_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/del_vpn_user.sh
+```
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
 sudo sh del_vpn_user.sh 'username_to_delete'
 ```
 
@@ -31,6 +43,7 @@ sudo sh del_vpn_user.sh 'username_to_delete'
 移除所有的 VPN 用户并替换为你指定的列表中的用户。
 
 ```bash
+# 下载脚本
 wget -O update_vpn_users.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/update_vpn_users.sh
 ```
 
