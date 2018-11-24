@@ -214,10 +214,10 @@ fi
 
 # Update ipsec.conf
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
-PHASE2_NEW="  phase2alg=aes_gcm-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
 
 if uname -m | grep -qi '^arm'; then
-  PHASE2_NEW="  phase2alg=aes_gcm-null,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+  PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2"
 fi
 
 sed -i".old-$(date +%F-%T)" \

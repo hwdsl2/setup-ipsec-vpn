@@ -60,7 +60,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
      pfs=no
      ike-frag=yes
      ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
-     phase2alg=aes_gcm-null,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+     phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
    EOF
    ```
 
