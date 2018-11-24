@@ -10,8 +10,8 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Check https://libreswan.org for the latest version
-SWAN_VER=3.22
+# Specify which Libreswan version to install. See: https://libreswan.org
+SWAN_VER=3.27
 
 ### DO NOT edit below this line ###
 
@@ -24,8 +24,8 @@ vpnupgrade() {
 
 os_type="$(lsb_release -si 2>/dev/null)"
 if [ -z "$os_type" ]; then
-  [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && echo "$ID")"
-  [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
+  [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && printf '%s' "$ID")"
+  [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
 fi
 if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
   exiterr "This script only supports Ubuntu and Debian."
@@ -43,17 +43,41 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-if [ -z "$SWAN_VER" ]; then
-  exiterr "Libreswan version 'SWAN_VER' not specified."
-fi
-
 case "$SWAN_VER" in
-  3.24|3.2[6-9])
-    exiterr "Libreswan version $SWAN_VER is not available."
+  3.19|3.2[0123567])
+    /bin/true
+    ;;
+  *)
+cat 1>&2 <<EOF
+Error: Libreswan version '$SWAN_VER' is not supported.
+  This script can install one of the following versions:
+  3.19-3.23, 3.25-3.26 and 3.27
+EOF
+    exit 1
+    ;;
+esac
+
+dns_state=0
+case "$SWAN_VER" in
+  3.2[3567])
+    DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+    DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+    [ -n "$DNS_SRV1" ] && dns_state=2
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
+    [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=5
+    ;;
+  3.19|3.2[012])
+    DNS_SRVS=$(grep "modecfgdns=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+    DNS_SRV1=$(printf '%s' "$DNS_SRVS" | cut -d ',' -f 1)
+    DNS_SRV2=$(printf '%s' "$DNS_SRVS" | cut -d ',' -f 2 | sed 's/^ *//')
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" != "$DNS_SRV2" ] && dns_state=3
+    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && [ "$DNS_SRV1" = "$DNS_SRV2" ]  && dns_state=4
+    [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" -gt "1" ] && dns_state=6
     ;;
 esac
 
 ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
+ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
@@ -75,54 +99,54 @@ if printf '%s' "$ipsec_ver" | grep -qF "$SWAN_VER"; then
   esac
 fi
 
-is_downgrade_to_322=0
-if [ "$SWAN_VER" = "3.22" ]; then
-  if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
-    is_downgrade_to_322=1
-  fi
-fi
-
 clear
 
 cat <<EOF
-Welcome! This script will build and install Libreswan $SWAN_VER on your server.
+Welcome! This script will build and install Libreswan on your server.
 Additional packages required for compilation will also be installed.
 
 It is intended for upgrading servers to a newer Libreswan version.
 
-Current version: $ipsec_ver
-Version to be installed: Libreswan $SWAN_VER
+Current version:    $ipsec_ver_short
+Version to install: Libreswan $SWAN_VER
 
 EOF
 
-if [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ]; then
+case "$SWAN_VER" in
+  3.2[35])
 cat <<'EOF'
 WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
-         IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-         DO NOT upgrade to 3.23/3.25 if your use cases include the above.
+    IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
+    DO NOT upgrade to 3.23/3.25 if your use cases include the above.
 
+EOF
+    ;;
+esac
+
+cat <<'EOF'
+NOTE: Libreswan versions 3.19 and newer require some configuration changes.
+    This script will make the following updates to your /etc/ipsec.conf:
+
+    1. Replace "auth=esp" with "phase2=esp"
+    2. Replace "forceencaps=yes" with "encapsulation=yes"
+    3. Optimize VPN ciphers for "ike=" and "phase2alg="
+EOF
+
+if [ "$dns_state" = "1" ] || [ "$dns_state" = "2" ]; then
+cat <<'EOF'
+    4. Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
+EOF
+fi
+
+if [ "$dns_state" = "3" ] || [ "$dns_state" = "4" ]; then
+cat <<'EOF'
+    4. Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
 EOF
 fi
 
 cat <<'EOF'
-NOTE: Libreswan versions 3.19 and newer require some configuration changes.
-      This script will make the following changes to your /etc/ipsec.conf:
 
-      Replace this line:
-          auth=esp
-      with the following:
-          phase2=esp
-
-      Replace this line:
-          forceencaps=yes
-      with the following:
-          encapsulation=yes
-
-      Consolidate VPN ciphers for "ike=" and "phase2alg=".
-      Re-add "MODP1024" to the list of allowed "ike=" ciphers,
-      which was removed from the defaults in Libreswan 3.19.
-
-      Your other VPN configuration files will not be modified.
+    Your other VPN configuration files will not be modified.
 
 EOF
 
@@ -144,16 +168,15 @@ esac
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
-# Update package index and install Wget
+# Update package index
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yq update || exiterr "'apt-get update' failed."
-apt-get -yq install wget || exiterr2
 
 # Install necessary packages
 apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
   libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-  libcurl4-nss-dev flex bison gcc make libnss3-tools \
-  libevent-dev || exiterr2
+  libcurl4-nss-dev libnss3-tools libevent-dev \
+  flex bison gcc make wget sed || exiterr2
 
 # Compile and install Libreswan
 swan_file="libreswan-$SWAN_VER.tar.gz"
@@ -166,10 +189,13 @@ fi
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
-sed -i '/docker-targets\.mk/d' Makefile
+[ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
+[ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
+[ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_DH31 = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
@@ -186,48 +212,75 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
 fi
 
-# Update ipsec.conf for Libreswan 3.19 and newer
-IKE_NEW="  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024"
-PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512"
+# Update ipsec.conf
+IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
+PHASE2_NEW="  phase2alg=aes_gcm-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+
 if uname -m | grep -qi '^arm'; then
-  PHASE2_NEW="  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2"
+  PHASE2_NEW="  phase2alg=aes_gcm-null,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
 fi
+
 sed -i".old-$(date +%F-%T)" \
-    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/" \
-    -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/" \
-    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/" \
-    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/" /etc/ipsec.conf
+    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
+    -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/g" \
+    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/g" \
+    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/g" /etc/ipsec.conf
+
+if [ "$dns_state" = "1" ]; then
+  sed -i -e "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"/" \
+      -e "/modecfgdns2/d" /etc/ipsec.conf
+elif [ "$dns_state" = "2" ]; then
+  sed -i "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1\"/" /etc/ipsec.conf
+elif [ "$dns_state" = "3" ]; then
+  sed -i "/modecfgdns=/a \  modecfgdns2=$DNS_SRV2" /etc/ipsec.conf
+  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+elif [ "$dns_state" = "4" ]; then
+  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+fi
 
 # Restart IPsec service
 mkdir -p /run/pluto
 service ipsec restart
 
-echo
-echo "Libreswan $SWAN_VER was installed successfully! "
-echo
+cat <<EOF
 
-case "$SWAN_VER" in
-  3.2[3-9])
-cat <<'EOF'
-NOTE: Users upgrading to Libreswan 3.23 or newer should edit "/etc/ipsec.conf" and replace these two lines:
-          modecfgdns1=DNS_SERVER_1
-          modecfgdns2=DNS_SERVER_2
-      with a single line like this:
-          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
-      Then run "service ipsec restart".
+
+===================================================
+
+Libreswan $SWAN_VER has been successfully installed!
+
+===================================================
 
 EOF
-    ;;
-esac
 
-if [ "$is_downgrade_to_322" = "1" ]; then
+if [ "$dns_state" = "5" ]; then
 cat <<'EOF'
-NOTE: Users downgrading to Libreswan 3.22 should edit "/etc/ipsec.conf" and replace this line:
-          modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
-      with two lines like this:
-          modecfgdns1=DNS_SERVER_1
-          modecfgdns2=DNS_SERVER_2
-      Then run "service ipsec restart".
+IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
+    and replace all occurrences of these two lines:
+
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
+
+    with a single line like this:
+
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+    Then run "sudo service ipsec restart".
+
+EOF
+elif [ "$dns_state" = "6" ]; then
+cat <<'EOF'
+IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit /etc/ipsec.conf
+    and replace all occurrences of this line:
+
+      modecfgdns="DNS_SERVER_1, DNS_SERVER_2"
+
+    with two lines like this:
+
+      modecfgdns1=DNS_SERVER_1
+      modecfgdns2=DNS_SERVER_2
+
+    Then run "sudo service ipsec restart".
 
 EOF
 fi
