@@ -21,6 +21,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Windows 10 upgrades](#windows-10-upgrades)
   * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
   * [macOS VPN traffic](#macos-vpn-traffic)
+  * [iOS/Android sleep mode](#iosandroid-sleep-mode)
   * [Android 6 and above](#android-6-and-above)
   * [Chromebook issues](#chromebook-issues)
   * [Other errors](#other-errors)
@@ -195,6 +196,7 @@ See [Linux VPN Clients](#linux-vpn-clients).
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
+* [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Android 6 and above](#android-6-and-above)
 * [Chromebook issues](#chromebook-issues)
 * [Other errors](#other-errors)
@@ -256,6 +258,12 @@ In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS 
 ### macOS VPN traffic
 
 OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
+
+### iOS/Android sleep mode
+
+To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured. If you need the VPN to auto-reconnect when the device wakes up, try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
+
+Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo). Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
 
 ### Android 6 and above
 

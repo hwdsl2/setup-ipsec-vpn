@@ -21,6 +21,7 @@
   * [Windows 10 升级](#windows-10-升级)
   * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
   * [macOS VPN 流量](#macos-vpn-流量)
+  * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
   * [Android 6 及以上版本](#android-6-及以上版本)
   * [Chromebook 连接问题](#chromebook-连接问题)
   * [其它错误](#其它错误)
@@ -195,6 +196,7 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
+* [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Android 6 及以上版本](#android-6-及以上版本)
 * [Chromebook 连接问题](#chromebook-连接问题)
 * [其它错误](#其它错误)
@@ -256,6 +258,12 @@ Windows 8.x 和 10 默认使用 "smart multi-homed name resolution" （智能多
 ### macOS VPN 流量
 
 OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [OS X](#os-x) 部分并完成这一步：单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。然后重新连接 VPN。
+
+### iOS/Android 睡眠模式
+
+为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 <a href="https://discussions.apple.com/thread/2333948" target="_blank">故意设计的</a> 并且不能被配置。如果你需要 VPN 在设备唤醒后自动重连，可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
+
+Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 中不再可用。 另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 <a href="https://support.google.com/android/answer/9089766?hl=zh-Hans" target="_blank">这里</a>。
 
 ### Android 6 及以上版本
 
