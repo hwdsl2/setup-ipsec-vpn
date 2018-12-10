@@ -49,6 +49,8 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
+**注：** 在首次连接之前需要**修改一次注册表**。请参见下面的说明。
+
 另外，除了按照以上步骤操作，你也可以运行下面的 Windows PowerShell 命令来创建 VPN 连接。将 `你的 VPN 服务器 IP` 和 `你的 VPN IPsec PSK` 换成你自己的值，用单引号括起来：
 
 ```console
@@ -57,8 +59,6 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # 创建 VPN 连接
 Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk '你的 VPN IPsec PSK' -Force -RememberCredential -PassThru
 ```
-
-**注：** 在首次连接之前需要修改一次注册表。请参见下面的说明。
 
 ### Windows 7, Vista and XP
 
@@ -181,11 +181,17 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ## Windows Phone
 
-Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a> 的步骤操作。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a> 的步骤操作。
 
 ## Linux
 
-请参见 [Linux VPN 客户端](#linux-vpn-客户端)。
+### Ubuntu Linux
+
+Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端 （设置 -> 网络 -> VPN）。Ubuntu 16.04 和 14.04 用户可能需要添加 `nm-l2tp` PPA。更多信息请看<a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。其它 Ubuntu 版本可以尝试使用下面的命令行配置方法。
+
+### 其它 Linux
+
+首先看<a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">这里</a>以确认 `network-manager-l2tp` 软件包是否在你的 Linux 版本上可用。另外，你也可以 [使用命令行配置 Linux VPN 客户端](#使用命令行配置-linux-vpn-客户端)。
 
 ## 故障排除
 
@@ -326,7 +332,7 @@ ipsec verify
 ipsec whack --trafficstatus
 ```
 
-## Linux VPN 客户端
+## 使用命令行配置 Linux VPN 客户端
 
 以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 

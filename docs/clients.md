@@ -49,6 +49,8 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
+**Note:** A **one-time registry change** is required before connecting. See details below.
+
 Alternatively, instead of following the steps above, you may create the VPN connection using these Windows PowerShell commands. Replace `Your VPN Server IP` and `Your VPN IPsec PSK` with your own values, enclosed in single quotes:
 
 ```console
@@ -57,8 +59,6 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # Create VPN connection
 Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk 'Your VPN IPsec PSK' -Force -RememberCredential -PassThru
 ```
-
-**Note:** A one-time registry change is required before connecting. See details below.
 
 ### Windows 7, Vista and XP
 
@@ -181,11 +181,17 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Windows Phone
 
-Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>.
 
 ## Linux
 
-See [Linux VPN Clients](#linux-vpn-clients).
+### Ubuntu Linux
+
+Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI (Settings -> Network -> VPN). Ubuntu 16.04 and 14.04 users may need to add the `nm-l2tp` PPA. Read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>. For other Ubuntu versions, try the command line method below.
+
+### Other Linux
+
+First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` package is available for your Linux distribution. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
 
 ## Troubleshooting
 
@@ -326,7 +332,7 @@ Show current established VPN connections:
 ipsec whack --trafficstatus
 ```
 
-## Linux VPN Clients
+## Configure Linux VPN clients using the command line
 
 Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
