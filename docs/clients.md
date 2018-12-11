@@ -187,11 +187,31 @@ Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentra
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI (Settings -> Network -> VPN). Ubuntu 16.04 and 14.04 users may need to add the `nm-l2tp` PPA. Read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>. For other Ubuntu versions, try the command line method below.
+Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 and 14.04 users may need to add the `nm-l2tp` PPA, read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>.
+
+1. Go to Settings -> Network -> VPN. Click the **+** button.
+1. Select **Layer 2 Tunneling Protocol (L2TP)**.
+1. Enter anything you like in the **Name** field.
+1. Enter `Your VPN Server IP` for the **Gateway**.
+1. Enter `Your VPN Username` for the **User name**.
+1. Right-click the **?** in the **Password** field, select **Store the password only for this user**.
+1. Enter `Your VPN Password` for the **Password**.
+1. Leave the **NT Domain** field blank.
+1. Click the **IPsec Settings...** button.
+1. Check the **Enable IPsec tunnel to L2TP host** checkbox.
+1. Leave the **Gateway ID** field blank.
+1. Enter `Your VPN IPsec PSK` for the **Pre-shared key**.
+1. Expand the **Advanced** section.
+1. Enter `aes128-sha1-modp2048!` for the **Phase1 Algorithms**.
+1. Enter `aes128-sha1-modp2048!` for the **Phase2 Algorithms**.
+1. Click **OK**, then click **Add** to save the VPN connection information.
+1. Turn the **VPN** switch ON.
+
+Once connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ### Other Linux
 
-First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` package is available for your Linux distribution. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
+First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` package is available for your Linux distribution. If yes, install it (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
 
 ## Troubleshooting
 
@@ -383,8 +403,8 @@ conn %default
   keyingtries=1
   keyexchange=ikev1
   authby=secret
-  ike=aes256-sha1-modp2048,aes128-sha1-modp2048!
-  esp=aes256-sha1-modp2048,aes128-sha1-modp2048!
+  ike=aes128-sha1-modp2048!
+  esp=aes128-sha1-modp2048!
 
 conn myvpn
   keyexchange=ikev1

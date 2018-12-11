@@ -187,11 +187,31 @@ Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端 （设置 -> 网络 -> VPN）。Ubuntu 16.04 和 14.04 用户可能需要添加 `nm-l2tp` PPA。更多信息请看<a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。其它 Ubuntu 版本可以尝试使用下面的命令行配置方法。
+Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 和 14.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
+
+1. 进入设置 -> 网络 -> VPN。单击 **+** 按钮。
+1. 选择 **Layer 2 Tunneling Protocol (L2TP)**。
+1. 在 **Name** 字段中输入任意内容。
+1. 在 **Gateway** 字段中输入`你的 VPN 服务器 IP`。
+1. 在 **User name** 字段中输入`你的 VPN 用户名`。
+1. 右键单击 **Password** 字段中的 **?**，选择 **Store the password only for this user**。
+1. 在 **Password** 字段中输入`你的 VPN 密码`。
+1. 保持 **NT Domain** 字段空白。
+1. 单击 **IPsec Settings...** 按钮。
+1. 选中 **Enable IPsec tunnel to L2TP host** 复选框。
+1. 保持 **Gateway ID** 字段空白。
+1. 在 **Pre-shared key** 字段中输入`你的 VPN IPsec PSK`。
+1. 展开 **Advanced** 部分。
+1. 在 **Phase1 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
+1. 在 **Phase2 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
+1. 单击 **OK**，然后单击 **Add** 保存VPN连接信息。
+1. 启用 **VPN** 连接。
+
+VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### 其它 Linux
 
-首先看<a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">这里</a>以确认 `network-manager-l2tp` 软件包是否在你的 Linux 版本上可用。另外，你也可以 [使用命令行配置 Linux VPN 客户端](#使用命令行配置-linux-vpn-客户端)。
+首先看 <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">这里</a> 以确认 `network-manager-l2tp` 软件包是否在你的 Linux 版本上可用。如果可用，安装它（选择使用 strongSwan）并参见上面的说明。另外，你也可以 [使用命令行配置 Linux VPN 客户端](#使用命令行配置-linux-vpn-客户端)。
 
 ## 故障排除
 
@@ -383,8 +403,8 @@ conn %default
   keyingtries=1
   keyexchange=ikev1
   authby=secret
-  ike=aes256-sha1-modp2048,aes128-sha1-modp2048!
-  esp=aes256-sha1-modp2048,aes128-sha1-modp2048!
+  ike=aes128-sha1-modp2048!
+  esp=aes128-sha1-modp2048!
 
 conn myvpn
   keyexchange=ikev1
