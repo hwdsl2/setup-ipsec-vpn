@@ -74,7 +74,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
    ```bash
    cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
+     modecfgdns="8.8.8.8 8.8.4.4"
      encapsulation=yes
      mobike=no
    EOF

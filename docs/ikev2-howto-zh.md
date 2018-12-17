@@ -74,7 +74,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```bash
    cat >> /etc/ipsec.conf <<EOF
-     modecfgdns="8.8.8.8, 8.8.4.4"
+     modecfgdns="8.8.8.8 8.8.4.4"
      encapsulation=yes
      mobike=no
    EOF
