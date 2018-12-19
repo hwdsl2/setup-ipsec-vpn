@@ -62,8 +62,8 @@ case "$SWAN_VER" in
     DNS_SRVS=$(printf '%s' "$DNS_SRVS" | cut -d '"' -f 2 | cut -d "'" -f 2 | sed 's/,/ /g' | tr -s ' ')
     DNS_SRV1=$(printf '%s' "$DNS_SRVS" | cut -d ' ' -f 1)
     DNS_SRV2=$(printf '%s' "$DNS_SRVS" | cut -s -d ' ' -f 2)
+    [ -n "$DNS_SRV1" ] && dns_state=4
     [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=3
-    [ -n "$DNS_SRV1" ] && [ -z "$DNS_SRV2" ] && dns_state=4
     [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" -gt "1" ] && dns_state=6
     ;;
 esac
