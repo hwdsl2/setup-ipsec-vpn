@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).
+**Note:** You may also connect using the faster **[IPsec/XAuth mode](clients-xauth.md)**, or set up **[IKEv2](ikev2-howto.md)**.
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -13,23 +13,10 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Chromebook](#chromebook)
-  * [Windows Phone](#windows-phone)
   * [Linux](#linux)
 * [Troubleshooting](#troubleshooting)
-  * [Windows Error 809](#windows-error-809)
-  * [Windows Error 628](#windows-error-628)
-  * [Windows 10 upgrades](#windows-10-upgrades)
-  * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
-  * [macOS VPN traffic](#macos-vpn-traffic)
-  * [iOS/Android sleep mode](#iosandroid-sleep-mode)
-  * [Android 6 and above](#android-6-and-above)
-  * [Chromebook issues](#chromebook-issues)
-  * [Other errors](#other-errors)
-  * [Additional steps](#additional-steps)
 
 ## Windows
-
-**Note:** You may also set up and connect using the newer [IKEv2 mode](ikev2-howto.md).
 
 ### Windows 10 and 8.x
 
@@ -43,7 +30,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Return to **Network and Sharing Center**. On the left, click **Change adapter settings**.
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
+1. Click **Allow these protocols**. Check the "Challenge Handshake Authentication Protocol (CHAP)" and "Microsoft CHAP Version 2 (MS-CHAP v2)" checkboxes.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -57,7 +44,8 @@ Alternatively, instead of following the steps above, you may create the VPN conn
 # Disable persistent command history
 Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # Create VPN connection
-Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk 'Your VPN IPsec PSK' -Force -RememberCredential -PassThru
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -L2tpPsk 'Your VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -Force -RememberCredential -PassThru
+# Ignore the data encryption warning (data is encrypted in the IPsec tunnel)
 ```
 
 ### Windows 7, Vista and XP
@@ -80,7 +68,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -Tunn
 1. Right-click on the new VPN entry and choose **Properties**.
 1. Click the **Options** tab and uncheck **Include Windows logon domain**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for the **Type of VPN**.
-1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
+1. Click **Allow these protocols**. Check the "Challenge Handshake Authentication Protocol (CHAP)" and "Microsoft CHAP Version 2 (MS-CHAP v2)" checkboxes.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.
@@ -93,8 +81,6 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## OS X
-
-**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -119,8 +105,6 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Android
 
-**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).
-
 1. Launch the **Settings** application.
 1. Tap **More...** in the **Wireless & Networks** section.
 1. Tap **VPN**.
@@ -141,8 +125,6 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## iOS
-
-**Note:** You may also connect using the faster [IPsec/XAuth mode](clients-xauth.md), or set up [IKEv2](ikev2-howto.md).
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -179,10 +161,6 @@ Once connected, you will see a VPN icon overlay on the network status icon. You 
 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
-## Windows Phone
-
-Users with Windows Phone 8.1 and above, try <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">this tutorial</a>.
-
 ## Linux
 
 ### Ubuntu Linux
@@ -211,7 +189,7 @@ Once connected, you can verify that your traffic is being routed properly by <a 
 
 ### Other Linux
 
-First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` package is available for your Linux distribution. If yes, install it (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
+First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` and `network-manager-l2tp-gnome` packages are available for your Linux distribution. If yes, install them (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
 
 ## Troubleshooting
 

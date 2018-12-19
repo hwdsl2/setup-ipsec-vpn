@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
+**注：** 你也可以使用更高效的 **[IPsec/XAuth 模式](clients-xauth-zh.md)** 连接，或者配置 **[IKEv2](ikev2-howto-zh.md)**。
 
 在成功<a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
@@ -13,23 +13,10 @@
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Chromebook](#chromebook)
-  * [Windows Phone](#windows-phone)
   * [Linux](#linux)
 * [故障排除](#故障排除)
-  * [Windows 错误 809](#windows-错误-809)
-  * [Windows 错误 628](#windows-错误-628)
-  * [Windows 10 升级](#windows-10-升级)
-  * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
-  * [macOS VPN 流量](#macos-vpn-流量)
-  * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
-  * [Android 6 及以上版本](#android-6-及以上版本)
-  * [Chromebook 连接问题](#chromebook-连接问题)
-  * [其它错误](#其它错误)
-  * [额外的步骤](#额外的步骤)
 
 ## Windows
-
-**注：** 你也可以配置并且使用更新的 [IKEv2 模式](ikev2-howto-zh.md) 连接。
 
 ### Windows 10 and 8.x
 
@@ -43,7 +30,7 @@
 1. 返回 **网络和共享中心**。单击左侧的 **更改适配器设置**。
 1. 右键单击新创建的 VPN 连接，并选择 **属性**。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
+1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 和 "Microsoft CHAP 版本 2 (MS-CHAP v2)" 复选框。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
@@ -57,7 +44,8 @@
 # 不保存命令行历史记录
 Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # 创建 VPN 连接
-Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -L2tpPsk '你的 VPN IPsec PSK' -Force -RememberCredential -PassThru
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' -L2tpPsk '你的 VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -Force -RememberCredential -PassThru
+# 忽略 data encryption 警告（数据在 IPsec 隧道中已被加密）
 ```
 
 ### Windows 7, Vista and XP
@@ -80,7 +68,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 1. 右键单击新创建的 VPN 连接，并选择 **属性**。
 1. 单击 **选项** 选项卡，取消选中 **包括Windows登录域** 复选框。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
+1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 和 "Microsoft CHAP 版本 2 (MS-CHAP v2)" 复选框。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
@@ -93,8 +81,6 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 ## OS X
-
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -119,8 +105,6 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## Android
 
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
-
 1. 启动 **设置** 应用程序。
 1. 在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
@@ -141,8 +125,6 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 ## iOS
-
-**注：** 你也可以使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接，或者配置 [IKEv2](ikev2-howto-zh.md)。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -179,10 +161,6 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
-## Windows Phone
-
-Windows Phone 8.1 及以上版本用户可以尝试按照 <a href="http://forums.windowscentral.com/windows-phone-8-1-preview-developers/301521-tutorials-windows-phone-8-1-support-l2tp-ipsec-vpn-now.html" target="_blank">这个教程</a> 的步骤操作。
-
 ## Linux
 
 ### Ubuntu Linux
@@ -211,7 +189,7 @@ VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_
 
 ### 其它 Linux
 
-首先看 <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">这里</a> 以确认 `network-manager-l2tp` 软件包是否在你的 Linux 版本上可用。如果可用，安装它（选择使用 strongSwan）并参见上面的说明。另外，你也可以 [使用命令行配置 Linux VPN 客户端](#使用命令行配置-linux-vpn-客户端)。
+首先看 <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">这里</a> 以确认 `network-manager-l2tp` 和 `network-manager-l2tp-gnome` 软件包是否在你的 Linux 版本上可用。如果可用，安装它们（选择使用 strongSwan）并参见上面的说明。另外，你也可以 [使用命令行配置 Linux VPN 客户端](#使用命令行配置-linux-vpn-客户端)。
 
 ## 故障排除
 

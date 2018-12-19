@@ -103,7 +103,7 @@ nano -w vpnsetup.sh
 sudo sh vpnsetup.sh
 ```
 
-**Note:** DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
+**Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
 **Option 3:** Define your VPN credentials as environment variables:
 
