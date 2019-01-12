@@ -23,7 +23,7 @@ When the deployment finishes, Azure displays a notification. Next steps: [Config
 ## Authors
 
 Copyright (C) 2016 [Daniel Falkner](https://github.com/derdanu)   
-Copyright (C) 2017-2018 Lin Song
+Copyright (C) 2017-2019 Lin Song
 
 ## Screenshot
 

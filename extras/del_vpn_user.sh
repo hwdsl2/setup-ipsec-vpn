@@ -2,7 +2,7 @@
 #
 # Script to delete an VPN user for both IPsec/L2TP and Cisco IPsec
 #
-# Copyright (C) 2018 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2018-2019 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/

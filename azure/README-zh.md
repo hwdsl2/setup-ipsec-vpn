@@ -23,7 +23,7 @@
 ## 作者
 
 版权所有 (C) 2016 [Daniel Falkner](https://github.com/derdanu)   
-版权所有 (C) 2017-2018 Lin Song
+版权所有 (C) 2017-2019 Lin Song
 
 ## 屏幕截图
 

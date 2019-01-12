@@ -1,7 +1,7 @@
 ### Creative Commons Attribution-ShareAlike 3.0 Unported License
 Link to license summary: https://creativecommons.org/licenses/by-sa/3.0/
 
-Copyright (C) 2014-2018 Lin Song    
+Copyright (C) 2014-2019 Lin Song    
 Based on the work of Thomas Sarlandie (Copyright 2012)
 
 <p>THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS
