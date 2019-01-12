@@ -60,10 +60,8 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-NET_IFACE=${VPN_NET_IFACE:-'eth0'}
-def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
-[ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
-
+def_iface=$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')
+[ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')
 def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
   case "$def_iface" in
@@ -72,18 +70,12 @@ if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
       ;;
   esac
   NET_IFACE="$def_iface"
-fi
-
-net_state=$(cat "/sys/class/net/$NET_IFACE/operstate" 2>/dev/null)
-if [ -z "$net_state" ] || [ "$net_state" = "down" ] || [ "$NET_IFACE" = "lo" ]; then
-  printf "Error: Network interface '%s' is not available.\n" "$NET_IFACE" >&2
-  if [ -z "$VPN_NET_IFACE" ]; then
-cat 1>&2 <<EOF
-Could not detect the default network interface. Re-run this script with:
-  sudo VPN_NET_IFACE="default_interface_name" sh "$0"
-EOF
+else
+  eth0_state=$(cat "/sys/class/net/eth0/operstate" 2>/dev/null)
+  if [ -z "$eth0_state" ] || [ "$eth0_state" = "down" ]; then
+    exiterr "Could not detect the default network interface."
   fi
-  exit 1
+  NET_IFACE=eth0
 fi
 
 [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
