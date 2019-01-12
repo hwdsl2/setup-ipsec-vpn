@@ -22,10 +22,10 @@ exiterr2() { exiterr "'apt-get install' failed."; }
 
 vpnupgrade() {
 
-os_type="$(lsb_release -si 2>/dev/null)"
+os_type=$(lsb_release -si 2>/dev/null)
 if [ -z "$os_type" ]; then
-  [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && printf '%s' "$ID")"
-  [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
+  [ -f /etc/os-release  ] && os_type=$(. /etc/os-release  && printf '%s' "$ID")
+  [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
 fi
 if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
   exiterr "This script only supports Ubuntu and Debian."
@@ -77,8 +77,8 @@ case "$SWAN_VER" in
     ;;
 esac
 
-ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
-ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"
+ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
@@ -202,7 +202,7 @@ EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
-NPROCS="$(grep -c ^processor /proc/cpuinfo)"
+NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
 

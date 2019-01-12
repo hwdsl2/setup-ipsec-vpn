@@ -68,8 +68,8 @@ case "$SWAN_VER" in
     ;;
 esac
 
-ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
-ipsec_ver_short="$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')"
+ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
@@ -199,7 +199,7 @@ USE_DNSSEC = false
 USE_DH31 = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
-NPROCS="$(grep -c ^processor /proc/cpuinfo)"
+NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
 
