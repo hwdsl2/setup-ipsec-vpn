@@ -82,6 +82,10 @@ case "$VPN_USERS $VPN_PASSWORDS" in
     ;;
 esac
 
+if printf '%s' "$VPN_USERS" | tr ' ' '\n' | sort | uniq -c | grep -qv '^ *1 '; then
+  exiterr "VPN usernames must not contain duplicates."
+fi
+
 clear
 
 cat <<'EOF'
