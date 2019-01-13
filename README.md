@@ -68,7 +68,7 @@ Please see <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-1
 
 **-OR-**
 
-A dedicated server or KVM/Xen-based virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> or <a href="https://shadowsocks.org" target="_blank">Shadowsocks</a>.
+A dedicated server or KVM/Xen-based virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
 
 This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://aws.amazon.com/lightsail/" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud/virtual-servers" target="_blank">IBM Cloud</a>, <a href="https://www.ovh.com/world/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
@@ -151,7 +151,7 @@ For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com
 
 If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`, then reboot your server. Alternatively, you may define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script.
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`, then reboot your server. Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script.
 
 Using kernel support could improve IPsec/L2TP performance. It is available on Ubuntu 18.04/16.04, Debian 9 and CentOS 7/6. Ubuntu users: Install `linux-modules-extra-$(uname -r)` (or `linux-image-extra`), then run `service xl2tpd restart`.
 
@@ -185,9 +185,8 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 ## See also
 
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
-- <a href="https://github.com/gaomd/docker-ikev2-vpn-server" target="_blank">IKEv2 VPN Server on Docker</a>
-- <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
+- <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 
 ## License
