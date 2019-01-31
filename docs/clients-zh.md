@@ -167,7 +167,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 和 14.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
 
-1. 进入设置 -> 网络 -> VPN。单击 **+** 按钮。
+1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
 1. 选择 **Layer 2 Tunneling Protocol (L2TP)**。
 1. 在 **Name** 字段中输入任意内容。
 1. 在 **Gateway** 字段中输入`你的 VPN 服务器 IP`。
@@ -182,7 +182,28 @@ Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.u
 1. 展开 **Advanced** 部分。
 1. 在 **Phase1 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
 1. 在 **Phase2 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
-1. 单击 **OK**，然后单击 **Add** 保存VPN连接信息。
+1. 单击 **OK**，然后单击 **Add** 保存 VPN 连接信息。
+1. 启用 **VPN** 连接。
+
+VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+### Fedora 和 CentOS
+
+Fedora 28 （和更新版本）和 CentOS 7 用户可以安装 <a href="https://apps.fedoraproject.org/packages/s/libreswan" target="_blank">NetworkManager-libreswan-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。
+
+1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
+1. 选择 **IPsec based VPN**。
+1. 在 **Name** 字段中输入任意内容。
+1. 在 **Gateway** 字段中输入`你的 VPN 服务器 IP`。
+1. 在 **Type** 下拉菜单选择 **IKEv1 (XAUTH)**。
+1. 在 **User name** 字段中输入`你的 VPN 用户名`。
+1. 右键单击 **User password** 字段中的 **?**，选择 **Store the password only for this user**。
+1. 在 **User password** 字段中输入`你的 VPN 密码`。
+1. 保持 **Group name** 字段空白。
+1. 右键单击 **Secret** 字段中的 **?**，选择 **Store the password only for this user**。
+1. 在 **Secret** 字段中输入`你的 VPN IPsec PSK`。
+1. 保持 **Remote ID** 字段空白。
+1. 单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
 VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。

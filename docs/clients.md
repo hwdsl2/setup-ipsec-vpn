@@ -187,6 +187,27 @@ Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.
 
 Once connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
+### Fedora and CentOS
+
+Fedora 28 (and newer) and CentOS 7 users can install the <a href="https://apps.fedoraproject.org/packages/s/libreswan" target="_blank">NetworkManager-libreswan-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI.
+
+1. Go to Settings -> Network -> VPN. Click the **+** button.
+1. Select **IPsec based VPN**.
+1. Enter anything you like in the **Name** field.
+1. Enter `Your VPN Server IP` for the **Gateway**.
+1. Select **IKEv1 (XAUTH)** in the **Type** drop-down menu.
+1. Enter `Your VPN Username` for the **User name**.
+1. Right-click the **?** in the **User password** field, select **Store the password only for this user**.
+1. Enter `Your VPN Password` for the **User password**.
+1. Leave the **Group name** field blank.
+1. Right-click the **?** in the **Secret** field, select **Store the password only for this user**.
+1. Enter `Your VPN IPsec PSK` for the **Secret**.
+1. Leave the **Remote ID** field blank.
+1. Click **Add** to save the VPN connection information.
+1. Turn the **VPN** switch ON.
+
+Once connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
 ### Other Linux
 
 First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` and `network-manager-l2tp-gnome` packages are available for your Linux distribution. If yes, install them (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
