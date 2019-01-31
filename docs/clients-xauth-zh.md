@@ -14,6 +14,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
   * [OS X (macOS)](#os-x)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
+  * [Linux](#linux)
 
 ## Windows
 
@@ -100,6 +101,33 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+
+## Linux
+
+### Fedora 和 CentOS
+
+Fedora 28 （和更新版本）和 CentOS 7 用户可以安装 <a href="https://apps.fedoraproject.org/packages/s/libreswan" target="_blank">NetworkManager-libreswan-gnome</a> 软件包，然后通过 GUI 配置 IPsec/XAuth VPN 客户端。
+
+1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
+1. 选择 **IPsec based VPN**。
+1. 在 **Name** 字段中输入任意内容。
+1. 在 **Gateway** 字段中输入`你的 VPN 服务器 IP`。
+1. 在 **Type** 下拉菜单选择 **IKEv1 (XAUTH)**。
+1. 在 **User name** 字段中输入`你的 VPN 用户名`。
+1. 右键单击 **User password** 字段中的 **?**，选择 **Store the password only for this user**。
+1. 在 **User password** 字段中输入`你的 VPN 密码`。
+1. 保持 **Group name** 字段空白。
+1. 右键单击 **Secret** 字段中的 **?**，选择 **Store the password only for this user**。
+1. 在 **Secret** 字段中输入`你的 VPN IPsec PSK`。
+1. 保持 **Remote ID** 字段空白。
+1. 单击 **Add** 保存 VPN 连接信息。
+1. 启用 **VPN** 连接。
+
+VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+### 其它 Linux
+
+其它 Linux 版本用户可以使用 [IPsec/L2TP 模式](clients-zh.md#linux) 连接。
 
 ## 致谢
 

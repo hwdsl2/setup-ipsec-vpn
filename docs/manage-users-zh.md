@@ -6,7 +6,7 @@
 
 ## 使用辅助脚本
 
-你可以使用这些脚本来更方便地管理 VPN 用户：[add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) 和 [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh)。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth (Cisco IPsec) 模式的用户。如果你需要更改 IPsec PSK，请阅读下一节。
+你可以使用这些脚本来更方便地管理 VPN 用户：[add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) 和 [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh)。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。如果你需要更改 IPsec PSK，请阅读下一节。
 
 **注：** VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
 

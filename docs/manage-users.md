@@ -6,7 +6,7 @@ By default, a single user account for VPN login is created. If you wish to add, 
 
 ## Using helper scripts
 
-You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth (Cisco IPsec). For changing the IPsec PSK, read the next section.
+You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). For changing the IPsec PSK, read the next section.
 
 **Note:** VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 

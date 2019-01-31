@@ -14,6 +14,7 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally **faster t
   * [OS X (macOS)](#os-x)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
+  * [Linux](#linux)
 
 ## Windows
 
@@ -100,6 +101,33 @@ If you get an error when trying to connect, see <a href="clients.md#troubleshoot
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
+## Linux
+
+### Fedora and CentOS
+
+Fedora 28 (and newer) and CentOS 7 users can install the <a href="https://apps.fedoraproject.org/packages/s/libreswan" target="_blank">NetworkManager-libreswan-gnome</a> package, then configure the IPsec/XAuth VPN client using the GUI.
+
+1. Go to Settings -> Network -> VPN. Click the **+** button.
+1. Select **IPsec based VPN**.
+1. Enter anything you like in the **Name** field.
+1. Enter `Your VPN Server IP` for the **Gateway**.
+1. Select **IKEv1 (XAUTH)** in the **Type** drop-down menu.
+1. Enter `Your VPN Username` for the **User name**.
+1. Right-click the **?** in the **User password** field, select **Store the password only for this user**.
+1. Enter `Your VPN Password` for the **User password**.
+1. Leave the **Group name** field blank.
+1. Right-click the **?** in the **Secret** field, select **Store the password only for this user**.
+1. Enter `Your VPN IPsec PSK` for the **Secret**.
+1. Leave the **Remote ID** field blank.
+1. Click **Add** to save the VPN connection information.
+1. Turn the **VPN** switch ON.
+
+Once connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+### Other Linux
+
+Other Linux users can connect using [IPsec/L2TP mode](clients.md#linux).
 
 ## Credits
 
