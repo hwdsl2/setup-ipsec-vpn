@@ -4,7 +4,7 @@
 
 ---
 
-**Important:** This guide is for **advanced users** only. Other users please use <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a>.
+**Important:** This guide is for **advanced users** only. Other users please use [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
 ---
 
@@ -274,6 +274,7 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
+1. Ubuntu 18.04 and CentOS users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460430354" target="_blank">here</a>.
 1. Connecting multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router) is not supported at this time. For this use case, please instead use <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 
 ## References
