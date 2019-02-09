@@ -1,14 +1,19 @@
-# How-To: IKEv2 VPN for Windows, macOS, Android and iOS
+# Step-by-Step Guide: How to Set Up IKEv2 VPN
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
-
----
 
 **Important:** This guide is for **advanced users** only. Other users please use [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
 ---
+* [Introduction](#introduction)
+* [Set up IKEv2 on the VPN server](#set-up-ikev2-on-the-vpn-server)
+* [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
+* [Known issues](#known-issues)
+* [References](#references)
 
-Windows 7 and newer releases support the IKEv2 standard through Microsoft's Agile VPN functionality. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
+## Introduction
+
+Modern operating systems (such as Windows 7 and newer) support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
@@ -17,9 +22,11 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - Android 4.x and newer (using the strongSwan VPN client)
 - iOS (iPhone/iPad)
 
-The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
+## Set up IKEv2 on the VPN server
 
-Before continuing, make sure you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your VPN server</a>, and upgraded Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">to the latest version</a>.
+**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version.
+
+The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
@@ -200,80 +207,82 @@ Before continuing, make sure you have successfully <a href="https://github.com/h
    service ipsec restart
    ```
 
-1. Follow instructions below for your operating system.
+The IKEv2 setup on the VPN server is now complete. Follow instructions below to configure your VPN clients.
 
-   **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
+## Configure IKEv2 VPN clients
 
-   #### Windows 7, 8.x and 10
+**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
 
-   1. Securely transfer `vpnclient.p12` to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+### Windows 7, 8.x and 10
 
-      Detailed instructions:   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+1. Securely transfer `vpnclient.p12` to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-   1. On the Windows computer, add a new IKEv2 VPN connection:   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   Detailed instructions:   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+1. On the Windows computer, add a new IKEv2 VPN connection:   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   1. (Optional) You may enable stronger ciphers by adding the registry key `NegotiateDH2048_AES256` and reboot. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   #### OS X (macOS)
+1. (Optional) Enable stronger ciphers by adding the registry key `NegotiateDH2048_AES256` and reboot. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
-   First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your Mac, then double-click to import them one by one into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
+### OS X (macOS)
 
-   1. Open System Preferences and go to the Network section.
-   1. Click the **+** button in the lower-left corner of the window.
-   1. Select **VPN** from the **Interface** drop-down menu.
-   1. Select **IKEv2** from the **VPN Type** drop-down menu.
-   1. Enter anything you like for the **Service Name**.
-   1. Click **Create**.
-   1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.
-   1. Enter `Your VPN Server IP` (or DNS name) for the **Remote ID**.
-   1. Leave the **Local ID** field blank.
-   1. Click the **Authentication Settings...** button.
-   1. Select **None** from the **Authentication Settings** drop-down menu.
-   1. Select the **Certificate** radio button, then select the **vpnclient** certificate.
-   1. Click **OK**.
-   1. Check the **Show VPN status in menu bar** checkbox.
-   1. Click **Apply** to save the VPN connection information.
-   1. Click **Connect**.
+First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your Mac, then double-click to import them one by one into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
 
-   #### Android 4.x and newer
+1. Open System Preferences and go to the Network section.
+1. Click the **+** button in the lower-left corner of the window.
+1. Select **VPN** from the **Interface** drop-down menu.
+1. Select **IKEv2** from the **VPN Type** drop-down menu.
+1. Enter anything you like for the **Service Name**.
+1. Click **Create**.
+1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.
+1. Enter `Your VPN Server IP` (or DNS name) for the **Remote ID**.
+1. Leave the **Local ID** field blank.
+1. Click the **Authentication Settings...** button.
+1. Select **None** from the **Authentication Settings** drop-down menu.
+1. Select the **Certificate** radio button, then select the **vpnclient** certificate.
+1. Click **OK**.
+1. Check the **Show VPN status in menu bar** checkbox.
+1. Click **Apply** to save the VPN connection information.
+1. Click **Connect**.
 
-   1. Securely transfer `vpnclient.p12` to your Android device.
-   1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
-   1. Launch the VPN client and tap **Add VPN Profile**.
-   1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
-   1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
-   1. Tap **Select user certificate**, then tap **Install certificate**.
-   1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.
-   1. Save the new VPN connection, then tap to connect.
+### Android 4.x and newer
 
-   #### iOS (iPhone/iPad)
+1. Securely transfer `vpnclient.p12` to your Android device.
+1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+1. Launch the VPN client and tap **Add VPN Profile**.
+1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
+1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
+1. Tap **Select user certificate**, then tap **Install certificate**.
+1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.
+1. Save the new VPN connection, then tap to connect.
 
-   First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use AirDrop. Alternatively, host the files on a secure website of yours, then download and import in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+### iOS (iPhone/iPad)
 
-   1. Go to Settings -> General -> VPN.
-   1. Tap **Add VPN Configuration...**.
-   1. Tap **Type**. Select **IKEv2** and go back.
-   1. Tap **Description** and enter anything you like.
-   1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
-   1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
-   1. Leave the **Local ID** field blank.
-   1. Tap **User Authentication**. Select **None** and go back.
-   1. Make sure the **Use Certificate** switch is ON.
-   1. Tap **Certificate**. Select **vpnclient** and go back.
-   1. Tap **Done**.
-   1. Slide the **VPN** switch ON.
+First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use AirDrop. Alternatively, host the files on a secure website of yours, then download and import them in Mobile Safari. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
 
-1. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+1. Go to Settings -> General -> VPN.
+1. Tap **Add VPN Configuration...**.
+1. Tap **Type**. Select **IKEv2** and go back.
+1. Tap **Description** and enter anything you like.
+1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
+1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
+1. Leave the **Local ID** field blank.
+1. Tap **User Authentication**. Select **None** and go back.
+1. Make sure the **Use Certificate** switch is ON.
+1. Tap **Certificate**. Select **vpnclient** and go back.
+1. Tap **Done**.
+1. Slide the **VPN** switch ON.
 
-## Known Issues
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+## Known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
-1. If using the strongSwan Android VPN client, you must <a href="https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
+1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
 1. Ubuntu 18.04 and CentOS users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460430354" target="_blank">here</a>.
 1. Connecting multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router) is not supported at this time. For this use case, please instead use <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 

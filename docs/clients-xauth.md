@@ -127,7 +127,7 @@ Once connected, you can verify that your traffic is being routed properly by <a 
 
 ### Other Linux
 
-Other Linux users can connect using [IPsec/L2TP mode](clients.md#linux).
+Other Linux users can connect using [IPsec/L2TP](clients.md#linux) mode.
 
 ## Credits
 

@@ -133,7 +133,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 <a href="docs/clients-xauth.md" target="_blank">**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**</a>
 
-<a href="docs/ikev2-howto.md" target="_blank">**How-To: IKEv2 VPN for Windows, macOS, Android and iOS**</a>
+<a href="docs/ikev2-howto.md" target="_blank">**Step-by-Step Guide: How to Set Up IKEv2 VPN**</a>
 
 If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 

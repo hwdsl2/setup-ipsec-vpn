@@ -189,7 +189,7 @@ Once connected, you can verify that your traffic is being routed properly by <a 
 
 ### Fedora and CentOS
 
-Fedora 28 (and newer) and CentOS 7 users can connect using the faster [IPsec/XAuth mode](clients-xauth.md#fedora-and-centos).
+Fedora 28 (and newer) and CentOS 7 users can connect using the faster [IPsec/XAuth](clients-xauth.md#linux) mode.
 
 ### Other Linux
 

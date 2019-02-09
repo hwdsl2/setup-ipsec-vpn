@@ -1,14 +1,19 @@
-# 如何配置 IKEv2 VPN: Windows, macOS, Android 和 iOS
+# 分步指南：如何配置 IKEv2 VPN
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
-
----
 
 **重要提示：** 本指南仅适用于**高级用户**。其他用户请使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 
 ---
+* [导言](#导言)
+* [在 VPN 服务器上配置 IKEv2](#在-vpn-服务器上配置-ikev2)
+* [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
+* [已知问题](#已知问题)
+* [参考链接](#参考链接)
 
-Windows 7 和更新版本支持 IKEv2 协议标准，通过 Microsoft 的 Agile VPN 功能来实现。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的<a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a>包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+## 导言
+
+现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a> 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
@@ -17,9 +22,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 - iOS (iPhone/iPad)
 
-下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+## 在 VPN 服务器上配置 IKEv2
 
-在继续之前，请确保你已经成功地 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且将 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级到最新版本</a>。
+**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。
+
+下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
@@ -200,80 +207,82 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    service ipsec restart
    ```
 
-1. 按照下面你的操作系统对应的步骤操作。
+VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你的 VPN 客户端。
 
-   **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
+## 配置 IKEv2 VPN 客户端
 
-   #### Windows 7, 8.x 和 10
+**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
 
-   1. 将文件 `vpnclient.p12` 安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+### Windows 7, 8.x 和 10
 
-      详细的操作步骤：   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+1. 将文件 `vpnclient.p12` 安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-   1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   详细的操作步骤：   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
-   1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
-      https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   1. （可选步骤） 如需启用更强的加密算法，你可以添加注册表键 `NegotiateDH2048_AES256` 并重启。更多信息请看<a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
-   #### OS X (macOS)
+1. （可选步骤） 如需启用更强的加密算法，你可以添加注册表键 `NegotiateDH2048_AES256` 并重启。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
-   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 Mac，然后双击它们并逐个导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击刚才导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。 
+### OS X (macOS)
 
-   1. 打开系统偏好设置并转到网络部分。
-   1. 在窗口左下角单击 **+** 按钮。
-   1. 从 **接口** 下拉菜单选择 **VPN**。
-   1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
-   1. 在 **服务名称** 字段中输入任意内容。
-   1. 单击 **创建**。
-   1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-   1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-   1. 保持 **本地 ID** 字段空白。
-   1. 单击 **鉴定设置...** 按钮。
-   1. 从 **鉴定设置** 下拉菜单中选择 **无**。
-   1. 选择 **证书** 单选按钮，然后选择 **vpnclient** 证书。
-   1. 单击 **好**。
-   1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
-   1. 单击 **应用** 保存VPN连接信息。
-   1. 单击 **连接**。
+首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 Mac，然后双击它们并逐个导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击刚才导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。 
 
-   #### Android 4.x 和更新版本
+1. 打开系统偏好设置并转到网络部分。
+1. 在窗口左下角单击 **+** 按钮。
+1. 从 **接口** 下拉菜单选择 **VPN**。
+1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
+1. 在 **服务名称** 字段中输入任意内容。
+1. 单击 **创建**。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 保持 **本地 ID** 字段空白。
+1. 单击 **鉴定设置...** 按钮。
+1. 从 **鉴定设置** 下拉菜单中选择 **无**。
+1. 选择 **证书** 单选按钮，然后选择 **vpnclient** 证书。
+1. 单击 **好**。
+1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
+1. 单击 **应用** 保存VPN连接信息。
+1. 单击 **连接**。
 
-   1. 将文件 `vpnclient.p12` 安全地传送到你的 Android 设备。
-   1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
-   1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
-   1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-   1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-   1. 单击 **Select user certificate**，然后单击 **Install certificate**。
-   1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。
-   1. 保存新的 VPN 连接，然后单击它以开始连接。
+### Android 4.x 和更新版本
 
-   #### iOS (iPhone/iPad)
+1. 将文件 `vpnclient.p12` 安全地传送到你的 Android 设备。
+1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 打开 VPN 客户端，然后单击 **Add VPN Profile**。
+1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
+1. 单击 **Select user certificate**，然后单击 **Install certificate**。
+1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。
+1. 保存新的 VPN 连接，然后单击它以开始连接。
 
-   首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。你可以使用 AirDrop （隔空投送）来传输文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+### iOS (iPhone/iPad)
 
-   1. 进入设置 -> 通用 -> VPN。
-   1. 单击 **添加VPN配置...**。
-   1. 单击 **类型** 。选择 **IKEv2** 并返回。
-   1. 在 **描述** 字段中输入任意内容。
-   1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-   1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-   1. 保持 **本地 ID** 字段空白。
-   1. 单击 **用户鉴定** 。选择 **无** 并返回。
-   1. 启用 **使用证书** 选项。
-   1. 单击 **证书** 。选择 **vpnclient** 并返回。
-   1. 单击右上角的 **完成**。
-   1. 启用 **VPN** 连接。
+首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。你可以使用 AirDrop （隔空投送）来传输文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
-1. 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+1. 进入设置 -> 通用 -> VPN。
+1. 单击 **添加VPN配置...**。
+1. 单击 **类型** 。选择 **IKEv2** 并返回。
+1. 在 **描述** 字段中输入任意内容。
+1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 保持 **本地 ID** 字段空白。
+1. 单击 **用户鉴定** 。选择 **无** 并返回。
+1. 启用 **使用证书** 选项。
+1. 单击 **证书** 。选择 **vpnclient** 并返回。
+1. 单击右上角的 **完成**。
+1. 启用 **VPN** 连接。
+
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 已知问题
 
-1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式连接。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#%E5%8D%87%E7%BA%A7libreswan" target="_blank">升级</a>到版本 3.26 或以上。
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到版本 3.26 或以上。
 1. Ubuntu 18.04 和 CentOS 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460430354" target="_blank">这里</a>。
 1. 目前还不支持同时连接在同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端。对于这个用例，请换用 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 
