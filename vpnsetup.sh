@@ -69,7 +69,7 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-def_iface=$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')
+def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')
 def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
