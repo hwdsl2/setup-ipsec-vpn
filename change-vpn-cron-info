@@ -1,0 +1,6 @@
+Every VPN should be named with prefix "VPN-", then script will be able to change it.
+Type bash change-vpn.sh to change vpn manually or create a CRON job:
+
+* */4 * * * bash /home/USERNAME/change-vpn.sh > /dev/null 2>&1 # will change VPN every 4 hours
+20 */4 * * * bash /home/USERNAME/change-vpn.sh > /dev/null 2>&1 # will change VPN every 4 hours at 20-th minute
+20 * * * * bash /home/USERNAME/change-vpn.sh > /dev/null 2>&1 # will change VPN every hour at 20-th minute
