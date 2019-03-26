@@ -1,4 +1,6 @@
 If you have a few VPN connections installed on your Linux and you need change VPN automatically - use change-vpn.sh script.
+Script changes VPN connection to random one from inactive list.
+If VPN connection is lost - script will active random VPN connection
 
 Every VPN should be named with prefix "VPN-", then script will be able to change it.
 Type bash change-vpn.sh to change vpn manually or create a CRON job:
