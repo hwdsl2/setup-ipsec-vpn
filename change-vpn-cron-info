@@ -1,3 +1,5 @@
+If you have a few VPN connection installed on your Linux and you need change VPN automatically - use change-vpn.sh script.
+
 Every VPN should be named with prefix "VPN-", then script will be able to change it.
 Type bash change-vpn.sh to change vpn manually or create a CRON job:
 
