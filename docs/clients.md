@@ -207,6 +207,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Android 6 and above](#android-6-and-above)
 * [Chromebook issues](#chromebook-issues)
+* [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Other errors](#other-errors)
 * [Additional steps](#additional-steps)
 
@@ -281,6 +282,22 @@ If you are unable to connect using Android 6 or above:
 1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>).
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
+
+### Access VPN server's subnet
+
+If you wish to allow VPN clients to access the VPN server's subnet, you'll need to manually add IPTables rules after setting up the VPN server. For example, if the subnet is `192.168.0.0/24`:
+
+```
+# For IPsec/L2TP
+iptables -I FORWARD 2 -i ppp+ -d 192.168.0.0/24 -j ACCEPT
+iptables -I FORWARD 2 -s 192.168.0.0/24 -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# For IPsec/XAuth ("Cisco IPsec")
+iptables -I FORWARD 2 -s 192.168.43.0/24 -d 192.168.0.0/24 -j ACCEPT
+iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+```
+
+To make these IPTables rules persist after reboot, you may add them to file `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL).
 
 ### Chromebook issues
 

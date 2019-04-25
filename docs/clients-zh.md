@@ -207,6 +207,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Android 6 及以上版本](#android-6-及以上版本)
 * [Chromebook 连接问题](#chromebook-连接问题)
+* [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [其它错误](#其它错误)
 * [额外的步骤](#额外的步骤)
 
@@ -285,6 +286,22 @@ Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果�
 ### Chromebook 连接问题
 
 Chromebook 用户： 如果你无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
+
+### 访问 VPN 服务器的网段
+
+如果要允许 VPN 客户端访问 VPN 服务器所在的网段，你需要在搭建 VPN 服务器之后手动添加 IPTables 规则。例如，如果网段是 `192.168.0.0/24`：
+
+```
+# For IPsec/L2TP
+iptables -I FORWARD 2 -i ppp+ -d 192.168.0.0/24 -j ACCEPT
+iptables -I FORWARD 2 -s 192.168.0.0/24 -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# For IPsec/XAuth ("Cisco IPsec")
+iptables -I FORWARD 2 -s 192.168.43.0/24 -d 192.168.0.0/24 -j ACCEPT
+iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+```
+
+为了让这些 IPTables 规则在重启后继续有效，你可以将它们添加到文件 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。
 
 ### 其它错误
 
