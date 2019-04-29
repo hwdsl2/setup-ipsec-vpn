@@ -112,6 +112,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Enter anything you like in the **Name** field.
 1. Select **L2TP/IPSec PSK** in the **Type** drop-down menu.
 1. Enter `Your VPN Server IP` in the **Server address** field.
+1. Leave the **L2TP secret** field blank.
+1. Leave the **IPSec identifier** field blank.
 1. Enter `Your VPN IPsec PSK` in the **IPSec pre-shared key** field.
 1. Tap **Save**.
 1. Tap the new VPN connection.

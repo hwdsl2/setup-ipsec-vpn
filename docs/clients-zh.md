@@ -112,6 +112,8 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 1. 在 **名称** 字段中输入任意内容。
 1. 在 **类型** 下拉菜单选择 **L2TP/IPSec PSK**。
 1. 在 **服务器地址** 字段中输入`你的 VPN 服务器 IP`。
+1. 保持 **L2TP 密钥** 字段空白。
+1. 保持 **IPSec 标识符** 字段空白。
 1. 在 **IPSec 预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **保存**。
 1. 单击新的VPN连接。
