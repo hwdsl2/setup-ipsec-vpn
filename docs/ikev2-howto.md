@@ -111,6 +111,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
 1. Generate Certificate Authority (CA) and VPN server certificates:
 
+   **Note:** If on RHEL Beta 8 then you'll need to run `yum -y install nss-tools` first.
+
    **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 36".
 
    ```bash
