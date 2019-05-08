@@ -50,6 +50,9 @@ vpnsetup() {
 
 if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
   exiterr "This script only supports CentOS/RHEL 6 and 7."
+elif grep -q "release 8" /etc/redhat-release; then
+  bigecho "No support for RHEL 8 will be provided..."
+  RHEL8BETA=true
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -131,8 +134,12 @@ check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit th
 
 bigecho "Adding the EPEL repository..."
 
-epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
-yum -y install epel-release || yum -y install "$epel_url" || exiterr2
+if $RHEL8BETA; then
+  yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm || exiterr2
+else
+  epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
+  yum -y install epel-release || yum -y install "$epel_url" || exiterr2
+fi
 
 bigecho "Installing packages required for the VPN..."
 
@@ -149,6 +156,8 @@ yum "$REPO1" -y install xl2tpd || exiterr2
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum "$REPO2" "$REPO3" -y install libevent2-devel fipscheck-devel || exiterr2
+elif $RHEL8BETA; then
+  yum -y install systemd-devel iptables-services libevent-devel fipscheck-devel || exiterr2
 else
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
@@ -174,7 +183,24 @@ esac
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
-yum "$REPO1" -y install fail2ban || exiterr2
+if $RHEL8BETA; then
+  yum -y install install git python3-pip gcc python3-devel systemd-devel
+  pip3 install git+https://github.com/systemd/python-systemd.git#egg=systemd
+  PWO=$PWD
+  cd /opt/src || exit 1
+  git clone https://github.com/fail2ban/fail2ban.git
+  cd /opt/src/fail2ban || exiterr2
+  python3 setup.py install || exiterr2
+  cp /opt/src/fail2ban/build/fail2ban.service /etc/systemd/system/
+  restorecon /etc/systemd/system/fail2ban.service
+  chmod +x /etc/systemd/system/fail2ban.service
+  cd $PWO
+  /bin/rm -rf "/opt/src/fail2ban"
+  systemctl enable fail2ban
+  systemctl start fail2ban
+else
+  yum "$REPO1" -y install fail2ban || exiterr2
+fi
 
 bigecho "Compiling and installing Libreswan..."
 
