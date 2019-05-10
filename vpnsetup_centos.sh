@@ -184,7 +184,7 @@ esac
 bigecho "Installing Fail2Ban to protect SSH..."
 
 if $RHEL8BETA; then
-  yum -y install install git python3-pip gcc python3-devel systemd-devel
+  yum -y install git python3-pip gcc python3-devel systemd-devel
   pip3 install git+https://github.com/systemd/python-systemd.git#egg=systemd
   PWO=$PWD
   cd /opt/src || exit 1
