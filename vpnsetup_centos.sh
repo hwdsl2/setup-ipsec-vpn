@@ -48,11 +48,11 @@ check_ip() {
 
 vpnsetup() {
 
-if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  exiterr "This script only supports CentOS/RHEL 6 and 7."
-elif grep -q "release 8" /etc/redhat-release; then
-  bigecho "No support for RHEL 8 will be provided..."
+if grep -q "release 8" /etc/redhat-release; then
+  bigecho "No assistance for RHEL 8 will be provided..."
   RHEL8BETA=true
+elif ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
+  exiterr "This script only supports CentOS/RHEL 6, 7 and 8 Beta." 
 fi
 
 if [ -f /proc/user_beancounters ]; then
