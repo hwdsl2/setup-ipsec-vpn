@@ -167,7 +167,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 and 14.04 users may need to add the `nm-l2tp` PPA, read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>.
+Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 users may need to add the `nm-l2tp` PPA, read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>.
 
 1. Go to Settings -> Network -> VPN. Click the **+** button.
 1. Select **Layer 2 Tunneling Protocol (L2TP)**.

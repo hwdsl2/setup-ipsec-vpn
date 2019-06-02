@@ -167,7 +167,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 和 14.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
+Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
 
 1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
 1. 选择 **Layer 2 Tunneling Protocol (L2TP)**。
