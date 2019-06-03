@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.27
+SWAN_VER=3.28
 
 ### DO NOT edit below this line ###
 
@@ -44,14 +44,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[0123567])
+  3.19|3.2[01235678])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
   This script can install one of the following versions:
-  3.19-3.23, 3.25-3.26 and 3.27
+  3.19-3.23, 3.25-3.27 and 3.28
 EOF
     exit 1
     ;;
@@ -59,7 +59,7 @@ esac
 
 dns_state=0
 case "$SWAN_VER" in
-  3.2[3567])
+  3.2[35678])
     DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
@@ -128,20 +128,26 @@ cat <<'EOF'
 NOTE: Libreswan versions 3.19 and newer require some configuration changes.
     This script will make the following updates to your /etc/ipsec.conf:
 
-    1. Replace "auth=esp" with "phase2=esp"
-    2. Replace "forceencaps=yes" with "encapsulation=yes"
-    3. Optimize VPN ciphers for "ike=" and "phase2alg="
+    - Replace "auth=esp" with "phase2=esp"
+    - Replace "forceencaps=yes" with "encapsulation=yes"
+    - Optimize VPN ciphers for "ike=" and "phase2alg="
 EOF
 
 if [ "$dns_state" = "1" ] || [ "$dns_state" = "2" ]; then
 cat <<'EOF'
-    4. Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
+    - Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
 EOF
 fi
 
 if [ "$dns_state" = "3" ] || [ "$dns_state" = "4" ]; then
 cat <<'EOF'
-    4. Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
+    - Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
+EOF
+fi
+
+if [ "$SWAN_VER" = "3.28" ]; then
+cat <<'EOF'
+    - Move "ikev2=never" to section "conn shared"
 EOF
 fi
 
@@ -193,10 +199,22 @@ cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
 [ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
 [ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
+if [ "$SWAN_VER" = "3.28" ]; then
+  if ! printf '%s' "$os_type" | head -n 1 | grep -qiF ubuntu; then
+    apt-get -yq install patch || exiterr2
+    patch_url1="https://raw.githubusercontent.com/libreswan/libreswan/37c4736005462084c5d7bc698e13f26fc73a9a4f/programs/barf/barf.in"
+    patch_url2="https://github.com/libreswan/libreswan/commit/716f4b712724c6698469563e531dea3667507ceb.patch"
+    wget -t 3 -T 30 -nv -O programs/barf/barf.in "$patch_url1" || exit 1
+    wget -t 3 -T 30 -nv -O xfrm.patch "$patch_url2" || exit 1
+    patch -p1 < xfrm.patch || exit 1
+  fi
+fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
 USE_DH31 = false
+USE_NSS_AVA_COPY=true
+USE_NSS_IPSEC_PROFILE=false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
@@ -237,6 +255,11 @@ elif [ "$dns_state" = "3" ]; then
   sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
 elif [ "$dns_state" = "4" ]; then
   sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+fi
+
+if [ "$SWAN_VER" = "3.28" ]; then
+  sed -i "/ikev2=never/d" /etc/ipsec.conf
+  sed -i "/dpdaction=clear/a \  ikev2=never" /etc/ipsec.conf
 fi
 
 # Restart IPsec service
