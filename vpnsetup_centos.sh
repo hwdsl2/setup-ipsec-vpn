@@ -154,24 +154,6 @@ else
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 fi
 
-case "$(uname -r)" in
-  4.1[456]*)
-    if grep -qs "release 6" /etc/redhat-release; then
-      L2TP_VER=1.3.12
-      l2tp_dir="xl2tpd-$L2TP_VER"
-      l2tp_file="$l2tp_dir.tar.gz"
-      l2tp_url="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
-      yum "$REPO2" "$REPO3" -y install libpcap-devel || exiterr2
-      wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url" || exit 1
-      /bin/rm -rf "/opt/src/$l2tp_dir"
-      tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
-      cd "$l2tp_dir" && make -s 2>/dev/null && PREFIX=/usr make -s install
-      cd /opt/src || exit 1
-      /bin/rm -rf "/opt/src/$l2tp_dir"
-    fi
-    ;;
-esac
-
 bigecho "Installing Fail2Ban to protect SSH..."
 
 yum "$REPO1" -y install fail2ban || exiterr2
