@@ -202,11 +202,12 @@ cd "libreswan-$SWAN_VER" || exit 1
 if [ "$SWAN_VER" = "3.28" ]; then
   if ! printf '%s' "$os_type" | head -n 1 | grep -qiF ubuntu; then
     apt-get -yq install patch || exiterr2
-    patch_url1="https://raw.githubusercontent.com/libreswan/libreswan/37c4736005462084c5d7bc698e13f26fc73a9a4f/programs/barf/barf.in"
-    patch_url2="https://github.com/libreswan/libreswan/commit/716f4b712724c6698469563e531dea3667507ceb.patch"
+    patch_url1="https://raw.githubusercontent.com/libreswan/libreswan/37c4736/programs/barf/barf.in"
+    patch_url2="https://github.com/libreswan/libreswan/commit/716f4b7.patch"
     wget -t 3 -T 30 -nv -O programs/barf/barf.in "$patch_url1" || exit 1
     wget -t 3 -T 30 -nv -O xfrm.patch "$patch_url2" || exit 1
-    patch -p1 < xfrm.patch || exit 1
+    patch -s -p1 < xfrm.patch || exit 1
+    /bin/rm -f xfrm.patch
   fi
 fi
 cat > Makefile.inc.local <<'EOF'
