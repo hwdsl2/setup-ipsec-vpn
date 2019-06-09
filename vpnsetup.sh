@@ -170,7 +170,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.27
+SWAN_VER=3.28
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -180,10 +180,21 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
+if ! printf '%s' "$os_type" | head -n 1 | grep -qiF ubuntu; then
+  apt-get -yq install patch || exiterr2
+  patch_url1="https://raw.githubusercontent.com/libreswan/libreswan/37c4736/programs/barf/barf.in"
+  patch_url2="https://github.com/libreswan/libreswan/commit/716f4b7.patch"
+  wget -t 3 -T 30 -nv -O programs/barf/barf.in "$patch_url1" || exit 1
+  wget -t 3 -T 30 -nv -O xfrm.patch "$patch_url2" || exit 1
+  patch -s -p1 < xfrm.patch || exit 1
+  /bin/rm -f xfrm.patch
+fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
 USE_DH31 = false
+USE_NSS_AVA_COPY = true
+USE_NSS_IPSEC_PROFILE = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
@@ -234,6 +245,7 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
+  ikev2=never
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2
   sha2-truncbug=yes
@@ -258,7 +270,6 @@ conn xauth-psk
   modecfgpull=yes
   xauthby=file
   ike-frag=yes
-  ikev2=never
   cisco-unity=yes
   also=shared
 EOF
