@@ -170,7 +170,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.28
+SWAN_VER=3.29
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -180,15 +180,6 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-if ! printf '%s' "$os_type" | head -n 1 | grep -qiF ubuntu; then
-  apt-get -yq install patch || exiterr2
-  patch_url1="https://raw.githubusercontent.com/libreswan/libreswan/37c4736/programs/barf/barf.in"
-  patch_url2="https://github.com/libreswan/libreswan/commit/716f4b7.patch"
-  wget -t 3 -T 30 -nv -O programs/barf/barf.in "$patch_url1" || exit 1
-  wget -t 3 -T 30 -nv -O xfrm.patch "$patch_url2" || exit 1
-  patch -s -p1 < xfrm.patch || exit 1
-  /bin/rm -f xfrm.patch
-fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false

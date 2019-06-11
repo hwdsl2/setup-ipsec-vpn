@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.28
+SWAN_VER=3.29
 
 ### DO NOT edit below this line ###
 
@@ -35,14 +35,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[01235678])
+  3.19|3.2[01235679])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
   This script can install one of the following versions:
-  3.19-3.23, 3.25-3.27 and 3.28
+  3.19-3.23, 3.25-3.27 and 3.29
 EOF
     exit 1
     ;;
@@ -50,7 +50,7 @@ esac
 
 dns_state=0
 case "$SWAN_VER" in
-  3.2[35678])
+  3.2[35679])
     DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
@@ -136,7 +136,7 @@ cat <<'EOF'
 EOF
 fi
 
-if [ "$SWAN_VER" = "3.28" ]; then
+if [ "$SWAN_VER" = "3.29" ]; then
 cat <<'EOF'
     - Move "ikev2=never" to section "conn shared"
 EOF
@@ -199,11 +199,6 @@ cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
 [ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
 [ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
-if [ "$SWAN_VER" = "3.28" ]; then
-  if grep -qs "release 6" /etc/redhat-release; then
-    sed -i '28iLDFLAGS += -lrt' testing/timecheck/Makefile
-  fi
-fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -250,7 +245,7 @@ elif [ "$dns_state" = "4" ]; then
   sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-if [ "$SWAN_VER" = "3.28" ]; then
+if [ "$SWAN_VER" = "3.29" ]; then
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/dpdaction=clear/a \  ikev2=never" /etc/ipsec.conf
 fi
