@@ -207,6 +207,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
+* [iOS 13 connection issues](#ios-13-connection-issues)
 * [Android 6 and above](#android-6-and-above)
 * [Chromebook issues](#chromebook-issues)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
@@ -276,6 +277,10 @@ To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi s
 
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo). Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
 
+### iOS 13 connection issues
+
+If your iOS 13 device (iPhone/iPad) can connect to the VPN but cannot access the Internet, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
+
 ### Android 6 and above
 
 If you are unable to connect using Android 6 or above:
@@ -312,6 +317,7 @@ If you encounter other errors, refer to the links below:
 * http://www.tp-link.com/en/faq-1029.html
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+* https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
 ### Additional steps
 

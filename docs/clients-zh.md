@@ -207,6 +207,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
+* [iOS 13 连接问题](#ios-13-连接问题)
 * [Android 6 及以上版本](#android-6-及以上版本)
 * [Chromebook 连接问题](#chromebook-连接问题)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
@@ -276,6 +277,10 @@ OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是
 
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 中不再可用。 另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 <a href="https://support.google.com/android/answer/9089766?hl=zh-Hans" target="_blank">这里</a>。
 
+### iOS 13 连接问题
+
+如果你的 iOS 13 设备 (iPhone/iPad) 可以连接到 VPN 但是不能上网，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
+
 ### Android 6 及以上版本
 
 如果你无法使用 Android 6 或以上版本连接：
@@ -312,6 +317,7 @@ iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstat
 * http://www.tp-link.com/en/faq-1029.html
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
+* https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
 ### 额外的步骤
 
