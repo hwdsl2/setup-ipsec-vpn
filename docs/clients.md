@@ -209,6 +209,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [iOS 13 connection issues](#ios-13-connection-issues)
 * [Android 6 and above](#android-6-and-above)
+* [Debian 10 kernel](#debian-10-kernel)
 * [Chromebook issues](#chromebook-issues)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Other errors](#other-errors)
@@ -290,6 +291,16 @@ If you are unable to connect using Android 6 or above:
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
+### Debian 10 kernel
+
+Debian 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode ([IPsec/XAuth mode](clients-xauth.md) is not affected).
+
+To fix, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot.
+
+### Chromebook issues
+
+Chromebook users: If you are unable to connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
+
 ### Access VPN server's subnet
 
 If you wish to allow VPN clients to access the VPN server's subnet, you'll need to manually add IPTables rules after setting up the VPN server. For example, if the subnet is `192.168.0.0/24`:
@@ -305,10 +316,6 @@ iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstat
 ```
 
 To make these IPTables rules persist after reboot, you may add them to file `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL).
-
-### Chromebook issues
-
-Chromebook users: If you are unable to connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
 
 ### Other errors
 

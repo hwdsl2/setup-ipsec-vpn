@@ -209,6 +209,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [iOS 13 连接问题](#ios-13-连接问题)
 * [Android 6 及以上版本](#android-6-及以上版本)
+* [Debian 10 内核](#debian-10-内核)
 * [Chromebook 连接问题](#chromebook-连接问题)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [其它错误](#其它错误)
@@ -289,6 +290,12 @@ Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果�
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
+
+### Debian 10 内核
+
+Debian 10 用户： 运行 `uname -r` 以检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式（[IPsec/XAuth 模式](clients-xauth-zh.md) 不受影响）。
+
+要解决此问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启。
 
 ### Chromebook 连接问题
 
