@@ -182,8 +182,8 @@ Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.
 1. Leave the **Gateway ID** field blank.
 1. Enter `Your VPN IPsec PSK` for the **Pre-shared key**.
 1. Expand the **Advanced** section.
-1. Enter `aes128-sha1-modp2048!` for the **Phase1 Algorithms**.
-1. Enter `aes128-sha1-modp2048!` for the **Phase2 Algorithms**.
+1. Enter `aes128-sha1-modp2048` for the **Phase1 Algorithms**.
+1. Enter `aes128-sha1` for the **Phase2 Algorithms**.
 1. Click **OK**, then click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
@@ -417,8 +417,8 @@ conn %default
   keyingtries=1
   keyexchange=ikev1
   authby=secret
-  ike=aes128-sha1-modp2048!
-  esp=aes128-sha1-modp2048!
+  ike=aes128-sha1-modp2048
+  esp=aes128-sha1
 
 conn myvpn
   keyexchange=ikev1
