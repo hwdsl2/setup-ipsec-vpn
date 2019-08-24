@@ -182,8 +182,8 @@ Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.u
 1. 保持 **Gateway ID** 字段空白。
 1. 在 **Pre-shared key** 字段中输入`你的 VPN IPsec PSK`。
 1. 展开 **Advanced** 部分。
-1. 在 **Phase1 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
-1. 在 **Phase2 Algorithms** 字段中输入 `aes128-sha1-modp2048!`。
+1. 在 **Phase1 Algorithms** 字段中输入 `aes128-sha1-modp2048`。
+1. 在 **Phase2 Algorithms** 字段中输入 `aes128-sha1`。
 1. 单击 **OK**，然后单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
