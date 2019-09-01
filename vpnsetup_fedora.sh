@@ -371,6 +371,11 @@ logpath  = /var/log/secure
 EOF
 fi
 
+bigecho "Creating firewall rules..."
+firewall-cmd --permanent --add-port=500/udp
+firewall-cmd --permanent --add-port=4500/udp
+firewall-cmd --reload
+
 bigecho "Enabling services on boot..."
 
 systemctl --now mask firewalld 2>/dev/null
