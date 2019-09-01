@@ -335,7 +335,7 @@ fi
 
 # Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
-  service fail2ban stop >/dev/null 2>&1
+  systemctl stop fail2ban.service >/dev/null 2>&1
   iptables-save > "$IPT_FILE.old-$SYS_DT"
   iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
@@ -373,13 +373,8 @@ fi
 
 bigecho "Enabling services on boot..."
 
-if grep -qs "release 6" /etc/redhat-release; then
-  chkconfig iptables on
-  chkconfig fail2ban on
-else
-  systemctl --now mask firewalld 2>/dev/null
-  systemctl enable iptables fail2ban 2>/dev/null
-fi
+systemctl --now mask firewalld 2>/dev/null
+systemctl enable iptables fail2ban 2>/dev/null
 
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
   if [ -f /etc/rc.local ]; then
@@ -391,8 +386,8 @@ cat >> /etc/rc.local <<'EOF'
 # Added by hwdsl2 VPN script
 (sleep 15
 modprobe -q pppol2tp
-service ipsec restart
-service xl2tpd restart
+systemctl restart ipsec.service
+systemctl restart xl2tpd.service
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
 EOF
 fi
@@ -414,20 +409,12 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 # Apply new IPTables rules
 iptables-restore < "$IPT_FILE"
 
-# Fix xl2tpd on CentOS 7, if kernel module "l2tp_ppp" is unavailable
-if grep -qs "release 7" /etc/redhat-release; then
-  if ! modprobe -q l2tp_ppp; then
-    sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
-    systemctl daemon-reload
-  fi
-fi
-
 # Restart services
 mkdir -p /run/pluto
 modprobe -q pppol2tp
-service fail2ban restart 2>/dev/null
-service ipsec restart 2>/dev/null
-service xl2tpd restart 2>/dev/null
+systemctl restart fail2ban.service 2>/dev/null
+systemctl restart ipsec.service 2>/dev/null
+systemctl restart xl2tpd.service 2>/dev/null
 
 cat <<EOF
 ================================================
