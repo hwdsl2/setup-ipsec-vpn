@@ -202,7 +202,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 *Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 * [Windows Error 809](#windows-error-809)
-* [Windows Error 628](#windows-error-628)
+* [Windows Error 628 or 766](#windows-error-628-or-766)
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
@@ -217,7 +217,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 
 ### Windows Error 809
 
-> The network connection between your computer and the VPN server could not be established because the remote server is not responding.
+> Error 809: The network connection between your computer and the VPN server could not be established because the remote server is not responding.
 
 To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. **You must reboot your PC when finished.**
 
@@ -241,16 +241,19 @@ Although uncommon, some Windows systems disable IPsec encryption, causing the co
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
   ```
 
-### Windows Error 628
+### Windows Error 628 or 766
 
-> The connection was terminated by the remote computer before it could be completed.
+> Error 628: The connection was terminated by the remote computer before it could be completed.
 
-To fix this error, please follow these steps:
+> Error 766: A certificate could not be found. Conenctions that use the L2TP protocol over IPSec require the installation of a machine certificate, also known as a computer certificate.
 
-1. Right-click on the wireless/network icon in system tray, select **Open Network and Sharing Center**.
+To fix these errors, please follow these steps:
+
+1. Right-click on the wireless/network icon in your system tray.
+1. Select **Open Network and Sharing Center**. Or, if using Windows 10 version 1709 or newer, select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**.
 1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
-1. Click **Allow these protocols**. Make sure the "Challenge Handshake Authentication Protocol (CHAP)" checkbox is checked.
+1. Click **Allow these protocols**. Check the "Challenge Handshake Authentication Protocol (CHAP)" and "Microsoft CHAP Version 2 (MS-CHAP v2)" checkboxes.
 1. Click the **Advanced settings** button.
 1. Select **Use preshared key for authentication** and enter `Your VPN IPsec PSK` for the **Key**.
 1. Click **OK** to close the **Advanced settings**.

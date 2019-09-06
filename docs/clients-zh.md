@@ -202,7 +202,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 *其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 * [Windows 错误 809](#windows-错误-809)
-* [Windows 错误 628](#windows-错误-628)
+* [Windows 错误 628 或 766](#windows-错误-628-或-766)
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
@@ -217,7 +217,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 
 ### Windows 错误 809
 
-> 无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。
+> 错误 809：无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。
 
 要解决此错误，在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。**完成后必须重启计算机。**
 
@@ -241,16 +241,19 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
   ```
 
-### Windows 错误 628
+### Windows 错误 628 或 766
 
-> 在连接完成前，连接被远程计算机终止。
+> 错误 628：在连接完成前，连接被远程计算机终止。
 
-要解决此错误，请按以下步骤操作：
+> 错误 766：找不到证书。使用通过 IPSec 的 L2TP 协议的连接要求安装一个机器证书。它也叫做计算机证书。
 
-1. 右键单击系统托盘中的无线/网络图标，选择 **打开网络和共享中心**。
+要解决这些错误，请按以下步骤操作：
+
+1. 右键单击系统托盘中的无线/网络图标。
+1. 选择 **打开网络和共享中心**。或者，如果你使用 Windows 10 版本 1709 或以上，选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击 **网络和共享中心**。
 1. 单击左侧的 **更改适配器设置**。右键单击新的 VPN 连接，并选择 **属性**。
 1. 单击 **安全** 选项卡，从 **VPN 类型** 下拉菜单中选择 "使用 IPsec 的第 2 层隧道协议 (L2TP/IPSec)"。
-1. 单击 **允许使用这些协议**。确保选中 "质询握手身份验证协议 (CHAP)" 复选框。
+1. 单击 **允许使用这些协议**。选中 "质询握手身份验证协议 (CHAP)" 和 "Microsoft CHAP 版本 2 (MS-CHAP v2)" 复选框。
 1. 单击 **高级设置** 按钮。
 1. 单击 **使用预共享密钥作身份验证** 并在 **密钥** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **确定** 关闭 **高级设置**。
