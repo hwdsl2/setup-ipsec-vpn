@@ -245,7 +245,7 @@ Although uncommon, some Windows systems disable IPsec encryption, causing the co
 
 > Error 628: The connection was terminated by the remote computer before it could be completed.
 
-> Error 766: A certificate could not be found. Conenctions that use the L2TP protocol over IPSec require the installation of a machine certificate, also known as a computer certificate.
+> Error 766: A certificate could not be found. Connections that use the L2TP protocol over IPSec require the installation of a machine certificate, also known as a computer certificate.
 
 To fix these errors, please follow these steps:
 
