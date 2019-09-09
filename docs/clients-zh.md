@@ -203,6 +203,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 
 * [Windows 错误 809](#windows-错误-809)
 * [Windows 错误 628 或 766](#windows-错误-628-或-766)
+* [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
@@ -217,7 +218,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 
 ### Windows 错误 809
 
-> 错误 809：无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。
+> 错误 809：无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。这可能是因为未将计算机与远程服务器之间的某种网络设备(如防火墙、NAT、路由器等)配置为允许 VPN 连接。请与管理员或服务提供商联系以确定哪种设备可能产生此问题。
 
 要解决此错误，在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。**完成后必须重启计算机。**
 
@@ -260,6 +261,14 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
 ![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
+
+### Windows 10 正在连接
+
+如果你使用 Windows 10 并且 VPN 卡在 "正在连接" 状态超过几分钟，尝试以下步骤：
+
+1. 右键单击系统托盘中的无线/网络图标。
+1. 选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击左侧的 **VPN**。
+1. 选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。
 
 ### Windows 10 升级
 

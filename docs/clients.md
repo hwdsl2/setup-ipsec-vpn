@@ -203,6 +203,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 
 * [Windows Error 809](#windows-error-809)
 * [Windows Error 628 or 766](#windows-error-628-or-766)
+* [Windows 10 connecting](#windows-10-connecting)
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
@@ -217,7 +218,7 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 
 ### Windows Error 809
 
-> Error 809: The network connection between your computer and the VPN server could not be established because the remote server is not responding.
+> Error 809: The network connection between your computer and the VPN server could not be established because the remote server is not responding. This could be because one of the network devices (e.g, firewalls, NAT, routers, etc) between your computer and the remote server is not configured to allow VPN connections. Please contact your Administrator or your service provider to determine which device may be causing the problem.
 
 To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. **You must reboot your PC when finished.**
 
@@ -260,6 +261,14 @@ To fix these errors, please follow these steps:
 1. Click **OK** to save the VPN connection details.
 
 ![Select CHAP in VPN connection properties](images/vpn-properties.png)
+
+### Windows 10 connecting
+
+If using Windows 10 and the VPN is stuck on "connecting" for more than a few minutes, try these steps:
+
+1. Right-click on the wireless/network icon in your system tray.
+1. Select **Open Network & Internet settings**, then on the page that opens, click **VPN** on the left.
+1. Select the new VPN entry, then click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**.
 
 ### Windows 10 upgrades
 
