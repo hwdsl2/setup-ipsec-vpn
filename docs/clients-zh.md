@@ -205,7 +205,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 * [Windows 错误 628 或 766](#windows-错误-628-或-766)
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10 升级](#windows-10-升级)
-* [Windows 10 无法连接到???](#Windows 10 无法连接到???)
+* [Windows 10 无法连接到](#windows-10-无法连接到)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
@@ -275,7 +275,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 
 在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照上面的 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
 
-### Windows 10 无法连接到???
+### Windows 10 无法连接到
 
 ![show can not connect](images/can_not_connect.png)
 
@@ -285,6 +285,7 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 2. 删除之前添加的VPN连接
 
 3. 在**设备管理器**的**网络适配器**中**卸载**以 WAN 开头的项
+
 ![del wan prefix](images/del_wan_prefix.png)
 
 4. **重启**后重新添加VPN设置
