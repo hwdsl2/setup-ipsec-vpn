@@ -65,7 +65,7 @@ If you get an error when trying to connect, see <a href="clients.md#troubleshoot
 ## Android
 
 1. Launch the **Settings** application.
-1. Tap **More...** in the **Wireless & Networks** section.
+1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
 1. Tap **VPN**.
 1. Tap **Add VPN Profile** or the **+** icon at top-right of screen.
 1. Enter anything you like in the **Name** field.

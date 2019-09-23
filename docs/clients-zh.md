@@ -106,7 +106,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 ## Android
 
 1. 启动 **设置** 应用程序。
-1. 在 **无线和网络** 部分单击 **更多...**。
+1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
 1. 单击 **添加VPN配置文件** 或窗口右上角的 **+**。
 1. 在 **名称** 字段中输入任意内容。
@@ -207,9 +207,9 @@ Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPse
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
+* [Android 6 和 7](#android-6-和-7)
+* [iOS 13 和 macOS 10.15](#ios-13-和-macos-1015)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
-* [iOS 13 连接问题](#ios-13-连接问题)
-* [Android 6 及以上版本](#android-6-及以上版本)
 * [Debian 10 内核](#debian-10-内核)
 * [Chromebook 连接问题](#chromebook-连接问题)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
@@ -284,24 +284,24 @@ Windows 8.x 和 10 默认使用 "smart multi-homed name resolution" （智能多
 
 OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [OS X](#os-x) 部分并完成这一步：单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。然后重新连接 VPN。
 
+### Android 6 和 7
+
+如果你的 Android 6.x 或者 7.x 设备无法连接，请尝试以下步骤：
+
+1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（看下图），请启用它并重试连接。如果不存在，请尝试下一步。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug` 一行并切换它的值。也就是说，将 `sha2-truncbug=no` 替换为 `sha2-truncbug=yes`，或者将 `sha2-truncbug=yes` 替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
+
+![Android VPN workaround](images/vpn-profile-Android.png)
+
+### iOS 13 和 macOS 10.15
+
+如果你的 iOS 13 或者 macOS 10.15 (Catalina) 设备无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
+
 ### iOS/Android 睡眠模式
 
 为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 <a href="https://discussions.apple.com/thread/2333948" target="_blank">故意设计的</a> 并且不能被配置。如果你需要 VPN 在设备唤醒后自动重连，可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
 
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 中不再可用。 另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 <a href="https://support.google.com/android/answer/9089766?hl=zh-Hans" target="_blank">这里</a>。
-
-### iOS 13 连接问题
-
-如果你的 iOS 13 设备 (iPhone/iPad) 可以连接到 VPN 但是不能上网，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。
-
-### Android 6 及以上版本
-
-如果你无法使用 Android 6 或以上版本连接：
-
-1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（看下图），请启用它并重试连接。如果不存在，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">参见</a>)
-
-![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Debian 10 内核
 

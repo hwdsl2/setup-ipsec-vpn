@@ -106,7 +106,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 ## Android
 
 1. Launch the **Settings** application.
-1. Tap **More...** in the **Wireless & Networks** section.
+1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
 1. Tap **VPN**.
 1. Tap **Add VPN Profile** or the **+** icon at top-right of screen.
 1. Enter anything you like in the **Name** field.
@@ -207,9 +207,9 @@ First check <a href="https://github.com/nm-l2tp/network-manager-l2tp/wiki/Prebui
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
+* [Android 6 and 7](#android-6-and-7)
+* [iOS 13 and macOS 10.15](#ios-13-and-macos-1015)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
-* [iOS 13 connection issues](#ios-13-connection-issues)
-* [Android 6 and above](#android-6-and-above)
 * [Debian 10 kernel](#debian-10-kernel)
 * [Chromebook issues](#chromebook-issues)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
@@ -284,24 +284,24 @@ In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS 
 
 OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
 
+### Android 6 and 7
+
+If your Android 6.x or 7.x device cannot connect, try these steps:
+
+1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
+1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value. i.e. Replace `sha2-truncbug=no` with `sha2-truncbug=yes`, or replace `sha2-truncbug=yes` with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
+
+![Android VPN workaround](images/vpn-profile-Android.png)
+
+### iOS 13 and macOS 10.15
+
+If your iOS 13 or macOS 10.15 (Catalina) device cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
+
 ### iOS/Android sleep mode
 
 To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured. If you need the VPN to auto-reconnect when the device wakes up, try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo). Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
-
-### iOS 13 connection issues
-
-If your iOS 13 device (iPhone/iPad) can connect to the VPN but cannot access the Internet, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`.
-
-### Android 6 and above
-
-If you are unable to connect using Android 6 or above:
-
-1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart` (<a href="https://libreswan.org/wiki/FAQ#Configuration_Matters" target="_blank">Ref</a>).
-
-![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### Debian 10 kernel
 

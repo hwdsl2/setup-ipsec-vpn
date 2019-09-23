@@ -146,7 +146,9 @@ sh vpnsetup.sh
 
 *其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#windows-错误-809" target="_blank">修改注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT（比如家用路由器）的兼容问题。
+**Windows 用户** 在首次连接之前需要<a href="docs/clients-zh.md#windows-错误-809" target="_blank">修改注册表</a>，以解决 VPN 服务器和/或客户端与 NAT（比如家用路由器）的兼容问题。
+
+**Android 6 和 7 用户**：如果你遇到连接问题，请尝试 <a href="docs/clients-zh.md#android-6-和-7" target="_blank">这些步骤</a>。
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth 模式</a>。
 
