@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的網絡流量，以防止在通過互聯網傳送資�
  
 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">**&raquo; 另見： Docker 上的 IPsec VPN 伺服器**</a>
  
-*其他語言: [English](README.md), [繁體中文](README-tc.md), [简体中文](README-sc.md).*
+*其他語言版本: [English](README.md), [繁體中文](README-zh-tw.md), [简体中文](README-zh-cn.md).*
  
 #### 目錄
  
@@ -144,7 +144,7 @@ sh vpnsetup.sh
  
 ## 重要提示
  
-*其他語言: [English](README.md#important-notes), [繁體中文](README-tc.md#重要提示), [简体中文](README-sc.md#重要提示).*
+*其他語言: [English](README.md#important-notes), [繁體中文](README-zh-tw.md#重要提示), [简体中文](README-zh-cn.md#重要提示).*
  
 **Windows 用戶** 在首次連接之前或需要<a href="docs/clients-zh.md#windows-錯誤-809" target="_blank">修改註冊表</a>，以解決 VPN 伺服器和/或客戶端與 NAT（比如家用路由器）的兼容問題。
  

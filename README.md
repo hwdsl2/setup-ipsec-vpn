@@ -10,7 +10,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">**&raquo; See also: IPsec VPN Server on Docker**</a>
 
-*Read this in other languages: [English](README.md), [繁體中文](README-tc.md), [简体中文](README-zh.md).*
+*Read this in other languages: [English](README.md), [繁體中文](README-zh-tw.md), [简体中文](README-zh-cn.md).*
 
 #### Table of Contents
 
@@ -144,7 +144,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-*Read this in other languages: [English](README.md#important-notes), [繁體中文](README-tc.md#重要提示), [简体中文](README-zh.md#重要提示).*
+*Read this in other languages: [English](README.md#important-notes), [繁體中文](README-zh-tw.md#重要提示), [简体中文](README-zh-cn.md#重要提示).*
 
 **Windows users**: This <a href="docs/clients.md#windows-error-809" target="_blank">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
 
