@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6 and 7.
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6, 7 and 8.
 # Works on any dedicated server or virtual private server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -48,8 +48,8 @@ check_ip() {
 
 vpnsetup() {
 
-if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  exiterr "This script only supports CentOS/RHEL 6 and 7."
+if ! grep -qs -e "release 6" -e "release 7" -e "release 8" /etc/redhat-release; then
+  exiterr "This script only supports CentOS/RHEL 6, 7 and 8."
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -111,7 +111,7 @@ cd /opt/src || exit 1
 
 bigecho "Installing packages required for setup..."
 
-yum -y install wget bind-utils openssl \
+yum -y install wget bind-utils openssl tar \
   iptables iproute gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
@@ -139,9 +139,10 @@ bigecho "Installing packages required for the VPN..."
 REPO1='--enablerepo=epel'
 REPO2='--enablerepo=*server-optional*'
 REPO3='--enablerepo=*releases-optional*'
+REPO4='--enablerepo=PowerTools'
 
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
-  libcap-ng-devel libselinux-devel curl-devel \
+  libcap-ng-devel libselinux-devel curl-devel nss-tools \
   flex bison gcc make ppp || exiterr2
 
 yum "$REPO1" -y install xl2tpd || exiterr2
@@ -149,9 +150,16 @@ yum "$REPO1" -y install xl2tpd || exiterr2
 if grep -qs "release 6" /etc/redhat-release; then
   yum -y remove libevent-devel
   yum "$REPO2" "$REPO3" -y install libevent2-devel fipscheck-devel || exiterr2
-else
+elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
+else
+  if [ -f /usr/sbin/subscription-manager ]; then
+    subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
+    yum -y install systemd-devel iptables-services libevent-devel fipscheck-devel || exiterr2
+  else
+    yum "$REPO4" -y install systemd-devel iptables-services libevent-devel fipscheck-devel || exiterr2
+  fi
 fi
 
 bigecho "Installing Fail2Ban to protect SSH..."
@@ -441,8 +449,8 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 # Apply new IPTables rules
 iptables-restore < "$IPT_FILE"
 
-# Fix xl2tpd on CentOS 7, if kernel module "l2tp_ppp" is unavailable
-if grep -qs "release 7" /etc/redhat-release; then
+# Fix xl2tpd on CentOS 7/8, if kernel module "l2tp_ppp" is unavailable
+if grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
   if ! modprobe -q l2tp_ppp; then
     sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
     systemctl daemon-reload
