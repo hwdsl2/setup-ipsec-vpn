@@ -12,6 +12,8 @@ Customizable with the following options:
  - Operating System Image (Debian 9 or Ubuntu 16.04 LTS)
  - Virtual Machine Size (Default: Standard_B1s)
 
+**Note:** DO NOT use these special characters within values: `\ " '`
+
 Press this button to start:
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fhwdsl2%2Fsetup-ipsec-vpn%2Fmaster%2Fazure%2Fazuredeploy.json" target="_blank">

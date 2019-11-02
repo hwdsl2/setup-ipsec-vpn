@@ -47,6 +47,7 @@
     }
   },
   "variables": {
+    "quote": "'",
     "location": "[resourceGroup().location]",
     "vmName": "vpnserver",
     "virtualNetworkName": "vpnVnet",
@@ -71,7 +72,7 @@
       "version": "latest"
     },
     "installScriptURL": "https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/azure/install.sh",
-    "installCommand": "[concat('sh install.sh ', parameters('preSharedKey'), ' ', parameters('username'), ' ', parameters('password'))]"
+    "installCommand": "[concat('sh install.sh ', variables('quote'), parameters('preSharedKey'), variables('quote'), ' ', variables('quote'), parameters('username'), variables('quote'), ' ', variables('quote'), parameters('password'), variables('quote'))]"
   },
   "resources": [
     {

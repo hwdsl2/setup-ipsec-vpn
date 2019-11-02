@@ -12,6 +12,8 @@
  - Operating System Image （操作系统镜像，Debian 9 或 Ubuntu 16.04 LTS）
  - Virtual Machine Size （虚拟机大小，默认值： Standard_B1s）
 
+**注：** \*不要\* 在值中使用这些字符： `\ " '`
+
 请单击以下按钮开始：
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fhwdsl2%2Fsetup-ipsec-vpn%2Fmaster%2Fazure%2Fazuredeploy.json" target="_blank">
