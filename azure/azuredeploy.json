@@ -37,6 +37,7 @@
       "type": "string",
       "defaultValue": "Standard_B1s",
       "allowedValues": [
+        "Standard_B1ls",
         "Standard_B1s",
         "Standard_B1ms",
         "Standard_B2s",
