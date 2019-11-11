@@ -178,7 +178,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
 
-1. （适用于 macOS 和 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
+1. （适用于 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
 
    ```bash
    certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
@@ -217,7 +217,7 @@ VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你
 * [OS X (macOS)](#os-x-macos)
 * [Android 10 和更新版本](#android-10-和更新版本)
 * [Android 4.x to 9.x](#android-4x-to-9x)
-* [iOS (iPhone/iPad)](#ios-iphoneipad)
+* [iOS (iPhone/iPad)](#ios)
 
 ### Windows 7, 8.x 和 10
 
@@ -236,7 +236,7 @@ VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你
 
 ### OS X (macOS)
 
-首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 Mac，然后双击它们并逐个导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击刚才导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。 
+首先，将文件 `vpnclient.p12` 安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -282,9 +282,15 @@ VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你
    **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
-### iOS (iPhone/iPad)
+### iOS
 
-首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。你可以使用 AirDrop （隔空投送）来传输文件。或者，你也可以将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+
+1. AirDrop （隔空投送），或者
+1. 将文件上传到设备，在 "文件" 应用程序中单击它们，然后到 "设置" 中导入，或者
+1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
+
+在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
