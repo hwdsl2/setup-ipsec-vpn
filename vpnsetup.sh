@@ -8,7 +8,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2014-2019 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2014-2020 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -54,7 +54,9 @@ if [ -z "$os_type" ]; then
   [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
 fi
 if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
-  exiterr "This script only supports Ubuntu and Debian."
+  echo "Error: This script only supports Ubuntu and Debian." >&2
+  echo "For CentOS/RHEL, use https://git.io/vpnsetup-centos" >&2
+  exit 1
 fi
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then

@@ -2,7 +2,7 @@
 #
 # Script to upgrade Libreswan on Ubuntu and Debian
 #
-# Copyright (C) 2016-2019 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2016-2020 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -28,7 +28,9 @@ if [ -z "$os_type" ]; then
   [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
 fi
 if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
-  exiterr "This script only supports Ubuntu and Debian."
+  echo "Error: This script only supports Ubuntu and Debian." >&2
+  echo "For CentOS/RHEL, use https://git.io/vpnupgrade-centos" >&2
+  exit 1
 fi
 
 if [ "$(sed 's/\..*//' /etc/debian_version)" = "7" ]; then
