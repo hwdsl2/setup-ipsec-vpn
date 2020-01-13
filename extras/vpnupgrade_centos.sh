@@ -107,11 +107,22 @@ Version to install: Libreswan $SWAN_VER
 EOF
 
 case "$SWAN_VER" in
+  3.19|3.2[0123567])
+cat <<'EOF'
+WARNING: Older versions of Libreswan may contain security vulnerabilities.
+    See: https://libreswan.org/security/
+    Are you sure you want to install an older version?
+
+EOF
+    ;;
+esac
+
+case "$SWAN_VER" in
   3.2[35])
 cat <<'EOF'
 WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
     IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-    DO NOT upgrade to 3.23/3.25 if your use cases include the above.
+    DO NOT install 3.23/3.25 if your use cases include the above.
 
 EOF
     ;;
