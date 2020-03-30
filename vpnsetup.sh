@@ -172,7 +172,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.29
+SWAN_VER=3.31
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -239,7 +239,7 @@ conn shared
   dpdtimeout=120
   dpdaction=clear
   ikev2=never
-  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2
   sha2-truncbug=no
 
