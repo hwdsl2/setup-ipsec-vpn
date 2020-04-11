@@ -286,6 +286,8 @@ In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS 
 
 OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
 
+If your computer is still not sending traffic over the VPN check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
+
 ### Android 6 and 7
 
 If your Android 6.x or 7.x device cannot connect, try these steps:
