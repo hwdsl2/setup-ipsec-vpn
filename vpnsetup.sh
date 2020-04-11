@@ -172,7 +172,7 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.29
+SWAN_VER=3.31
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -185,11 +185,15 @@ cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
+USE_DH2 = true
 USE_DH31 = false
 USE_NSS_AVA_COPY = true
 USE_NSS_IPSEC_PROFILE = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
+if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+  echo "USE_XFRM_INTERFACE_IFLA_HEADER = true" >> Makefile.inc.local
+fi
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
