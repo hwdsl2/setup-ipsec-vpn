@@ -21,7 +21,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 **注：** 你也可以使用 [IPsec/L2TP 模式](clients-zh.md) 连接，无需安装额外的软件。
 
 1. 下载并安装免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN 客户端</a>。   
-   **注：** 该 VPN 客户端支持 Windows 2K/XP/Vista/7/8 系统。
+   **注：** 该 VPN 客户端支持 Windows 2K/XP/Vista/7/8/10 系统。
 1. 单击开始菜单 -> 所有程序 -> ShrewSoft VPN Client -> VPN Access Manager
 1. 单击工具栏中的 **Add (+)** 按钮。
 1. 在 **Host Name or IP Address** 字段中输入`你的 VPN 服务器 IP`。
@@ -30,6 +30,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 1. 单击 **Credentials** 子选项卡，并在 **Pre Shared Key** 字段中输入`你的 VPN IPsec PSK`。
 1. 单击 **Phase 1** 选项卡，从 **Exchange Type** 下拉菜单中选择 **main**。
 1. 单击 **Phase 2** 选项卡，从 **HMAC Algorithm** 下拉菜单中选择 **sha1**。
+1. 单击 **Policy** 选项卡，从 **Policy Generation Level** 下拉菜单中选择 **shared**。
 1. 单击 **Save** 保存 VPN 连接的详细信息。
 1. 选择新添加的 VPN 连接。单击工具栏中的 **Connect** 按钮。
 1. 在 **Username** 字段中输入`你的 VPN 用户名`。
