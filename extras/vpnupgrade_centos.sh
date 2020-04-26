@@ -221,6 +221,11 @@ cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
 [ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
 [ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
+if [ "$SWAN_VER" = "3.31" ]; then
+  sed -i '916iif (!st->st_seen_fragvid) { return FALSE; }' programs/pluto/ikev2.c
+  sed -i '1033s/if (/if (LIN(POLICY_IKE_FRAG_ALLOW, sk->ike->sa.st_connection->policy) \&\& sk->ike->sa.st_seen_fragvid \&\& /' \
+    programs/pluto/ikev2_message.c
+fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
