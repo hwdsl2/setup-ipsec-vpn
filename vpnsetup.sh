@@ -272,7 +272,9 @@ conn xauth-psk
 EOF
 
 if uname -m | grep -qi '^arm'; then
-  sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
+  if ! modprobe -q sha512; then
+    sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
+  fi
 fi
 
 # Specify IPsec PSK
