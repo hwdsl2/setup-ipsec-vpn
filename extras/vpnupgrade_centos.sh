@@ -227,7 +227,7 @@ if [ "$SWAN_VER" = "3.31" ]; then
     programs/pluto/ikev2_message.c
 fi
 cat > Makefile.inc.local <<'EOF'
-WERROR_CFLAGS =
+WERROR_CFLAGS = -w
 USE_DNSSEC = false
 USE_DH31 = false
 USE_NSS_AVA_COPY = true
