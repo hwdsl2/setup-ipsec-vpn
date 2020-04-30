@@ -113,6 +113,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 120"。
 
+   生成 CA 证书：
+
    ```bash
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
@@ -130,6 +132,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Is this a critical extension [y/N]?
    N
    ```
+
+   生成 VPN 服务器证书：
 
    **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须将以下命令中的 `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` 换成 `--extSAN "dns:$PUBLIC_IP"`。
 
@@ -150,6 +154,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书：
 
+   生成客户端证书：
+
    ```bash
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
@@ -163,6 +169,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    ```
    Generating key.  This may take a few moments...
    ```
+
+   导出 `.p12` 文件：
 
    ```bash
    pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
@@ -207,7 +215,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    service ipsec restart
    ```
 
-VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你的 VPN 客户端。
+在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你的 VPN 客户端。
 
 ## 配置 IKEv2 VPN 客户端
 
@@ -268,6 +276,7 @@ VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你
 1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
 1. 单击 **Select user certificate**，选择你的新 VPN 客户端证书并确认。
+1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
 ### Android 4.x to 9.x
@@ -280,6 +289,7 @@ VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你
 1. 单击 **Select user certificate**，然后单击 **Install certificate**。
 1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。   
    **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
+1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
 ### iOS

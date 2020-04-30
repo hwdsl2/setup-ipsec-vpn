@@ -113,6 +113,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
    **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 120".
 
+   Generate CA certificate:
+
    ```bash
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
@@ -130,6 +132,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
    Is this a critical extension [y/N]?
    N
    ```
+
+   Generate VPN server certificate:
 
    **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must replace `--extSAN "ip:$PUBLIC_IP,dns:$PUBLIC_IP"` in the command below with `--extSAN "dns:$PUBLIC_IP"`.
 
@@ -150,6 +154,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate:
 
+   Generate client certificate:
+
    ```bash
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
@@ -163,6 +169,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
    ```
    Generating key.  This may take a few moments...
    ```
+
+   Export `.p12` file:
 
    ```bash
    pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
@@ -201,13 +209,13 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
    **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
 
-1. **(Important) Restart IPsec service**:
+1. **(Important) Restart the IPsec service**:
 
    ```bash
    service ipsec restart
    ```
 
-The IKEv2 setup on the VPN server is now complete. Follow instructions below to configure your VPN clients.
+Before continuing, you **must** restart the IPsec service. The IKEv2 setup on the VPN server is now complete. Follow instructions below to configure your VPN clients.
 
 ## Configure IKEv2 VPN clients
 
@@ -268,6 +276,7 @@ First, securely transfer `vpnclient.p12` to your Mac, then double-click to impor
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
 1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
 1. Tap **Select user certificate**, select your new VPN client certificate and confirm.
+1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
 ### Android 4.x to 9.x
@@ -280,6 +289,7 @@ First, securely transfer `vpnclient.p12` to your Mac, then double-click to impor
 1. Tap **Select user certificate**, then tap **Install certificate**.
 1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.   
    **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
+1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
 ### iOS
