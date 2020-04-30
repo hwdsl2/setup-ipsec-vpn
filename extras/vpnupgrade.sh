@@ -275,7 +275,7 @@ fi
 
 if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ]; then
   sed -i "/ikev2=never/d" /etc/ipsec.conf
-  sed -i "/dpdaction=clear/a \  ikev2=never" /etc/ipsec.conf
+  sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
 fi
 
 # Restart IPsec service
