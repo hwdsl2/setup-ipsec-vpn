@@ -384,21 +384,21 @@ ipsec whack --trafficstatus
 
 ## 使用命令行配置 Linux VPN 客户端
 
-以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
+在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来使用命令行配置 Linux VPN 客户端。另外，你也可以 [使用图形界面](#linux) 配置。以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 
 要配置 VPN 客户端，首先安装以下软件包：
 
 ```bash
 # Ubuntu & Debian
 apt-get update
-apt-get -y install strongswan xl2tpd
+apt-get -y install strongswan xl2tpd net-tools
 
 # CentOS & RHEL
 yum -y install epel-release
-yum --enablerepo=epel -y install strongswan xl2tpd
+yum --enablerepo=epel -y install strongswan xl2tpd net-tools
 
 # Fedora
-yum -y install strongswan xl2tpd
+yum -y install strongswan xl2tpd net-tools
 ```
 
 创建 VPN 变量 （替换为你自己的值）：

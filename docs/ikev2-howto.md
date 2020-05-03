@@ -109,7 +109,7 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
    EOF
    ```
 
-1. Generate Certificate Authority (CA) and VPN server certificates:
+1. Generate Certificate Authority (CA) and VPN server certificates.
 
    **Note:** Specify the certificate validity period (in months) with "-v". e.g. "-v 120".
 
@@ -152,7 +152,7 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
    Generating key.  This may take a few moments...
    ```
 
-1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate:
+1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
    Generate client certificate:
 

@@ -384,21 +384,21 @@ ipsec whack --trafficstatus
 
 ## Configure Linux VPN clients using the command line
 
-Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
+After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may configure [using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 
 ```bash
 # Ubuntu & Debian
 apt-get update
-apt-get -y install strongswan xl2tpd
+apt-get -y install strongswan xl2tpd net-tools
 
 # CentOS & RHEL
 yum -y install epel-release
-yum --enablerepo=epel -y install strongswan xl2tpd
+yum --enablerepo=epel -y install strongswan xl2tpd net-tools
 
 # Fedora
-yum -y install strongswan xl2tpd
+yum -y install strongswan xl2tpd net-tools
 ```
 
 Create VPN variables (replace with actual values):

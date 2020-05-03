@@ -109,7 +109,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    EOF
    ```
 
-1. 生成 Certificate Authority (CA) 和 VPN 服务器证书：
+1. 生成 Certificate Authority (CA) 和 VPN 服务器证书。
 
    **注：** 使用 "-v" 参数指定证书的有效期（单位：月），例如 "-v 120"。
 
@@ -152,7 +152,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    Generating key.  This may take a few moments...
    ```
 
-1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书：
+1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书。
 
    生成客户端证书：
 
