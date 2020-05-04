@@ -106,7 +106,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 
 ### Fedora 和 CentOS
 
-Fedora 28 （和更新版本）和 CentOS 7 用户可以安装 <a href="https://apps.fedoraproject.org/packages/s/libreswan" target="_blank">NetworkManager-libreswan-gnome</a> 软件包，然后通过 GUI 配置 IPsec/XAuth VPN 客户端。
+Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用 `yum` 安装 `NetworkManager-libreswan-gnome` 软件包，然后通过 GUI 配置 IPsec/XAuth VPN 客户端。
 
 1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
 1. 选择 **IPsec based VPN**。

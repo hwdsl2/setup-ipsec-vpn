@@ -6,8 +6,8 @@ This template will create a fully working VPN server on the Microsoft Azure Clou
 
 Customizable with the following options:
 
- - Username for VPN and SSH
- - Password for VPN and SSH
+ - Username for VPN **and** SSH
+ - Password for VPN **and** SSH
  - IPsec Pre-Shared Key for VPN
  - Operating System Image (Debian 9 or Ubuntu 18.04/16.04 LTS)
  - Virtual Machine Size (Default: Standard_B1s)

@@ -167,7 +167,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 （和更新版本）用户可以安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
+Ubuntu 18.04 （和更新版本）用户可以使用 `apt` 安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
 
 1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
 1. 选择 **Layer 2 Tunneling Protocol (L2TP)**。
@@ -193,7 +193,7 @@ VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_
 
 ### Fedora 和 CentOS
 
-Fedora 28 （和更新版本）和 CentOS 7 用户可以使用更高效的 [IPsec/XAuth](clients-xauth-zh.md#linux) 模式连接。
+Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IPsec/XAuth](clients-xauth-zh.md#linux) 模式连接。
 
 ### 其它 Linux
 

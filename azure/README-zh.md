@@ -6,8 +6,8 @@
 
 可根据偏好设置以下选项：
 
- - Username for VPN and SSH （用户名）
- - Password for VPN and SSH （密码）
+ - Username for VPN **and** SSH （用户名）
+ - Password for VPN **and** SSH （密码）
  - IPsec Pre-Shared Key for VPN （IPsec 预共享密钥）
  - Operating System Image （操作系统镜像，Debian 9 或 Ubuntu 18.04/16.04 LTS）
  - Virtual Machine Size （虚拟机大小，默认值： Standard_B1s）
