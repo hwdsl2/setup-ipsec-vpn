@@ -2,11 +2,12 @@
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
-**Important:** This guide is for **advanced users** only. Other users please use [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
+**Note:** This guide is for **advanced users**. Other users please use [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
 ---
 * [Introduction](#introduction)
-* [Set up IKEv2 on the VPN server](#set-up-ikev2-on-the-vpn-server)
+* [Using helper scripts](#using-helper-scripts)
+* [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
 * [Known issues](#known-issues)
 * [References](#references)
@@ -22,11 +23,21 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - Android 4.x and newer (using the strongSwan VPN client)
 - iOS (iPhone/iPad)
 
-## Set up IKEv2 on the VPN server
+## Using helper scripts
 
 **Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version.
 
-The following example shows how to configure IKEv2 with Libreswan. Commands below must be run as `root`.
+You may use this helper script to automatically set up IKEv2 on the VPN server:
+
+```
+wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
+```
+
+The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you wish to generate certificates for additional VPN clients, refer to step 4 in the next section.
+
+## Manually set up IKEv2 on the VPN server
+
+The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
@@ -154,6 +165,8 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
+   **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each. You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc.
+
    Generate client certificate:
 
    ```bash
@@ -182,9 +195,7 @@ The following example shows how to configure IKEv2 with Libreswan. Commands belo
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   Enter a secure password to protect the exported `.p12` file (when importing into an iOS or macOS device, this password cannot be empty). You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc.
-
-   **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+   Enter a secure password to protect the exported `.p12` file (when importing into an iOS or macOS device, this password cannot be empty).
 
 1. (For iOS clients) Export the CA certificate as `vpnca.cer`:
 

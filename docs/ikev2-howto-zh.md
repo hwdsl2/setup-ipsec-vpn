@@ -2,11 +2,12 @@
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
-**重要提示：** 本指南仅适用于**高级用户**。其他用户请使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式。
+**注：** 本指南适用于**高级用户**。其他用户请使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 
 ---
 * [导言](#导言)
-* [在 VPN 服务器上配置 IKEv2](#在-vpn-服务器上配置-ikev2)
+* [使用辅助脚本](#使用辅助脚本)
+* [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [已知问题](#已知问题)
 * [参考链接](#参考链接)
@@ -22,11 +23,21 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 - iOS (iPhone/iPad)
 
-## 在 VPN 服务器上配置 IKEv2
+## 使用辅助脚本
 
 **重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。
 
-下面举例说明如何在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+你可以使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
+
+```
+wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
+```
+
+该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如需为更多的客户端生成证书，请参见下一小节的第 4 步。
+
+## 手动在 VPN 服务器上配置 IKEv2
+
+下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
@@ -154,6 +165,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书。
 
+   **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。
+
    生成客户端证书：
 
    ```bash
@@ -182,9 +195,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
    pk12util: PKCS12 EXPORT SUCCESSFUL
    ```
 
-   指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 或 macOS 设备时，该密码不能为空）。你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。
-
-   **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
+   指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 或 macOS 设备时，该密码不能为空）。
 
 1. （适用于 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
 
