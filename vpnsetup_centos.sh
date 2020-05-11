@@ -30,6 +30,7 @@ YOUR_PASSWORD=''
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
+# IKEv2 guide:       https://git.io/ikev2
 
 # =====================================================
 
@@ -492,6 +493,7 @@ Write these down. You'll need them to connect!
 
 Important notes:   https://git.io/vpnnotes
 Setup VPN clients: https://git.io/vpnclients
+IKEv2 guide:       https://git.io/ikev2
 
 ================================================
 
