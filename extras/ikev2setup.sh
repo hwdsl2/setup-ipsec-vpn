@@ -46,15 +46,16 @@ EOF
 fi
 
 case "$swan_ver" in
-  3.19|3.2[01235679]|3.31)
+  3.19|3.2[01235679]|3.3[12])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
   This script requires one of these versions:
-  3.19-3.23, 3.25-3.27, 3.29 or 3.31
-  Upgrade Libreswan: https://git.io/vpnupgrade
+  3.19-3.23, 3.25-3.27, 3.29, 3.31 or 3.32
+  To upgrade Libreswan, see:
+  https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
 EOF
     exit 1
     ;;
@@ -119,7 +120,7 @@ fi
 # Check for MOBIKE support
 mobike_support=0
 case "$swan_ver" in
-  3.2[35679]|3.31)
+  3.2[35679]|3.3[12])
     mobike_support=1
     ;;
 esac
@@ -194,7 +195,7 @@ conn ikev2-cp
 EOF
 
 case "$swan_ver" in
-  3.2[35679]|3.31)
+  3.2[35679]|3.3[12])
 cat >> /etc/ipsec.conf <<'EOF'
   modecfgdns="8.8.8.8 8.8.4.4"
   encapsulation=yes

@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.31
+SWAN_VER=3.32
 
 ### DO NOT edit below this line ###
 
@@ -37,14 +37,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679]|3.31)
+  3.19|3.2[01235679]|3.3[12])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
   This script can install one of the following versions:
-  3.19-3.23, 3.25-3.27, 3.29 and 3.31
+  3.19-3.23, 3.25-3.27, 3.29, 3.31 and 3.32
 EOF
     exit 1
     ;;
@@ -52,7 +52,7 @@ esac
 
 dns_state=0
 case "$SWAN_VER" in
-  3.2[35679]|3.31)
+  3.2[35679]|3.3[12])
     DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
@@ -127,7 +127,7 @@ cat <<'EOF'
 EOF
 fi
 
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ]; then
+if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
 cat <<'EOF'
     - Move "ikev2=never" to section "conn shared"
 EOF
@@ -140,7 +140,7 @@ cat <<'EOF'
 EOF
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679])
+  3.19|3.2[01235679]|3.31)
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
     See: https://libreswan.org/security/
@@ -234,7 +234,7 @@ USE_NSS_AVA_COPY = true
 USE_NSS_IPSEC_PROFILE = false
 USE_GLIBC_KERN_FLIP_HEADERS = true
 EOF
-if [ "$SWAN_VER" = "3.31" ]; then
+if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
   echo "USE_DH2 = true" >> Makefile.inc.local
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
     echo "USE_XFRM_INTERFACE_IFLA_HEADER = true" >> Makefile.inc.local
@@ -278,7 +278,7 @@ elif [ "$dns_state" = "4" ]; then
   sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ]; then
+if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
 fi
