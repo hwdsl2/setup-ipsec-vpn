@@ -84,7 +84,7 @@ You can use the default options and just press enter if you are OK with them.
 
 EOF
 
-echo "Do you want IKEv2 VPN clients to connect to this VPN server using a DNS name,"
+echo "Do you want IKEv2 VPN clients to connect to this server using a DNS name,"
 printf "e.g. vpn.example.com, instead of its IP address [y/N]? "
 read -r response
 case $response in
@@ -132,6 +132,7 @@ if [ "$mobike_support" = "1" ]; then
     [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
     [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
   fi
+  [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
   if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
     mobike_support=0
   fi
@@ -140,10 +141,10 @@ fi
 mobike_enable=0
 if [ "$mobike_support" = "1" ]; then
   echo
-  printf "Do you want to enable MOBIKE support [y/N]? "
+  printf "Do you want to enable MOBIKE support [Y/n]? "
   read -r response
   case $response in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS]|[yY]|'')
       mobike_enable=1
       ;;
     *)
