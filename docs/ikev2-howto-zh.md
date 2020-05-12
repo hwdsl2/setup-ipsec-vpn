@@ -230,7 +230,7 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
 
 ## 配置 IKEv2 VPN 客户端
 
-**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
+**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如需为更多的客户端生成证书，请参见上一小节的第 4 步。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)

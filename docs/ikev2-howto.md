@@ -230,7 +230,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Configure IKEv2 VPN clients
 
-**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields.
+**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you wish to generate certificates for additional VPN clients, refer to step 4 in the previous section.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
