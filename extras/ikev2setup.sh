@@ -70,8 +70,8 @@ EOF
   exit 1
 fi
 
-command -v certutil >/dev/null 2>&1 || { echo >&2 "Error: Command 'certutil' not found. Aborting."; exit 1; }
-command -v pk12util >/dev/null 2>&1 || { echo >&2 "Error: Command 'pk12util' not found. Aborting."; exit 1; }
+command -v certutil >/dev/null 2>&1 || { echo >&2 "Error: Command 'certutil' not found. Abort."; exit 1; }
+command -v pk12util >/dev/null 2>&1 || { echo >&2 "Error: Command 'pk12util' not found. Abort."; exit 1; }
 
 clear
 
@@ -85,7 +85,7 @@ You can use the default options and just press enter if you are OK with them.
 EOF
 
 echo "Do you want IKEv2 VPN clients to connect to this server using a DNS name,"
-printf "e.g. vpn.example.com, instead of its IP address [y/N]? "
+printf "e.g. vpn.example.com, instead of its IP address? [y/N] "
 read -r response
 case $response in
   [yY][eE][sS]|[yY])
@@ -108,11 +108,11 @@ if [ "$use_dns_name" = "1" ]; then
 else
   public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
   [ -z "$public_ip" ] && public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-  read -rp "Enter the IPv4 address of this VPN server [$public_ip]: " server_addr
+  read -rp "Enter the IPv4 address of this VPN server: [$public_ip] " server_addr
   [ -z "$server_addr" ] && server_addr="$public_ip"
   until check_ip "$server_addr"; do
     echo "Invalid IP address."
-    read -rp "Enter the IPv4 address of this VPN server [$public_ip]: " server_addr
+    read -rp "Enter the IPv4 address of this VPN server: [$public_ip] " server_addr
     [ -z "$server_addr" ] && server_addr="$public_ip"
   done
 fi
@@ -141,7 +141,7 @@ fi
 mobike_enable=0
 if [ "$mobike_support" = "1" ]; then
   echo
-  printf "Do you want to enable MOBIKE support [Y/n]? "
+  printf "Do you want to enable MOBIKE support? [Y/n] "
   read -r response
   case $response in
     [yY][eE][sS]|[yY]|'')
@@ -153,15 +153,38 @@ if [ "$mobike_support" = "1" ]; then
   esac
 fi
 
-echo
-printf "We are ready to set up IKEv2 now. Continue [y/N]? "
+cat <<EOF
+
+Below are the IKEv2 setup options you selected.
+Please double check before continuing!
+
+================================================
+
+VPN server address: $server_addr
+EOF
+
+if [ "$mobike_support" = "1" ]; then
+  if [ "$mobike_enable" = "1" ]; then
+    echo "Enable MOBIKE support: Yes"
+  else
+    echo "Enable MOBIKE support: No"
+  fi
+fi
+
+cat <<'EOF'
+
+================================================
+
+EOF
+
+printf "We are ready to set up IKEv2 now. Do you want to continue? [y/N] "
 read -r response
 case $response in
   [yY][eE][sS]|[yY])
     echo
     ;;
   *)
-    echo "Aborting. Your configuration was not changed."
+    echo "Abort. No changes were made."
     exit 1
     ;;
 esac
@@ -281,14 +304,17 @@ pk12util -o "vpnclient-$SYS_DT.p12" -n "vpnclient" -d sql:/etc/ipsec.d
 
 bigecho "Restarting IPsec service..."
 
+mkdir -p /run/pluto
 service ipsec restart
 
 cat <<EOF
+
 =================================================
 
 IKEv2 VPN setup is now complete!
 
 Files exported to the current folder:
+
 vpnclient-$SYS_DT.p12
 vpnca-$SYS_DT.cer (for iOS clients)
 

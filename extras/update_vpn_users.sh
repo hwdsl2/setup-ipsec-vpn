@@ -123,7 +123,7 @@ Write these down. You'll need them to connect!
 
 EOF
 
-printf "Do you wish to continue? [y/N] "
+printf "Do you want to continue? [y/N] "
 read -r response
 case $response in
   [yY][eE][sS]|[yY])
@@ -132,9 +132,7 @@ case $response in
     echo
     ;;
   *)
-    echo
-    echo "Aborting. No changes were made."
-    echo
+    echo "Abort. No changes were made."
     exit 1
     ;;
 esac

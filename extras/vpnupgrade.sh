@@ -89,14 +89,14 @@ if printf '%s' "$ipsec_ver" | grep -qF "$SWAN_VER"; then
   echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
   echo
-  printf "Do you wish to continue anyway? [y/N] "
+  printf "Do you want to continue anyway? [y/N] "
   read -r response
   case $response in
     [yY][eE][sS]|[yY])
       echo
       ;;
     *)
-      echo "Aborting."
+      echo "Abort. No changes were made."
       exit 1
       ;;
   esac
@@ -170,7 +170,7 @@ EOF
     ;;
 esac
 
-printf "Do you wish to continue? [y/N] "
+printf "Do you want to continue? [y/N] "
 read -r response
 case $response in
   [yY][eE][sS]|[yY])
@@ -179,7 +179,7 @@ case $response in
     echo
     ;;
   *)
-    echo "Aborting."
+    echo "Abort. No changes were made."
     exit 1
     ;;
 esac
