@@ -331,10 +331,9 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
 ## 已知问题
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
+1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到版本 3.26 或以上。
 1. 如果你的 VPN 客户端可以连接但是无法打开任何网站，可以尝试编辑服务器上的 `/etc/ipsec.conf`。找到 `conn ikev2-cp` 部分的 `phase2alg=` 一行并删除 `aes_gcm-null,`。保存文件并运行 `service ipsec restart`。
-1. Ubuntu 18.04 和 CentOS 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460430354" target="_blank">这里</a>。
-1. 目前还不支持同时连接在同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端。对于这个用例，请换用 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 
 ## 参考链接
 

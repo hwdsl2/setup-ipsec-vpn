@@ -209,12 +209,12 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
 * [macOS VPN 流量](#macos-vpn-流量)
+* [Android MTU/MSS 问题](#android-mtumss-问题)
 * [Android 6 和 7](#android-6-和-7)
 * [iOS 13 和 macOS 10.15](#ios-13-和-macos-1015)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 10 内核](#debian-10-内核)
 * [Chromebook 连接问题](#chromebook-连接问题)
-* [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [其它错误](#其它错误)
 * [额外的步骤](#额外的步骤)
 
@@ -288,6 +288,23 @@ OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是
 
 如果你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
 
+### Android MTU/MSS 问题
+
+某些 Android 设备有 MTU/MSS 问题，表现为使用 IPsec/XAuth ("Cisco IPsec") 模式可以连接到 VPN 但是无法打开网站。如果你遇到该问题，尝试在 VPN 服务器上运行以下命令。如果成功解决，你可以将这些命令添加到 `/etc/rc.local` 以使它们重启后继续有效。
+
+```
+iptables -t mangle -A FORWARD -m policy --pol ipsec --dir in \
+  -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+  -j TCPMSS --set-mss 1360
+iptables -t mangle -A FORWARD -m policy --pol ipsec --dir out \
+  -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+  -j TCPMSS --set-mss 1360
+
+echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
+```
+
+参考链接：<a href="https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#MTUMSS-issues" target="_blank">[1]</a> <a href="https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/" target="_blank">[2]</a>。
+
 ### Android 6 和 7
 
 如果你的 Android 6.x 或者 7.x 设备无法连接，请尝试以下步骤：
@@ -316,22 +333,6 @@ Debian 10 用户： 运行 `uname -r` 以检查你的服务器的 Linux 内核�
 ### Chromebook 连接问题
 
 Chromebook 用户： 如果你无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
-
-### 访问 VPN 服务器的网段
-
-如果要允许 VPN 客户端访问 VPN 服务器所在的网段，你需要在搭建 VPN 服务器之后手动添加 IPTables 规则。例如，如果网段是 `192.168.0.0/24`：
-
-```
-# For IPsec/L2TP
-iptables -I FORWARD 2 -i ppp+ -d 192.168.0.0/24 -j ACCEPT
-iptables -I FORWARD 2 -s 192.168.0.0/24 -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-# For IPsec/XAuth ("Cisco IPsec")
-iptables -I FORWARD 2 -s 192.168.43.0/24 -d 192.168.0.0/24 -j ACCEPT
-iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-```
-
-为了让这些 IPTables 规则在重启后继续有效，你可以将它们添加到文件 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。
 
 ### 其它错误
 

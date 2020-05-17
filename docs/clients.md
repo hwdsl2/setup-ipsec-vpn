@@ -209,12 +209,12 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
 * [macOS VPN traffic](#macos-vpn-traffic)
+* [Android MTU/MSS issues](#android-mtumss-issues)
 * [Android 6 and 7](#android-6-and-7)
 * [iOS 13 and macOS 10.15](#ios-13-and-macos-1015)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Debian 10 kernel](#debian-10-kernel)
 * [Chromebook issues](#chromebook-issues)
-* [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Other errors](#other-errors)
 * [Additional steps](#additional-steps)
 
@@ -288,6 +288,23 @@ OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but y
 
 If your computer is still not sending traffic over the VPN check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
 
+### Android MTU/MSS issues
+
+Some Android devices have MTU/MSS issues, that they are able to connect to the VPN using IPsec/XAuth ("Cisco IPsec") mode, but cannot open websites. If you encounter this problem, try running the following commands on the VPN server. If successful, you may add these commands to `/etc/rc.local` to persist after reboot.
+
+```
+iptables -t mangle -A FORWARD -m policy --pol ipsec --dir in \
+  -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+  -j TCPMSS --set-mss 1360
+iptables -t mangle -A FORWARD -m policy --pol ipsec --dir out \
+  -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+  -j TCPMSS --set-mss 1360
+
+echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
+```
+
+References: <a href="https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#MTUMSS-issues" target="_blank">[1]</a> <a href="https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/" target="_blank">[2]</a>.
+
 ### Android 6 and 7
 
 If your Android 6.x or 7.x device cannot connect, try these steps:
@@ -316,22 +333,6 @@ To fix, you may switch to the standard Linux kernel by installing e.g. the `linu
 ### Chromebook issues
 
 Chromebook users: If you are unable to connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=...` and append `,aes_gcm-null` at the end. Save the file and run `service ipsec restart`.
-
-### Access VPN server's subnet
-
-If you wish to allow VPN clients to access the VPN server's subnet, you'll need to manually add IPTables rules after setting up the VPN server. For example, if the subnet is `192.168.0.0/24`:
-
-```
-# For IPsec/L2TP
-iptables -I FORWARD 2 -i ppp+ -d 192.168.0.0/24 -j ACCEPT
-iptables -I FORWARD 2 -s 192.168.0.0/24 -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-# For IPsec/XAuth ("Cisco IPsec")
-iptables -I FORWARD 2 -s 192.168.43.0/24 -d 192.168.0.0/24 -j ACCEPT
-iptables -I FORWARD 2 -s 192.168.0.0/24 -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-```
-
-To make these IPTables rules persist after reboot, you may add them to file `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL).
 
 ### Other errors
 
