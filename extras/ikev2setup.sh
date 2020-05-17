@@ -293,7 +293,7 @@ certutil -z <(head -c 1024 /dev/urandom) \
 
 bigecho "Exporting CA certificate..."
 
-certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "vpnca-$SYS_DT.cer"
+certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"vpnca-$SYS_DT.cer"
 
 bigecho "Exporting .p12 file..."
 
@@ -304,7 +304,7 @@ When importing into an iOS or macOS device, this password cannot be empty.
 
 EOF
 
-pk12util -o "vpnclient-$SYS_DT.p12" -n "vpnclient" -d sql:/etc/ipsec.d
+pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o ~/"vpnclient-$SYS_DT.p12"
 
 bigecho "Restarting IPsec service..."
 
@@ -313,19 +313,23 @@ service ipsec restart
 
 cat <<EOF
 
-=================================================
+=======================================================
 
 IKEv2 VPN setup is now complete!
 
-Files exported to the current folder:
+Client configuration is available at:
 
-vpnclient-$SYS_DT.p12
-vpnca-$SYS_DT.cer (for iOS clients)
+EOF
+
+printf '%s\n' ~/"vpnclient-$SYS_DT.p12"
+printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+
+cat <<EOF
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
-=================================================
+=======================================================
 
 EOF
 
