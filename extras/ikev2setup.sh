@@ -125,6 +125,10 @@ case "$swan_ver" in
     ;;
 esac
 
+if uname -m | grep -qi '^arm'; then
+  mobike_support=0
+fi
+
 if [ "$mobike_support" = "1" ]; then
   os_type="$(lsb_release -si 2>/dev/null)"
   if [ -z "$os_type" ]; then
