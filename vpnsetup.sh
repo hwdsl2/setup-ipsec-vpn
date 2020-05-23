@@ -419,7 +419,6 @@ fi
 
 bigecho "Enabling services on boot..."
 
-# Check for iptables-persistent
 IPT_PST="/etc/init.d/iptables-persistent"
 IPT_PST2="/usr/share/netfilter-persistent/plugins.d/15-ip4tables"
 ipt_load=1
@@ -491,9 +490,6 @@ sysctl -e -q -p
 # Update file attributes
 chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
-
-# Apply new IPTables rules
-iptables-restore < "$IPT_FILE"
 
 # Restart services
 mkdir -p /run/pluto
