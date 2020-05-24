@@ -151,12 +151,15 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 yum "$REPO1" -y install xl2tpd || exiterr2
 
 if grep -qs "release 6" /etc/redhat-release; then
+  os_ver=6
   yum -y remove libevent-devel
   yum "$REPO2" "$REPO3" -y install libevent2-devel fipscheck-devel || exiterr2
 elif grep -qs "release 7" /etc/redhat-release; then
+  os_ver=7
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 else
+  os_ver=8
   if [ -f /usr/sbin/subscription-manager ]; then
     subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
     yum -y install systemd-devel nftables libevent-devel fipscheck-devel || exiterr2
@@ -377,9 +380,7 @@ fi
 bigecho "Updating IPTables rules..."
 
 IPT_FILE="/etc/sysconfig/iptables"
-if grep -qs "release 8" /etc/redhat-release; then
-  IPT_FILE="/etc/sysconfig/nftables.conf"
-fi
+[ "$os_ver" = "8" ] && IPT_FILE="/etc/sysconfig/nftables.conf"
 ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
@@ -387,7 +388,7 @@ fi
 
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  if grep -qs "release 8" /etc/redhat-release; then
+  if [ "$os_ver" = "8" ]; then
     nft list ruleset > "$IPT_FILE.old-$SYS_DT"
     chmod 600 "$IPT_FILE.old-$SYS_DT"
   else
@@ -411,7 +412,7 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
   iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
-  if grep -qs "release 8" /etc/redhat-release; then
+  if [ "$os_ver" = "8" ]; then
     for vport in 500 4500 1701; do
         nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept
       done
@@ -430,16 +431,16 @@ fi
 
 bigecho "Enabling services on boot..."
 
-if grep -qs "release 6" /etc/redhat-release; then
+if [ "$os_ver" = "6" ]; then
   chkconfig iptables on
   chkconfig fail2ban on
 else
   systemctl --now mask firewalld 2>/dev/null
 fi
 
-if grep -qs "release 7" /etc/redhat-release; then
+if [ "$os_ver" = "7" ]; then
   systemctl enable iptables fail2ban 2>/dev/null
-elif grep -qs "release 8" /etc/redhat-release; then
+elif [ "$os_ver" = "8" ]; then
   systemctl enable nftables fail2ban 2>/dev/null
 fi
 
@@ -475,14 +476,14 @@ chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
-if grep -qs "release 8" /etc/redhat-release; then
+if [ "$os_ver" = "8" ]; then
   nft -f "$IPT_FILE"
 else
   iptables-restore < "$IPT_FILE"
 fi
 
 # Fix xl2tpd not starting, if l2tp_ppp is unavailable
-if grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+if [ "$os_ver" != "6" ]; then
   if ! modprobe -q l2tp_ppp; then
     sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
     systemctl daemon-reload

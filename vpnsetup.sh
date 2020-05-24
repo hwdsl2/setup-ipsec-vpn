@@ -376,17 +376,13 @@ fi
 
 bigecho "Updating IPTables rules..."
 
-# Check if rules need updating
-ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
 IPT_FILE2="/etc/iptables/rules.v4"
-if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+ipt_flag=0
+if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
 fi
 
-# Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   iptables-save > "$IPT_FILE.old-$SYS_DT"
@@ -402,7 +398,7 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
   iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
-  # Uncomment if you wish to disallow traffic between VPN clients themselves
+  # Uncomment to disallow traffic between VPN clients
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
   # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -A FORWARD -j DROP
