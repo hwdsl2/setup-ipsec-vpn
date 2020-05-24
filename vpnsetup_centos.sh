@@ -159,9 +159,9 @@ elif grep -qs "release 7" /etc/redhat-release; then
 else
   if [ -f /usr/sbin/subscription-manager ]; then
     subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
-    yum -y install systemd-devel iptables-services libevent-devel fipscheck-devel || exiterr2
+    yum -y install systemd-devel nftables libevent-devel fipscheck-devel || exiterr2
   else
-    yum "$REPO4" -y install systemd-devel iptables-services libevent-devel fipscheck-devel || exiterr2
+    yum "$REPO4" -y install systemd-devel nftables libevent-devel fipscheck-devel || exiterr2
   fi
 fi
 
@@ -363,21 +363,36 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
+if [ ! -f /etc/fail2ban/jail.local ] ; then
+  bigecho "Creating basic Fail2Ban rules..."
+cat > /etc/fail2ban/jail.local <<'EOF'
+[ssh-iptables]
+enabled  = true
+filter   = sshd
+action   = iptables[name=SSH, port=ssh, protocol=tcp]
+logpath  = /var/log/secure
+EOF
+fi
+
 bigecho "Updating IPTables rules..."
 
-# Check if rules need updating
-ipt_flag=0
 IPT_FILE="/etc/sysconfig/iptables"
-if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
-   || ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null \
-   || ! iptables -t nat -C POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE 2>/dev/null; then
+if grep -qs "release 8" /etc/redhat-release; then
+  IPT_FILE="/etc/sysconfig/nftables.conf"
+fi
+ipt_flag=0
+if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
 fi
 
-# Add IPTables rules for VPN
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  iptables-save > "$IPT_FILE.old-$SYS_DT"
+  if grep -qs "release 8" /etc/redhat-release; then
+    nft list ruleset > "$IPT_FILE.old-$SYS_DT"
+    chmod 600 "$IPT_FILE.old-$SYS_DT"
+  else
+    iptables-save > "$IPT_FILE.old-$SYS_DT"
+  fi
   iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
   iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
@@ -390,26 +405,27 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
   iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
-  # Uncomment if you wish to disallow traffic between VPN clients themselves
+  # Uncomment to disallow traffic between VPN clients
   # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
   # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
-  iptables -A FORWARD -j DROP
   iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
   iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
-  iptables-save >> "$IPT_FILE"
-fi
-
-bigecho "Creating basic Fail2Ban rules..."
-
-if [ ! -f /etc/fail2ban/jail.local ] ; then
-cat > /etc/fail2ban/jail.local <<'EOF'
-[ssh-iptables]
-enabled  = true
-filter   = sshd
-action   = iptables[name=SSH, port=ssh, protocol=tcp]
-logpath  = /var/log/secure
-EOF
+  if grep -qs "release 8" /etc/redhat-release; then
+    for vport in 500 4500 1701; do
+        nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept
+      done
+      for vnet in "$L2TP_NET" "$XAUTH_NET"; do
+        for vdir in saddr daddr; do
+          nft insert rule inet firewalld filter_FORWARD ip "$vdir" "$vnet" accept
+        done
+    done
+    echo "flush ruleset" >> "$IPT_FILE"
+    nft list ruleset >> "$IPT_FILE"
+  else
+    iptables -A FORWARD -j DROP
+    iptables-save >> "$IPT_FILE"
+  fi
 fi
 
 bigecho "Enabling services on boot..."
@@ -419,7 +435,12 @@ if grep -qs "release 6" /etc/redhat-release; then
   chkconfig fail2ban on
 else
   systemctl --now mask firewalld 2>/dev/null
+fi
+
+if grep -qs "release 7" /etc/redhat-release; then
   systemctl enable iptables fail2ban 2>/dev/null
+elif grep -qs "release 8" /etc/redhat-release; then
+  systemctl enable nftables fail2ban 2>/dev/null
 fi
 
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
@@ -454,9 +475,13 @@ chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
-iptables-restore < "$IPT_FILE"
+if grep -qs "release 8" /etc/redhat-release; then
+  nft -f "$IPT_FILE"
+else
+  iptables-restore < "$IPT_FILE"
+fi
 
-# Fix xl2tpd on CentOS 7/8, if kernel module "l2tp_ppp" is unavailable
+# Fix xl2tpd not starting, if l2tp_ppp is unavailable
 if grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
   if ! modprobe -q l2tp_ppp; then
     sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
