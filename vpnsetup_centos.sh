@@ -140,7 +140,7 @@ yum -y install epel-release || yum -y install "$epel_url" || exiterr2
 bigecho "Installing packages required for the VPN..."
 
 REPO1='--enablerepo=epel'
-REPO2='--enablerepo=*server-optional*'
+REPO2='--enablerepo=*server-*optional*'
 REPO3='--enablerepo=*releases-optional*'
 REPO4='--enablerepo=PowerTools'
 
@@ -150,6 +150,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 
 yum "$REPO1" -y install xl2tpd || exiterr2
 
+use_nft=0
 if grep -qs "release 6" /etc/redhat-release; then
   os_ver=6
   yum -y remove libevent-devel
@@ -160,11 +161,15 @@ elif grep -qs "release 7" /etc/redhat-release; then
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 else
   os_ver=8
-  if [ -f /usr/sbin/subscription-manager ]; then
-    subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
-    yum -y install systemd-devel nftables libevent-devel fipscheck-devel || exiterr2
+  if grep -qs "Red Hat" /etc/redhat-release; then
+    REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
+  fi
+  yum "$REPO4" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
+  if systemctl is-active --quiet firewalld.service; then
+    use_nft=1
+    yum -y install nftables || exiterr2
   else
-    yum "$REPO4" -y install systemd-devel nftables libevent-devel fipscheck-devel || exiterr2
+    yum -y install iptables-services || exiterr2
   fi
 fi
 
@@ -380,7 +385,7 @@ fi
 bigecho "Updating IPTables rules..."
 
 IPT_FILE="/etc/sysconfig/iptables"
-[ "$os_ver" = "8" ] && IPT_FILE="/etc/sysconfig/nftables.conf"
+[ "$use_nft" = "1" ] && IPT_FILE="/etc/sysconfig/nftables.conf"
 ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
@@ -388,7 +393,7 @@ fi
 
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
-  if [ "$os_ver" = "8" ]; then
+  if [ "$use_nft" = "1" ]; then
     nft list ruleset > "$IPT_FILE.old-$SYS_DT"
     chmod 600 "$IPT_FILE.old-$SYS_DT"
   else
@@ -412,7 +417,7 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
   iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
-  if [ "$os_ver" = "8" ]; then
+  if [ "$use_nft" = "1" ]; then
     for vport in 500 4500 1701; do
         nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept
       done
@@ -438,10 +443,10 @@ else
   systemctl --now mask firewalld 2>/dev/null
 fi
 
-if [ "$os_ver" = "7" ]; then
-  systemctl enable iptables fail2ban 2>/dev/null
-elif [ "$os_ver" = "8" ]; then
+if [ "$use_nft" = "1" ]; then
   systemctl enable nftables fail2ban 2>/dev/null
+else
+  systemctl enable iptables fail2ban 2>/dev/null
 fi
 
 if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
@@ -464,9 +469,9 @@ fi
 bigecho "Starting services..."
 
 # Restore SELinux contexts
-restorecon /etc/ipsec.d/*db 2>/dev/null
-restorecon /usr/local/sbin -Rv 2>/dev/null
-restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+restorecon /etc/ipsec.d/*db >/dev/null 2>&1
+restorecon /usr/local/sbin -Rv >/dev/null 2>&1
+restorecon /usr/local/libexec/ipsec -Rv >/dev/null 2>&1
 
 # Reload sysctl.conf
 sysctl -e -q -p
@@ -476,13 +481,13 @@ chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 # Apply new IPTables rules
-if [ "$os_ver" = "8" ]; then
+if [ "$use_nft" = "1" ]; then
   nft -f "$IPT_FILE"
 else
   iptables-restore < "$IPT_FILE"
 fi
 
-# Fix xl2tpd not starting, if l2tp_ppp is unavailable
+# Fix xl2tpd if l2tp_ppp is unavailable
 if [ "$os_ver" != "6" ]; then
   if ! modprobe -q l2tp_ppp; then
     sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
