@@ -37,14 +37,13 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
 
 ### Ubuntu/Debian
 
-编辑 `/etc/iptables.rules` 并删除不需要的规则。   
-你以前的防火墙规则（如果有）会备份在 `/etc/iptables.rules.old-日期-时间`。   
-另外如果文件 `/etc/iptables/rules.v4` 存在，请编辑它。   
+编辑 `/etc/iptables.rules` 并删除不需要的规则。你之前的防火墙规则（如果有）备份在 `/etc/iptables.rules.old-日期-时间`。另外如果文件 `/etc/iptables/rules.v4` 存在，请编辑它。
 
 ### CentOS/RHEL
 
-编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。   
-你以前的防火墙规则（如果有）会备份在 `/etc/sysconfig/iptables.old-日期-时间`。   
+编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。你之前的防火墙规则（如果有）备份在 `/etc/sysconfig/iptables.old-日期-时间`。
+
+**注：** 如果使用 CentOS/RHEL 8 并且在安装 VPN 时 firewalld 正在运行，则可能已配置 nftables。编辑 `/etc/sysconfig/nftables.conf` 并删除不需要的规则。你之前的防火墙规则备份在 `/etc/sysconfig/nftables.conf.old-日期-时间`。
 
 ## 第四步
 
@@ -53,7 +52,7 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
 
 ## 可选步骤
 
-注： 这一步是可选的。
+**注：** 这一步是可选的。
 
 删除这些配置文件：
 

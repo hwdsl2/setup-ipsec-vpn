@@ -37,14 +37,13 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
 
 ### Ubuntu/Debian
 
-Edit `/etc/iptables.rules` and remove unneeded rules.   
-Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`.   
-In addition, edit `/etc/iptables/rules.v4` if the file exists.   
+Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`. In addition, edit `/etc/iptables/rules.v4` if the file exists.   
 
 ### CentOS/RHEL
 
-Edit `/etc/sysconfig/iptables` and remove unneeded rules.   
-Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.   
+Edit `/etc/sysconfig/iptables` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.
+
+**Note:** If using CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. Edit `/etc/sysconfig/nftables.conf` and remove unneeded rules. Your original rules are backed up as `/etc/sysconfig/nftables.conf.old-date-time`.
 
 ## Fourth step
 
@@ -53,7 +52,7 @@ Edit `/etc/rc.local` and remove the lines after `# Added by hwdsl2 VPN script`. 
 
 ## Optional
 
-Note: This step is optional.
+**Note:** This step is optional.
 
 Remove these config files:
 
