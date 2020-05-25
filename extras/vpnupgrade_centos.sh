@@ -188,7 +188,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel nss-tools \
   flex bison gcc make wget sed tar || exiterr2
 
-REPO1='--enablerepo=*server-optional*'
+REPO1='--enablerepo=*server-*optional*'
 REPO2='--enablerepo=*releases-optional*'
 REPO3='--enablerepo=PowerTools'
 
@@ -199,12 +199,10 @@ elif grep -qs "release 7" /etc/redhat-release; then
   yum -y install systemd-devel || exiterr2
   yum "$REPO1" "$REPO2" -y install libevent-devel fipscheck-devel || exiterr2
 else
-  if [ -f /usr/sbin/subscription-manager ]; then
-    subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
-    yum -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
-  else
-    yum "$REPO3" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
+  if grep -qs "Red Hat" /etc/redhat-release; then
+    REPO3='--enablerepo=codeready-builder-for-rhel-8-*'
   fi
+  yum "$REPO3" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
 fi
 
 # Compile and install Libreswan
@@ -252,9 +250,9 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
 fi
 
 # Restore SELinux contexts
-restorecon /etc/ipsec.d/*db 2>/dev/null
-restorecon /usr/local/sbin -Rv 2>/dev/null
-restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+restorecon /etc/ipsec.d/*db >/dev/null 2>&1
+restorecon /usr/local/sbin -Rv >/dev/null 2>&1
+restorecon /usr/local/libexec/ipsec -Rv >/dev/null 2>&1
 
 # Update ipsec.conf
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
@@ -290,11 +288,11 @@ service ipsec restart
 cat <<EOF
 
 
-===================================================
+===========================================
 
-Libreswan $SWAN_VER has been successfully installed!
+Libreswan $SWAN_VER successfully installed!
 
-===================================================
+===========================================
 
 EOF
 

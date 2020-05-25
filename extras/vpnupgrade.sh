@@ -285,11 +285,11 @@ service ipsec restart
 cat <<EOF
 
 
-===================================================
+===========================================
 
-Libreswan $SWAN_VER has been successfully installed!
+Libreswan $SWAN_VER successfully installed!
 
-===================================================
+===========================================
 
 EOF
 
