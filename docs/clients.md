@@ -303,6 +303,8 @@ iptables -t mangle -A FORWARD -m policy --pol ipsec --dir out \
 echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 ```
 
+**Docker users:** Instead of running the commands above, you may apply this fix by adding `VPN_ANDROID_MTU_FIX=yes` to <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image" target="_blank">your env file</a>, then re-create the Docker container.
+
 References: <a href="https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#MTUMSS-issues" target="_blank">[1]</a> <a href="https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/" target="_blank">[2]</a>.
 
 ### Android 6 and 7
@@ -311,6 +313,8 @@ If your Android 6.x or 7.x device cannot connect, try these steps:
 
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value. i.e. Replace `sha2-truncbug=no` with `sha2-truncbug=yes`, or replace `sha2-truncbug=yes` with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
+
+**Docker users:** You may set `sha2-truncbug=yes` (default is `no`) in `/etc/ipsec.conf` by adding `VPN_SHA2_TRUNCBUG=yes` to <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image" target="_blank">your env file</a>, then re-create the Docker container.
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
@@ -354,7 +358,7 @@ service ipsec restart
 service xl2tpd restart
 ```
 
-If using Docker, run `docker restart ipsec-vpn-server`.
+**Docker users:** Run `docker restart ipsec-vpn-server`.
 
 Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
 
