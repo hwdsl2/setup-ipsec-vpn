@@ -37,12 +37,17 @@ ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
 swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux //' -e 's/Libreswan //' -e 's/ (netkey) on .*//')
 if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
   || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan" \
-  || [ ! -f "/etc/ppp/chap-secrets" ] || [ ! -f "/etc/ipsec.d/passwd" ]; then
+  || [ ! -f /etc/ppp/chap-secrets ] || [ ! -f /etc/ipsec.d/passwd ]; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up the IPsec VPN server before setting up IKEv2.
   See: https://github.com/hwdsl2/setup-ipsec-vpn
 EOF
   exit 1
+fi
+
+in_container=0
+if grep -qs "hwdsl2" /opt/src/run.sh; then
+  in_container=1
 fi
 
 case "$swan_ver" in
@@ -61,7 +66,7 @@ EOF
     ;;
 esac
 
-if grep -qs "conn ikev2-cp" /etc/ipsec.conf; then
+if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
 cat 1>&2 <<'EOF'
 Error: It looks like IKEv2 has already been set up on this server.
   To generate certificates for additional VPN clients, see step 4 in section
@@ -130,31 +135,50 @@ if uname -m | grep -qi '^arm'; then
 fi
 
 if [ "$mobike_support" = "1" ]; then
-  os_type="$(lsb_release -si 2>/dev/null)"
-  if [ -z "$os_type" ]; then
-    [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && printf '%s' "$ID")"
-    [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
-    [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
-  fi
-  [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
-  if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
-    mobike_support=0
+  if [ "$in_container" = "0" ]; then
+    os_type="$(lsb_release -si 2>/dev/null)"
+    if [ -z "$os_type" ]; then
+      [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && printf '%s' "$ID")"
+      [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
+      [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
+    fi
+    [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
+    if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
+      mobike_support=0
+    fi
+  else
+    echo
+    echo "NOTE: DO NOT enable MOBIKE support, if your Docker host runs Ubuntu Linux."
   fi
 fi
 
 mobike_enable=0
 if [ "$mobike_support" = "1" ]; then
-  echo
-  printf "Do you want to enable MOBIKE support? [Y/n] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY]|'')
-      mobike_enable=1
-      ;;
-    *)
-      mobike_enable=0
-      ;;
-  esac
+  if [ "$in_container" = "0" ]; then
+    echo
+    printf "Do you want to enable MOBIKE support? [Y/n] "
+    read -r response
+    case $response in
+      [yY][eE][sS]|[yY]|'')
+        mobike_enable=1
+        ;;
+      *)
+        mobike_enable=0
+        ;;
+    esac
+  else
+    echo
+    printf "Do you want to enable MOBIKE support? [y/N] "
+    read -r response
+    case $response in
+      [yY][eE][sS]|[yY])
+        mobike_enable=1
+        ;;
+      *)
+        mobike_enable=0
+        ;;
+    esac
+  fi
 fi
 
 cat <<EOF
@@ -193,9 +217,14 @@ case $response in
     ;;
 esac
 
-bigecho "Adding a new IKEv2 connection to /etc/ipsec.conf..."
+bigecho "Adding a new IKEv2 connection..."
 
-cat >> /etc/ipsec.conf <<EOF
+if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
+  echo >> /etc/ipsec.conf
+  echo 'include /etc/ipsec.d/*.conf' >> /etc/ipsec.conf
+fi
+
+cat > /etc/ipsec.d/ikev2.conf <<EOF
 
 conn ikev2-cp
   left=%defaultroute
@@ -224,18 +253,18 @@ EOF
 
 case "$swan_ver" in
   3.2[35679]|3.3[12])
-cat >> /etc/ipsec.conf <<'EOF'
+cat >> /etc/ipsec.d/ikev2.conf <<'EOF'
   modecfgdns="8.8.8.8 8.8.4.4"
   encapsulation=yes
 EOF
     if [ "$mobike_enable" = "1" ]; then
-      echo "  mobike=yes" >> /etc/ipsec.conf
+      echo "  mobike=yes" >> /etc/ipsec.d/ikev2.conf
     else
-      echo "  mobike=no" >> /etc/ipsec.conf
+      echo "  mobike=no" >> /etc/ipsec.d/ikev2.conf
     fi
     ;;
   3.19|3.2[012])
-cat >> /etc/ipsec.conf <<'EOF'
+cat >> /etc/ipsec.d/ikev2.conf <<'EOF'
   modecfgdns1=8.8.8.8
   modecfgdns2=8.8.4.4
   encapsulation=yes
@@ -293,7 +322,11 @@ certutil -z <(head -c 1024 /dev/urandom) \
 
 bigecho "Exporting CA certificate..."
 
-certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"vpnca-$SYS_DT.cer"
+if [ "$in_container" = "0" ]; then
+  certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"vpnca-$SYS_DT.cer"
+else
+  certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "/etc/ipsec.d/vpnca-$SYS_DT.cer"
+fi
 
 bigecho "Exporting .p12 file..."
 
@@ -304,7 +337,11 @@ When importing into an iOS or macOS device, this password cannot be empty.
 
 EOF
 
-pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o ~/"vpnclient-$SYS_DT.p12"
+if [ "$in_container" = "0" ]; then
+  pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o ~/"vpnclient-$SYS_DT.p12"
+else
+  pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o "/etc/ipsec.d/vpnclient-$SYS_DT.p12"
+fi
 
 bigecho "Restarting IPsec service..."
 
@@ -313,7 +350,7 @@ service ipsec restart
 
 cat <<EOF
 
-=======================================================
+=============================================================
 
 IKEv2 VPN setup is now complete!
 
@@ -321,15 +358,20 @@ Client configuration is available at:
 
 EOF
 
-printf '%s\n' ~/"vpnclient-$SYS_DT.p12"
-printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+if [ "$in_container" = "0" ]; then
+  printf '%s\n' ~/"vpnclient-$SYS_DT.p12"
+  printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+else
+  printf '%s\n' "/etc/ipsec.d/vpnclient-$SYS_DT.p12"
+  printf '%s\n' "/etc/ipsec.d/vpnca-$SYS_DT.cer (for iOS clients)"
+fi
 
 cat <<EOF
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
-=======================================================
+=============================================================
 
 EOF
 

@@ -270,6 +270,8 @@ conn xauth-psk
   ike-frag=yes
   cisco-unity=yes
   also=shared
+
+include /etc/ipsec.d/*.conf
 EOF
 
 if uname -m | grep -qi '^arm'; then
