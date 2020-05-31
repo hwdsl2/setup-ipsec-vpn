@@ -51,10 +51,17 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
 
    **注：** 另外，在这里你也可以指定 VPN 服务器的域名。例如： `PUBLIC_IP=myvpn.example.com`。
 
-1. 在 `/etc/ipsec.conf` 文件中添加一个新的 IKEv2 连接：
+1. 添加一个新的 IKEv2 连接：
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
+     echo >> /etc/ipsec.conf
+     echo 'include /etc/ipsec.d/*.conf' >> /etc/ipsec.conf
+   fi
+   ```
+
+   ```bash
+   cat > /etc/ipsec.d/ikev2.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
@@ -91,19 +98,19 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
    如果是 Libreswan 3.23 或更新版本：
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns="8.8.8.8 8.8.4.4"
      encapsulation=yes
      mobike=no
    EOF
    ```
 
-   **注：** 如果你的服务器运行 Debian 或者 CentOS/RHEL，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要**在 Ubuntu 系统上启用该选项。
+   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian 或者 CentOS/RHEL，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      encapsulation=yes
@@ -113,7 +120,7 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
    如果是 Libreswan 3.18 或更早版本：
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      forceencaps=yes
@@ -165,7 +172,7 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
 
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书。
 
-   **注：** 如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。
+   **注：** 你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
 
    生成客户端证书：
 

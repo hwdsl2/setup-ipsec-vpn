@@ -51,10 +51,17 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 
    **Note:** Alternatively, you may specify the server's DNS name here. e.g. `PUBLIC_IP=myvpn.example.com`.
 
-1. Add a new IKEv2 connection to `/etc/ipsec.conf`:
+1. Add a new IKEv2 connection:
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
+     echo >> /etc/ipsec.conf
+     echo 'include /etc/ipsec.d/*.conf' >> /etc/ipsec.conf
+   fi
+   ```
+
+   ```bash
+   cat > /etc/ipsec.d/ikev2.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
@@ -91,19 +98,19 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    For Libreswan 3.23 and newer:
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns="8.8.8.8 8.8.4.4"
      encapsulation=yes
      mobike=no
    EOF
    ```
 
-   **Note:** If your server runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. DO NOT enable this option on Ubuntu systems.
+   **Note:** If your server (or Docker host) runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems.
 
    For Libreswan 3.19-3.22:
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      encapsulation=yes
@@ -113,7 +120,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    For Libreswan 3.18 and older:
 
    ```bash
-   cat >> /etc/ipsec.conf <<EOF
+   cat >> /etc/ipsec.d/ikev2.conf <<EOF
      modecfgdns1=8.8.8.8
      modecfgdns2=8.8.4.4
      forceencaps=yes
@@ -165,7 +172,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
-   **Note:** To connect multiple VPN clients simultaneously, you must generate a unique certificate for each. You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc.
+   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
 
    Generate client certificate:
 
