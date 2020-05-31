@@ -25,12 +25,12 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 ## Using helper scripts
 
-**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version.
+**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version. Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>.
 
 You may use this helper script to automatically set up IKEv2 on the VPN server:
 
 ```
-wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
 The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you wish to generate certificates for additional VPN clients, refer to step 4 in the next section.
@@ -236,6 +236,8 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 Before continuing, you **must** restart the IPsec service. The IKEv2 setup on the VPN server is now complete. Follow instructions below to configure your VPN clients.
 
 ## Configure IKEv2 VPN clients
+
+*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
 **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you wish to generate certificates for additional VPN clients, refer to step 4 in the previous section.
 

@@ -25,12 +25,12 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 使用辅助脚本
 
-**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。
+**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>。
 
 你可以使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
 ```
-wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
 该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如需为更多的客户端生成证书，请参见下一小节的第 4 步。
@@ -236,6 +236,8 @@ wget https://git.io/ikev2setup -O ikev2setup.sh && sudo bash ikev2setup.sh
 在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你的 VPN 客户端。
 
 ## 配置 IKEv2 VPN 客户端
+
+*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
 **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如需为更多的客户端生成证书，请参见上一小节的第 4 步。
 
