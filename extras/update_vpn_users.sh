@@ -27,7 +27,7 @@ YOUR_PASSWORDS=''
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-SYS_DT=$(date +%F-%T)
+SYS_DT=$(date +%F-%T | tr ':' '_')
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
