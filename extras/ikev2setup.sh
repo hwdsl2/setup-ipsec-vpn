@@ -66,17 +66,114 @@ EOF
     ;;
 esac
 
-if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
-cat 1>&2 <<'EOF'
-Error: It looks like IKEv2 has already been set up on this server.
-  To generate certificates for additional VPN clients, see step 4 in section
-  "Manually set up IKEv2 on the VPN server" at https://git.io/ikev2
-EOF
-  exit 1
-fi
-
 command -v certutil >/dev/null 2>&1 || { echo >&2 "Error: Command 'certutil' not found. Abort."; exit 1; }
 command -v pk12util >/dev/null 2>&1 || { echo >&2 "Error: Command 'pk12util' not found. Abort."; exit 1; }
+
+if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
+  echo "It looks like IKEv2 has already been set up on this server."
+  printf "Do you want to add a new VPN client? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      echo
+      ;;
+    *)
+      echo "Abort. No changes were made."
+      exit 1
+      ;;
+  esac
+
+  echo "Provide a name for the IKEv2 VPN client. Use one word only, no special characters."
+  read -rp "Client name: " client_name
+  while [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
+    || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    || certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
+    echo "Invalid client name."
+    read -rp "Client name: " client_name
+  done
+
+  echo
+  echo "The CA certificate was exported during initial IKEv2 setup. It is needed for iOS clients."
+  printf "Do you want to export the CA certificate again? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      export_ca=1
+      ;;
+    *)
+      export_ca=0
+      ;;
+  esac
+
+  bigecho2 "Generating client certificate..."
+
+  certutil -z <(head -c 1024 /dev/urandom) \
+    -S -c "IKEv2 VPN CA" -n "$client_name" \
+    -s "O=IKEv2 VPN,CN=$client_name" \
+    -k rsa -g 4096 -v 120 \
+    -d sql:/etc/ipsec.d -t ",," \
+    --keyUsage digitalSignature,keyEncipherment \
+    --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null
+
+  if [ "$export_ca" = "1" ]; then
+    bigecho "Exporting CA certificate..."
+
+    if [ "$in_container" = "0" ]; then
+      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"vpnca-$SYS_DT.cer"
+    else
+      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "/etc/ipsec.d/vpnca-$SYS_DT.cer"
+    fi
+  fi
+
+  bigecho "Exporting .p12 file..."
+
+cat <<'EOF'
+Enter a *secure* password to protect the exported .p12 file.
+This file contains the client certificate, private key, and CA certificate.
+When importing into an iOS or macOS device, this password cannot be empty.
+
+EOF
+
+  if [ "$in_container" = "0" ]; then
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12"
+  else
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12"
+  fi
+
+cat <<EOF
+
+=============================================================
+
+New IKEv2 VPN client "$client_name" added!
+
+Client configuration is available at:
+
+EOF
+
+if [ "$in_container" = "0" ]; then
+  printf '%s\n' ~/"$client_name-$SYS_DT.p12"
+  if [ "$export_ca" = "1" ]; then
+    printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+  fi
+else
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
+  if [ "$export_ca" = "1" ]; then
+    printf '%s\n' "/etc/ipsec.d/vpnca-$SYS_DT.cer (for iOS clients)"
+  fi
+fi
+
+cat <<EOF
+
+Next steps: Configure IKEv2 VPN clients. See:
+https://git.io/ikev2clients
+
+=============================================================
+
+EOF
+
+  exit 0
+
+fi
 
 clear
 
@@ -121,6 +218,16 @@ else
     [ -z "$server_addr" ] && server_addr="$public_ip"
   done
 fi
+
+echo
+echo "Provide a name for the IKEv2 VPN client. Use one word only, no special characters."
+read -rp "Client name: [vpnclient] " client_name
+[ -z "$client_name" ] && client_name=vpnclient
+while [ "${#client_name}" -gt "64" ] || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+'; do
+  echo "Invalid client name."
+  read -rp "Client name: [vpnclient] " client_name
+  [ -z "$client_name" ] && client_name=vpnclient
+done
 
 # Check for MOBIKE support
 mobike_support=0
@@ -189,6 +296,7 @@ Please double check before continuing!
 ================================================
 
 VPN server address: $server_addr
+VPN client name: $client_name
 EOF
 
 if [ "$mobike_support" = "1" ]; then
@@ -313,12 +421,12 @@ sleep 1
 bigecho2 "Generating client certificate..."
 
 certutil -z <(head -c 1024 /dev/urandom) \
-  -S -c "IKEv2 VPN CA" -n "vpnclient" \
-  -s "O=IKEv2 VPN,CN=vpnclient" \
+  -S -c "IKEv2 VPN CA" -n "$client_name" \
+  -s "O=IKEv2 VPN,CN=$client_name" \
   -k rsa -g 4096 -v 120 \
   -d sql:/etc/ipsec.d -t ",," \
   --keyUsage digitalSignature,keyEncipherment \
-  --extKeyUsage serverAuth,clientAuth -8 "vpnclient" >/dev/null
+  --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null
 
 bigecho "Exporting CA certificate..."
 
@@ -338,9 +446,9 @@ When importing into an iOS or macOS device, this password cannot be empty.
 EOF
 
 if [ "$in_container" = "0" ]; then
-  pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o ~/"vpnclient-$SYS_DT.p12"
+  pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12"
 else
-  pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o "/etc/ipsec.d/vpnclient-$SYS_DT.p12"
+  pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12"
 fi
 
 bigecho "Restarting IPsec service..."
@@ -359,10 +467,10 @@ Client configuration is available at:
 EOF
 
 if [ "$in_container" = "0" ]; then
-  printf '%s\n' ~/"vpnclient-$SYS_DT.p12"
+  printf '%s\n' ~/"$client_name-$SYS_DT.p12"
   printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
 else
-  printf '%s\n' "/etc/ipsec.d/vpnclient-$SYS_DT.p12"
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
   printf '%s\n' "/etc/ipsec.d/vpnca-$SYS_DT.cer (for iOS clients)"
 fi
 
