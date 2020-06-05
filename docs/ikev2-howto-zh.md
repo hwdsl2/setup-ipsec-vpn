@@ -33,7 +33,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
-该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如需为更多的客户端生成证书，请参见下一小节的第 4 步。
+该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如果要为更多的客户端生成证书，只需重新运行脚本。
 
 ## 手动在 VPN 服务器上配置 IKEv2
 
@@ -239,7 +239,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如需为更多的客户端生成证书，请参见上一小节的第 4 步。
+**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如果要为更多的客户端生成证书，只需重新运行[辅助脚本](#使用辅助脚本)。或者你可以看上一小节的第 4 步。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)

@@ -33,7 +33,7 @@ You may use this helper script to automatically set up IKEv2 on the VPN server:
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
-The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you wish to generate certificates for additional VPN clients, refer to step 4 in the next section.
+The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you wish to generate certificates for additional VPN clients, just run the script again.
 
 ## Manually set up IKEv2 on the VPN server
 
@@ -239,7 +239,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you wish to generate certificates for additional VPN clients, refer to step 4 in the previous section.
+**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you wish to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in the previous section.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
