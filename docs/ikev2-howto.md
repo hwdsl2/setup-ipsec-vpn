@@ -9,6 +9,8 @@
 * [Using helper scripts](#using-helper-scripts)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
+* [Add a client certificate](#add-a-client-certificate)
+* [Revoke a client certificate](#revoke-a-client-certificate)
 * [Known issues](#known-issues)
 * [References](#references)
 
@@ -25,7 +27,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 ## Using helper scripts
 
-**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version. Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>.
+**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
 
 You may use this helper script to automatically set up IKEv2 on the VPN server:
 
@@ -33,7 +35,7 @@ You may use this helper script to automatically set up IKEv2 on the VPN server:
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
-The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you wish to generate certificates for additional VPN clients, just run the script again.
+The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you want to generate certificates for additional VPN clients, just run the script again.
 
 ## Manually set up IKEv2 on the VPN server
 
@@ -225,7 +227,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    vpnclient                                          u,u,u
    ```
 
-   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To delete a certificate, replace `-L` with `-D`. For other `certutil` usage, read <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">this page</a>.
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To revoke a client certificate, follow [these steps](#revoke-a-client-certificate). For other `certutil` usage, read <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil" target="_blank">here</a>.
 
 1. **(Important) Restart the IPsec service**:
 
@@ -239,7 +241,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you wish to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in the previous section.
+**Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must enter the DNS name in the **Server** and **Remote ID** fields. If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in the previous section.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
@@ -337,6 +339,96 @@ When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
+## Add a client certificate
+
+If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+
+## Revoke a client certificate
+
+In certain circumstances, you may need to revoke a previously generated VPN client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
+
+1. Check the database, and identify the nickname of the client certificate you want to revoke.
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d
+   ```
+
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
+
+   IKEv2 VPN CA                                       CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient-to-revoke                                u,u,u
+   ```
+
+   In this example, we will revoke the certificate with nickname `vpnclient-to-revoke`, issued by `IKEv2 VPN CA`.
+
+1. Find the serial number of this client certificate.
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d -n "vpnclient-to-revoke"
+   ```
+
+   ```
+   Certificate:
+       Data:
+           Version: 3 (0x2)
+           Serial Number:
+               00:cd:69:ff:74
+   ... ...
+   ```
+
+   From the output, we see that the serial number is `CD69FF74` in hexadecimal, which is `3446275956` in decimal. It will be used in the next steps.
+
+1. Create a new Certificate Revocation List (CRL). You only need to do this once for each CA.
+
+   ```bash
+   if ! crlutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null; then
+     crlutil -G -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -c /dev/null
+   fi
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:00:00 2020
+       CRL Extensions:
+   ```
+
+1. Add the client certificate you want to revoke to the CRL. Here we specify the certificate's serial number in decimal, and the revocation time in GeneralizedTime format (YYYYMMDDhhmmssZ) in UTC.
+
+   ```bash
+   crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" <<EOF
+   addcert 3446275956 20200606220100Z
+   EOF
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:02:00 2020
+       Entry 1 (0x1):
+           Serial Number:
+               00:cd:69:ff:74
+           Revocation Date: Sat Jun 06 22:01:00 2020
+       CRL Extensions:
+   ```
+
+   **Note:** If you want to remove a certificate from the CRL, replace `addcert 3446275956 20200606220100Z` above with `rmcert 3446275956`. For other `crlutil` usage, read <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">here</a>.
+
+1. Finally, let Libreswan re-read the updated CRL.
+
+   ```bash
+   ipsec crls
+   ```
+
 ## Known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
@@ -351,3 +443,5 @@ Once successfully connected, you can verify that your traffic is being routed pr
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients
 * https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
+* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil
+* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil

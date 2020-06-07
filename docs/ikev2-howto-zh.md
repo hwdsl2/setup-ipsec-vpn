@@ -9,6 +9,8 @@
 * [使用辅助脚本](#使用辅助脚本)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
+* [添加一个客户端证书](#添加一个客户端证书)
+* [吊销一个客户端证书](#吊销一个客户端证书)
 * [已知问题](#已知问题)
 * [参考链接](#参考链接)
 
@@ -25,7 +27,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 使用辅助脚本
 
-**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>。
+**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
 
 你可以使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
@@ -225,7 +227,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    vpnclient                                          u,u,u
    ```
 
-   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要删除一个证书，将 `-L` 换成 `-D`。更多的 `certutil` 使用说明请看 <a href="http://manpages.ubuntu.com/manpages/xenial/en/man1/certutil.1.html" target="_blank">这里</a>。
+   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要吊销一个客户端证书，请转到[这一节](#吊销一个客户端证书)。关于 `certutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil" target="_blank">这里</a>。
 
 1. **（重要）重启 IPsec 服务**：
 
@@ -337,6 +339,96 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
+## 添加一个客户端证书
+
+如果要为更多的客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+
+## 吊销一个客户端证书
+
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
+
+1. 检查证书数据库，并且找到想要吊销的客户端证书的昵称。
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d
+   ```
+
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
+
+   IKEv2 VPN CA                                       CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient-to-revoke                                u,u,u
+   ```
+
+   在这个例子中，我们将要吊销昵称为 `vpnclient-to-revoke` 的客户端证书。它是由 `IKEv2 VPN CA` 签发的。
+
+1. 找到该客户端证书的序列号。
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d -n "vpnclient-to-revoke"
+   ```
+
+   ```
+   Certificate:
+       Data:
+           Version: 3 (0x2)
+           Serial Number:
+               00:cd:69:ff:74
+   ... ...
+   ```
+
+   根据上面的输出，我们知道该序列号为十六进制的 `CD69FF74`，也就是十进制的 `3446275956`。它将在以下步骤中使用。
+
+1. 创建一个新的证书吊销列表 (CRL)。该步骤对于每个 CA 只需运行一次。
+
+   ```bash
+   if ! crlutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null; then
+     crlutil -G -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -c /dev/null
+   fi
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:00:00 2020
+       CRL Extensions:
+   ```
+
+1. 将你想要吊销的客户端证书添加到 CRL。在这里我们指定该证书的（十进制）序列号，以及吊销时间（UTC时间，格式：GeneralizedTime (YYYYMMDDhhmmssZ)）。
+
+   ```bash
+   crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" <<EOF
+   addcert 3446275956 20200606220100Z
+   EOF
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:02:00 2020
+       Entry 1 (0x1):
+           Serial Number:
+               00:cd:69:ff:74
+           Revocation Date: Sat Jun 06 22:01:00 2020
+       CRL Extensions:
+   ```
+
+   **注：** 如果需要从 CRL 删除一个证书，可以将上面的 `addcert 3446275956 20200606220100Z` 替换为 `rmcert 3446275956`。关于 `crlutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">这里</a>。
+
+1. 最后，让 Libreswan 重新读取已更新的 CRL。
+
+   ```bash
+   ipsec crls
+   ```
+
 ## 已知问题
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
@@ -351,3 +443,5 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 * https://libreswan.org/man/ipsec.conf.5.html
 * https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients
 * https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
+* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil
+* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil
