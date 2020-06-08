@@ -96,7 +96,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
 1. **(Important)** Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked.
-1. Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
+1. **(Important)** Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
@@ -208,15 +208,15 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 * [Windows 10 connecting](#windows-10-connecting)
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
-* [macOS VPN traffic](#macos-vpn-traffic)
 * [Android MTU/MSS issues](#android-mtumss-issues)
 * [Android 6 and 7](#android-6-and-7)
+* [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
 * [iOS 13 and macOS 10.15](#ios-13-and-macos-1015)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Debian 10 kernel](#debian-10-kernel)
 * [Chromebook issues](#chromebook-issues)
 * [Other errors](#other-errors)
-* [Additional steps](#additional-steps)
+* [Check logs and VPN status](#check-logs-and-vpn-status)
 
 ### Windows Error 809
 
@@ -282,12 +282,6 @@ Windows 8.x and 10 use "smart multi-homed name resolution" by default, which may
 
 In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to <a href="https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">disable IPv6</a> in Windows.
 
-### macOS VPN traffic
-
-OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete this step: Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked. Then re-connect the VPN.
-
-If your computer is still not sending traffic over the VPN check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
-
 ### Android MTU/MSS issues
 
 Some Android devices have MTU/MSS issues, that they are able to connect to the VPN using IPsec/XAuth ("Cisco IPsec") mode, but cannot open websites. If you encounter this problem, try running the following commands on the VPN server. If successful, you may add these commands to `/etc/rc.local` to persist after reboot.
@@ -318,6 +312,15 @@ If your Android 6.x or 7.x device cannot connect, try these steps:
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
+### macOS send traffic over VPN
+
+OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [OS X](#os-x) section above and complete these steps. Save VPN configuration and re-connect.
+
+1. Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked.
+1. Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
+
+After trying the steps above, if your computer is still not sending traffic over the VPN, check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
+
 ### iOS 13 and macOS 10.15
 
 If your iOS 13 or macOS 10.15 (Catalina) device cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
@@ -347,9 +350,9 @@ If you encounter other errors, refer to the links below:
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
 * https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
-### Additional steps
+### Check logs and VPN status
 
-Please try these additional troubleshooting steps:
+Commands below must be run as `root` (or using `sudo`).
 
 First, restart services on the VPN server:
 

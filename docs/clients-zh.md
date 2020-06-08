@@ -96,7 +96,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. **（重要）** 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
-1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
+1. **（重要）** 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
 1. 单击 **好** 关闭高级设置，然后单击 **应用** 保存VPN连接信息。
 
 要连接到 VPN： 使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
@@ -208,15 +208,15 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10 升级](#windows-10-升级)
 * [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
-* [macOS VPN 流量](#macos-vpn-流量)
 * [Android MTU/MSS 问题](#android-mtumss-问题)
 * [Android 6 和 7](#android-6-和-7)
+* [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
 * [iOS 13 和 macOS 10.15](#ios-13-和-macos-1015)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 10 内核](#debian-10-内核)
 * [Chromebook 连接问题](#chromebook-连接问题)
 * [其它错误](#其它错误)
-* [额外的步骤](#额外的步骤)
+* [检查日志及 VPN 状态](#检查日志及-vpn-状态)
 
 ### Windows 错误 809
 
@@ -282,12 +282,6 @@ Windows 8.x 和 10 默认使用 "smart multi-homed name resolution" （智能多
 
 另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看<a href="https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">这里</a>。
 
-### macOS VPN 流量
-
-OS X (macOS) 用户： 如果你成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [OS X](#os-x) 部分并完成这一步：单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。然后重新连接 VPN。
-
-如果你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
-
 ### Android MTU/MSS 问题
 
 某些 Android 设备有 MTU/MSS 问题，表现为使用 IPsec/XAuth ("Cisco IPsec") 模式可以连接到 VPN 但是无法打开网站。如果你遇到该问题，尝试在 VPN 服务器上运行以下命令。如果成功解决，你可以将这些命令添加到 `/etc/rc.local` 以使它们重启后继续有效。
@@ -318,6 +312,15 @@ echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
+### macOS 通过 VPN 发送通信
+
+OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [OS X](#os-x) 部分并完成以下步骤。保存 VPN 配置然后重新连接。
+
+1. 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
+1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
+
+如果在尝试上面步骤之后，你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
+
 ### iOS 13 和 macOS 10.15
 
 如果你的 iOS 13 或者 macOS 10.15 (Catalina) 设备无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
@@ -347,9 +350,9 @@ Chromebook 用户： 如果你无法连接，请尝试以下步骤：编辑 VPN 
 * https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
 * https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
-### 额外的步骤
+### 检查日志及 VPN 状态
 
-请尝试下面这些额外的故障排除步骤：
+以下命令需要使用 `root` 账户（或者 `sudo`）运行。
 
 首先，重启 VPN 服务器上的相关服务：
 
