@@ -206,10 +206,10 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 
    Enter a secure password to protect the exported `.p12` file (when importing into an iOS or macOS device, this password cannot be empty).
 
-1. (For iOS clients) Export the CA certificate as `vpnca.cer`:
+1. (For iOS clients) Export the CA certificate as `ikev2vpnca.cer`:
 
    ```bash
-   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
    ```
 
 1. The database should now contain:
@@ -316,7 +316,7 @@ First, securely transfer `vpnclient.p12` to your Mac, then double-click to impor
 
 ### iOS
 
-First, securely transfer both `vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
+First, securely transfer both `ikev2vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
 1. Upload the files to your device, tap them in the "Files" app, then go to "Settings" and import, or

@@ -206,10 +206,10 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
    指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 或 macOS 设备时，该密码不能为空）。
 
-1. （适用于 iOS 客户端） 导出 CA 证书到 `vpnca.cer`：
+1. （适用于 iOS 客户端） 导出 CA 证书到 `ikev2vpnca.cer`：
 
    ```bash
-   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
    ```
 
 1. 证书数据库现在应该包含以下内容：
@@ -316,7 +316,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 ### iOS
 
-首先，将文件 `vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+首先，将文件 `ikev2vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop （隔空投送），或者
 1. 将文件上传到设备，在 "文件" 应用程序中单击它们，然后到 "设置" 中导入，或者
