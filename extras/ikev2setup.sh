@@ -31,7 +31,7 @@ new_client() {
 
   bigecho2 "Generating client certificate..."
 
-  sleep 1
+  sleep $((RANDOM % 3 + 1))
 
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -c "IKEv2 VPN CA" -n "$client_name" \
@@ -39,15 +39,15 @@ new_client() {
     -k rsa -g 4096 -v 120 \
     -d sql:/etc/ipsec.d -t ",," \
     --keyUsage digitalSignature,keyEncipherment \
-    --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null
+    --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null || exit 1
 
   if [ "$export_ca" = "1" ]; then
-    bigecho "Exporting CA certificate..."
+    bigecho "Exporting CA certificate 'IKEv2 VPN CA'..."
 
     if [ "$in_container" = "0" ]; then
-      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"vpnca-$SYS_DT.cer"
+      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"ikev2vpnca-$SYS_DT.cer" || exit 1
     else
-      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "/etc/ipsec.d/vpnca-$SYS_DT.cer"
+      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer" || exit 1
     fi
   fi
 
@@ -61,9 +61,9 @@ When importing into an iOS or macOS device, this password cannot be empty.
 EOF
 
   if [ "$in_container" = "0" ]; then
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12"
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
   else
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12"
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
   fi
 
 }
@@ -107,8 +107,8 @@ EOF
     ;;
 esac
 
-command -v certutil >/dev/null 2>&1 || { echo >&2 "Error: 'certutil' not found. Abort."; exit 1; }
-command -v pk12util >/dev/null 2>&1 || { echo >&2 "Error: 'pk12util' not found. Abort."; exit 1; }
+command -v certutil >/dev/null 2>&1 || exiterr "'certutil' not found. Abort."
+command -v pk12util >/dev/null 2>&1 || exiterr "'pk12util' not found. Abort."
 
 if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
   echo "It looks like IKEv2 has already been set up on this server."
@@ -168,12 +168,12 @@ EOF
 if [ "$in_container" = "0" ]; then
   printf '%s\n' ~/"$client_name-$SYS_DT.p12"
   if [ "$export_ca" = "1" ]; then
-    printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+    printf '%s\n' ~/"ikev2vpnca-$SYS_DT.cer (for iOS clients)"
   fi
 else
   printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
   if [ "$export_ca" = "1" ]; then
-    printf '%s\n' "/etc/ipsec.d/vpnca-$SYS_DT.cer (for iOS clients)"
+    printf '%s\n' "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer (for iOS clients)"
   fi
 fi
 
@@ -187,6 +187,10 @@ https://git.io/ikev2clients
 EOF
 
   exit 0
+fi
+
+if certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null 2>&1; then
+  exiterr "Certificate 'IKEv2 VPN CA' already exists. Abort."
 fi
 
 clear
@@ -341,6 +345,47 @@ case $response in
     ;;
 esac
 
+bigecho2 "Generating CA certificate..."
+
+certutil -z <(head -c 1024 /dev/urandom) \
+  -S -x -n "IKEv2 VPN CA" \
+  -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
+  -k rsa -g 4096 -v 120 \
+  -d sql:/etc/ipsec.d -t "CT,," -2 >/dev/null <<ANSWERS || exit 1
+y
+
+N
+ANSWERS
+
+sleep $((RANDOM % 3 + 1))
+
+bigecho2 "Generating VPN server certificate..."
+
+if [ "$use_dns_name" = "1" ]; then
+  certutil -z <(head -c 1024 /dev/urandom) \
+    -S -c "IKEv2 VPN CA" -n "$server_addr" \
+    -s "O=IKEv2 VPN,CN=$server_addr" \
+    -k rsa -g 4096 -v 120 \
+    -d sql:/etc/ipsec.d -t ",," \
+    --keyUsage digitalSignature,keyEncipherment \
+    --extKeyUsage serverAuth \
+    --extSAN "dns:$server_addr" >/dev/null || exit 1
+else
+  certutil -z <(head -c 1024 /dev/urandom) \
+    -S -c "IKEv2 VPN CA" -n "$server_addr" \
+    -s "O=IKEv2 VPN,CN=$server_addr" \
+    -k rsa -g 4096 -v 120 \
+    -d sql:/etc/ipsec.d -t ",," \
+    --keyUsage digitalSignature,keyEncipherment \
+    --extKeyUsage serverAuth \
+    --extSAN "ip:$server_addr,dns:$server_addr" >/dev/null || exit 1
+fi
+
+# Create client configuration
+export_ca=1
+new_client
+
+echo
 bigecho "Adding a new IKEv2 connection..."
 
 if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
@@ -396,46 +441,6 @@ EOF
     ;;
 esac
 
-bigecho2 "Generating CA certificate..."
-
-certutil -z <(head -c 1024 /dev/urandom) \
-  -S -x -n "IKEv2 VPN CA" \
-  -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
-  -k rsa -g 4096 -v 120 \
-  -d sql:/etc/ipsec.d -t "CT,," -2 >/dev/null << ANSWERS
-y
-
-N
-ANSWERS
-
-sleep 1
-
-bigecho2 "Generating VPN server certificate..."
-
-if [ "$use_dns_name" = "1" ]; then
-  certutil -z <(head -c 1024 /dev/urandom) \
-    -S -c "IKEv2 VPN CA" -n "$server_addr" \
-    -s "O=IKEv2 VPN,CN=$server_addr" \
-    -k rsa -g 4096 -v 120 \
-    -d sql:/etc/ipsec.d -t ",," \
-    --keyUsage digitalSignature,keyEncipherment \
-    --extKeyUsage serverAuth \
-    --extSAN "dns:$server_addr" >/dev/null
-else
-  certutil -z <(head -c 1024 /dev/urandom) \
-    -S -c "IKEv2 VPN CA" -n "$server_addr" \
-    -s "O=IKEv2 VPN,CN=$server_addr" \
-    -k rsa -g 4096 -v 120 \
-    -d sql:/etc/ipsec.d -t ",," \
-    --keyUsage digitalSignature,keyEncipherment \
-    --extKeyUsage serverAuth \
-    --extSAN "ip:$server_addr,dns:$server_addr" >/dev/null
-fi
-
-# Create client configuration
-export_ca=1
-new_client
-
 bigecho "Restarting IPsec service..."
 
 mkdir -p /run/pluto
@@ -453,10 +458,10 @@ EOF
 
 if [ "$in_container" = "0" ]; then
   printf '%s\n' ~/"$client_name-$SYS_DT.p12"
-  printf '%s\n' ~/"vpnca-$SYS_DT.cer (for iOS clients)"
+  printf '%s\n' ~/"ikev2vpnca-$SYS_DT.cer (for iOS clients)"
 else
   printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
-  printf '%s\n' "/etc/ipsec.d/vpnca-$SYS_DT.cer (for iOS clients)"
+  printf '%s\n' "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer (for iOS clients)"
 fi
 
 cat <<EOF
