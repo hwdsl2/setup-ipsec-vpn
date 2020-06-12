@@ -106,6 +106,14 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
+if [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; then
+  exiterr "DNS server 'VPN_DNS_SRV1' is invalid."
+fi
+
+if [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; then
+  exiterr "DNS server 'VPN_DNS_SRV2' is invalid."
+fi
+
 bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
