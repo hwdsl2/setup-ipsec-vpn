@@ -36,7 +36,7 @@ new_client() {
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -c "IKEv2 VPN CA" -n "$client_name" \
     -s "O=IKEv2 VPN,CN=$client_name" \
-    -k rsa -g 4096 -v 120 \
+    -k rsa -g 4096 -v "$client_validity" \
     -d sql:/etc/ipsec.d -t ",," \
     --keyUsage digitalSignature,keyEncipherment \
     --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null || exit 1
@@ -137,6 +137,18 @@ if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; t
       echo "Invalid client name. The specified name already exists."
     fi
     read -rp "Client name: " client_name
+  done
+
+  echo
+  echo "Specify the validity period (in months) for this VPN client certificate."
+  read -rp "Enter a number between 1 and 120: [120] " client_validity
+  [ -z "$client_validity" ] && client_validity=120
+  while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
+    || [ "$client_validity" -lt "1" ] || [ "$client_validity" -gt "120" ] \
+    || [ "$client_validity" != "$((10#$client_validity))" ]; do
+    echo "Invalid validity period."
+    read -rp "Enter a number between 1 and 120: [120] " client_validity
+    [ -z "$client_validity" ] && client_validity=120
   done
 
   echo
@@ -249,6 +261,19 @@ while [ "${#client_name}" -gt "64" ] || printf '%s' "$client_name" | LC_ALL=C gr
   [ -z "$client_name" ] && client_name=vpnclient
 done
 
+# Enter validity period
+echo
+echo "Specify the validity period (in months) for this VPN client certificate."
+read -rp "Enter a number between 1 and 120: [120] " client_validity
+[ -z "$client_validity" ] && client_validity=120
+while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
+  || [ "$client_validity" -lt "1" ] || [ "$client_validity" -gt "120" ] \
+  || [ "$client_validity" != "$((10#$client_validity))" ]; do
+  echo "Invalid validity period."
+  read -rp "Enter a number between 1 and 120: [120] " client_validity
+  [ -z "$client_validity" ] && client_validity=120
+done
+
 # Check for MOBIKE support
 mobike_support=0
 case "$swan_ver" in
@@ -275,7 +300,7 @@ if [ "$mobike_support" = "1" ]; then
     fi
   else
     echo
-    echo "NOTE: DO NOT enable MOBIKE support, if your Docker host runs Ubuntu Linux."
+    echo "IMPORTANT: *DO NOT* enable MOBIKE support, if your Docker host runs Ubuntu Linux."
   fi
 fi
 
@@ -318,6 +343,12 @@ Please double check before continuing!
 VPN server address: $server_addr
 VPN client name: $client_name
 EOF
+
+if [ "$client_validity" = "1" ]; then
+  echo "Client cert valid for: 1 month"
+else
+  echo "Client cert valid for: $client_validity months"
+fi
 
 if [ "$mobike_support" = "1" ]; then
   if [ "$mobike_enable" = "1" ]; then
