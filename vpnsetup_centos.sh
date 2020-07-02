@@ -381,15 +381,26 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-if [ ! -f /etc/fail2ban/jail.local ] ; then
+F2B_FILE="/etc/fail2ban/jail.local"
+if [ ! -f "$F2B_FILE" ]; then
   bigecho "Creating basic Fail2Ban rules..."
-cat > /etc/fail2ban/jail.local <<'EOF'
+cat > "$F2B_FILE" <<'EOF'
 [ssh-iptables]
-enabled  = true
-filter   = sshd
-action   = iptables[name=SSH, port=ssh, protocol=tcp]
-logpath  = /var/log/secure
+enabled = true
+filter = sshd
+logpath = /var/log/secure
 EOF
+
+  if [ "$use_nft" = "1" ]; then
+cat >> "$F2B_FILE" <<'EOF'
+port = ssh
+banaction = nftables-multiport[blocktype=drop]
+EOF
+  else
+cat >> "$F2B_FILE" <<'EOF'
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+EOF
+  fi
 fi
 
 bigecho "Updating IPTables rules..."
