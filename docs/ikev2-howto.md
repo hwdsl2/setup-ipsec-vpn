@@ -251,7 +251,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ### Windows 7, 8.x and 10
 
-1. Securely transfer `vpnclient.p12` to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
    Detailed instructions:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
@@ -266,7 +266,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ### OS X (macOS)
 
-First, securely transfer `vpnclient.p12` to your Mac, then double-click to import into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
+First, securely transfer the generated `.p12` file to your Mac, then double-click to import into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -279,7 +279,7 @@ First, securely transfer `vpnclient.p12` to your Mac, then double-click to impor
 1. Leave the **Local ID** field blank.
 1. Click the **Authentication Settings...** button.
 1. Select **None** from the **Authentication Settings** drop-down menu.
-1. Select the **Certificate** radio button, then select the **vpnclient** certificate.
+1. Select the **Certificate** radio button, then select the new client certificate.
 1. Click **OK**.
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Apply** to save the VPN connection information.
@@ -287,42 +287,42 @@ First, securely transfer `vpnclient.p12` to your Mac, then double-click to impor
 
 ### Android 10 and newer
 
-1. Securely transfer `vpnclient.p12` to your Android device.
+1. Securely transfer the generated `.p12` file to your Android device.
 1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
 1. Tap **Install from storage (or SD card)**.
-1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.   
+1. Choose the `.p12` file you transferred from the VPN server, and follow the prompts.   
    **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
 1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
-1. Tap **Select user certificate**, select your new VPN client certificate and confirm.
+1. Tap **Select user certificate**, select the new client certificate and confirm.
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
 ### Android 4.x to 9.x
 
-1. Securely transfer `vpnclient.p12` to your Android device.
+1. Securely transfer the generated `.p12` file to your Android device.
 1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
 1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
 1. Tap **Select user certificate**, then tap **Install certificate**.
-1. Choose the `.p12` file you copied from the VPN server, and follow the prompts.   
+1. Choose the `.p12` file you transferred from the VPN server, and follow the prompts.   
    **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
 ### iOS
 
-First, securely transfer both `ikev2vpnca.cer` and `vpnclient.p12` to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
+First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
-1. Upload the files to your device, tap them in the "Files" app, then go to "Settings" and import, or
+1. Upload the files to your device, tap them in the "Files" app (must be in the "On My iPhone" folder), then follow the prompts to import, or
 1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
 
-When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -333,7 +333,7 @@ When finished, check to make sure both `vpnclient` and `IKEv2 VPN CA` are listed
 1. Leave the **Local ID** field blank.
 1. Tap **User Authentication**. Select **None** and go back.
 1. Make sure the **Use Certificate** switch is ON.
-1. Tap **Certificate**. Select **vpnclient** and go back.
+1. Tap **Certificate**. Select the new client certificate and go back.
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
 
@@ -432,9 +432,9 @@ In certain circumstances, you may need to revoke a previously generated VPN clie
 ## Known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
+1. Connecting multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router) is not supported (<a href="https://github.com/libreswan/libreswan/issues/237" target="_blank">#237</a>). For this use case, please instead use <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
 1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
-1. If your VPN client can connect but cannot open any website, try editing `/etc/ipsec.conf` on the VPN server. Find the line `phase2alg=` under section `conn ikev2-cp` and delete `aes_gcm-null,`. Save the file and run `service ipsec restart`.
 
 ## References
 

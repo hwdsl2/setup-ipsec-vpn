@@ -251,7 +251,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 ### Windows 7, 8.x 和 10
 
-1. 将文件 `vpnclient.p12` 安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
    详细的操作步骤：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
@@ -266,7 +266,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 ### OS X (macOS)
 
-首先，将文件 `vpnclient.p12` 安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。
+首先，将生成的 `.p12` 文件安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -279,7 +279,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 保持 **本地 ID** 字段空白。
 1. 单击 **鉴定设置...** 按钮。
 1. 从 **鉴定设置** 下拉菜单中选择 **无**。
-1. 选择 **证书** 单选按钮，然后选择 **vpnclient** 证书。
+1. 选择 **证书** 单选按钮，然后选择新的客户端证书。
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存VPN连接信息。
@@ -287,42 +287,42 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 ### Android 10 和更新版本
 
-1. 将文件 `vpnclient.p12` 安全地传送到你的 Android 设备。
+1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
 1. 启动 **设置** 应用程序。
 1. 进入 安全 -> 高级 -> 加密与凭据。
 1. 单击 **从存储设备（或 SD 卡）安装**。
-1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。   
+1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
    **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
 1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
 1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-1. 单击 **Select user certificate**，选择你的新 VPN 客户端证书并确认。
+1. 单击 **Select user certificate**，选择新的客户端证书并确认。
 1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
 ### Android 4.x to 9.x
 
-1. 将文件 `vpnclient.p12` 安全地传送到你的 Android 设备。
+1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
 1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
 1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
 1. 单击 **Select user certificate**，然后单击 **Install certificate**。
-1. 选择你从服务器复制过来的 `.p12` 文件，并按提示操作。   
+1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
    **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
 1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
 ### iOS
 
-首先，将文件 `ikev2vpnca.cer` 和 `vpnclient.p12` 安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop （隔空投送），或者
-1. 将文件上传到设备，在 "文件" 应用程序中单击它们，然后到 "设置" 中导入，或者
+1. 将文件上传到设备，在 "文件" 应用程序中单击它们（必须在 "On My iPhone" 目录下），然后按照提示导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
-在完成之后，检查并确保 `vpnclient` 和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -333,7 +333,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 保持 **本地 ID** 字段空白。
 1. 单击 **用户鉴定** 。选择 **无** 并返回。
 1. 启用 **使用证书** 选项。
-1. 单击 **证书** 。选择 **vpnclient** 并返回。
+1. 单击 **证书** 。选择新的客户端证书并返回。
 1. 单击右上角的 **完成**。
 1. 启用 **VPN** 连接。
 
@@ -432,9 +432,9 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ## 已知问题
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
+1. 不支持同时连接在同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端 (<a href="https://github.com/libreswan/libreswan/issues/237" target="_blank">#237</a>)。对于这个用例，请换用 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到版本 3.26 或以上。
-1. 如果你的 VPN 客户端可以连接但是无法打开任何网站，可以尝试编辑服务器上的 `/etc/ipsec.conf`。找到 `conn ikev2-cp` 部分的 `phase2alg=` 一行并删除 `aes_gcm-null,`。保存文件并运行 `service ipsec restart`。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
 ## 参考链接
 
