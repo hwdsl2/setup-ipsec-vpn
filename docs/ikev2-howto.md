@@ -195,7 +195,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    Export `.p12` file:
 
    ```bash
-   pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
+   pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o vpnclient.p12
    ```
 
    ```
@@ -245,9 +245,9 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
+* [iOS (iPhone/iPad)](#ios)
 * [Android 10 and newer](#android-10-and-newer)
 * [Android 4.x to 9.x](#android-4x-to-9x)
-* [iOS (iPhone/iPad)](#ios)
 
 ### Windows 7, 8.x and 10
 
@@ -276,7 +276,8 @@ First, securely transfer the generated `.p12` file to your Mac, then double-clic
 1. Click **Create**.
 1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.
 1. Enter `Your VPN Server IP` (or DNS name) for the **Remote ID**.
-1. Leave the **Local ID** field blank.
+1. Enter `Your VPN client name` in the **Local ID** field.   
+   **Note:** This must match exactly the client name you specified during IKEv2 setup. Same as the first part of your `.p12` filename.
 1. Click the **Authentication Settings...** button.
 1. Select **None** from the **Authentication Settings** drop-down menu.
 1. Select the **Certificate** radio button, then select the new client certificate.
@@ -284,6 +285,30 @@ First, securely transfer the generated `.p12` file to your Mac, then double-clic
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Apply** to save the VPN connection information.
 1. Click **Connect**.
+
+### iOS
+
+First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
+
+1. AirDrop, or
+1. Upload to your device, tap them in the "Files" app (must first move to the "On My iPhone" folder), then follow the prompts to import, or
+1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
+
+When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+
+1. Go to Settings -> General -> VPN.
+1. Tap **Add VPN Configuration...**.
+1. Tap **Type**. Select **IKEv2** and go back.
+1. Tap **Description** and enter anything you like.
+1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
+1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
+1. Enter `Your VPN client name` in the **Local ID** field.   
+   **Note:** This must match exactly the client name you specified during IKEv2 setup. Same as the first part of your `.p12` filename.
+1. Tap **User Authentication**. Select **None** and go back.
+1. Make sure the **Use Certificate** switch is ON.
+1. Tap **Certificate**. Select the new client certificate and go back.
+1. Tap **Done**.
+1. Slide the **VPN** switch ON.
 
 ### Android 10 and newer
 
@@ -313,29 +338,6 @@ First, securely transfer the generated `.p12` file to your Mac, then double-clic
    **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
-
-### iOS
-
-First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
-
-1. AirDrop, or
-1. Upload the files to your device, tap them in the "Files" app (must be in the "On My iPhone" folder), then follow the prompts to import, or
-1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
-
-When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
-
-1. Go to Settings -> General -> VPN.
-1. Tap **Add VPN Configuration...**.
-1. Tap **Type**. Select **IKEv2** and go back.
-1. Tap **Description** and enter anything you like.
-1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
-1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
-1. Leave the **Local ID** field blank.
-1. Tap **User Authentication**. Select **None** and go back.
-1. Make sure the **Use Certificate** switch is ON.
-1. Tap **Certificate**. Select the new client certificate and go back.
-1. Tap **Done**.
-1. Slide the **VPN** switch ON.
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
@@ -432,7 +434,6 @@ In certain circumstances, you may need to revoke a previously generated VPN clie
 ## Known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation. On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
-1. Connecting multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router) is not supported (<a href="https://github.com/libreswan/libreswan/issues/237" target="_blank">#237</a>). For this use case, please instead use <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
 1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
 

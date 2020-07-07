@@ -195,7 +195,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    导出 `.p12` 文件：
 
    ```bash
-   pk12util -o vpnclient.p12 -n "vpnclient" -d sql:/etc/ipsec.d
+   pk12util -d sql:/etc/ipsec.d -n "vpnclient" -o vpnclient.p12
    ```
 
    ```
@@ -245,9 +245,9 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)
+* [iOS (iPhone/iPad)](#ios)
 * [Android 10 和更新版本](#android-10-和更新版本)
 * [Android 4.x to 9.x](#android-4x-to-9x)
-* [iOS (iPhone/iPad)](#ios)
 
 ### Windows 7, 8.x 和 10
 
@@ -276,7 +276,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 单击 **创建**。
 1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 保持 **本地 ID** 字段空白。
+1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
+   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
 1. 单击 **鉴定设置...** 按钮。
 1. 从 **鉴定设置** 下拉菜单中选择 **无**。
 1. 选择 **证书** 单选按钮，然后选择新的客户端证书。
@@ -284,6 +285,32 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存VPN连接信息。
 1. 单击 **连接**。
+
+### iOS
+
+首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+
+1. AirDrop（隔空投送），或者
+1. 上传到设备，在 "文件" 应用程序中单击它们（必须首先移动到 "On My iPhone" 目录下），然后按照提示导入，或者
+1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
+
+在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+
+1. 进入设置 -> 通用 -> VPN。
+1. 单击 **添加VPN配置...**。
+1. 单击 **类型** 。选择 **IKEv2** 并返回。
+1. 在 **描述** 字段中输入任意内容。
+1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
+   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
+1. 单击 **用户鉴定** 。选择 **无** 并返回。
+1. 启用 **使用证书** 选项。
+1. 单击 **证书** 。选择新的客户端证书并返回。
+1. 单击右上角的 **完成**。
+1. 启用 **VPN** 连接。
+
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### Android 10 和更新版本
 
@@ -313,31 +340,6 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
 1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
-
-### iOS
-
-首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
-
-1. AirDrop （隔空投送），或者
-1. 将文件上传到设备，在 "文件" 应用程序中单击它们（必须在 "On My iPhone" 目录下），然后按照提示导入，或者
-1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
-
-在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
-
-1. 进入设置 -> 通用 -> VPN。
-1. 单击 **添加VPN配置...**。
-1. 单击 **类型** 。选择 **IKEv2** 并返回。
-1. 在 **描述** 字段中输入任意内容。
-1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 保持 **本地 ID** 字段空白。
-1. 单击 **用户鉴定** 。选择 **无** 并返回。
-1. 启用 **使用证书** 选项。
-1. 单击 **证书** 。选择新的客户端证书并返回。
-1. 单击右上角的 **完成**。
-1. 启用 **VPN** 连接。
-
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ## 添加一个客户端证书
 
@@ -432,7 +434,6 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ## 已知问题
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
-1. 不支持同时连接在同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端 (<a href="https://github.com/libreswan/libreswan/issues/237" target="_blank">#237</a>)。对于这个用例，请换用 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
