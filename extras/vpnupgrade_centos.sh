@@ -182,6 +182,7 @@ cd /opt/src || exit 1
 # Add the EPEL repository
 epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
 yum -y install epel-release || yum -y install "$epel_url" || exiterr2
+yum -y makecache || { yum -y clean metadata; yum -y makecache; } || { yum -y clean metadata; yum -y makecache; }
 
 # Install necessary packages
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \

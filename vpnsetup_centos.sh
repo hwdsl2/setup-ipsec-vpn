@@ -144,6 +144,7 @@ bigecho "Adding the EPEL repository..."
 
 epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
 yum -y install epel-release || yum -y install "$epel_url" || exiterr2
+yum -y makecache || { yum -y clean metadata; yum -y makecache; } || { yum -y clean metadata; yum -y makecache; }
 
 bigecho "Installing packages required for the VPN..."
 
