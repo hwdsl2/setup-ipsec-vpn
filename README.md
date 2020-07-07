@@ -1,6 +1,6 @@
 # IPsec VPN Server Auto Setup Scripts
 
-[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?maxAge=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?maxAge=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 Set up your own IPsec VPN server in just a few minutes, with both IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
@@ -60,7 +60,7 @@ For other installation options and how to set up VPN clients, read the sections 
 A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, from one of these images:
 - <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal), 18.04 (Bionic) or 16.04 (Xenial)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">, 9 (Stretch) or 8 (Jessie)</a>
-- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 (x86_64) with Updates</a> [\*\*](#centos-8-note)
+- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00O7WM7QW" target="_blank">CentOS 7 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8, 7 or 6</a>
@@ -81,8 +81,6 @@ Advanced users can set up the VPN server on a $35 <a href="https://www.raspberry
 
 <a name="debian-10-note"></a>
 \* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more <a href="docs/clients.md#debian-10-kernel" target="_blank">here</a>.   
-<a name="centos-8-note"></a>
-\*\* CentOS 8 does not yet have an official EC2 image.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
