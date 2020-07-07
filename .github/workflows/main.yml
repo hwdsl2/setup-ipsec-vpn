@@ -7,7 +7,7 @@ on:
       - '**.sh'
       - '.github/workflows/main.yml'
   schedule:
-    - cron: '25 10 * * 3,6'
+    - cron: '25 2 * * 0,4'
 
 jobs:
   shellcheck:
