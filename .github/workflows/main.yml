@@ -1,0 +1,251 @@
+name: vpn test
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**.sh'
+      - '.github/workflows/main.yml'
+  schedule:
+    - cron: '25 10 * * 3,6'
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'hwdsl2' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Check
+        if: success()
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yq update
+          sudo apt-get -yq install shellcheck
+
+          export SHELLCHECK_OPTS="-e SC1091,SC1117"
+          cd "$GITHUB_WORKSPACE"
+          pwd
+          ls -l | grep 'vpnsetup\.sh'
+          shellcheck --version
+          shellcheck *.sh extras/*.sh
+
+  test_set_1:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'hwdsl2'
+    strategy:
+      matrix:
+        os_version: ["centos:8", "centos:7", "ubuntu:16.04", "debian:8"]
+      fail-fast: false
+    env:
+      OS_VERSION: ${{ matrix.os_version }}
+      EVENT_NAME: ${{ github.event_name }}
+    steps:
+      - name: Build
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            echo "Waiting 60 seconds..."
+            sleep 60
+          fi
+          mkdir -p "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+          cd "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+          cat > run.sh <<'EOF'
+          #!/bin/bash
+          set -e
+
+          if [ "$1" = "centos" ]; then
+            yum -y -q install wget rsyslog
+            systemctl start rsyslog
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+          else
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get -yq update
+            apt-get -yq install wget rsyslog
+            service rsyslog start
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          fi
+          sh vpnsetup.sh
+          if [ "$1" = "centos" ]; then
+            systemctl start fail2ban
+            systemctl start ipsec
+            systemctl start xl2tpd
+          fi
+          sleep 10
+          netstat -anpu
+          netstat -anpu | grep -q pluto
+          netstat -anpu | grep -q xl2tpd
+          iptables -nL
+          iptables -nL | grep -q '192\.168\.42\.0/24'
+          iptables -nL -t nat
+          iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          if [ "$1" = "centos" ]; then
+            grep pluto /var/log/secure
+            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep xl2tpd /var/log/messages
+            grep xl2tpd /var/log/messages | grep -q 'Listening on IP address 0\.0\.0\.0, port 1701'
+          else
+            grep pluto /var/log/auth.log
+            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep xl2tpd /var/log/syslog
+            grep xl2tpd /var/log/syslog | grep -q 'Listening on IP address 0\.0\.0\.0, port 1701'
+          fi
+          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
+          bash ikev2.sh <<ANSWERS
+          
+          
+          
+          
+          
+          y
+          ANSWERS
+          if [ "$1" = "centos" ]; then
+            systemctl restart ipsec
+            sleep 10
+            grep pluto /var/log/secure | tail -n 20
+            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+          else
+            sleep 10
+            grep pluto /var/log/auth.log | tail -n 20
+            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+          fi
+          bash ikev2.sh <<ANSWERS
+          y
+          vpnclient2
+          
+          
+          ANSWERS
+          ls -l | grep 'vpnsetup\.sh'
+          ls -l | grep 'ikev2\.sh'
+          exit 0
+          EOF
+
+          cat > Dockerfile <<EOF
+          FROM $OS_VERSION
+          EOF
+
+          cat >> Dockerfile <<'EOF'
+
+          ENV container docker
+          WORKDIR /opt/src
+
+          RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ "$i" = \
+          systemd-tmpfiles-setup.service ] || rm -f "$i"; done); \
+          rm -f /lib/systemd/system/multi-user.target.wants/*; \
+          rm -f /etc/systemd/system/*.wants/*; \
+          rm -f /lib/systemd/system/local-fs.target.wants/*; \
+          rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+          rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+          rm -f /lib/systemd/system/basic.target.wants/*; \
+          rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+          COPY ./run.sh /opt/src/run.sh
+          RUN chmod 755 /opt/src/run.sh
+
+          VOLUME [ "/sys/fs/cgroup" ]
+
+          CMD ["/sbin/init"]
+          EOF
+          cat Dockerfile
+          cat run.sh
+          docker build -t "${OS_VERSION//:}-test" .
+
+      - name: Test
+        if: success()
+        run: |
+          docker run -d --name "${OS_VERSION//:}-test-1" -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+            --privileged "${OS_VERSION//:}-test"
+          sleep 10
+          docker exec "${OS_VERSION//:}-test-1" /opt/src/run.sh "${OS_VERSION::6}"
+
+      - name: Clear
+        if: always()
+        run: |
+          rm -rf "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+          docker rm -f "${OS_VERSION//:}-test-1" || true
+          docker rmi "${OS_VERSION//:}-test" || true
+
+  test_set_2:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'hwdsl2'
+    strategy:
+      matrix:
+        os_version: ["ubuntu:20.04", "ubuntu:18.04", "debian:10", "debian:9", "centos:6"]
+      fail-fast: false
+    container:
+      image: ${{ matrix.os_version }}
+      env:
+        OS_VERSION: ${{ matrix.os_version }}
+        EVENT_NAME: ${{ github.event_name }}
+      options: --privileged -v /lib/modules:/lib/modules:ro
+    steps:
+      - name: Test
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            echo "Waiting 60 seconds..."
+            sleep 60
+          fi
+          mkdir -p /opt/src
+          cd /opt/src
+          echo "# hwdsl2" > run.sh
+          OS_NAME=$(echo "$OS_VERSION" | head -c6)
+          if [ "$OS_NAME" = "centos" ]; then
+            yum -y -q install wget rsyslog
+            service rsyslog start
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+          else
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get -yq update
+            apt-get -yq install wget rsyslog
+            service rsyslog start
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          fi
+          sh vpnsetup.sh
+          sleep 10
+          netstat -anpu
+          netstat -anpu | grep -q pluto
+          netstat -anpu | grep -q xl2tpd
+          iptables -nL
+          iptables -nL | grep -q '192\.168\.42\.0/24'
+          iptables -nL -t nat
+          iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          if [ "$OS_NAME" = "centos" ]; then
+            grep pluto /var/log/secure
+            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep xl2tpd /var/log/messages
+            grep xl2tpd /var/log/messages | grep -q 'Listening on IP address 0\.0\.0\.0, port 1701'
+          else
+            grep pluto /var/log/auth.log
+            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep xl2tpd /var/log/syslog
+            grep xl2tpd /var/log/syslog | grep -q 'Listening on IP address 0\.0\.0\.0, port 1701'
+          fi
+          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
+          bash ikev2.sh <<ANSWERS
+          
+          
+          
+          
+          
+          y
+          ANSWERS
+          sleep 10
+          if [ "$OS_NAME" = "centos" ]; then
+            grep pluto /var/log/secure | tail -n 20
+            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+          else
+            grep pluto /var/log/auth.log | tail -n 20
+            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+          fi
+          bash ikev2.sh <<ANSWERS
+          y
+          vpnclient2
+          
+          
+          ANSWERS
+          ls -l | grep 'vpnsetup\.sh'
+          ls -l | grep 'ikev2\.sh'
