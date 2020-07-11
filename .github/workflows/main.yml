@@ -62,13 +62,23 @@ jobs:
           #!/bin/bash
           set -e
 
+          trap 'catch $? $LINENO' ERR
+
+          catch() {
+            echo "Error $1 occurred on line $2."
+            cat -n -- "$0" | tail -n+"$(($2 - 3))" | head -n7
+            exit 1
+          }
+
           if [ "$1" = "centos" ]; then
+            yum -y update
             yum -y -q install wget rsyslog
             systemctl start rsyslog
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
           else
             export DEBIAN_FRONTEND=noninteractive
             apt-get -yq update
+            apt-get -yq dist-upgrade
             apt-get -yq install wget rsyslog
             service rsyslog start
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
@@ -76,12 +86,16 @@ jobs:
 
           sh vpnsetup.sh
           if [ "$1" = "centos" ]; then
-            systemctl start fail2ban
             systemctl start ipsec
             systemctl start xl2tpd
+            sleep 5
+            systemctl restart fail2ban
+          else
+            sleep 5
+            service fail2ban restart
           fi
 
-          sleep 10
+          sleep 5
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
           iptables -nL
@@ -99,6 +113,8 @@ jobs:
             grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
             grep xl2tpd /var/log/syslog
           fi
+          cat /var/log/fail2ban.log
+          grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -223,12 +239,14 @@ jobs:
 
           OS_NAME=$(echo "$OS_VERSION" | head -c6)
           if [ "$OS_NAME" = "centos" ]; then
+            yum -y update
             yum -y -q install wget rsyslog
             service rsyslog start
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
           else
             export DEBIAN_FRONTEND=noninteractive
             apt-get -yq update
+            apt-get -yq dist-upgrade
             apt-get -yq install wget rsyslog
             service rsyslog start
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
@@ -236,7 +254,13 @@ jobs:
 
           sh vpnsetup.sh
 
-          sleep 10
+          sleep 5
+          if [ "$OS_NAME" = "centos" ]; then
+            sed -i '/^logtarget/d' /etc/fail2ban/fail2ban.conf
+            echo "logtarget = /var/log/fail2ban.log" >> /etc/fail2ban/fail2ban.conf
+          fi
+          service fail2ban restart
+          sleep 5
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
           iptables -nL
@@ -254,6 +278,8 @@ jobs:
             grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
             grep xl2tpd /var/log/syslog
           fi
+          cat /var/log/fail2ban.log
+          grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
