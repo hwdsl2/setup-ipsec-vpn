@@ -266,7 +266,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ### OS X (macOS)
 
-First, securely transfer the generated `.p12` file to your Mac, then double-click to import into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
+First, securely transfer the generated `.p12` file to your Mac, then double-click to import into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. Close the dialog using the red "X" on the top-left corner. When prompted, use Touch ID or enter your password and click "Update Settings". When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under the **Certificates** category of **login** keychain.
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
