@@ -174,7 +174,7 @@ else
     REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
   fi
   yum "$REPO4" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
-  if systemctl is-active --quiet firewalld.service; then
+  if systemctl is-active --quiet firewalld.service || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
     use_nft=1
     yum -y install nftables || exiterr2
   else
