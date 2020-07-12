@@ -189,7 +189,7 @@ else
   fi
 fi
 
-cat <<EOF
+cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
@@ -274,6 +274,44 @@ while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
   [ -z "$client_validity" ] && client_validity=120
 done
 
+# Enter custom DNS servers
+use_custom_dns=0
+echo
+echo "By default, clients are set to use Google Public DNS when the VPN is active."
+printf "Do you want to specify custom DNS servers for IKEv2? [y/N] "
+read -r response
+case $response in
+  [yY][eE][sS]|[yY])
+    use_custom_dns=1
+    ;;
+  *)
+    use_custom_dns=0
+    dns_server_1=8.8.8.8
+    dns_server_2=8.8.4.4
+    dns_servers="8.8.8.8 8.8.4.4"
+    ;;
+esac
+
+if [ "$use_custom_dns" = "1" ]; then
+  read -rp "Enter primary DNS server: " dns_server_1
+  until check_ip "$dns_server_1"; do
+    echo "Invalid DNS server."
+    read -rp "Enter primary DNS server: " dns_server_1
+  done
+
+  read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
+  until [ -z "$dns_server_2" ] || check_ip "$dns_server_2"; do
+    echo "Invalid DNS server."
+    read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
+  done
+
+  if [ -n "$dns_server_2" ]; then
+    dns_servers="$dns_server_1 $dns_server_2"
+  else
+    dns_servers="$dns_server_1"
+  fi
+fi
+
 # Check for MOBIKE support
 mobike_support=0
 case "$swan_ver" in
@@ -295,17 +333,18 @@ if [ "$mobike_support" = "1" ]; then
       [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
     fi
     [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
+    # Linux kernels on Ubuntu do not support MOBIKE
     if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
       mobike_support=0
     fi
-  else
-    echo
-    echo "IMPORTANT: *DO NOT* enable MOBIKE support, if your Docker host runs Ubuntu Linux."
   fi
 fi
 
 mobike_enable=0
 if [ "$mobike_support" = "1" ]; then
+  echo
+  echo "The MOBIKE IKEv2 extension allows VPN clients to change network attachment points,"
+  echo "e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP."
   if [ "$in_container" = "0" ]; then
     echo
     printf "Do you want to enable MOBIKE support? [Y/n] "
@@ -320,6 +359,7 @@ if [ "$mobike_support" = "1" ]; then
     esac
   else
     echo
+    echo "IMPORTANT: *DO NOT* enable MOBIKE support, if your Docker host runs Ubuntu Linux."
     printf "Do you want to enable MOBIKE support? [y/N] "
     read -r response
     case $response in
@@ -356,6 +396,10 @@ if [ "$mobike_support" = "1" ]; then
   else
     echo "Enable MOBIKE support: No"
   fi
+fi
+
+if [ "$use_custom_dns" = "1" ]; then
+  echo "DNS server(s): $dns_servers"
 fi
 
 cat <<'EOF'
@@ -449,14 +493,20 @@ conn ikev2-cp
   ike-frag=yes
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+  encapsulation=yes
 EOF
 
 case "$swan_ver" in
   3.2[35679]|3.3[12])
-cat >> /etc/ipsec.d/ikev2.conf <<'EOF'
-  modecfgdns="8.8.8.8 8.8.4.4"
-  encapsulation=yes
+    if [ -n "$dns_server_2" ]; then
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  modecfgdns="$dns_servers"
 EOF
+    else
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  modecfgdns=$dns_server_1
+EOF
+    fi
     if [ "$mobike_enable" = "1" ]; then
       echo "  mobike=yes" >> /etc/ipsec.d/ikev2.conf
     else
@@ -464,11 +514,16 @@ EOF
     fi
     ;;
   3.19|3.2[012])
-cat >> /etc/ipsec.d/ikev2.conf <<'EOF'
-  modecfgdns1=8.8.8.8
-  modecfgdns2=8.8.4.4
-  encapsulation=yes
+    if [ -n "$dns_server_2" ]; then
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  modecfgdns1=$dns_server_1
+  modecfgdns2=$dns_server_2
 EOF
+    else
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  modecfgdns1=$dns_server_1
+EOF
+    fi
     ;;
 esac
 
@@ -483,6 +538,9 @@ cat <<EOF
 
 IKEv2 VPN setup is now complete!
 
+VPN server address: $server_addr
+VPN client name: $client_name
+
 Client configuration is available at:
 
 EOF
@@ -495,7 +553,7 @@ else
   printf '%s\n' "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer (for iOS clients)"
 fi
 
-cat <<EOF
+cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
