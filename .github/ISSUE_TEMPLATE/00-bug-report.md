@@ -17,7 +17,7 @@ assignees: ''
 - [ ] This bug is about the VPN setup scripts, and not IPsec VPN itself
 
 <!---
-If you need help with IPsec VPN itself, please use the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or search e.g. [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn).
+If you need help with IPsec VPN itself, please see [Bugs & Questions](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README.md#bugs--questions). Ask VPN-related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or search e.g. [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn).
 --->
 
 **Describe the issue**
