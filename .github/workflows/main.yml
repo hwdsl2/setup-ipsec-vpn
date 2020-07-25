@@ -42,7 +42,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["centos:8", "centos:7", "ubuntu:16.04", "debian:8"]
+        os_version: ["centos:8", "centos:7", "ubuntu:16.04"]
       fail-fast: false
     env:
       OS_VERSION: ${{ matrix.os_version }}
