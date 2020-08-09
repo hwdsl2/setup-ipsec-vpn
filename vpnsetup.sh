@@ -125,6 +125,10 @@ if [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; then
   exiterr "DNS server 'VPN_DNS_SRV2' is invalid."
 fi
 
+if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
+  exiterr "IPTables check failed. Reboot and re-run this script."
+fi
+
 bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
