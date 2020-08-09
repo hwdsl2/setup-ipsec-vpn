@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on Ubuntu LTS and Debian.
+# Script for automatic setup of an IPsec VPN server on Ubuntu and Debian.
 # Works on any dedicated server or virtual private server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -117,12 +117,9 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-if [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; then
-  exiterr "DNS server 'VPN_DNS_SRV1' is invalid."
-fi
-
-if [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; then
-  exiterr "DNS server 'VPN_DNS_SRV2' is invalid."
+if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
+  || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; } then
+  exiterr "The DNS server specified is invalid."
 fi
 
 if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
@@ -390,8 +387,8 @@ fi
 
 bigecho "Updating IPTables rules..."
 
-IPT_FILE="/etc/iptables.rules"
-IPT_FILE2="/etc/iptables/rules.v4"
+IPT_FILE=/etc/iptables.rules
+IPT_FILE2=/etc/iptables/rules.v4
 ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
@@ -429,8 +426,8 @@ fi
 
 bigecho "Enabling services on boot..."
 
-IPT_PST="/etc/init.d/iptables-persistent"
-IPT_PST2="/usr/share/netfilter-persistent/plugins.d/15-ip4tables"
+IPT_PST=/etc/init.d/iptables-persistent
+IPT_PST2=/usr/share/netfilter-persistent/plugins.d/15-ip4tables
 ipt_load=1
 if [ -f "$IPT_FILE2" ] && { [ -f "$IPT_PST" ] || [ -f "$IPT_PST2" ]; }; then
   ipt_load=0
@@ -494,14 +491,11 @@ fi
 
 bigecho "Starting services..."
 
-# Reload sysctl.conf
 sysctl -e -q -p
 
-# Update file attributes
 chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
-# Restart services
 mkdir -p /run/pluto
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null

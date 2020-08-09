@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6, 7 and 8.
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6-8.
 # Works on any dedicated server or virtual private server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -50,7 +50,7 @@ check_ip() {
 vpnsetup() {
 
 if ! grep -qs -e "release 6" -e "release 7" -e "release 8" /etc/redhat-release; then
-  echo "Error: This script only supports CentOS/RHEL 6, 7 and 8." >&2
+  echo "Error: This script only supports CentOS/RHEL 6-8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
   exit 1
 fi
@@ -106,12 +106,9 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-if [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; then
-  exiterr "DNS server 'VPN_DNS_SRV1' is invalid."
-fi
-
-if [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; then
-  exiterr "DNS server 'VPN_DNS_SRV2' is invalid."
+if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
+  || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; } then
+  exiterr "The DNS server specified is invalid."
 fi
 
 bigecho "VPN setup in progress... Please be patient."
@@ -174,7 +171,8 @@ else
     REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
   fi
   yum "$REPO4" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
-  if systemctl is-active --quiet firewalld.service || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
+  if systemctl is-active --quiet firewalld.service \
+    || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
     use_nft=1
     yum -y install nftables || exiterr2
   else
@@ -382,7 +380,7 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
 fi
 
-F2B_FILE="/etc/fail2ban/jail.local"
+F2B_FILE=/etc/fail2ban/jail.local
 if [ ! -f "$F2B_FILE" ]; then
   bigecho "Creating basic Fail2Ban rules..."
 cat > "$F2B_FILE" <<'EOF'
@@ -406,8 +404,8 @@ fi
 
 bigecho "Updating IPTables rules..."
 
-IPT_FILE="/etc/sysconfig/iptables"
-[ "$use_nft" = "1" ] && IPT_FILE="/etc/sysconfig/nftables.conf"
+IPT_FILE=/etc/sysconfig/iptables
+[ "$use_nft" = "1" ] && IPT_FILE=/etc/sysconfig/nftables.conf
 ipt_flag=0
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
@@ -490,19 +488,15 @@ fi
 
 bigecho "Starting services..."
 
-# Restore SELinux contexts
-restorecon /etc/ipsec.d/*db >/dev/null 2>&1
-restorecon /usr/local/sbin -Rv >/dev/null 2>&1
-restorecon /usr/local/libexec/ipsec -Rv >/dev/null 2>&1
+restorecon /etc/ipsec.d/*db >/dev/null
+restorecon /usr/local/sbin -Rv >/dev/null
+restorecon /usr/local/libexec/ipsec -Rv >/dev/null
 
-# Reload sysctl.conf
 sysctl -e -q -p
 
-# Update file attributes
 chmod +x /etc/rc.local
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
-# Apply new IPTables rules
 if [ "$use_nft" = "1" ]; then
   nft -f "$IPT_FILE"
 else
@@ -517,7 +511,6 @@ if [ "$os_ver" != "6" ]; then
   fi
 fi
 
-# Restart services
 mkdir -p /run/pluto
 modprobe -q pppol2tp
 service fail2ban restart 2>/dev/null
