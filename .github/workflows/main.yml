@@ -35,7 +35,6 @@ jobs:
           shopt -s globstar
           ls -ld -- **/*.sh
           shellcheck **/*.sh
-          shopt -u globstar
 
   test_set_1:
     runs-on: ubuntu-latest
@@ -124,6 +123,7 @@ jobs:
             systemctl restart ipsec
           fi
 
+          sleep 10
           grep "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep "your_vpn_username" /etc/ppp/chap-secrets
           grep "your_vpn_password" /etc/ppp/chap-secrets
@@ -162,8 +162,39 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2*.p12
+
+          if [ "$1" = "centos" ]; then
+            sed -i '/pluto/d' /var/log/secure
+            pkill -HUP rsyslog
+            wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade-centos
+          else
+            sed -i '/pluto/d' /var/log/auth.log
+            pkill -HUP rsyslog
+            wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade
+          fi
+          sh vpnupgrade.sh <<ANSWERS
+          y
+          y
+          ANSWERS
+
+          if [ "$1" = "centos" ]; then
+            systemctl restart ipsec
+            sleep 10
+            grep pluto /var/log/secure
+            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+          else
+            sleep 10
+            grep pluto /var/log/auth.log
+            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+          fi
+
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
+          ls -ld vpnupgrade.sh
 
           exit 0
           EOF
@@ -287,6 +318,7 @@ jobs:
           VPN_PASSWORD='your_vpn_password' \
           sh vpnsetup.sh
 
+          sleep 10
           grep "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep "your_vpn_username" /etc/ppp/chap-secrets
           grep "your_vpn_password" /etc/ppp/chap-secrets
@@ -323,5 +355,34 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2*.p12
+
+          if [ "$OS_NAME" = "centos" ]; then
+            sed -i '/pluto/d' /var/log/secure
+            pkill -HUP rsyslog
+            wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade-centos
+          else
+            sed -i '/pluto/d' /var/log/auth.log
+            pkill -HUP rsyslog
+            wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade
+          fi
+          sh vpnupgrade.sh <<ANSWERS
+          y
+          y
+          ANSWERS
+
+          sleep 10
+          if [ "$OS_NAME" = "centos" ]; then
+            grep pluto /var/log/secure
+            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+          else
+            grep pluto /var/log/auth.log
+            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+          fi
+
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
+          ls -ld vpnupgrade.sh
