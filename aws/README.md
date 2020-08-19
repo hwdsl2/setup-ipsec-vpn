@@ -24,7 +24,7 @@ Click the icon below to initiate the launching sequence.
 
 <a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/MonAug17-production1.0"><img src="../docs/images/cloudformation-launch-stack-button.png" alt="Deploy to AWS" height="60px"></a>
 
-Make sure that the deployment is successful before going to the [Next Step : Configure VPN Clients](../docs/clients.md).
+You need to **wait for 5~10 minutes** for the VPN installation script to finish after the stack is shown as successfully created, before you can connect to the server. During that period, you can prepare your VPN client software by visiting ["Next Step: Configuring VPN Clients"](../docs/clients.md).
 
 # FAQs
 <details>
