@@ -22,7 +22,7 @@ If you are confused about the instance types available, go to the [FAQ](#faqs) s
 
 Click the icon below to initiate the launching sequence.
 
-[![launch-stack icon](../docs/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/MonAug17-production1.0)
+<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/MonAug17-production1.0"><img src="../docs/images/cloudformation-launch-stack-button.png" alt="Deploy to AWS" height="60px"></a>
 
 Make sure that the deployment is successful before going to the [Next Step : Configure VPN Clients](../docs/clients.md).
 
