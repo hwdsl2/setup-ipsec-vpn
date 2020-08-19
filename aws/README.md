@@ -42,9 +42,7 @@ A spreadsheet that includes the raw instance data across all AWS regions is avai
 <summary>
 How to connect to the server via ssh after deployment?
 </summary>
-AWS does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. 
-
-The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created. 
+AWS does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created. 
 
 You need to note down that key file if you want to later access the VPN server via SSH. 
 
