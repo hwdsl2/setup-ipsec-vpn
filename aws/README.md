@@ -31,6 +31,7 @@ Make sure that the deployment is successful before going to the [Next Step : Con
 <summary>
 Instance Type Selection
 </summary>
+
 I have made only a few general-purpose, x64-based instance types available. That's because not all instance types are available in all AWS Regions. Even some of the instance types available in the template are not available in certain AWS regions. So be careful which instance type to choose. The figure below shows the number of regions where each of the selectable instance type is available. 
 
 ![](instance-type-sheet.png)
@@ -42,7 +43,10 @@ A spreadsheet that includes the raw instance data across all AWS regions is avai
 <summary>
 How to connect to the server via ssh after deployment?
 </summary>
-AWS does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created. 
+  
+AWS does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. 
+
+The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created.
 
 You need to note down that key file if you want to later access the VPN server via SSH. 
 
