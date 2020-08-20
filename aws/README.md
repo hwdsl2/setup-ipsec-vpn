@@ -24,13 +24,14 @@ Click the icon below to initiate the launching sequence.
 
 <a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/cloudformation-template-ipsec"><img src="../docs/images/cloudformation-launch-stack-button.png" alt="Deploy to AWS" height="60px"></a>
 
-Make sure that the deployment is successful before going to the [Next Step : Configure VPN Clients](../docs/clients.md).
+You need to **wait for 5~10 minutes** for the VPN installation script to finish after the stack is shown as successfully created, before you can connect to the server. During that period, you can prepare your VPN client software by visiting ["Next Step: Configuring VPN Clients"](../docs/clients-xauth.md).
 
 # FAQs
 <details>
 <summary>
 Instance Type Selection
 </summary>
+
 I have made only a few general-purpose, x64-based instance types available. That's because not all instance types are available in all AWS Regions. Even some of the instance types available in the template are not available in certain AWS regions. So be careful which instance type to choose. The figure below shows the number of regions where each of the selectable instance type is available. 
 
 ![](instance-type-sheet.png)
@@ -42,9 +43,10 @@ A spreadsheet that includes the raw instance data across all AWS regions is avai
 <summary>
 How to connect to the server via ssh after deployment?
 </summary>
+  
 AWS does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. 
 
-The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created. 
+The template here generates a key pair for you during the deployment, and that will be available as plain texts in the **"Output"** section after the stack is successfully created.
 
 You need to note down that key file if you want to later access the VPN server via SSH. 
 
