@@ -16,13 +16,13 @@ You can also use `t2.micro` instance as your server for your deployment, which i
 
 > When choosing your username and password, do not enter special characters like `" ' \`.
 
-Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ADMINISTRATION PRVILEGE**. AWS Cloudformation requires the template file to be store on AWS S3, while a [copy](./MonAug17-production1.0) is available on Github. If you want to make any contributions to this template, make sure to contact me so that I can update the template on S3.
+Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ADMINISTRATION PRVILEGE**. AWS Cloudformation requires the template file to be store on AWS S3, while a [copy](./cloudformation-template-ipsec) is available on Github. If you want to make any contributions to this template, make sure to contact me so that I can update the template on S3.
 
 If you are confused about the instance types available, go to the [FAQ](#faqs) section and check out **"Instance Type Selection"**.
 
 Click the icon below to initiate the launching sequence.
 
-<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/MonAug17-production1.0"><img src="../docs/images/cloudformation-launch-stack-button.png" alt="Deploy to AWS" height="60px"></a>
+<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://vpn-tutorial-template.s3.ca-central-1.amazonaws.com/cloudformation-template-ipsec"><img src="../docs/images/cloudformation-launch-stack-button.png" alt="Deploy to AWS" height="60px"></a>
 
 Make sure that the deployment is successful before going to the [Next Step : Configure VPN Clients](../docs/clients.md).
 

@@ -30,7 +30,6 @@
                 "embeds": [
                     "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a",
                     "464ea4ae-199c-4917-9404-aed674a8615a",
-                    "a396f033-d33f-435a-a3e5-6da5107d5571",
                     "ec256f27-66c3-423c-9d98-b9f0f634e7b8",
                     "4731d93c-f3fc-420a-b535-f0b99840f356",
                     "40c2d4e7-f01a-45b2-8878-a06680aa2216"
@@ -111,6 +110,14 @@
                 "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
                 "embeds": [],
                 "iscontainedinside": [
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
+                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
                     "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
                 ],
                 "dependson": [
@@ -118,7 +125,6 @@
                     "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a",
                     "99fce86e-18b8-4b1b-a572-7bef3c5cece7",
                     "58a1ab6f-49ac-4ffa-93c7-3f708bf65871",
-                    "a396f033-d33f-435a-a3e5-6da5107d5571",
                     "ec256f27-66c3-423c-9d98-b9f0f634e7b8"
                 ]
             },
@@ -148,22 +154,6 @@
                 "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
                 "embeds": [],
                 "iscontainedinside": [
-                    "0a162613-8f2e-4864-be99-75d946934a4a"
-                ]
-            },
-            "a396f033-d33f-435a-a3e5-6da5107d5571": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 510,
-                    "y": 140
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": [],
-                "dependson": [
                     "0a162613-8f2e-4864-be99-75d946934a4a"
                 ]
             },
@@ -331,6 +321,54 @@
         "VpnInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -x\n",
+                                "export VPN_IPSEC_PSK='",
+                                {
+                                    "Ref": "VpnIpsecPsk"
+                                },
+                                "'\n",
+                                "export VPN_USER='",
+                                {
+                                    "Ref": "VpnUser"
+                                },
+                                "'\n",
+                                "export VPN_PASSWORD='",
+                                {
+                                    "Ref": "VpnPassword"
+                                },
+                                "'\n",
+                                "wait 60\n",
+                                "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh &&\n",
+                                "/usr/local/bin/cfn-signal",
+                                " --stack ",
+                                {
+                                    "Ref": "AWS::StackName"
+                                },
+                                " --resource VpnInstance",
+                                " --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                " ||\n",
+                                "/usr/local/bin/cfn-signal -s false",
+                                " --stack ",
+                                {
+                                    "Ref": "AWS::StackName"
+                                },
+                                " --resource VpnInstance ",
+                                " --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                }
+                            ]
+                        ]
+                    }
+                },
                 "SecurityGroupIds": [
                     {
                         "Fn::GetAtt": [
@@ -344,10 +382,6 @@
                 },
                 "AvailabilityZone": {
                     "Fn::Sub": "${AWS::Region}a"
-                },
-                "LaunchTemplate": {
-                    "LaunchTemplateName": "InstanceLaunchTemplate",
-                    "Version": "1"
                 },
                 "InstanceType": {
                     "Ref": "InstanceType"
@@ -375,9 +409,13 @@
                 "VpnServerVolume",
                 "KeyPairCreation",
                 "AMIInfoFunction",
-                "InstanceLaunchTemplate",
                 "VpnSecurityGroup"
-            ]
+            ],
+            "CreationPolicy": {
+                "ResourceSignal": {
+                    "Timeout": "PT5M"
+                }
+            }
         },
         "VpnSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
@@ -433,27 +471,6 @@
                     "id": "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a"
                 }
             }
-        },
-        "InstanceLaunchTemplate": {
-            "Type": "AWS::EC2::LaunchTemplate",
-            "Properties": {
-                "LaunchTemplateName": "InstanceLaunchTemplate",
-                "LaunchTemplateData": {
-                    "UserData": {
-                        "Fn::Base64": {
-                            "Fn::Sub": "#!/bin/sh\nexport VPN_IPSEC_PSK='${VpnIpsecPsk}'\nexport VPN_USER='${VpnUser}'\nexport VPN_PASSWORD='${VpnPassword}'\nsleep 60\nwget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh"
-                        }
-                    }
-                }
-            },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "a396f033-d33f-435a-a3e5-6da5107d5571"
-                }
-            },
-            "DependsOn": [
-                "VpnVpc"
-            ]
         },
         "VpcInternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
@@ -760,12 +777,12 @@
         }
     },
     "Outputs": {
-        "EC2PrivateKeyMaterial": {
-            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file and use it when you connect to your server via SSH.",
+        "VPNAddress": {
+            "Description": "This is the Public IP of your newly-launched VPN server",
             "Value": {
                 "Fn::GetAtt": [
-                    "KeyPairInfo",
-                    "KeyMaterial"
+                    "VpnInstance",
+                    "PublicIp"
                 ]
             }
         },
@@ -787,9 +804,18 @@
                 "Ref": "VpnIpsecPsk"
             }
         },
+        "EC2PrivateKeyMaterial": {
+            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file and use it when you connect to your server via SSH.",
+            "Value": {
+                "Fn::GetAtt": [
+                    "KeyPairInfo",
+                    "KeyMaterial"
+                ]
+            }
+        },
         "NextStep": {
-            "Description": "Go to this page for what to do after the stack is successfully created.",
-            "Value": "https://github.com/scottpedia"
+            "Description": "Go to this page for how to configure to VPN clients.",
+            "Value": "https://git.io/vpnclients"
         }
     }
 }
