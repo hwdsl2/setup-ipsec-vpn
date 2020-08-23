@@ -32,6 +32,8 @@ Click the icon below to initiate the launching sequence.
 
 Make sure the deployment is successful before going to [Next Step: Configure VPN Clients](https://git.io/vpnclients).
 
+> **Note:** You need to wait for at least 3 minutes after the stack is shown as **"CREATE_COMPLETE"**, before you can connect to the server with a VPN client. That's for the installation script to finish.
+
 # FAQs
 
 <details>
