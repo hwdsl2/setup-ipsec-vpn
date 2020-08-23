@@ -389,12 +389,7 @@
                 "KeyPairCreation",
                 "AMIInfoFunction",
                 "VpnSecurityGroup"
-            ],
-            "CreationPolicy": {
-                "ResourceSignal": {
-                    "Timeout": "PT5M"
-                }
-            }
+            ]
         },
         "VpnSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
