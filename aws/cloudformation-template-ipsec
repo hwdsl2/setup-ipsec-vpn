@@ -342,7 +342,7 @@
                                     "Ref": "VpnPassword"
                                 },
                                 "'\n",
-                                "wait 60\n",
+                                "sleep 60\n",
                                 "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh &&\n",
                                 "/usr/local/bin/cfn-signal",
                                 " --stack ",
