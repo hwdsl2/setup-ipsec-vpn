@@ -343,28 +343,7 @@
                                 },
                                 "'\n",
                                 "sleep 60\n",
-                                "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh &&\n",
-                                "/usr/local/bin/cfn-signal",
-                                " --stack ",
-                                {
-                                    "Ref": "AWS::StackName"
-                                },
-                                " --resource VpnInstance",
-                                " --region ",
-                                {
-                                    "Ref": "AWS::Region"
-                                },
-                                " ||\n",
-                                "/usr/local/bin/cfn-signal -s false",
-                                " --stack ",
-                                {
-                                    "Ref": "AWS::StackName"
-                                },
-                                " --resource VpnInstance ",
-                                " --region ",
-                                {
-                                    "Ref": "AWS::Region"
-                                }
+                                "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh\n"
                             ]
                         ]
                     }
@@ -410,12 +389,7 @@
                 "KeyPairCreation",
                 "AMIInfoFunction",
                 "VpnSecurityGroup"
-            ],
-            "CreationPolicy": {
-                "ResourceSignal": {
-                    "Timeout": "PT5M"
-                }
-            }
+            ]
         },
         "VpnSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
