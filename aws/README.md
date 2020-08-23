@@ -56,4 +56,4 @@ Copyright (C) 2020 [S. X. Liang](https://github.com/scottpedia)
 
 ## Screenshots
 
-<img src="specify-template.png" width="50%" height="50%" alt="Step 1"><img src="specify-parameters.png" width="50%" height="50%" alt="Step 2">
+<img src="specify-parameters.png" width="50%" height="50%" alt="Step 2">
