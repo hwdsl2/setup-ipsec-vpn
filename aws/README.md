@@ -17,7 +17,6 @@ You can also use `t2.micro` instance as your server for your deployment, which i
 > When choosing your username and password, do not enter special characters like `" ' \`.
 
 Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ADMINISTRATION PRVILEGE**. 
-If you are confused about the instance types available, go to the [FAQ](#faqs) section and check out **"Instance Type Selection"**.
 
 Download the template file [**here**](https://raw.githubusercontent.com/scottpedia/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and upload it as the template source in the stack creation wizard.
 
