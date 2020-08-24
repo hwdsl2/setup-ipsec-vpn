@@ -19,7 +19,7 @@ You can also use `t2.micro` instance as your server for your deployment, which i
 
 Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ANDMINISTRATOR ACCESS**. 
 
-Right-click the [**link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and save it as a file on your computer. Then upload it as the template source in the stack creation wizard.
+Right-click the [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and save it as a file on your computer. Then upload it as the template source in the stack creation wizard.
 
 ![Upload the file](upload-the-template.png)
 
