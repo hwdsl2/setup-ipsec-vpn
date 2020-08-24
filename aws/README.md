@@ -16,9 +16,9 @@ You can also use `t2.micro` instance as your server for your deployment, which i
 
 > When choosing your username and password, do not enter special characters like `" ' \`.
 
-Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ADMINISTRATION PRVILEGE**. 
+Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ANDMINISTRATOR ACCESS**. 
 
-Download the template file [**here**](https://raw.githubusercontent.com/scottpedia/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and upload it as the template source in the stack creation wizard.
+Right-click the [**link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and save it as a file on your computer. Then upload it as the template source in the stack creation wizard.
 
 ![Upload the file](upload-the-template.png)
 
@@ -32,7 +32,7 @@ Click the icon below to initiate the launching sequence.
 
 Make sure the deployment is successful before going to [Next Step: Configure VPN Clients](https://git.io/vpnclients).
 
-> **Note:** You need to wait for at least 3 minutes after the stack is shown as **"CREATE_COMPLETE"**, before you can connect to the server with a VPN client. That's for the installation script to finish.
+> **Note:** You need to wait for around 5 minutes after the stack is shown as **"CREATE_COMPLETE"**, before you can connect to the server with a VPN client. That's for the installation script to finish.
 
 # FAQs
 
