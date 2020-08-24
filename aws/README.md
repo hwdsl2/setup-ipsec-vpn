@@ -10,7 +10,7 @@ You can also use `t2.micro` instance as your server for your deployment, which i
 
 - AWS EC2 Instance Type
 - OS for your VPN Server (Ubuntu16.04, Ubuntu18.04 or Debian9-stretch)
-> **Note:** To use Debian9 on EC2, to need to [**subscribe**](https://aws.amazon.com/marketplace/pp?sku=55q52qvgjfpdj2fpfy9mb1lo4) first.
+> **Note:** To use Debian9 on EC2, to need to [**subscribe**](https://aws.amazon.com/marketplace/pp/B073HW9SP3) first.
 - Your VPN username
 - Your VPN password
 - IPSec PSK (pre-shared key)
