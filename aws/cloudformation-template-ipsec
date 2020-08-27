@@ -584,9 +584,9 @@
                                 "       elif distribution == 'Ubuntu20.04':",
                                 "           IAMName = 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*'",
                                 "       elif distribution == 'Debian9':",
-                                "           IAMName = 'debian-stretch-hvm-x86_64-gp2-*'",
+                                "           IAMName = 'debian-stretch-hvm-x86_64-gp2-2020-07-20-58035'",
                                 "       elif distribution == 'Debian10':",
-                                "           IAMName = 'debian-10-amd64-*'",
+                                "           IAMName = 'debian-10-amd64-20200803-347'",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[IAMName]}])",
                                 "       images = response['Images']",
                                 "       images.sort(key=creation_date,reverse=True)",
@@ -723,16 +723,16 @@
         },
         "VpnIpsecPsk": {
             "Type": "String",
-            "Description": "Your IpSec PSK(Pre-shared Key) for the VPN server."
+            "Description": "Your VPN IPsec PSK (pre-shared key)"
         },
         "VpnPassword": {
             "Type": "String",
-            "Description": "Your VPN password."
+            "Description": "Your VPN password"
         },
         "OS": {
             "Type": "String",
-            "Description": "The OS of your VPN server. Choose the default value if you don't know what it is.",
-            "Default": "Ubuntu16.04",
+            "Description": "The OS of your VPN server. Default: Ubuntu 20.04",
+            "Default": "Ubuntu20.04",
             "AllowedValues": [
                 "Ubuntu16.04",
                 "Ubuntu18.04",
@@ -743,7 +743,7 @@
         },
         "InstanceType": {
             "Type": "String",
-            "Description": "The instance type of VPN server. If you want to build your server within AWS free usage tier, select t2.micro.",
+            "Description": "The instance type of your VPN server. Using t2.micro may qualify for the AWS Free Tier.",
             "AllowedValues": [
                 "t2.micro",
                 "t3.nano",
@@ -763,7 +763,7 @@
     },
     "Outputs": {
         "VPNAddress": {
-            "Description": "This is the Public IP of your newly-launched VPN server",
+            "Description": "This is the public IP of your newly-launched VPN server.",
             "Value": {
                 "Fn::GetAtt": [
                     "VpnInstance",
@@ -784,13 +784,13 @@
             }
         },
         "VPNKey": {
-            "Description": "Your IPSec VPN PSK(pre-shared key)",
+            "Description": "Your VPN IPsec PSK (pre-shared key)",
             "Value": {
                 "Ref": "VpnIpsecPsk"
             }
         },
         "EC2PrivateKeyMaterial": {
-            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file and use it when you connect to your server via SSH.",
+            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file for use when connecting.",
             "Value": {
                 "Fn::GetAtt": [
                     "KeyPairInfo",
@@ -799,8 +799,8 @@
             }
         },
         "NextStep": {
-            "Description": "Go to this page for how to configure to VPN clients.",
-            "Value": "https://git.io/vpnclients"
+            "Description": "Learn how to configure VPN clients.",
+            "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         }
     }
 }
