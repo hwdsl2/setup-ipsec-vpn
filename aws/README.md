@@ -7,8 +7,8 @@ This template will create a fully-working IPsec VPN server on Amazon Elastic Com
 ## Available customization parameters:
 
 - Amazon EC2 instance type
-- OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 10/9)
-> **Note:** Before using the Debian images on EC2, you need to first subscribe at the AWS Marketplace: [Debian 10](https://aws.amazon.com/marketplace/pp/B0859NK4HC), [Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
+- OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 9)
+> **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace [here](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
 - Your VPN username
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
