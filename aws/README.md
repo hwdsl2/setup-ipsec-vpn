@@ -46,6 +46,8 @@ This template generates a key pair for you during deployment, and the private ke
 
 You will need to save the private key from the **Outputs** tab to a file on your computer, if you want to access the VPN server via SSH.
 
+> **Note:** You may need to format the private key by replacing all spaces with newlines, before saving to a file.
+
 ![Show key](show-key.png)
 
 </details>
