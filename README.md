@@ -65,7 +65,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8, 7 or 6</a>
 
-Please see <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. As an alternative, you can also deploy on EC2 using [CloudFormation](aws/README.md).
+See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. Alternatively, you can deploy rapidly using <a href="aws/README.md" target="_blank">CloudFormation</a>.
 
 **-OR-**
 
@@ -155,7 +155,7 @@ The same VPN account can be used by your multiple devices. However, due to an IP
 
 If you wish to add, edit or remove VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 
-For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
+For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN. Aliyun users, see <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>.
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`, then reboot your server. Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script.
 

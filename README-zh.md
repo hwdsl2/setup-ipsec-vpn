@@ -65,7 +65,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 - <a href="https://aws.amazon.com/marketplace/pp/B00NQAYLWO" target="_blank">CentOS 6 (x86_64) with Updates</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8, 7 或者 6</a>
 
-请参见 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">详细步骤</a> 以及 <a href="https://aws.amazon.com/cn/ec2/pricing/" target="_blank">EC2 定价细节</a>。另外，你也可以使用 [CloudFormation](aws/README.md) 来快速地在 EC2 上部署。
+请参见 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">详细步骤</a> 以及 <a href="https://aws.amazon.com/cn/ec2/pricing/" target="_blank">EC2 定价细节</a>。另外，你也可以使用 <a href="aws/README-zh.md" target="_blank">CloudFormation</a> 来快速部署。
 
 **-或者-**
 
@@ -155,7 +155,7 @@ sh vpnsetup.sh
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
 
-对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
+对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>。
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`，然后重启服务器。高级用户可以在运行 VPN 脚本时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。
 

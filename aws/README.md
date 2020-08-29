@@ -1,21 +1,23 @@
 # Deploy to Amazon EC2 using CloudFormation (Beta)
 
+*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
+
 > **Note:** This deployment template is still in **BETA**. You may encounter failures during deployment. In that case, please open a new issue.
 
 This template will create a fully-working IPsec VPN server on Amazon Elastic Compute Cloud (Amazon EC2). Please make sure to check the EC2 [pricing details](https://aws.amazon.com/ec2/pricing/on-demand/) before continuing. Using a `t2.micro` server instance for your deployment may qualify for the [AWS Free Tier](https://aws.amazon.com/free/).
 
-## Available customization parameters:
+Available customization parameters:
 
 - Amazon EC2 instance type
 - OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 9)
-> **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace [here](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
+> **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace: [Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
 - Your VPN username
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
 
-> **Note:** When choosing your VPN username, password and PSK, DO NOT use these special characters: `\ " '`.
+> **Note:** DO NOT use these special characters within values: `\ " '`
 
-Make sure to do this with an **AWS ROOT ACCOUNT** or an **IAM ACCOUNT** with **ADMINISTRATOR ACCESS**. 
+Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
 Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and save as a file on your computer. Then upload it as the template source in the stack creation wizard.
 
@@ -40,7 +42,7 @@ You may choose an AWS region using the selector to the right of your account inf
 How to connect to the server via SSH after deployment?
 </summary>
   
-Amazon EC2 does not allow users to access the instances with an SSH password. Instead, users are instructed to create "key pairs", which are used as credentials to access the instances via SSH. 
+Amazon EC2 does not allow users to access newly created instances with an SSH password. Instead, users are required to create "key pairs", which are used as credentials for SSH access.
 
 This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.
 
