@@ -24,13 +24,14 @@
     "image": {
       "type": "string",
       "allowedValues": [
-        "ubuntu1804",
-        "ubuntu1604",
+        "ubuntu20.04",
+        "ubuntu18.04",
+        "ubuntu16.04",
         "debian9"
       ],
-      "defaultValue": "debian9",
+      "defaultValue": "ubuntu20.04",
       "metadata": {
-        "description": "OS to use. Debian 9 or Ubuntu 18.04/16.04 LTS"
+        "description": "OS to use. Ubuntu 20.04/18.04/16.04 or Debian 9."
       }
     },
     "VMSize": {
@@ -61,13 +62,19 @@
     "vhdStorageType": "Standard_LRS",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "SubnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
-    "ubuntu1804": {
+    "ubuntu20.04": {
+      "publisher": "Canonical",
+      "offer": "0001-com-ubuntu-server-focal",
+      "sku": "20_04-lts",
+      "version": "latest"
+    },
+    "ubuntu18.04": {
       "publisher": "Canonical",
       "offer": "UbuntuServer",
       "sku": "18.04-LTS",
       "version": "latest"
     },
-    "ubuntu1604": {
+    "ubuntu16.04": {
       "publisher": "Canonical",
       "offer": "UbuntuServer",
       "sku": "16.04-LTS",
