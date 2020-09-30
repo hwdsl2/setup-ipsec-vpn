@@ -195,6 +195,9 @@ Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a
 - <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a>
 - <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 
+<strong>Support</strong>
+Support the developer and support the FOSS.
+
 ## License
 
 Copyright (C) 2014-2020 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a> <a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>   
