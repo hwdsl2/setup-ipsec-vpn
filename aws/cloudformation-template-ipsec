@@ -322,7 +322,7 @@
             "Type": "AWS::EC2::Instance",
             "CreationPolicy": {
                 "ResourceSignal": {
-                    "Timeout": "PT10M"
+                    "Timeout": "PT15M"
                 }
             },
             "Properties": {
@@ -331,7 +331,7 @@
                         "Fn::Join": [
                             "",
                             [
-                                "#!/bin/bash -x\n",
+                                "#!/bin/bash -xe\n",
                                 "export VPN_IPSEC_PSK='",
                                 {
                                     "Ref": "VpnIpsecPsk"
@@ -349,7 +349,7 @@
                                 "'\n",
                                 "sleep 60\n",
                                 "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh\n",
-                                "apt-get install python3-pip -y\n",
+                                "apt-get -yq install python3-pip\n",
                                 "pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                                 "cfn-signal ",
                                 "--stack ",
