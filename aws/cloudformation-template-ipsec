@@ -332,6 +332,22 @@
                             "",
                             [
                                 "#!/bin/bash -xe\n",
+                                "trap 'cfn-signal -e 1 ",
+                                " --stack ",
+                                {
+                                    "Ref": "AWS::StackName"
+                                },
+                                " --resource VpnInstance ",
+                                " --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                "' ERR\n",
+                                "sleep 60\n",
+                                "export DEBIAN_FRONTEND=noninteractive\n",
+                                "apt-get -yq update\n",
+                                "apt-get -yq install python3-pip\n",
+                                "pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                                 "export VPN_IPSEC_PSK='",
                                 {
                                     "Ref": "VpnIpsecPsk"
@@ -347,12 +363,10 @@
                                     "Ref": "VpnPassword"
                                 },
                                 "'\n",
-                                "sleep 60\n",
-                                "wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh\n",
-                                "apt-get -yq install python3-pip\n",
-                                "pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
-                                "cfn-signal ",
-                                "--stack ",
+                                "wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup\n",
+                                "sh vpnsetup.sh\n",
+                                "cfn-signal -e 0 ",
+                                " --stack ",
                                 {
                                     "Ref": "AWS::StackName"
                                 },
