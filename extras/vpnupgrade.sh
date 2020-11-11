@@ -11,7 +11,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=3.32
+SWAN_VER=4.1
 
 ### DO NOT edit below this line ###
 
@@ -46,14 +46,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679]|3.3[12])
+  3.19|3.2[01235679]|3.3[12]|4.1)
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
   This script can install one of the following versions:
-  3.19-3.23, 3.25-3.27, 3.29, 3.31 and 3.32
+  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.1
 EOF
     exit 1
     ;;
@@ -61,7 +61,7 @@ esac
 
 dns_state=0
 case "$SWAN_VER" in
-  3.2[35679]|3.3[12])
+  3.2[35679]|3.3[12]|4.1)
     DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
     [ -n "$DNS_SRV1" ] && dns_state=2
@@ -119,8 +119,7 @@ cat <<'EOF'
 NOTE: Libreswan versions 3.19 and newer require some configuration changes.
     This script will make the following updates to your /etc/ipsec.conf:
 
-    - Replace "auth=esp" with "phase2=esp"
-    - Replace "forceencaps=yes" with "encapsulation=yes"
+    - Replace obsolete ipsec.conf options
     - Optimize VPN ciphers for "ike=" and "phase2alg="
 EOF
 
@@ -136,7 +135,8 @@ cat <<'EOF'
 EOF
 fi
 
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
+if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] \
+  || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
 cat <<'EOF'
     - Move "ikev2=never" to section "conn shared"
 EOF
@@ -149,7 +149,7 @@ cat <<'EOF'
 EOF
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679]|3.31)
+  3.19|3.2[01235679]|3.3[12])
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
     See: https://libreswan.org/security/
@@ -218,18 +218,22 @@ if [ "$SWAN_VER" = "3.31" ]; then
     programs/pluto/ikev2_message.c
 fi
 cat > Makefile.inc.local <<'EOF'
-WERROR_CFLAGS = -w
-USE_DNSSEC = false
-USE_DH31 = false
-USE_NSS_AVA_COPY = true
-USE_NSS_IPSEC_PROFILE = false
-USE_GLIBC_KERN_FLIP_HEADERS = true
+WERROR_CFLAGS=-w
+USE_DNSSEC=false
+USE_DH31=false
+USE_NSS_AVA_COPY=true
+USE_NSS_IPSEC_PROFILE=false
+USE_GLIBC_KERN_FLIP_HEADERS=true
 EOF
-if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
-  echo "USE_DH2 = true" >> Makefile.inc.local
+if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
+  echo "USE_DH2=true" >> Makefile.inc.local
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-    echo "USE_XFRM_INTERFACE_IFLA_HEADER = true" >> Makefile.inc.local
+    echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
   fi
+fi
+if [ "$SWAN_VER" = "4.1" ]; then
+  echo "USE_NSS_KDF=false" >> Makefile.inc.local
+  echo "FINALNSSDIR=/etc/ipsec.d" >> Makefile.inc.local
 fi
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
@@ -258,6 +262,8 @@ fi
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
     -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/g" \
+    -e "s/^[[:space:]]\+sha2_truncbug=/  sha2-truncbug=/g" \
+    -e "s/^[[:space:]]\+ike-frag=/  fragmentation=/g" \
     -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/g" \
     -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/g" /etc/ipsec.conf
 
@@ -273,7 +279,8 @@ elif [ "$dns_state" = "4" ]; then
   sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
+if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] \
+  || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
 fi

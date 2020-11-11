@@ -181,15 +181,15 @@ jobs:
             systemctl restart ipsec
             sleep 10
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             sleep 10
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
 
           ls -ld vpnsetup.sh
@@ -373,14 +373,14 @@ jobs:
           sleep 10
           if [ "$OS_NAME" = "centos" ]; then
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
 
           ls -ld vpnsetup.sh
