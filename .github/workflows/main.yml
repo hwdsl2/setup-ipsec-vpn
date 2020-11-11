@@ -103,13 +103,13 @@ jobs:
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
           if [ "$1" = "centos" ]; then
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/messages
           else
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/syslog
           fi
           cat /var/log/fail2ban.log
@@ -147,11 +147,11 @@ jobs:
             systemctl restart ipsec
             sleep 10
             grep pluto /var/log/secure | tail -n 20
-            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             sleep 10
             grep pluto /var/log/auth.log | tail -n 20
-            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
 
           bash ikev2.sh <<ANSWERS
@@ -301,13 +301,13 @@ jobs:
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
           if [ "$OS_NAME" = "centos" ]; then
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/messages
           else
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added connection description "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added connection description "xauth-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/syslog
           fi
           cat /var/log/fail2ban.log
@@ -341,10 +341,10 @@ jobs:
           sleep 10
           if [ "$OS_NAME" = "centos" ]; then
             grep pluto /var/log/secure | tail -n 20
-            grep pluto /var/log/secure | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             grep pluto /var/log/auth.log | tail -n 20
-            grep pluto /var/log/auth.log | grep -q 'added connection description "ikev2-cp"'
+            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
 
           bash ikev2.sh <<ANSWERS

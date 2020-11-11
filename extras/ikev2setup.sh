@@ -92,14 +92,14 @@ if grep -qs "hwdsl2" /opt/src/run.sh; then
 fi
 
 case "$swan_ver" in
-  3.19|3.2[01235679]|3.3[12])
+  3.19|3.2[01235679]|3.3[12]|4.1)
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
   This script requires one of these versions:
-  3.19-3.23, 3.25-3.27, 3.29, 3.31 or 3.32
+  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.1
   To upgrade Libreswan, see:
   https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
 EOF
@@ -315,7 +315,7 @@ fi
 # Check for MOBIKE support
 mobike_support=0
 case "$swan_ver" in
-  3.2[35679]|3.3[12])
+  3.2[35679]|3.3[12]|4.1)
     mobike_support=1
     ;;
 esac
@@ -490,14 +490,14 @@ conn ikev2-cp
   ikev2=insist
   rekey=no
   pfs=no
-  ike-frag=yes
+  fragmentation=yes
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
   encapsulation=yes
 EOF
 
 case "$swan_ver" in
-  3.2[35679]|3.3[12])
+  3.2[35679]|3.3[12]|4.1)
     if [ -n "$dns_server_2" ]; then
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns="$dns_servers"

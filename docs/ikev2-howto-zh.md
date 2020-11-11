@@ -85,7 +85,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
      ikev2=insist
      rekey=no
      pfs=no
-     ike-frag=yes
+     fragmentation=yes
      ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
    EOF

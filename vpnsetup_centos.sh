@@ -185,7 +185,7 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.32
+SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -196,16 +196,18 @@ fi
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
-WERROR_CFLAGS = -w
-USE_DNSSEC = false
-USE_DH2 = true
-USE_DH31 = false
-USE_NSS_AVA_COPY = true
-USE_NSS_IPSEC_PROFILE = false
-USE_GLIBC_KERN_FLIP_HEADERS = true
+WERROR_CFLAGS=-w
+USE_DNSSEC=false
+USE_DH2=true
+USE_DH31=false
+USE_NSS_AVA_COPY=true
+USE_NSS_IPSEC_PROFILE=false
+USE_GLIBC_KERN_FLIP_HEADERS=true
+USE_NSS_KDF=false
+FINALNSSDIR=/etc/ipsec.d
 EOF
 if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-  echo "USE_XFRM_INTERFACE_IFLA_HEADER = true" >> Makefile.inc.local
+  echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
 fi
 NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
@@ -276,7 +278,7 @@ conn xauth-psk
   rightmodecfgclient=yes
   modecfgpull=yes
   xauthby=file
-  ike-frag=yes
+  fragmentation=yes
   cisco-unity=yes
   also=shared
 
@@ -487,9 +489,9 @@ fi
 
 bigecho "Starting services..."
 
-restorecon /etc/ipsec.d/*db >/dev/null
-restorecon /usr/local/sbin -Rv >/dev/null
-restorecon /usr/local/libexec/ipsec -Rv >/dev/null
+restorecon /etc/ipsec.d/*db 2>/dev/null
+restorecon /usr/local/sbin -Rv 2>/dev/null
+restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
 sysctl -e -q -p
 
