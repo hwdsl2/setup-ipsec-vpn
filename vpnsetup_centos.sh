@@ -195,6 +195,7 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
+sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false

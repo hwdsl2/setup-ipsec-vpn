@@ -217,6 +217,7 @@ if [ "$SWAN_VER" = "3.31" ]; then
   sed -i '1033s/if (/if (LIN(POLICY_IKE_FRAG_ALLOW, sk->ike->sa.st_connection->policy) \&\& sk->ike->sa.st_seen_fragvid \&\& /' \
     programs/pluto/ikev2_message.c
 fi
+[ "$SWAN_VER" = "4.1" ] && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
