@@ -107,33 +107,10 @@ Version to install: Libreswan $SWAN_VER
 EOF
 
 cat <<'EOF'
-NOTE: Libreswan versions 3.19 and newer require some configuration changes.
-    This script will make the following updates to your /etc/ipsec.conf:
+NOTE: This script will make the following changes to your IPsec config:
 
-    - Replace obsolete ipsec.conf options
+    - Fix obsolete ipsec.conf and/or ikev2.conf options
     - Optimize VPN ciphers for "ike=" and "phase2alg="
-EOF
-
-if [ "$dns_state" = "1" ] || [ "$dns_state" = "2" ]; then
-cat <<'EOF'
-    - Replace "modecfgdns1" and "modecfgdns2" with "modecfgdns"
-EOF
-fi
-
-if [ "$dns_state" = "3" ] || [ "$dns_state" = "4" ]; then
-cat <<'EOF'
-    - Replace "modecfgdns" with "modecfgdns1" and "modecfgdns2"
-EOF
-fi
-
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] \
-  || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
-cat <<'EOF'
-    - Move "ikev2=never" to section "conn shared"
-EOF
-fi
-
-cat <<'EOF'
 
     Your other VPN configuration files will not be modified.
 
@@ -259,7 +236,7 @@ restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
-# Update ipsec.conf
+# Update IPsec config
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
 PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
 
@@ -287,6 +264,10 @@ if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] \
   || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
+fi
+
+if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
+  sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
 fi
 
 # Restart IPsec service
