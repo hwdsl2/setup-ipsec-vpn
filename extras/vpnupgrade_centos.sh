@@ -72,11 +72,12 @@ esac
 
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
 ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')
+swan_ver_old=$(printf '%s' "$ipsec_ver_short" | sed -e 's/Libreswan //')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
   exiterr "This script requires Libreswan already installed."
 fi
 
-if printf '%s' "$ipsec_ver" | grep -qF "$SWAN_VER"; then
+if [ "$swan_ver_old" = "$SWAN_VER" ]; then
   echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
   echo
