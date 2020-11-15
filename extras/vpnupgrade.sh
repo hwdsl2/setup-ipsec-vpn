@@ -46,38 +46,25 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679]|3.3[12]|4.1)
+  3.2[679]|3.3[12]|4.1)
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
   This script can install one of the following versions:
-  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.1
+  3.26-3.27, 3.29, 3.31-3.32 or 4.1
 EOF
     exit 1
     ;;
 esac
 
 dns_state=0
-case "$SWAN_VER" in
-  3.2[35679]|3.3[12]|4.1)
-    DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
-    DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
-    [ -n "$DNS_SRV1" ] && dns_state=2
-    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
-    [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=5
-    ;;
-  3.19|3.2[012])
-    DNS_SRVS=$(grep "modecfgdns=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
-    DNS_SRVS=$(printf '%s' "$DNS_SRVS" | cut -d '"' -f 2 | cut -d "'" -f 2 | sed 's/,/ /g' | tr -s ' ')
-    DNS_SRV1=$(printf '%s' "$DNS_SRVS" | cut -d ' ' -f 1)
-    DNS_SRV2=$(printf '%s' "$DNS_SRVS" | cut -s -d ' ' -f 2)
-    [ -n "$DNS_SRV1" ] && dns_state=4
-    [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=3
-    [ "$(grep -c "modecfgdns=" /etc/ipsec.conf)" -gt "1" ] && dns_state=6
-    ;;
-esac
+DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+[ -n "$DNS_SRV1" ] && dns_state=2
+[ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
+[ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=3
 
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
 ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')
@@ -127,22 +114,11 @@ NOTE: This script will make the following changes to your IPsec config:
 EOF
 
 case "$SWAN_VER" in
-  3.19|3.2[01235679]|3.3[12])
+  3.2[679]|3.3[12])
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
     See: https://libreswan.org/security/
     Are you sure you want to install an older version?
-
-EOF
-    ;;
-esac
-
-case "$SWAN_VER" in
-  3.2[35])
-cat <<'EOF'
-WARNING: Libreswan 3.23 and 3.25 have an issue with connecting multiple
-    IPsec/XAuth VPN clients from behind the same NAT (e.g. home router).
-    DO NOT install 3.23/3.25 if your use cases include the above.
 
 EOF
     ;;
@@ -186,8 +162,6 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-[ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
-[ "$SWAN_VER" = "3.23" ] || [ "$SWAN_VER" = "3.25" ] && sed -i '/docker-targets\.mk/d' Makefile
 [ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
 [ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
 if [ "$SWAN_VER" = "3.31" ]; then
@@ -239,30 +213,26 @@ if uname -m | grep -qi '^arm'; then
 fi
 
 sed -i".old-$(date +%F-%T)" \
-    -e "s/^[[:space:]]\+auth=esp\$/  phase2=esp/g" \
-    -e "s/^[[:space:]]\+forceencaps=yes\$/  encapsulation=yes/g" \
-    -e "s/^[[:space:]]\+sha2_truncbug=/  sha2-truncbug=/g" \
-    -e "s/^[[:space:]]\+ike-frag=/  fragmentation=/g" \
-    -e "s/^[[:space:]]\+ike=.\+\$/$IKE_NEW/g" \
-    -e "s/^[[:space:]]\+phase2alg=.\+\$/$PHASE2_NEW/g" /etc/ipsec.conf
+    -e "s/^[[:space:]]\+auth=/  phase2=/" \
+    -e "s/^[[:space:]]\+forceencaps=/  encapsulation=/" \
+    -e "s/^[[:space:]]\+sha2_truncbug=/  sha2-truncbug=/" \
+    -e "s/^[[:space:]]\+ike-frag=/  fragmentation=/" \
+    -e "s/^[[:space:]]\+ike=.\+/$IKE_NEW/" \
+    -e "s/^[[:space:]]\+phase2alg=.\+/$PHASE2_NEW/" /etc/ipsec.conf
 
 if [ "$dns_state" = "1" ]; then
-  sed -i -e "s/modecfgdns1=.*/modecfgdns=\"$DNS_SRV1 $DNS_SRV2\"/" \
-      -e "/modecfgdns2/d" /etc/ipsec.conf
+  sed -i -e "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=\"$DNS_SRV1 $DNS_SRV2\"/" \
+      -e "/modecfgdns2=/d" /etc/ipsec.conf
 elif [ "$dns_state" = "2" ]; then
-  sed -i "s/modecfgdns1=.*/modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
-elif [ "$dns_state" = "3" ]; then
-  sed -i "/modecfgdns=/a \  modecfgdns2=$DNS_SRV2" /etc/ipsec.conf
-  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
-elif [ "$dns_state" = "4" ]; then
-  sed -i "s/modecfgdns=.*/modecfgdns1=$DNS_SRV1/" /etc/ipsec.conf
+  sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-if [ "$SWAN_VER" = "3.29" ] || [ "$SWAN_VER" = "3.31" ] \
-  || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
-  sed -i "/ikev2=never/d" /etc/ipsec.conf
-  sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
-fi
+case "$SWAN_VER" in
+  3.29|3.3[12]|4.1)
+    sed -i "/ikev2=never/d" /etc/ipsec.conf
+    sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
+    ;;
+esac
 
 if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
   sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
@@ -283,7 +253,7 @@ Libreswan $SWAN_VER successfully installed!
 
 EOF
 
-if [ "$dns_state" = "5" ]; then
+if [ "$dns_state" = "3" ]; then
 cat <<'EOF'
 IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
     and replace all occurrences of these two lines:
@@ -294,21 +264,6 @@ IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
     with a single line like this:
 
       modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
-
-    Then run "sudo service ipsec restart".
-
-EOF
-elif [ "$dns_state" = "6" ]; then
-cat <<'EOF'
-IMPORTANT: Users downgrading to Libreswan 3.22 or older must edit /etc/ipsec.conf
-    and replace all occurrences of this line:
-
-      modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
-
-    with two lines like this:
-
-      modecfgdns1=DNS_SERVER_1
-      modecfgdns2=DNS_SERVER_2
 
     Then run "sudo service ipsec restart".
 
