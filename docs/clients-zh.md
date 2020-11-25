@@ -212,7 +212,7 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 * [Android MTU/MSS 问题](#android-mtumss-问题)
 * [Android 6 和 7](#android-6-和-7)
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
-* [iOS 13 和 macOS 10.15](#ios-13-和-macos-1015)
+* [iOS 13/14 和 macOS 10.15/11](#ios-1314-和-macos-101511)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 10 内核](#debian-10-内核)
 * [Chromebook 连接问题](#chromebook-连接问题)
@@ -322,9 +322,9 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 
 如果在尝试上面步骤之后，你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
 
-### iOS 13 和 macOS 10.15
+### iOS 13/14 和 macOS 10.15/11
 
-如果你的 iOS 13 或者 macOS 10.15 (Catalina) 设备无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
+如果你的 iOS 13/14, macOS 10.15 (Catalina) 或者 macOS 11 (Big Sur) 设备无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
 
 ### iOS/Android 睡眠模式
 
