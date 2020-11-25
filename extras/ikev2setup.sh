@@ -320,7 +320,7 @@ case "$swan_ver" in
     ;;
 esac
 
-if uname -m | grep -qi '^arm'; then
+if uname -m | grep -qi -e '^arm' -e '^aarch64'; then
   mobike_support=0
 fi
 
