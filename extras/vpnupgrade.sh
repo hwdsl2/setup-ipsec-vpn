@@ -103,7 +103,7 @@ cat <<'EOF'
 NOTE: This script will make the following changes to your IPsec config:
 
     - Fix obsolete ipsec.conf and/or ikev2.conf options
-    - Optimize VPN ciphers for "ike=" and "phase2alg="
+    - Optimize VPN ciphers
 
     Your other VPN configuration files will not be modified.
 
@@ -113,7 +113,7 @@ case "$SWAN_VER" in
   3.2[679]|3.3[12])
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
-    See: https://libreswan.org/security/
+    See https://libreswan.org/security/ for more information.
     Are you sure you want to install an older version?
 
 EOF
@@ -211,8 +211,9 @@ fi
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=/  phase2=/" \
     -e "s/^[[:space:]]\+forceencaps=/  encapsulation=/" \
-    -e "s/^[[:space:]]\+sha2_truncbug=/  sha2-truncbug=/" \
     -e "s/^[[:space:]]\+ike-frag=/  fragmentation=/" \
+    -e "s/^[[:space:]]\+sha2_truncbug=/  sha2-truncbug=/" \
+    -e "s/^[[:space:]]\+sha2-truncbug=yes/  sha2-truncbug=no/" \
     -e "s/^[[:space:]]\+ike=.\+/$IKE_NEW/" \
     -e "s/^[[:space:]]\+phase2alg=.\+/$PHASE2_NEW/" /etc/ipsec.conf
 
