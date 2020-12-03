@@ -19,7 +19,7 @@
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
-右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec)，并将它保存到你的计算机上的一个新文件。然后在 "创建堆栈" 向导中将其作为模板源上传。
+右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/create/template)中将其作为模板源上传。
 
 ![上传模板](upload-the-template.png)
 
