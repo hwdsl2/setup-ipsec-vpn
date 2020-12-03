@@ -22,8 +22,8 @@ exiterr2() { exiterr "'yum install' failed."; }
 
 vpnupgrade() {
 
-if ! grep -qs -e "release 6" -e "release 7" -e "release 8" /etc/redhat-release; then
-  echo "Error: This script only supports CentOS/RHEL 6, 7 and 8." >&2
+if ! grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+  echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
   exit 1
 fi
@@ -146,10 +146,7 @@ REPO1='--enablerepo=*server-*optional*'
 REPO2='--enablerepo=*releases-optional*'
 REPO3='--enablerepo=PowerTools'
 
-if grep -qs "release 6" /etc/redhat-release; then
-  yum -y remove libevent-devel
-  yum "$REPO1" "$REPO2" -y install libevent2-devel fipscheck-devel || exiterr2
-elif grep -qs "release 7" /etc/redhat-release; then
+if grep -qs "release 7" /etc/redhat-release; then
   yum -y install systemd-devel || exiterr2
   yum "$REPO1" "$REPO2" -y install libevent-devel fipscheck-devel || exiterr2
 else

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6-8.
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 7 and 8.
 # Works on any dedicated server or virtual private server (VPS) except OpenVZ.
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -49,8 +49,8 @@ check_ip() {
 
 vpnsetup() {
 
-if ! grep -qs -e "release 6" -e "release 7" -e "release 8" /etc/redhat-release; then
-  echo "Error: This script only supports CentOS/RHEL 6-8." >&2
+if ! grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+  echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
   exit 1
 fi
@@ -156,16 +156,10 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 yum "$REPO1" -y install xl2tpd || exiterr2
 
 use_nft=0
-if grep -qs "release 6" /etc/redhat-release; then
-  os_ver=6
-  yum -y remove libevent-devel
-  yum "$REPO2" "$REPO3" -y install libevent2-devel fipscheck-devel || exiterr2
-elif grep -qs "release 7" /etc/redhat-release; then
-  os_ver=7
+if grep -qs "release 7" /etc/redhat-release; then
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 else
-  os_ver=8
   if grep -qs "Red Hat" /etc/redhat-release; then
     REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
   fi
@@ -447,13 +441,7 @@ fi
 
 bigecho "Enabling services on boot..."
 
-if [ "$os_ver" = "6" ]; then
-  chkconfig iptables on
-  chkconfig fail2ban on
-else
-  systemctl --now mask firewalld 2>/dev/null
-fi
-
+systemctl --now mask firewalld 2>/dev/null
 if [ "$use_nft" = "1" ]; then
   systemctl enable nftables fail2ban 2>/dev/null
 else
@@ -495,11 +483,9 @@ else
 fi
 
 # Fix xl2tpd if l2tp_ppp is unavailable
-if [ "$os_ver" != "6" ]; then
-  if ! modprobe -q l2tp_ppp; then
-    sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
-    systemctl daemon-reload
-  fi
+if ! modprobe -q l2tp_ppp; then
+  sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
+  systemctl daemon-reload
 fi
 
 mkdir -p /run/pluto
