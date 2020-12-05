@@ -194,10 +194,6 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 USE_DH2=true
-USE_DH31=false
-USE_NSS_AVA_COPY=true
-USE_NSS_IPSEC_PROFILE=false
-USE_GLIBC_KERN_FLIP_HEADERS=true
 USE_NSS_KDF=false
 FINALNSSDIR=/etc/ipsec.d
 EOF

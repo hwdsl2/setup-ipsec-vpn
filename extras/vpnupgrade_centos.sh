@@ -177,11 +177,15 @@ fi
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
+EOF
+if [ "$SWAN_VER" != "4.1" ]; then
+cat >> Makefile.inc.local <<'EOF'
 USE_DH31=false
 USE_NSS_AVA_COPY=true
 USE_NSS_IPSEC_PROFILE=false
 USE_GLIBC_KERN_FLIP_HEADERS=true
 EOF
+fi
 if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   echo "USE_DH2=true" >> Makefile.inc.local
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
