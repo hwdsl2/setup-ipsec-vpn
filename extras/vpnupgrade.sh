@@ -33,6 +33,11 @@ if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspb
   exit 1
 fi
 
+debian_ver=$(sed 's/\..*//' /etc/debian_version)
+if [ "$debian_ver" = "8" ]; then
+  exiterr "Debian 8 is not supported."
+fi
+
 if [ -f /proc/user_beancounters ]; then
   exiterr "OpenVZ VPS is not supported."
 fi

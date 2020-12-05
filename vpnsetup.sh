@@ -60,7 +60,11 @@ if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspb
   exit 1
 fi
 
-if [ "$(sed 's/\..*//' /etc/debian_version)" = "10" ] && [ ! -e /dev/ppp ]; then
+debian_ver=$(sed 's/\..*//' /etc/debian_version)
+if [ "$debian_ver" = "8" ]; then
+  exiterr "Debian 8 is not supported."
+fi
+if [ "$debian_ver" = "10" ] && [ ! -e /dev/ppp ]; then
   exiterr "/dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10"
 fi
 
