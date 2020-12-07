@@ -2,17 +2,53 @@
 
 *Read this in other languages: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
-By default, a single user account for VPN login is created. If you wish to add, edit or remove users, read this document.
+By default, a single user account for VPN login is created. If you wish to view or manage users, read this document.
 
-## Using helper scripts
+- [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
+- [View VPN users](#view-vpn-users)
+- [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
+- [Manually manage VPN users](#manually-manage-vpn-users)
 
-You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). For changing the IPsec PSK, read the next section.
+## View or update the IPsec PSK
+
+The IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. All VPN users will share the same IPsec PSK. The format of this file is:
+
+```bash
+%any  %any  : PSK "your_ipsec_pre_shared_key"
+```
+
+To change to a new PSK, just edit this file. DO NOT use these special characters within values: `\ " '`
+
+You must restart services when finished:
+
+```bash
+service ipsec restart
+service xl2tpd restart
+```
+
+## View VPN users
+
+By default, the VPN setup scripts will create the same VPN user for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes.
+
+For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:
+
+```bash
+"username1"  l2tpd  "password1"  *
+"username2"  l2tpd  "password2"  *
+... ...
+```
+
+For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/passwd`. Passwords in this file are salted and hashed. See [Manually manage VPN users](#manually-manage-vpn-users) for more details.
+
+## Manage VPN users using helper scripts
+
+You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). Replace command parameters below with your own values.
 
 **Note:** VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 
 ### Add or edit a VPN user
 
-Add a new VPN user or update an existing VPN user with a new password.
+Add a new VPN user, or update an existing VPN user with a new password.
 
 ```bash
 # Download the script
@@ -22,7 +58,9 @@ wget -O add_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-sudo sh add_vpn_user.sh 'username_to_add' 'password_to_add'
+sudo sh add_vpn_user.sh 'username_to_add' 'password'
+# OR
+sudo sh add_vpn_user.sh 'username_to_update' 'new_password'
 ```
 
 ### Delete a VPN user
@@ -73,13 +111,7 @@ VPN_PASSWORDS='password1 password2 ...' \
 sh update_vpn_users.sh
 ```
 
-## Manually manage VPN users and PSK
-
-First, the IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. To change to a new PSK, just edit this file. You must restart services when finished (see below). All VPN users will share the same IPsec PSK.
-
-```bash
-%any  %any  : PSK "your_ipsec_pre_shared_key"
-```
+## Manually manage VPN users
 
 For `IPsec/L2TP`, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:
 
@@ -105,11 +137,4 @@ Passwords in this file are salted and hashed. This step can be done using e.g. t
 # The output will be password1hashed
 # Put your password inside 'single quotes'
 openssl passwd -1 'password1'
-```
-
-Finally, you must restart services if changing the PSK. For add/edit/remove VPN users, this is normally not required.
-
-```bash
-service ipsec restart
-service xl2tpd restart
 ```
