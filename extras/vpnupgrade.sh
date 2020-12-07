@@ -33,11 +33,6 @@ if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspb
   exit 1
 fi
 
-debian_ver=$(sed 's/\..*//' /etc/debian_version)
-if [ "$debian_ver" = "8" ]; then
-  exiterr "Debian 8 is not supported."
-fi
-
 if [ -f /proc/user_beancounters ]; then
   exiterr "OpenVZ VPS is not supported."
 fi
@@ -114,6 +109,16 @@ NOTE: This script will make the following changes to your IPsec config:
 
 EOF
 
+debian_ver=$(sed 's/\..*//' /etc/debian_version)
+if [ "$debian_ver" = "8" ]; then
+cat <<'EOF'
+WARNING: Debian 8 (Jessie) has reached its end-of-life on June 30, 2020.
+    Users should upgrade to a newer Debian version.
+    See: https://www.debian.org/News/2020/20200709
+
+EOF
+fi
+
 case "$SWAN_VER" in
   3.2[679]|3.3[12])
 cat <<'EOF'
@@ -175,7 +180,7 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 EOF
-if [ "$SWAN_VER" != "4.1" ]; then
+if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ]; then
 cat >> Makefile.inc.local <<'EOF'
 USE_DH31=false
 USE_NSS_AVA_COPY=true
@@ -185,10 +190,10 @@ EOF
 fi
 if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   echo "USE_DH2=true" >> Makefile.inc.local
-fi
-if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ]; then
-  if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-    echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+  if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ]; then
+    if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+      echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+    fi
   fi
 fi
 if [ "$SWAN_VER" = "4.1" ]; then
