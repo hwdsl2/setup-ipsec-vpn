@@ -147,7 +147,7 @@ bigecho "Installing packages required for the VPN..."
 REPO1='--enablerepo=epel'
 REPO2='--enablerepo=*server-*optional*'
 REPO3='--enablerepo=*releases-optional*'
-REPO4='--enablerepo=PowerTools'
+REPO4='--enablerepo=[Pp]ower[Tt]ools'
 
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel nss-tools \

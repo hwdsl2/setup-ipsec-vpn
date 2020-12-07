@@ -144,7 +144,7 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 
 REPO1='--enablerepo=*server-*optional*'
 REPO2='--enablerepo=*releases-optional*'
-REPO3='--enablerepo=PowerTools'
+REPO3='--enablerepo=[Pp]ower[Tt]ools'
 
 if grep -qs "release 7" /etc/redhat-release; then
   yum -y install systemd-devel || exiterr2
