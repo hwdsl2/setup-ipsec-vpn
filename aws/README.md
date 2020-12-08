@@ -39,8 +39,8 @@ You may choose an AWS region using the selector to the right of your account inf
 <summary>
 How to connect to the server via SSH after deployment?
 </summary>
-  
-Amazon EC2 does not allow users to access newly created instances with an SSH password. Instead, users are required to create "key pairs", which are used as credentials for SSH access.
+
+After deployment, the default username for an Ubuntu instance is **ubuntu**, and for a Debian instance it is **admin**. Amazon EC2 does not allow users to access newly created instances with an SSH password. Instead, users are required to create "key pairs", which are used as credentials for SSH access.
 
 This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.
 
