@@ -302,7 +302,7 @@ EOF
 # Set xl2tpd options
 conf_bk "/etc/ppp/options.xl2tpd"
 cat > /etc/ppp/options.xl2tpd <<EOF
-+mschap-v2
+require-mschap-v2
 ipcp-accept-local
 ipcp-accept-remote
 noccp
