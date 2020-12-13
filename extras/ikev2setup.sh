@@ -238,8 +238,10 @@ if [ "$use_dns_name" = "1" ]; then
     read -rp "Enter the DNS name of this VPN server: " server_addr
   done
 else
+  echo "Trying to auto discover IP of this server..."
+  echo
   public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-  [ -z "$public_ip" ] && public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
   read -rp "Enter the IPv4 address of this VPN server: [$public_ip] " server_addr
   [ -z "$server_addr" ] && server_addr="$public_ip"
   until check_ip "$server_addr"; do
@@ -275,7 +277,6 @@ while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
 done
 
 # Enter custom DNS servers
-use_custom_dns=0
 echo
 echo "By default, clients are set to use Google Public DNS when the VPN is active."
 printf "Do you want to specify custom DNS servers for IKEv2? [y/N] "
@@ -310,6 +311,8 @@ if [ "$use_custom_dns" = "1" ]; then
   else
     dns_servers="$dns_server_1"
   fi
+else
+  echo "Using Google Public DNS (8.8.8.8, 8.8.4.4)."
 fi
 
 # Check for MOBIKE support
@@ -338,6 +341,18 @@ if [ "$mobike_support" = "1" ]; then
       mobike_support=0
     fi
   fi
+fi
+
+echo
+echo -n "Checking for MOBIKE support... "
+if [ "$mobike_support" = "1" ]; then
+  if [ "$in_container" = "0" ]; then
+    echo "Available"
+  else
+    echo "Running in container, see notes below"
+  fi
+else
+  echo "Not available"
 fi
 
 mobike_enable=0
@@ -392,17 +407,16 @@ fi
 
 if [ "$mobike_support" = "1" ]; then
   if [ "$mobike_enable" = "1" ]; then
-    echo "Enable MOBIKE support: Yes"
+    echo "MOBIKE support: Enable"
   else
-    echo "Enable MOBIKE support: No"
+    echo "MOBIKE support: Disable"
   fi
+else
+  echo "MOBIKE support: Not available"
 fi
 
-if [ "$use_custom_dns" = "1" ]; then
-  echo "DNS server(s): $dns_servers"
-fi
-
-cat <<'EOF'
+cat <<EOF
+DNS server(s): $dns_servers
 
 ================================================
 
