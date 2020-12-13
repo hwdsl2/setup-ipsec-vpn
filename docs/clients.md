@@ -347,7 +347,6 @@ If you encounter other errors, refer to the links below:
 
 * http://www.tp-link.com/en/faq-1029.html
 * https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-* https://blogs.technet.microsoft.com/rrasblog/2009/08/12/troubleshooting-common-vpn-related-errors/   
 * https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
 ### Check logs and VPN status

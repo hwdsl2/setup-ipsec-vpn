@@ -107,7 +107,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    EOF
    ```
 
-   **Note:** If your server (or Docker host) runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems.
+   **Note:** If your server (or Docker host) runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
 
    For Libreswan 3.19-3.22:
 

@@ -107,7 +107,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    EOF
    ```
 
-   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian 或者 CentOS/RHEL，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统上启用该选项。
+   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian 或者 CentOS/RHEL，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 
