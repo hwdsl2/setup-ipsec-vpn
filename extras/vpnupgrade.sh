@@ -180,7 +180,7 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 EOF
-if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ]; then
+if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ] || ! grep -qs 'VERSION_CODENAME=' /etc/os-release; then
 cat >> Makefile.inc.local <<'EOF'
 USE_DH31=false
 USE_NSS_AVA_COPY=true
@@ -190,10 +190,8 @@ EOF
 fi
 if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   echo "USE_DH2=true" >> Makefile.inc.local
-  if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ]; then
-    if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-      echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
-    fi
+  if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+    echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
   fi
 fi
 if [ "$SWAN_VER" = "4.1" ]; then

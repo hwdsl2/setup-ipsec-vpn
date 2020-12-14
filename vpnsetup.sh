@@ -204,6 +204,17 @@ USE_DH2=true
 USE_NSS_KDF=false
 FINALNSSDIR=/etc/ipsec.d
 EOF
+if ! grep -qs 'VERSION_CODENAME=' /etc/os-release; then
+cat >> Makefile.inc.local <<'EOF'
+USE_DH31=false
+USE_NSS_AVA_COPY=true
+USE_NSS_IPSEC_PROFILE=false
+USE_GLIBC_KERN_FLIP_HEADERS=true
+EOF
+fi
+if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+  echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+fi
 if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
   apt-get -yq install libsystemd-dev || exiterr2
 fi
