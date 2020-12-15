@@ -2,6 +2,9 @@
 #
 # Script to upgrade Libreswan on CentOS and RHEL
 #
+# The latest version of this script is available at:
+# https://github.com/hwdsl2/setup-ipsec-vpn
+#
 # Copyright (C) 2016-2020 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -50,18 +53,15 @@ EOF
     ;;
 esac
 
-dns_state=0
-DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
-DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
-[ -n "$DNS_SRV1" ] && dns_state=2
-[ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
-[ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=3
-
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
 ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey) on .*//')
 swan_ver_old=$(printf '%s' "$ipsec_ver_short" | sed -e 's/Libreswan //')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
-  exiterr "This script requires Libreswan already installed."
+cat 1>&2 <<'EOF'
+Error: This script requires Libreswan already installed.
+  See: https://github.com/hwdsl2/setup-ipsec-vpn
+EOF
+  exit 1
 fi
 
 if [ "$swan_ver_old" = "$SWAN_VER" ]; then
@@ -96,7 +96,6 @@ EOF
 
 cat <<'EOF'
 NOTE: This script will make the following changes to your IPsec config:
-
     - Fix obsolete ipsec.conf and/or ikev2.conf options
     - Optimize VPN ciphers
 
@@ -178,14 +177,6 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 EOF
-if [ "$SWAN_VER" != "4.1" ]; then
-cat >> Makefile.inc.local <<'EOF'
-USE_DH31=false
-USE_NSS_AVA_COPY=true
-USE_NSS_IPSEC_PROFILE=false
-USE_GLIBC_KERN_FLIP_HEADERS=true
-EOF
-fi
 if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
   echo "USE_DH2=true" >> Makefile.inc.local
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
@@ -215,6 +206,13 @@ restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 # Update IPsec config
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
 PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
+
+dns_state=0
+DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
+[ -n "$DNS_SRV1" ] && dns_state=2
+[ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
+[ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=3
 
 sed -i".old-$(date +%F-%T)" \
     -e "s/^[[:space:]]\+auth=/  phase2=/" \
@@ -250,11 +248,11 @@ service ipsec restart
 cat <<EOF
 
 
-===========================================
+================================================
 
-Libreswan $SWAN_VER successfully installed!
+Libreswan $SWAN_VER has been successfully installed!
 
-===========================================
+================================================
 
 EOF
 
@@ -262,12 +260,10 @@ if [ "$dns_state" = "3" ]; then
 cat <<'EOF'
 IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
     and replace all occurrences of these two lines:
-
       modecfgdns1=DNS_SERVER_1
       modecfgdns2=DNS_SERVER_2
 
     with a single line like this:
-
       modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
 
     Then run "sudo service ipsec restart".
