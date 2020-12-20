@@ -197,6 +197,8 @@ cat <<'EOF'
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
+To add more IKEv2 VPN clients, run this script again.
+
 =============================================================
 
 EOF
@@ -574,6 +576,8 @@ cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
+
+To add more IKEv2 VPN clients, run this script again.
 
 =============================================================
 
