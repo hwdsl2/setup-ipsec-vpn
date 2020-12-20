@@ -259,10 +259,16 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
+1. （可选但推荐）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+
+   - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://static.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+     ```console
+     REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+     ```
+
 1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
-
-1. （可选步骤） 如需启用更强的加密算法，你可以添加注册表键 `NegotiateDH2048_AES256` 并重启。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
 ### OS X (macOS)
 

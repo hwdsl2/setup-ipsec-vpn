@@ -259,10 +259,16 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 1. On the Windows computer, add a new IKEv2 VPN connection:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
+1. (Optional but recommended) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+
+   - For Windows 7, 8.x and 10 ([download .reg file](https://static.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+     ```console
+     REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+     ```
+
 1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
-
-1. (Optional) Enable stronger ciphers by adding the registry key `NegotiateDH2048_AES256` and reboot. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
 ### OS X (macOS)
 
