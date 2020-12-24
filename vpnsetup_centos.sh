@@ -479,7 +479,7 @@ fi
 
 # Fix xl2tpd if l2tp_ppp is unavailable
 if ! modprobe -q l2tp_ppp; then
-  sed -i '/^ExecStartPre/s/^/#/' /usr/lib/systemd/system/xl2tpd.service
+  sed -i '/^ExecStartPre=\//s/=/=-/' /usr/lib/systemd/system/xl2tpd.service
   systemctl daemon-reload
 fi
 
