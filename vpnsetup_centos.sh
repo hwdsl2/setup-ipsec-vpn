@@ -454,7 +454,6 @@ cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
 (sleep 15
-modprobe -q pppol2tp
 service ipsec restart
 service xl2tpd restart
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
@@ -485,7 +484,6 @@ if ! modprobe -q l2tp_ppp; then
 fi
 
 mkdir -p /run/pluto
-modprobe -q pppol2tp
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
