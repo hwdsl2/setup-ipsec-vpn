@@ -52,7 +52,7 @@ service xl2tpd restart
 
 ```bash
 # 下载脚本
-wget -O add_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/add_vpn_user.sh
+wget -O add_vpn_user.sh https://bit.ly/addvpnuser
 ```
 
 ```bash
@@ -69,7 +69,7 @@ sudo sh add_vpn_user.sh '要更新的用户名' '新密码'
 
 ```bash
 # 下载脚本
-wget -O del_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/del_vpn_user.sh
+wget -O del_vpn_user.sh https://bit.ly/delvpnuser
 ```
 
 ```bash
@@ -84,7 +84,7 @@ sudo sh del_vpn_user.sh '要删除的用户名'
 
 ```bash
 # 下载脚本
-wget -O update_vpn_users.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/update_vpn_users.sh
+wget -O update_vpn_users.sh https://bit.ly/updatevpnusers
 ```
 
 要使用这个脚本，从以下选项中选择一个：

@@ -32,7 +32,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 You may use this helper script to automatically set up IKEv2 on the VPN server:
 
 ```
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
+wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
 The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you want to generate certificates for additional VPN clients, just run the script again.

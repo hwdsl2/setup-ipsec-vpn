@@ -129,7 +129,7 @@ jobs:
           grep "your_vpn_password" /etc/ppp/chap-secrets
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
+          wget -t 3 -T 30 -nv -O ikev2.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh # hwdsl2
           sed -i 's/pk12util/pk12util -W test/' ikev2.sh
           bash ikev2.sh <<ANSWERS
 
@@ -304,7 +304,7 @@ jobs:
           grep "your_vpn_password" /etc/ppp/chap-secrets
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
+          wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
           sed -i 's/pk12util/pk12util -W test/' ikev2.sh
           bash ikev2.sh <<ANSWERS
 

@@ -32,7 +32,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 你可以使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
 ```
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
+wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 ```
 
 该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如果要为更多的客户端生成证书，只需重新运行脚本。

@@ -52,7 +52,7 @@ Add a new VPN user, or update an existing VPN user with a new password.
 
 ```bash
 # Download the script
-wget -O add_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/add_vpn_user.sh
+wget -O add_vpn_user.sh https://bit.ly/addvpnuser
 ```
 
 ```bash
@@ -69,7 +69,7 @@ Delete the specified VPN user.
 
 ```bash
 # Download the script
-wget -O del_vpn_user.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/del_vpn_user.sh
+wget -O del_vpn_user.sh https://bit.ly/delvpnuser
 ```
 
 ```bash
@@ -84,7 +84,7 @@ Remove all existing VPN users and replace with the list of users you specify.
 
 ```bash
 # Download the script
-wget -O update_vpn_users.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/update_vpn_users.sh
+wget -O update_vpn_users.sh https://bit.ly/updatevpnusers
 ```
 
 To use this script, choose one of the following options:
