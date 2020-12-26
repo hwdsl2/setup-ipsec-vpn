@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to set up IKEv2 on Ubuntu, Debian and CentOS/RHEL
+# Script to set up IKEv2 on Ubuntu, Debian, CentOS/RHEL and Amazon Linux 2
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -341,6 +341,7 @@ if [ "$mobike_support" = "1" ]; then
       [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
     fi
     [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
+    grep -qs "Amazon Linux release 2" /etc/system-release && os_type=Amzn
     # Linux kernels on Ubuntu do not support MOBIKE
     if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
       mobike_support=0
