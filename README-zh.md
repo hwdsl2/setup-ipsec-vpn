@@ -62,6 +62,7 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank"> 或者 9 (Stretch)</a>
 - <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 或者 7</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 或者 7</a>
+- <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
 
 请参见 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">详细步骤</a> 以及 <a href="https://aws.amazon.com/cn/ec2/pricing/" target="_blank">EC2 定价细节</a>。另外，你也可以使用 <a href="aws/README-zh.md" target="_blank">CloudFormation</a> 来快速部署。
 
@@ -119,13 +120,21 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpnsetup.sh
 ```
 
-**注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (或者 <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+**注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ### CentOS & RHEL
 
 首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
 
 按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
+
+### Amazon Linux 2
+
+首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
+
+按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://bit.ly/vpnsetup-amzn`。
+
+**注：** 在阅读本项目的文档时，对于 Amazon Linux 2 请参见 CentOS/RHEL 部分。
 
 ## 下一步
 
@@ -167,13 +176,15 @@ sh vpnsetup.sh
 
 ## 升级Libreswan
 
-提供两个额外的脚本 <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> 和 <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a>，可用于升级 <a href="https://libreswan.org" target="_blank">Libreswan</a> （<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">更新日志</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `SWAN_VER` 变量。查看已安装版本： `ipsec --version`.
+在 <a href="extras/" target="_blank">extras/</a> 目录提供额外的脚本，可用于升级 <a href="https://libreswan.org" target="_blank">Libreswan</a>（<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">更新日志</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `SWAN_VER` 变量。查看已安装版本： `ipsec --version`.
 
 ```bash
 # Ubuntu & Debian
-wget https://git.io/vpnupgrade -O vpnupgrade.sh
+wget https://git.io/vpnupgrade -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 # CentOS & RHEL
-wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
+wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh && sudo sh vpnupgrade.sh
+# Amazon Linux 2
+wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 
 ## 问题和反馈

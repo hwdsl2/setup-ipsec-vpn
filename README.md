@@ -62,6 +62,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank"> or 9 (Stretch)</a>
 - <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 or 7</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 or 7</a>
+- <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
 
 See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. Alternatively, you can deploy rapidly using <a href="aws/README.md" target="_blank">CloudFormation</a>.
 
@@ -119,13 +120,21 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpnsetup.sh
 ```
 
-**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> (or <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a>) and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ### CentOS & RHEL
 
 First, update your system with `yum update` and reboot. This is optional, but recommended.
 
 Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
+
+### Amazon Linux 2
+
+First, update your system with `yum update` and reboot. This is optional, but recommended.
+
+Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://bit.ly/vpnsetup-amzn`.
+
+**Note:** When reading documentation in this project, refer to the CentOS/RHEL sections for Amazon Linux 2.
 
 ## Next steps
 
@@ -167,13 +176,15 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts <a href="extras/vpnupgrade.sh" target="_blank">vpnupgrade.sh</a> and <a href="extras/vpnupgrade_centos.sh" target="_blank">vpnupgrade_centos.sh</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `SWAN_VER` variable as necessary. Check which version is installed: `ipsec --version`.
+The additional scripts in <a href="extras/" target="_blank">extras/</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `SWAN_VER` variable as necessary. Check which version is installed: `ipsec --version`.
 
 ```bash
 # Ubuntu & Debian
-wget https://git.io/vpnupgrade -O vpnupgrade.sh
+wget https://git.io/vpnupgrade -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 # CentOS & RHEL
-wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
+wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh && sudo sh vpnupgrade.sh
+# Amazon Linux 2
+wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 
 ## Bugs & Questions
