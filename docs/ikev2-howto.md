@@ -2,9 +2,6 @@
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
-**Note:** This guide is for **advanced users**. Other users please use [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
-
----
 * [Introduction](#introduction)
 * [Using helper scripts](#using-helper-scripts)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
@@ -24,6 +21,8 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - OS X (macOS)
 - Android 4.x and newer (using the strongSwan VPN client)
 - iOS (iPhone/iPad)
+
+After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
 ## Using helper scripts
 
@@ -107,7 +106,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    EOF
    ```
 
-   **Note:** If your server (or Docker host) runs Debian or CentOS/RHEL and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
+   **Note:** If your server (or Docker host) runs Debian, CentOS/RHEL or Amazon Linux 2, and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
 
    For Libreswan 3.19-3.22:
 

@@ -28,15 +28,39 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器[\*](#quick-start-note) 上全新安装一个 Ubuntu LTS, Debian 或者 CentOS 系统。
+首先，在你的 Linux 服务器[\*](#quick-start-note) 上全新安装以下系统之一。
 
 使用以下命令快速搭建 IPsec VPN 服务器：
+
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
+</details>
 
-如果使用 CentOS，请将上面的地址换成 `https://git.io/vpnsetup-centos`。
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
 
@@ -85,19 +109,48 @@ wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 ## 安装说明
 
-### Ubuntu & Debian
-
-首先，更新你的系统： 运行 `apt-get update && apt-get dist-upgrade` 并重启。这一步是可选的，但推荐。
+首先，更新你的系统：运行 `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) 或者 `yum update` (CentOS/RHEL/Amazon Linux 2) 并重启。这一步是可选的，但推荐。
 
 要安装 VPN，请从以下选项中选择一个：
 
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证 （完成后会在屏幕上显示）：
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
+
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
@@ -105,36 +158,87 @@ nano -w vpnsetup.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+nano -w vpnsetup.sh
+[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
+sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+nano -w vpnsetup.sh
+[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
+sudo sh vpnsetup.sh
+```
+</details>
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo \
-VPN_IPSEC_PSK='你的IPsec预共享密钥' \
+wget https://git.io/vpnsetup -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
 sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
+VPN_USER='你的VPN用户名' \
+VPN_PASSWORD='你的VPN密码' \
+sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
+VPN_USER='你的VPN用户名' \
+VPN_PASSWORD='你的VPN密码' \
+sh vpnsetup.sh
+```
+</details>
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
-
-### CentOS & RHEL
-
-首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
-
-按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://git.io/vpnsetup-centos`。
-
-### Amazon Linux 2
-
-首先，更新你的系统： 运行 `yum update` 并重启。这一步是可选的，但推荐。
-
-按照与上面相同的步骤，但是将 `https://git.io/vpnsetup` 换成 `https://bit.ly/vpnsetup-amzn`。
-
-**注：** 在阅读本项目的文档时，对于 Amazon Linux 2 请参见 CentOS/RHEL 部分。
 
 ## 下一步
 
@@ -178,14 +282,35 @@ sh vpnsetup.sh
 
 在 <a href="extras/" target="_blank">extras/</a> 目录提供额外的脚本，可用于升级 <a href="https://libreswan.org" target="_blank">Libreswan</a>（<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">更新日志</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `SWAN_VER` 变量。查看已安装版本： `ipsec --version`.
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
-# Ubuntu & Debian
 wget https://git.io/vpnupgrade -O vpnupgrade.sh && sudo sh vpnupgrade.sh
-# CentOS & RHEL
+```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh && sudo sh vpnupgrade.sh
-# Amazon Linux 2
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
 wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
+</details>
 
 ## 问题和反馈
 

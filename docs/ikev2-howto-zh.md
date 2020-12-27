@@ -2,9 +2,6 @@
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
-**注：** 本指南适用于**高级用户**。其他用户请使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式。
-
----
 * [导言](#导言)
 * [使用辅助脚本](#使用辅助脚本)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
@@ -24,6 +21,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - OS X (macOS)
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 - iOS (iPhone/iPad)
+
+在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
 ## 使用辅助脚本
 
@@ -107,7 +106,7 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    EOF
    ```
 
-   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian 或者 CentOS/RHEL，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
+   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian, CentOS/RHEL 或者 Amazon Linux 2，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 

@@ -28,15 +28,39 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Quick start
 
-First, prepare your Linux server[\*](#quick-start-note) with a fresh install of Ubuntu LTS, Debian or CentOS.
+First, prepare your Linux server[\*](#quick-start-note) with a fresh install of one of the following OS.
 
 Use this one-liner to set up an IPsec VPN server:
+
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
+</details>
 
-If using CentOS, replace the link above with `https://git.io/vpnsetup-centos`.
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
 
@@ -85,19 +109,48 @@ Advanced users can set up the VPN server on a $35 <a href="https://www.raspberry
 
 ## Installation
 
-### Ubuntu & Debian
-
-First, update your system with `apt-get update && apt-get dist-upgrade` and reboot. This is optional, but recommended.
+First, update your system with `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` (CentOS/RHEL/Amazon Linux 2) and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+</details>
 
 **Option 2:** Edit the script and provide your own VPN credentials:
+
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -O vpnsetup.sh
@@ -105,36 +158,87 @@ nano -w vpnsetup.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+nano -w vpnsetup.sh
+[Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
+sudo sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+nano -w vpnsetup.sh
+[Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
+sudo sh vpnsetup.sh
+```
+</details>
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
 **Option 3:** Define your VPN credentials as environment variables:
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo \
-VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
+wget https://git.io/vpnsetup -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
 sh vpnsetup.sh
 ```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
+VPN_USER='your_vpn_username' \
+VPN_PASSWORD='your_vpn_password' \
+sh vpnsetup.sh
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
+wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
+VPN_USER='your_vpn_username' \
+VPN_PASSWORD='your_vpn_password' \
+sh vpnsetup.sh
+```
+</details>
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
-
-### CentOS & RHEL
-
-First, update your system with `yum update` and reboot. This is optional, but recommended.
-
-Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://git.io/vpnsetup-centos`.
-
-### Amazon Linux 2
-
-First, update your system with `yum update` and reboot. This is optional, but recommended.
-
-Follow the same steps as above, but replace `https://git.io/vpnsetup` with `https://bit.ly/vpnsetup-amzn`.
-
-**Note:** When reading documentation in this project, refer to the CentOS/RHEL sections for Amazon Linux 2.
 
 ## Next steps
 
@@ -178,14 +282,35 @@ The scripts will backup existing config files before making changes, with `.old-
 
 The additional scripts in <a href="extras/" target="_blank">extras/</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `SWAN_VER` variable as necessary. Check which version is installed: `ipsec --version`.
 
+<details open>
+<summary>
+Ubuntu & Debian
+</summary>
+
 ```bash
-# Ubuntu & Debian
 wget https://git.io/vpnupgrade -O vpnupgrade.sh && sudo sh vpnupgrade.sh
-# CentOS & RHEL
+```
+</details>
+
+<details>
+<summary>
+CentOS & RHEL
+</summary>
+
+```bash
 wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh && sudo sh vpnupgrade.sh
-# Amazon Linux 2
+```
+</details>
+
+<details>
+<summary>
+Amazon Linux 2
+</summary>
+
+```bash
 wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
+</details>
 
 ## Bugs & Questions
 

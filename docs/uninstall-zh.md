@@ -25,21 +25,21 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
 
 ## 第二步
 
-### Ubuntu/Debian
+### Ubuntu & Debian
 
 `apt-get purge xl2tpd`
 
-### CentOS/RHEL
+### CentOS/RHEL & Amazon Linux 2
 
 `yum remove xl2tpd`
 
 ## 第三步
 
-### Ubuntu/Debian
+### Ubuntu & Debian
 
 编辑 `/etc/iptables.rules` 并删除不需要的规则。你之前的防火墙规则（如果有）备份在 `/etc/iptables.rules.old-日期-时间`。另外如果文件 `/etc/iptables/rules.v4` 存在，请编辑它。
 
-### CentOS/RHEL
+### CentOS/RHEL & Amazon Linux 2
 
 编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。你之前的防火墙规则（如果有）备份在 `/etc/sysconfig/iptables.old-日期-时间`。
 

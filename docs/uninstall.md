@@ -25,21 +25,21 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
 
 ## Second step
 
-### Ubuntu/Debian
+### Ubuntu & Debian
 
 `apt-get purge xl2tpd`
 
-### CentOS/RHEL
+### CentOS/RHEL & Amazon Linux 2
 
 `yum remove xl2tpd`
 
 ## Third step
 
-### Ubuntu/Debian
+### Ubuntu & Debian
 
 Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`. In addition, edit `/etc/iptables/rules.v4` if the file exists.   
 
-### CentOS/RHEL
+### CentOS/RHEL & Amazon Linux 2
 
 Edit `/etc/sysconfig/iptables` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.
 
