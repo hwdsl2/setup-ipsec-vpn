@@ -9,6 +9,7 @@ This template will create a fully-working IPsec VPN server on Amazon Elastic Com
 Available customization parameters:
 
 - Amazon EC2 instance type
+> **Note**: The instance type options offered by this template are possibly not **ALL** available in any specific region. For example, you may not be able to deploy a `m5a.large` instance in ap-east-1.(hypothetically) In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are prone to cause that problem as there is less variaty of instances.
 - OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 9)
 > **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace: [Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
 - Your VPN username
