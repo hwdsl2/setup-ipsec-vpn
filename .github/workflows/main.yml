@@ -41,7 +41,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["centos:8", "centos:7", "ubuntu:16.04"]
+        os_version: ["centos:8", "centos:7", "amazonlinux:2", "ubuntu:16.04"]
       fail-fast: false
     env:
       OS_VERSION: ${{ matrix.os_version }}
@@ -69,11 +69,15 @@ jobs:
             exit 1
           }
 
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             yum -y update
             yum -y -q install wget rsyslog
             systemctl start rsyslog
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+            if [ "$1" = "centos" ]; then
+              wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+            else
+              wget -t 3 -T 30 -nv -O vpnsetup.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/vpnsetup_amzn.sh
+            fi
           else
             export DEBIAN_FRONTEND=noninteractive
             apt-get -yq update
@@ -84,7 +88,7 @@ jobs:
           fi
 
           sh vpnsetup.sh
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl start ipsec
             systemctl start xl2tpd
             sleep 5
@@ -101,17 +105,16 @@ jobs:
           iptables -nL | grep -q '192\.168\.42\.0/24'
           iptables -nL -t nat
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/messages
           else
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
             grep xl2tpd /var/log/syslog
           fi
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
           cat /var/log/fail2ban.log
           grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
@@ -119,7 +122,7 @@ jobs:
           VPN_USER='your_vpn_username' \
           VPN_PASSWORD='your_vpn_password' \
           sh vpnsetup.sh
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
           fi
 
@@ -143,16 +146,16 @@ jobs:
 
           ls -ld /etc/ipsec.d/ikev2vpnca*.cer
           ls -ld /etc/ipsec.d/vpnclient*.p12
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
             grep pluto /var/log/secure | tail -n 20
-            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             sleep 10
             grep pluto /var/log/auth.log | tail -n 20
-            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
+          ipsec status
+          ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
           y
@@ -163,10 +166,14 @@ jobs:
 
           ls -ld /etc/ipsec.d/vpnclient2*.p12
 
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
             pkill -HUP rsyslog
-            wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade-centos
+            if [ "$1" = "centos" ]; then
+              wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade-centos
+            else
+              wget -t 3 -T 30 -nv -O vpnupgrade.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade_amzn.sh
+            fi
           else
             sed -i '/pluto/d' /var/log/auth.log
             pkill -HUP rsyslog
@@ -177,20 +184,18 @@ jobs:
           y
           ANSWERS
 
-          if [ "$1" = "centos" ]; then
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
             grep pluto /var/log/secure
-            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "l2tp-psk"'
-            grep pluto /var/log/secure | grep -q 'added IKEv1 connection "xauth-psk"'
-            grep pluto /var/log/secure | grep -q 'added IKEv2 connection "ikev2-cp"'
           else
             sleep 10
             grep pluto /var/log/auth.log
-            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
-            grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
           fi
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
 
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
@@ -207,6 +212,8 @@ jobs:
 
           ENV container docker
           WORKDIR /opt/src
+
+          RUN if command -v amazon-linux-extras; then amazon-linux-extras install -y kernel-ng; fi
 
           RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ "$i" = \
           systemd-tmpfiles-setup.service ] || rm -f "$i"; done); \
@@ -287,9 +294,10 @@ jobs:
           iptables -nL -t nat
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
           grep pluto /var/log/auth.log
-          grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
-          grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
           grep xl2tpd /var/log/syslog
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
           cat /var/log/fail2ban.log
           grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
@@ -320,7 +328,8 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient*.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
-          grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
+          ipsec status
+          ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
           y
@@ -341,9 +350,10 @@ jobs:
 
           sleep 10
           grep pluto /var/log/auth.log
-          grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "l2tp-psk"'
-          grep pluto /var/log/auth.log | grep -q 'added IKEv1 connection "xauth-psk"'
-          grep pluto /var/log/auth.log | grep -q 'added IKEv2 connection "ikev2-cp"'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
 
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
