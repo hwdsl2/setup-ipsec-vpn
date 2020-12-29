@@ -36,7 +36,11 @@
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-**注：** 在首次连接之前需要**修改一次注册表**。请参见下面的说明。
+**注：** 在首次连接之前需要<a href="#windows-错误-809">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
+
+要连接到 VPN： 单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 另外，除了按照以上步骤操作，你也可以运行下面的 Windows PowerShell 命令来创建 VPN 连接。将 `你的 VPN 服务器 IP` 和 `你的 VPN IPsec PSK` 换成你自己的值，用单引号括起来：
 
@@ -168,7 +172,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 （和更新版本）用户可以使用 `apt` 安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
+Ubuntu 18.04 和更新版本用户可以使用 `apt` 安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
 
 1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
 1. 选择 **Layer 2 Tunneling Protocol (L2TP)**。
@@ -225,13 +229,13 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 
 要解决此错误，在首次连接之前需要<a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">修改一次注册表</a>，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。**完成后必须重启计算机。**
 
-- 适用于 Windows Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
+- 适用于 Windows Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
   ```
 
-- 仅适用于 Windows XP ([下载 .reg 文件](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_XP_ONLY_Reboot_Required.reg))
+- 仅适用于 Windows XP ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_XP_ONLY_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\IPSec /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
@@ -239,7 +243,7 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 
 另外，某些个别的 Windows 系统配置禁用了 IPsec 加密，此时也会导致连接失败。要重新启用它，可以运行以下命令并重启。
 
-- 适用于 Windows XP, Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://static.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
+- 适用于 Windows XP, Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
@@ -281,7 +285,7 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IP
 
 Windows 8.x 和 10 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 <a href="https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/" target="_blank">禁用智能多宿主名称解析</a>，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后<a href="https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-" target="_blank">清除 DNS 缓存</a>并且重启计算机。
 
-另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看<a href="https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">这里</a>。
+另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看<a href="https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">这里</a>。如果你需要支持 IPv6 的 VPN，你可以另外尝试 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>。
 
 ### Android MTU/MSS 问题
 

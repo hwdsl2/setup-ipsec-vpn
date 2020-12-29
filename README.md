@@ -58,7 +58,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
 
@@ -88,7 +88,7 @@ A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 or 7</a>
 - <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
 
-See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. Alternatively, you can deploy rapidly using <a href="aws/README.md" target="_blank">CloudFormation</a>.
+See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. Alternatively, you may also deploy rapidly using <a href="aws/README.md" target="_blank">CloudFormation</a>.
 
 **-OR-**
 
@@ -109,7 +109,7 @@ Advanced users can set up the VPN server on a $35 <a href="https://www.raspberry
 
 ## Installation
 
-First, update your system with `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` (CentOS/RHEL/Amazon Linux 2) and reboot. This is optional, but recommended.
+First, update your system with `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
@@ -131,6 +131,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
+yum -y install wget
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
@@ -141,7 +142,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
 
@@ -166,6 +167,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
+yum -y install wget nano
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
@@ -179,7 +181,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
 nano -w vpnsetup.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpnsetup.sh
@@ -214,6 +216,7 @@ CentOS & RHEL
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
+yum -y install wget
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
@@ -230,7 +233,7 @@ Amazon Linux 2
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
@@ -308,7 +311,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
+wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 </details>
 
@@ -320,14 +323,11 @@ wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 
 ## Uninstallation
 
-Please refer to <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a>.
+See <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a>.
 
 ## See also
 
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
-- <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
-- <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a>
-- <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 
 ## License
 

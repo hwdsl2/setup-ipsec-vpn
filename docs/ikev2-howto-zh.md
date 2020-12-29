@@ -4,11 +4,13 @@
 
 * [导言](#导言)
 * [使用辅助脚本](#使用辅助脚本)
-* [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [添加一个客户端证书](#添加一个客户端证书)
+* [导出一个客户端证书](#导出一个客户端证书)
 * [吊销一个客户端证书](#吊销一个客户端证书)
+* [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [已知问题](#已知问题)
+* [移除 IKEv2](#移除-ikev2)
 * [参考链接](#参考链接)
 
 ## 导言
@@ -36,9 +38,215 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。按照脚本的提示配置 IKEv2。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端) 和 [已知问题](#已知问题)。如果要为更多的客户端生成证书，只需重新运行脚本。
 
+## 配置 IKEv2 VPN 客户端
+
+*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
+
+**注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如果要为更多的客户端生成证书，只需重新运行[辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+
+* [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
+* [OS X (macOS)](#os-x-macos)
+* [iOS (iPhone/iPad)](#ios)
+* [Android 10 和更新版本](#android-10-和更新版本)
+* [Android 4.x to 9.x](#android-4x-to-9x)
+
+### Windows 7, 8.x 和 10
+
+1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+
+   详细的操作步骤：   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+
+1. （可选但推荐）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+
+   - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+     ```console
+     REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+     ```
+
+1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
+   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+
+### OS X (macOS)
+
+首先，将生成的 `.p12` 文件安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。单击左上角的红色 "X" 关闭窗口。根据提示使用触控 ID，或者输入密码并单击 "更新设置"。
+
+在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。
+
+1. 打开系统偏好设置并转到网络部分。
+1. 在窗口左下角单击 **+** 按钮。
+1. 从 **接口** 下拉菜单选择 **VPN**。
+1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
+1. 在 **服务名称** 字段中输入任意内容。
+1. 单击 **创建**。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
+   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
+1. 单击 **认证设置** 按钮。
+1. 从 **认证设置** 下拉菜单中选择 **无**。
+1. 选择 **证书** 单选按钮，然后选择新的客户端证书。
+1. 单击 **好**。
+1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
+1. 单击 **应用** 保存VPN连接信息。
+1. 单击 **连接**。
+
+### iOS
+
+首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+
+1. AirDrop（隔空投送），或者
+1. 上传到设备，在 "文件" 应用程序中单击它们（必须首先移动到 "On My iPhone" 目录下），然后按照提示导入，或者
+1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
+
+在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+
+1. 进入设置 -> 通用 -> VPN。
+1. 单击 **添加VPN配置...**。
+1. 单击 **类型** 。选择 **IKEv2** 并返回。
+1. 在 **描述** 字段中输入任意内容。
+1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
+   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
+1. 单击 **用户鉴定** 。选择 **无** 并返回。
+1. 启用 **使用证书** 选项。
+1. 单击 **证书** 。选择新的客户端证书并返回。
+1. 单击右上角的 **完成**。
+1. 启用 **VPN** 连接。
+
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+### Android 10 和更新版本
+
+1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
+1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 启动 **设置** 应用程序。
+1. 进入 安全 -> 高级 -> 加密与凭据。
+1. 单击 **从存储设备（或 SD 卡）安装**。
+1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
+   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
+1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
+1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
+1. 单击 **Select user certificate**，选择新的客户端证书并确认。
+1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
+1. 保存新的 VPN 连接，然后单击它以开始连接。
+
+### Android 4.x to 9.x
+
+1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
+1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
+1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
+1. 单击 **Select user certificate**，然后单击 **Install certificate**。
+1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
+   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
+1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
+1. 保存新的 VPN 连接，然后单击它以开始连接。
+
+## 添加一个客户端证书
+
+如果要为更多的客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+
+## 导出一个客户端证书
+
+在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本) 在运行后会导出客户端证书。如果你想要手动导出一个客户端证书，首先检查证书数据库：`certutil -L -d sql:/etc/ipsec.d`，然后参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 第 4 步中的 "导出 `.p12` 文件"。
+
+## 吊销一个客户端证书
+
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
+
+1. 检查证书数据库，并且找到想要吊销的客户端证书的昵称。
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d
+   ```
+
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
+
+   IKEv2 VPN CA                                       CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient-to-revoke                                u,u,u
+   ```
+
+   在这个例子中，我们将要吊销昵称为 `vpnclient-to-revoke` 的客户端证书。它是由 `IKEv2 VPN CA` 签发的。
+
+1. 找到该客户端证书的序列号。
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d -n "vpnclient-to-revoke"
+   ```
+
+   ```
+   Certificate:
+       Data:
+           Version: 3 (0x2)
+           Serial Number:
+               00:cd:69:ff:74
+   ... ...
+   ```
+
+   根据上面的输出，我们知道该序列号为十六进制的 `CD69FF74`，也就是十进制的 `3446275956`。它将在以下步骤中使用。
+
+1. 创建一个新的证书吊销列表 (CRL)。该步骤对于每个 CA 只需运行一次。
+
+   ```bash
+   if ! crlutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null; then
+     crlutil -G -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -c /dev/null
+   fi
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:00:00 2020
+       CRL Extensions:
+   ```
+
+1. 将你想要吊销的客户端证书添加到 CRL。在这里我们指定该证书的（十进制）序列号，以及吊销时间（UTC时间，格式：GeneralizedTime (YYYYMMDDhhmmssZ)）。
+
+   ```bash
+   crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" <<EOF
+   addcert 3446275956 20200606220100Z
+   EOF
+   ```
+
+   ```
+   CRL Info:
+   :
+       Version: 2 (0x1)
+       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
+       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
+       This Update: Sat Jun 06 22:02:00 2020
+       Entry 1 (0x1):
+           Serial Number:
+               00:cd:69:ff:74
+           Revocation Date: Sat Jun 06 22:01:00 2020
+       CRL Extensions:
+   ```
+
+   **注：** 如果需要从 CRL 删除一个证书，可以将上面的 `addcert 3446275956 20200606220100Z` 替换为 `rmcert 3446275956`。关于 `crlutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">这里</a>。
+
+1. 最后，让 Libreswan 重新读取已更新的 CRL。
+
+   ```bash
+   ipsec crls
+   ```
+
 ## 手动在 VPN 服务器上配置 IKEv2
 
-下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
@@ -106,7 +314,7 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    EOF
    ```
 
-   **注：** 如果你的服务器（或者 Docker 主机）运行 Debian, CentOS/RHEL 或者 Amazon Linux 2，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
+   **注：** <a href="https://wiki.strongswan.org/projects/strongswan/wiki/MobIke" target="_blank">MOBIKE</a>  IKEv2 协议扩展允许 VPN 客户端更改网络连接点，例如在移动数据和 Wi-Fi 之间切换，并使 VPN 保持连接。如果你的服务器（或者 Docker 主机）的操作系统 **不是** Ubuntu Linux，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 
@@ -234,131 +442,37 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    service ipsec restart
    ```
 
-在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。按照下面的步骤配置你的 VPN 客户端。
+在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。下一步：[配置 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
-## 配置 IKEv2 VPN 客户端
+## 已知问题
 
-*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能<a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">需要</a> Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
+1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
-**注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如果要为更多的客户端生成证书，只需重新运行[辅助脚本](#使用辅助脚本)。或者你可以看上一小节的第 4 步。
+## 移除 IKEv2
 
-* [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
-* [OS X (macOS)](#os-x-macos)
-* [iOS (iPhone/iPad)](#ios)
-* [Android 10 和更新版本](#android-10-和更新版本)
-* [Android 4.x to 9.x](#android-4x-to-9x)
+如果你想要从 VPN 服务器移除 IKEv2，但是保留 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，按照以下步骤操作。这些命令必须用 `root` 账户运行。请注意，这将删除所有的 IKEv2 配置，并且不可撤销！
 
-### Windows 7, 8.x 和 10
+1. 重命名（或者删除）IKEv2 配置文件：
 
-1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+   ```bash
+   mv /etc/ipsec.d/ikev2.conf /etc/ipsec.d/ikev2.conf.bak
+   ```
 
-   详细的操作步骤：   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+1. **（重要）重启 IPsec 服务**：
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   ```bash
+   service ipsec restart
+   ```
 
-1. （可选但推荐）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
-
-   - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://static.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
-
-     ```console
-     REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
-     ```
-
-1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
-
-### OS X (macOS)
-
-首先，将生成的 `.p12` 文件安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。单击左上角的红色 "X" 关闭窗口。根据提示使用触控 ID，或者输入密码并单击 "更新设置"。在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在 **登录** 钥匙串 的 **证书** 类别中。
-
-1. 打开系统偏好设置并转到网络部分。
-1. 在窗口左下角单击 **+** 按钮。
-1. 从 **接口** 下拉菜单选择 **VPN**。
-1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
-1. 在 **服务名称** 字段中输入任意内容。
-1. 单击 **创建**。
-1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
-   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
-1. 单击 **认证设置** 按钮。
-1. 从 **认证设置** 下拉菜单中选择 **无**。
-1. 选择 **证书** 单选按钮，然后选择新的客户端证书。
-1. 单击 **好**。
-1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
-1. 单击 **应用** 保存VPN连接信息。
-1. 单击 **连接**。
-
-### iOS
-
-首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
-
-1. AirDrop（隔空投送），或者
-1. 上传到设备，在 "文件" 应用程序中单击它们（必须首先移动到 "On My iPhone" 目录下），然后按照提示导入，或者
-1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
-
-在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
-
-1. 进入设置 -> 通用 -> VPN。
-1. 单击 **添加VPN配置...**。
-1. 单击 **类型** 。选择 **IKEv2** 并返回。
-1. 在 **描述** 字段中输入任意内容。
-1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
-   **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
-1. 单击 **用户鉴定** 。选择 **无** 并返回。
-1. 启用 **使用证书** 选项。
-1. 单击 **证书** 。选择新的客户端证书并返回。
-1. 单击右上角的 **完成**。
-1. 启用 **VPN** 连接。
-
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
-
-### Android 10 和更新版本
-
-1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
-1. 启动 **设置** 应用程序。
-1. 进入 安全 -> 高级 -> 加密与凭据。
-1. 单击 **从存储设备（或 SD 卡）安装**。
-1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
-   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
-1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
-1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-1. 单击 **Select user certificate**，选择新的客户端证书并确认。
-1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
-1. 保存新的 VPN 连接，然后单击它以开始连接。
-
-### Android 4.x to 9.x
-
-1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
-1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
-1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-1. 单击 **Select user certificate**，然后单击 **Install certificate**。
-1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
-   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
-1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
-1. 保存新的 VPN 连接，然后单击它以开始连接。
-
-## 添加一个客户端证书
-
-如果要为更多的客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
-
-## 吊销一个客户端证书
-
-在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
-
-1. 检查证书数据库，并且找到想要吊销的客户端证书的昵称。
+1. 列出 IPsec 证书数据库中的证书：
 
    ```bash
    certutil -L -d sql:/etc/ipsec.d
    ```
+
+   示例输出：
 
    ```
    Certificate Nickname                               Trust Attributes
@@ -366,81 +480,14 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
    IKEv2 VPN CA                                       CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
-   vpnclient-to-revoke                                u,u,u
+   vpnclient                                          u,u,u
    ```
 
-   在这个例子中，我们将要吊销昵称为 `vpnclient-to-revoke` 的客户端证书。它是由 `IKEv2 VPN CA` 签发的。
-
-1. 找到该客户端证书的序列号。
+1. 删除证书。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复此命令。
 
    ```bash
-   certutil -L -d sql:/etc/ipsec.d -n "vpnclient-to-revoke"
+   certutil -D -d sql:/etc/ipsec.d -n "Nickname"
    ```
-
-   ```
-   Certificate:
-       Data:
-           Version: 3 (0x2)
-           Serial Number:
-               00:cd:69:ff:74
-   ... ...
-   ```
-
-   根据上面的输出，我们知道该序列号为十六进制的 `CD69FF74`，也就是十进制的 `3446275956`。它将在以下步骤中使用。
-
-1. 创建一个新的证书吊销列表 (CRL)。该步骤对于每个 CA 只需运行一次。
-
-   ```bash
-   if ! crlutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null; then
-     crlutil -G -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -c /dev/null
-   fi
-   ```
-
-   ```
-   CRL Info:
-   :
-       Version: 2 (0x1)
-       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
-       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
-       This Update: Sat Jun 06 22:00:00 2020
-       CRL Extensions:
-   ```
-
-1. 将你想要吊销的客户端证书添加到 CRL。在这里我们指定该证书的（十进制）序列号，以及吊销时间（UTC时间，格式：GeneralizedTime (YYYYMMDDhhmmssZ)）。
-
-   ```bash
-   crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" <<EOF
-   addcert 3446275956 20200606220100Z
-   EOF
-   ```
-
-   ```
-   CRL Info:
-   :
-       Version: 2 (0x1)
-       Signature Algorithm: PKCS #1 SHA-256 With RSA Encryption
-       Issuer: "O=IKEv2 VPN,CN=IKEv2 VPN CA"
-       This Update: Sat Jun 06 22:02:00 2020
-       Entry 1 (0x1):
-           Serial Number:
-               00:cd:69:ff:74
-           Revocation Date: Sat Jun 06 22:01:00 2020
-       CRL Extensions:
-   ```
-
-   **注：** 如果需要从 CRL 删除一个证书，可以将上面的 `addcert 3446275956 20200606220100Z` 替换为 `rmcert 3446275956`。关于 `crlutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">这里</a>。
-
-1. 最后，让 Libreswan 重新读取已更新的 CRL。
-
-   ```bash
-   ipsec crls
-   ```
-
-## 已知问题
-
-1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能<a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">需要</a> Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
-1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
 ## 参考链接
 

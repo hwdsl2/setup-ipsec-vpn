@@ -58,7 +58,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
 
@@ -109,7 +109,7 @@ wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 ## 安装说明
 
-首先，更新你的系统：运行 `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) 或者 `yum update` (CentOS/RHEL/Amazon Linux 2) 并重启。这一步是可选的，但推荐。
+首先，更新你的系统：运行 `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) 或者 `yum update` 并重启。这一步是可选的，但推荐。
 
 要安装 VPN，请从以下选项中选择一个：
 
@@ -131,6 +131,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
+yum -y install wget
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
@@ -141,7 +142,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 ```
 </details>
 
@@ -166,6 +167,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
+yum -y install wget nano
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh
 nano -w vpnsetup.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
@@ -179,7 +181,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
 nano -w vpnsetup.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpnsetup.sh
@@ -214,6 +216,7 @@ CentOS & RHEL
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
+yum -y install wget
 wget https://git.io/vpnsetup-centos -O vpnsetup.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
@@ -230,7 +233,7 @@ Amazon Linux 2
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://bit.ly/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
@@ -308,7 +311,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
+wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 </details>
 
@@ -325,9 +328,6 @@ wget https://bit.ly/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ## 另见
 
 - <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">IPsec VPN Server on Docker</a>
-- <a href="https://github.com/trailofbits/algo" target="_blank">Algo VPN</a>
-- <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a>
-- <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN Install</a>
 
 ## 授权协议
 
