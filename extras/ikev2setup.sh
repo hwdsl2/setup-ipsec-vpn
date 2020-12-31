@@ -137,7 +137,7 @@ if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; t
       || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+'; then
       echo "Invalid client name."
     else
-      echo "Invalid client name. The specified name already exists."
+      echo "Invalid client name. Client '$client_name' already exists."
     fi
     read -rp "Client name: " client_name
   done
@@ -256,14 +256,25 @@ else
   done
 fi
 
+if certutil -L -d sql:/etc/ipsec.d -n "$server_addr" >/dev/null 2>&1; then
+  exiterr "Certificate '$server_addr' already exists. Abort."
+fi
+
 # Enter client name
 echo
 echo "Provide a name for the IKEv2 VPN client."
 echo "Use one word only, no special characters except '-' and '_'."
 read -rp "Client name: [vpnclient] " client_name
 [ -z "$client_name" ] && client_name=vpnclient
-while [ "${#client_name}" -gt "64" ] || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+'; do
-  echo "Invalid client name."
+while [ "${#client_name}" -gt "64" ] \
+  || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+  || certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
+    if [ "${#client_name}" -gt "64" ] \
+      || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+'; then
+      echo "Invalid client name."
+    else
+      echo "Invalid client name. Client '$client_name' already exists."
+    fi
   read -rp "Client name: [vpnclient] " client_name
   [ -z "$client_name" ] && client_name=vpnclient
 done
@@ -353,12 +364,12 @@ echo
 echo -n "Checking for MOBIKE support... "
 if [ "$mobike_support" = "1" ]; then
   if [ "$in_container" = "0" ]; then
-    echo "Available"
+    echo "yes"
   else
-    echo "Running in container, see notes below"
+    echo "running in a container, see notes below"
   fi
 else
-  echo "Not available"
+  echo "no"
 fi
 
 mobike_enable=0
@@ -403,6 +414,7 @@ Please double check before continuing!
 
 VPN server address: $server_addr
 VPN client name: $client_name
+
 EOF
 
 if [ "$client_validity" = "1" ]; then
