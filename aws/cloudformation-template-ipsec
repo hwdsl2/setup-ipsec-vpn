@@ -1,5 +1,18 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+    "Mappings": {
+        "ScriptLinks": {
+            "links": {
+                "Ubuntu1604": "https://git.io/vpnsetup",
+                "Ubuntu1804": "https://git.io/vpnsetup",
+                "Ubuntu2004": "https://git.io/vpnsetup",
+                "Debian9": "https://git.io/vpnsetup",
+                "CentOS7": "https://git.io/vpnsetup-centos",
+                "CentOS8": "https://git.io/vpnsetup-centos",
+                "AmazonLinux2": "https://bit.ly/vpnsetup-amzn"
+            }
+        }
+    },
     "Metadata": {
         "AWS::CloudFormation::Designer": {
             "0a162613-8f2e-4864-be99-75d946934a4a": {
