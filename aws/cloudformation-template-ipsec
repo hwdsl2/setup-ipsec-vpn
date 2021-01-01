@@ -772,12 +772,15 @@
         "OS": {
             "Type": "String",
             "Description": "The OS of your VPN server. Default: Ubuntu 20.04",
-            "Default": "Ubuntu20.04",
+            "Default": "Ubuntu2004",
             "AllowedValues": [
-                "Ubuntu20.04",
-                "Ubuntu18.04",
-                "Ubuntu16.04",
-                "Debian9"
+                "Ubuntu2004",
+                "Ubuntu1804",
+                "Ubuntu1604",
+                "Debian9",
+                "CentOS7",
+                "CentOS8",
+                "AmazonLinux2"
             ]
         },
         "InstanceType": {
