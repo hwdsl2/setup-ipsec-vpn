@@ -39,7 +39,7 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.2[679]|3.3[12]|4.1)
     /bin/true
     ;;
@@ -138,7 +138,7 @@ NOTE: This script will make the following changes to your IPsec config:
 
 EOF
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.2[679]|3.3[12])
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
@@ -265,7 +265,7 @@ elif [ "$dns_state" = "2" ]; then
   sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.29|3.3[12]|4.1)
     sed -i "/ikev2=never/d" /etc/ipsec.conf
     sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf

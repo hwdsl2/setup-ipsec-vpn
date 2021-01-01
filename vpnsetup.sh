@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on Ubuntu and Debian.
-# Works on any dedicated server or virtual private server (VPS) except OpenVZ.
+# Script for automatic setup of an IPsec VPN server on Ubuntu and Debian
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -50,10 +49,7 @@ check_ip() {
 vpnsetup() {
 
 os_type=$(lsb_release -si 2>/dev/null)
-if [ -z "$os_type" ]; then
-  [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
-  [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
-fi
+[ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
 case $os_type in
   *[Uu]buntu*)
     os_type=ubuntu
@@ -72,8 +68,8 @@ case $os_type in
 esac
 
 debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-if [ "$debian_ver" = "8" ]; then
-  exiterr "Debian 8 is not supported."
+if [ "$debian_ver" = "8" ] || [ "$debian_ver" = "jessiesid" ]; then
+  exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
 fi
 if [ "$debian_ver" = "10" ] && [ ! -e /dev/ppp ]; then
   exiterr "/dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10"
@@ -92,7 +88,7 @@ def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
   if ! uname -m | grep -qi -e '^arm' -e '^aarch64'; then
-    case "$def_iface" in
+    case $def_iface in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
         ;;
@@ -542,7 +538,7 @@ EOF
 
 if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
 cat <<EOF
-Note: A newer version of Libreswan ($swan_ver_latest) is available. To upgrade:
+Note: A newer Libreswan version $swan_ver_latest is available. To upgrade:
   wget https://git.io/vpnupgrade -O vpnupgrade.sh
   sudo sh vpnupgrade.sh
 

@@ -26,10 +26,7 @@ exiterr2() { exiterr "'apt-get install' failed."; }
 vpnupgrade() {
 
 os_type=$(lsb_release -si 2>/dev/null)
-if [ -z "$os_type" ]; then
-  [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
-  [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
-fi
+[ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
 case $os_type in
   *[Uu]buntu*)
     os_type=ubuntu
@@ -42,7 +39,7 @@ case $os_type in
     ;;
   *)
     echo "Error: This script only supports Ubuntu and Debian." >&2
-    echo "For CentOS/RHEL, use https://git.io/vpnsetup-centos" >&2
+    echo "For CentOS/RHEL, use https://git.io/vpnupgrade-centos" >&2
     exit 1
     ;;
 esac
@@ -55,7 +52,7 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.2[679]|3.3[12]|4.1)
     /bin/true
     ;;
@@ -155,7 +152,7 @@ WARNING: Debian 8 (Jessie) has reached its end-of-life on June 30, 2020.
 EOF
 fi
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.2[679]|3.3[12])
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
@@ -281,7 +278,7 @@ elif [ "$dns_state" = "2" ]; then
   sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-case "$SWAN_VER" in
+case $SWAN_VER in
   3.29|3.3[12]|4.1)
     sed -i "/ikev2=never/d" /etc/ipsec.conf
     sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf

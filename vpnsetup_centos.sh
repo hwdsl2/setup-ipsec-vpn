@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 7 and 8.
-# Works on any dedicated server or virtual private server (VPS) except OpenVZ.
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL 7 and 8
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -67,7 +66,7 @@ def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
 def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
 if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
-  case "$def_iface" in
+  case $def_iface in
     wl*)
       exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
       ;;
@@ -523,7 +522,7 @@ EOF
 
 if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
 cat <<EOF
-Note: A newer version of Libreswan ($swan_ver_latest) is available. To upgrade:
+Note: A newer Libreswan version $swan_ver_latest is available. To upgrade:
   wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
   sudo sh vpnupgrade.sh
 
