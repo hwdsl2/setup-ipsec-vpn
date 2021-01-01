@@ -452,7 +452,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Remove IKEv2
 
-If you want to remove IKEv2 from the VPN server, but keep the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, follow these steps. Commands must be run as `root`. Note that this will delete all IKEv2 configuration and cannot be undone!
+If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, follow these steps. Commands must be run as `root`. Note that this will delete all IKEv2 configuration and **cannot be undone**!
 
 1. Rename (or delete) the IKEv2 config file:
 
@@ -483,7 +483,7 @@ If you want to remove IKEv2 from the VPN server, but keep the IPsec/L2TP and IPs
    vpnclient                                          u,u,u
    ```
 
-1. Delete certificates. Replace "Nickname" below with each certificate's nickname. Repeat for each certificate.
+1. Delete certificates. Replace "Nickname" below with each certificate's nickname. Repeat for each certificate. When finished, list certificates in the IPsec database again, and confirm that the list is empty.
 
    ```bash
    certutil -D -d sql:/etc/ipsec.d -n "Nickname"

@@ -265,7 +265,7 @@ sh vpnsetup.sh
 
 **Android 用户** 如果遇到连接问题，请尝试 <a href="docs/clients-zh.md#android-mtumss-问题" target="_blank">这些步骤</a>。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth 模式</a>，或者配置 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2</a>。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth 模式</a>，或者 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
 
 如果需要查看或更改 VPN 用户账户，请参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
 

@@ -452,7 +452,7 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 
 ## 移除 IKEv2
 
-如果你想要从 VPN 服务器移除 IKEv2，但是保留 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，按照以下步骤操作。这些命令必须用 `root` 账户运行。请注意，这将删除所有的 IKEv2 配置，并且不可撤销！
+如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式，按照以下步骤操作。这些命令必须用 `root` 账户运行。请注意，这将删除所有的 IKEv2 配置，并且**不可撤销**！
 
 1. 重命名（或者删除）IKEv2 配置文件：
 
@@ -483,7 +483,7 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
    vpnclient                                          u,u,u
    ```
 
-1. 删除证书。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复此命令。
+1. 删除证书。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复此命令。在完成后，再次列出 IPsec 证书数据库中的证书，并确认列表为空。
 
    ```bash
    certutil -D -d sql:/etc/ipsec.d -n "Nickname"

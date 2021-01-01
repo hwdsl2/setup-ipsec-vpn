@@ -265,7 +265,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 **Android users**: If you encounter connection issues, try <a href="docs/clients.md#android-mtumss-issues" target="_blank">these steps</a>.
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>, or set up <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a>.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>, or <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
 
 If you wish to view or update VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 
