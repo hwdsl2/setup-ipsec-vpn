@@ -51,16 +51,27 @@ vpnsetup() {
 
 os_type=$(lsb_release -si 2>/dev/null)
 if [ -z "$os_type" ]; then
-  [ -f /etc/os-release  ] && os_type=$(. /etc/os-release  && printf '%s' "$ID")
+  [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
   [ -f /etc/lsb-release ] && os_type=$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")
 fi
-if ! printf '%s' "$os_type" | head -n 1 | grep -qiF -e ubuntu -e debian -e raspbian; then
-  echo "Error: This script only supports Ubuntu and Debian." >&2
-  echo "For CentOS/RHEL, use https://git.io/vpnsetup-centos" >&2
-  exit 1
-fi
+case $os_type in
+  *[Uu]buntu*)
+    os_type=ubuntu
+    ;;
+  *[Dd]ebian*)
+    os_type=debian
+    ;;
+  *[Rr]aspbian*)
+    os_type=raspbian
+    ;;
+  *)
+    echo "Error: This script only supports Ubuntu and Debian." >&2
+    echo "For CentOS/RHEL, use https://git.io/vpnsetup-centos" >&2
+    exit 1
+    ;;
+esac
 
-debian_ver=$(sed 's/\..*//' /etc/debian_version)
+debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
 if [ "$debian_ver" = "8" ]; then
   exiterr "Debian 8 is not supported."
 fi
@@ -69,7 +80,7 @@ if [ "$debian_ver" = "10" ] && [ ! -e /dev/ppp ]; then
 fi
 
 if [ -f /proc/user_beancounters ]; then
-  exiterr "OpenVZ VPS is not supported. Try OpenVPN: github.com/Nyr/openvpn-install"
+  exiterr "OpenVZ VPS is not supported."
 fi
 
 if [ "$(id -u)" != 0 ]; then
@@ -190,6 +201,11 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$debian_ver/swanver?ver=$SWAN_VER"
+swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
+  swan_ver_latest=$SWAN_VER
+fi
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exit 1
 fi
@@ -523,6 +539,15 @@ IKEv2 guide:       https://git.io/ikev2
 ================================================
 
 EOF
+
+if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
+cat <<EOF
+Note: A newer version of Libreswan ($swan_ver_latest) is available. To upgrade:
+  wget https://git.io/vpnupgrade -O vpnupgrade.sh
+  sudo sh vpnupgrade.sh
+
+EOF
+fi
 
 }
 

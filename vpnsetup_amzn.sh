@@ -158,6 +158,11 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
+swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanver?ver=$SWAN_VER"
+swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
+  swan_ver_latest=$SWAN_VER
+fi
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exit 1
 fi
@@ -448,6 +453,15 @@ IKEv2 guide:       https://git.io/ikev2
 ================================================
 
 EOF
+
+if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
+cat <<EOF
+Note: A newer version of Libreswan ($swan_ver_latest) is available. To upgrade:
+  wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh
+  sudo sh vpnupgrade.sh
+
+EOF
+fi
 
 }
 

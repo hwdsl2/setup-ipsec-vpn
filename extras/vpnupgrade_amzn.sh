@@ -61,6 +61,31 @@ EOF
   exit 1
 fi
 
+swan_ver_cur=4.1
+swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?ver=$swan_ver_cur"
+swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
+  swan_ver_latest=$swan_ver_cur
+fi
+if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
+  echo "Note: A newer version of this script is available, which can install Libreswan $swan_ver_latest."
+  echo "To download and run the latest version:"
+  echo "  wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh"
+  echo "  sudo sh vpnupgrade.sh"
+  echo
+  printf "Do you want to continue anyway? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      echo
+      ;;
+    *)
+      echo "Abort. No changes were made."
+      exit 1
+      ;;
+  esac
+fi
+
 if [ "$swan_ver_old" = "$SWAN_VER" ]; then
   echo "You already have Libreswan version $SWAN_VER installed! "
   echo "If you continue, the same version will be re-installed."
