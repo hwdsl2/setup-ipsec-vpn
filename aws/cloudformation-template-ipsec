@@ -28,7 +28,7 @@
             },
             "AmazonLinux2": {
                 "HelperInstallationCommands": "export PATH=\"$PATH:/opt/aws/bin\"\n",
-                "InstallationLinks": "https://bit.ly/vpnsetup-amzn"
+                "InstallationLinks": "https://git.io/vpnsetup-amzn"
             }
         }
     },
@@ -665,7 +665,7 @@
                                 "       elif distribution == 'CentOS8':",
                                 "           AMIName = 'CentOS 8.3.2011 x86_64'",
                                 "       elif distribution == 'AmazonLinux2':",
-                                "           AMIName = 'amzn-ami-hvm-*'",
+                                "           AMIName = 'amzn2-ami-hvm-*'",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '379101102735', '125523088429', 'amazon'])",
                                 "       images = response['Images']",
                                 "       images.sort(key=creation_date,reverse=True)",
