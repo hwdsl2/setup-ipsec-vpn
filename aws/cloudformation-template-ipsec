@@ -349,10 +349,15 @@
                                 },
                                 "' ERR\n",
                                 "sleep 60\n",
-                                "export DEBIAN_FRONTEND=noninteractive\n",
-                                "apt-get -yq update\n",
-                                "apt-get -yq install python3-pip\n",
-                                "pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
+                                {
+                                    "Fn::FindInMap": [
+                                        "OS",
+                                        {
+                                            "Ref": "OS"
+                                        },
+                                        "HelperInstallationCommands"
+                                    ]
+                                },
                                 "export VPN_IPSEC_PSK='",
                                 {
                                     "Ref": "VpnIpsecPsk"
@@ -368,7 +373,17 @@
                                     "Ref": "VpnPassword"
                                 },
                                 "'\n",
-                                "wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup\n",
+                                "wget -t 3 -T 30 -nv -O vpnsetup.sh ",
+                                {
+                                    "Fn::FindInMap": [
+                                        "OS",
+                                        {
+                                            "Ref": "OS"
+                                        },
+                                        "InstallationLinks"
+                                    ]
+                                },
+                                "\n",
                                 "sh vpnsetup.sh\n",
                                 "cfn-signal -e 0 ",
                                 " --stack ",
