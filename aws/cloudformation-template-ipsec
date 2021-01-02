@@ -19,11 +19,11 @@
                 "InstallationLinks": "https://git.io/vpnsetup"
             },
             "CentOS7": {
-                "HelperInstallationCommands": "yum -y update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
+                "HelperInstallationCommands": "yum -y check-update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                 "InstallationLinks": "https://git.io/vpnsetup-centos"
             },
             "CentOS8": {
-                "HelperInstallationCommands": "yum -y update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
+                "HelperInstallationCommands": "yum -y check-update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                 "InstallationLinks": "https://git.io/vpnsetup-centos"
             },
             "AmazonLinux2": {
@@ -665,7 +665,7 @@
                                 "       elif distribution == 'CentOS8':",
                                 "           AMIName = 'CentOS 8.3.2011 x86_64'",
                                 "       elif distribution == 'AmazonLinux2':",
-                                "           AMIName = 'amzn2-ami-hvm-*'",
+                                "           AMIName = 'amzn2-ami-hvm-*.*-x86_64-gp2'",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '379101102735', '125523088429', 'amazon'])",
                                 "       images = response['Images']",
                                 "       images.sort(key=creation_date,reverse=True)",
@@ -884,4 +884,5 @@
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         }
     }
+
 }
