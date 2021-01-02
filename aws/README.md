@@ -59,9 +59,14 @@ For the private key(aka "Key pair"), this template generates one for you during 
 
 You will need to save the private key from the **Outputs** tab to a file on your computer, if you want to access the VPN server via SSH.
 
-> **Note:** You may need to format the private key by replacing all spaces with newlines, before saving to a file.
+> **Note:** You may need to format the private key by replacing all spaces with newlines, before saving to a file. The file also needs to be set with [proper permission](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key) before it can be used by SSH client.
 
 ![Show key](show-key.png)
+
+To add proper permissions to your private key file, run the following command under the directory where the file is located:
+```bash
+sudo chmod 400 my-key-pair.pem
+```
 
 As a result, the command to login to your instance should look like:
 ```bash
