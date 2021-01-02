@@ -9,8 +9,8 @@
 可用的自定义参数：
 
 - Amazon EC2 实例类型
-> **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。
-- VPN 服务器的操作系统（Ubuntu 20.04/18.04/16.04, Debian 9, CentOS 7/8, AmazonLinux2
+> **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://ec2instances.info](https://ec2instances.info)。
+- VPN 服务器的操作系统（Ubuntu 20.04/18.04/16.04, Debian 9, CentOS 8/7, Amazon Linux 2）
 > **注：** 在 EC2 上使用 Debian 9 映像之前，你需要先在 AWS Marketplace 上订阅：[Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3)。
 - 你的 VPN 用户名
 - 你的 VPN 密码
@@ -41,16 +41,37 @@
 部署后如何通过 SSH 连接到服务器？
 </summary>
 
-在部署后，Ubuntu 实例的默认用户名是 **ubuntu**，而 Debian 则是 **admin**。Amazon EC2 不允许用户使用 SSH 密码访问新创建的实例。用户必须创建“密钥对”来作为 SSH 访问的凭据。
+你需要你的 Amazon EC2 实例的用户名和私钥，才能通过 SSH 登录到该实例。
+
+EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户名。新实例默认禁用密码登录，必须使用私钥或 “密钥对” 登录。
+
+默认用户名列表：
+> **参考链接：** [https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key)
+
+| 发行版本 | 默认登录用户名 |
+| --- | --- |
+| Ubuntu (`Ubuntu *.04`) |  `ubuntu` |
+| Debian (`Debian 9`) | `admin` |
+| CentOS (`CenOS 7/8`) | `centos` |
+| Amazon Linux 2 | `ec2-user` |
 
 此模板在部署期间为你生成一个密钥对，并且在成功创建堆栈后，其中的私钥将在 **Outputs** 选项卡下以文本形式提供。
 
 如果要通过 SSH 访问 VPN 服务器，则需要将 **Outputs** 选项卡中的私钥保存到你的计算机上的一个新文件。
 
-> **注：** 在保存到你的计算机之前，你可能需要修改私钥的格式，比如用换行符替换所有的空格。
+> **注：** 在保存到你的计算机之前，你可能需要修改私钥的格式，比如用换行符替换所有的空格。在保存后，需要为该私钥文件设置[适当的权限](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key)才能使用。
 
 ![显示密钥](show-key.png)
 
+要为私钥文件设置适当的权限，请在该文件所在的目录下运行以下命令：
+```bash
+sudo chmod 400 key-file.pem
+```
+
+使用 SSH 登录到 EC2 实例的示例命令：
+```bash
+$ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
+```
 </details>
 
 ## 作者
