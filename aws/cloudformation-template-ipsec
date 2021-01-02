@@ -1,15 +1,92 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Mappings": {
-        "ScriptLinks": {
-            "links": {
-                "Ubuntu1604": "https://git.io/vpnsetup",
-                "Ubuntu1804": "https://git.io/vpnsetup",
-                "Ubuntu2004": "https://git.io/vpnsetup",
-                "Debian9": "https://git.io/vpnsetup",
-                "CentOS7": "https://git.io/vpnsetup-centos",
-                "CentOS8": "https://git.io/vpnsetup-centos",
-                "AmazonLinux2": "https://bit.ly/vpnsetup-amzn"
+        "OS": {
+            "Ubuntu1604": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "export DEBIAN_FRONTEND=noninteractive",
+                            "apt-get -yq update",
+                            "apt-get -yq install python3-pip",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup"
+            },
+            "Ubuntu1804": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "export DEBIAN_FRONTEND=noninteractive",
+                            "apt-get -yq update",
+                            "apt-get -yq install python3-pip",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup"
+            },
+            "Ubuntu2004": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "export DEBIAN_FRONTEND=noninteractive",
+                            "apt-get -yq update",
+                            "apt-get -yq install python3-pip",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup"
+            },
+            "Debian9": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "export DEBIAN_FRONTEND=noninteractive",
+                            "apt-get -yq update",
+                            "apt-get -yq install python3-pip",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup"
+            },
+            "CentOS7": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "yum -y update",
+                            "yum -y install python3 wget",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup-centos"
+            },
+            "CentOS8": {
+                "HelperInstallationCommands": {
+                    "Fn::Join": [
+                        "\n",
+                        [
+                            "yum -y update",
+                            "yum -y install python3 wget",
+                            "python3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+                        ]
+                    ]
+                },
+                "InstallationLinks": "https://git.io/vpnsetup-centos"
+            },
+            "AmazonLinux2": {
+                "HelperInstallationCommands": "export PATH=\"$PATH:/opt/aws/bin\"\n",
+                "InstallationLinks": "https://bit.ly/vpnsetup-amzn"
             }
         }
     },
