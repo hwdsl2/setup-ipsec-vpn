@@ -10,7 +10,7 @@
 
 - Amazon EC2 实例类型
 > **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。
-- VPN 服务器的操作系统（Ubuntu 20.04/18.04/16.04，Debian 9）
+- VPN 服务器的操作系统（Ubuntu 20.04/18.04/16.04, Debian 9, CentOS 7/8, AmazonLinux2
 > **注：** 在 EC2 上使用 Debian 9 映像之前，你需要先在 AWS Marketplace 上订阅：[Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3)。
 - 你的 VPN 用户名
 - 你的 VPN 密码
