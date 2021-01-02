@@ -25,10 +25,20 @@ exiterr2() { exiterr "'yum install' failed."; }
 
 vpnupgrade() {
 
-if ! grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+if grep -qs "release 7" /etc/redhat-release; then
+  os_ver=7
+elif grep -qs "release 8" /etc/redhat-release; then
+  os_ver=8
+else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
   exit 1
+fi
+
+os_type=centos
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+if grep -qs "Red Hat" /etc/redhat-release; then
+  os_type=rhel
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -64,18 +74,8 @@ EOF
   exit 1
 fi
 
-os_type=centos
-if grep -qs "Red Hat" /etc/redhat-release; then
-  os_type=rhel
-fi
-if grep -qs "release 7" /etc/redhat-release; then
-  os_ver=7
-else
-  os_ver=8
-fi
-
 swan_ver_cur=4.1
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?ver=$swan_ver_cur"
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?arch=$os_arch&ver=$swan_ver_cur&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$swan_ver_cur
@@ -179,14 +179,12 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 REPO1='--enablerepo=*server-*optional*'
 REPO2='--enablerepo=*releases-optional*'
 REPO3='--enablerepo=[Pp]ower[Tt]ools'
+[ "$os_type" = "rhel" ] && REPO3='--enablerepo=codeready-builder-for-rhel-8-*'
 
-if grep -qs "release 7" /etc/redhat-release; then
+if [ "$os_ver" = "7" ]; then
   yum -y install systemd-devel || exiterr2
   yum "$REPO1" "$REPO2" -y install libevent-devel fipscheck-devel || exiterr2
 else
-  if grep -qs "Red Hat" /etc/redhat-release; then
-    REPO3='--enablerepo=codeready-builder-for-rhel-8-*'
-  fi
   yum "$REPO3" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
 fi
 

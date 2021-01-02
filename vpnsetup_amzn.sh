@@ -47,6 +47,7 @@ check_ip() {
 
 vpnsetup() {
 
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 if ! grep -qs "Amazon Linux release 2" /etc/system-release; then
   echo "Error: This script only supports Amazon Linux 2." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
@@ -158,7 +159,7 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanver?ver=$SWAN_VER"
+swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanver?arch=$os_arch&ver=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$SWAN_VER

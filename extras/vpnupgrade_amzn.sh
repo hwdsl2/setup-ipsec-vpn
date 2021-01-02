@@ -25,6 +25,7 @@ exiterr2() { exiterr "'yum install' failed."; }
 
 vpnupgrade() {
 
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 if ! grep -qs "Amazon Linux release 2" /etc/system-release; then
   echo "Error: This script only supports Amazon Linux 2." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
@@ -62,7 +63,7 @@ EOF
 fi
 
 swan_ver_cur=4.1
-swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?ver=$swan_ver_cur"
+swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?arch=$os_arch&ver=$swan_ver_cur&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$swan_ver_cur

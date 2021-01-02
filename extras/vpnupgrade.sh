@@ -26,6 +26,7 @@ exiterr2() { exiterr "'apt-get install' failed."; }
 vpnupgrade() {
 
 os_type=$(lsb_release -si 2>/dev/null)
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
 case $os_type in
   *[Uu]buntu*)
@@ -43,6 +44,11 @@ case $os_type in
     exit 1
     ;;
 esac
+
+debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+if [ "$debian_ver" = "8" ] || [ "$debian_ver" = "jessiesid" ]; then
+  exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
+fi
 
 if [ -f /proc/user_beancounters ]; then
   exiterr "OpenVZ VPS is not supported."
@@ -78,8 +84,7 @@ EOF
 fi
 
 swan_ver_cur=4.1
-debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$debian_ver/swanverupg?ver=$swan_ver_cur"
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$debian_ver/swanverupg?arch=$os_arch&ver=$swan_ver_cur&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$swan_ver_cur
@@ -142,16 +147,6 @@ NOTE: This script will make the following changes to your IPsec config:
 
 EOF
 
-debian_ver=$(sed 's/\..*//' /etc/debian_version)
-if [ "$debian_ver" = "8" ]; then
-cat <<'EOF'
-WARNING: Debian 8 (Jessie) has reached its end-of-life on June 30, 2020.
-    Users should upgrade to a newer Debian version.
-    See: https://www.debian.org/News/2020/20200709
-
-EOF
-fi
-
 case $SWAN_VER in
   3.2[679]|3.3[12])
 cat <<'EOF'
@@ -213,7 +208,7 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 EOF
-if [ "$SWAN_VER" != "4.1" ] || [ "$debian_ver" = "8" ] || ! grep -qs 'VERSION_CODENAME=' /etc/os-release; then
+if [ "$SWAN_VER" != "4.1" ] || ! grep -qs 'VERSION_CODENAME=' /etc/os-release; then
 cat >> Makefile.inc.local <<'EOF'
 USE_DH31=false
 USE_NSS_AVA_COPY=true

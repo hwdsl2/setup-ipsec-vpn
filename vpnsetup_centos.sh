@@ -48,10 +48,20 @@ check_ip() {
 
 vpnsetup() {
 
-if ! grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+if grep -qs "release 7" /etc/redhat-release; then
+  os_ver=7
+elif grep -qs "release 8" /etc/redhat-release; then
+  os_ver=8
+else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
   exit 1
+fi
+
+os_type=centos
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+if grep -qs "Red Hat" /etc/redhat-release; then
+  os_type=rhel
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -147,6 +157,7 @@ REPO1='--enablerepo=epel'
 REPO2='--enablerepo=*server-*optional*'
 REPO3='--enablerepo=*releases-optional*'
 REPO4='--enablerepo=[Pp]ower[Tt]ools'
+[ "$os_type" = "rhel" ] && REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
 
 yum -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel curl-devel nss-tools \
@@ -154,19 +165,11 @@ yum -y install nss-devel nspr-devel pkgconfig pam-devel \
 
 yum "$REPO1" -y install xl2tpd || exiterr2
 
-os_type=centos
-if grep -qs "Red Hat" /etc/redhat-release; then
-  os_type=rhel
-  REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
-fi
-
 use_nft=0
-if grep -qs "release 7" /etc/redhat-release; then
-  os_ver=7
+if [ "$os_ver" = "7" ]; then
   yum -y install systemd-devel iptables-services || exiterr2
   yum "$REPO2" "$REPO3" -y install libevent-devel fipscheck-devel || exiterr2
 else
-  os_ver=8
   yum "$REPO4" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
   if systemctl is-active --quiet firewalld.service \
     || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
@@ -187,7 +190,7 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?ver=$SWAN_VER"
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$SWAN_VER
