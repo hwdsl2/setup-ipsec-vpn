@@ -10,7 +10,7 @@ Available customization parameters:
 
 - Amazon EC2 instance type
 > **Note**: It is possible that not all instance type options offered by this template are available in a specific AWS region. For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances.
-- OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 9)
+- OS for your VPN server (Ubuntu 20.04/18.04/16.04, Debian 9, CentOS 7/8, AmazonLinux2)
 > **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace: [Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
 - Your VPN username
 - Your VPN password
@@ -41,9 +41,21 @@ You may choose an AWS region using the selector to the right of your account inf
 How to connect to the server via SSH after deployment?
 </summary>
 
-After deployment, the default username for an Ubuntu instance is **ubuntu**, and for a Debian instance it is **admin**. Amazon EC2 does not allow users to access newly created instances with an SSH password. Instead, users are required to create "key pairs", which are used as credentials for SSH access.
+You need to know the username and the private key for your instance in order to login to it via SSH.
 
-This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.
+Each Linux server distribution on AWS has its own default login username, while password login is disabled since the use of private key, or "key pairs", is enforced. 
+
+The following is a list of default usernames used by the distributions provided:
+> **Reference**: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html
+
+| Distribution | Default Login Username |
+| --- | --- |
+| Ubuntu (`Ubuntu *.04`) |  `ubuntu` |
+| Debian (`Debian 9` only) | `admin` |
+| CentOS (`CenOS 7` and `CentOS 8`) | `centos` |
+| AmazonLinux2 | `ec2-user` |
+
+For the private key(aka "Key pair"), this template generates one for you during deployment, and it will be available as text under the **Outputs** tab after the stack is successfully created.
 
 You will need to save the private key from the **Outputs** tab to a file on your computer, if you want to access the VPN server via SSH.
 
@@ -51,6 +63,10 @@ You will need to save the private key from the **Outputs** tab to a file on your
 
 ![Show key](show-key.png)
 
+As a result, the command to login to your instance should look like:
+```bash
+$ ssh -i path/to/your/key.pem instance-username@instance-ip-address
+```
 </details>
 
 ## Author
