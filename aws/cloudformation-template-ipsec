@@ -19,11 +19,11 @@
                 "InstallationLinks": "https://git.io/vpnsetup"
             },
             "CentOS7": {
-                "HelperInstallationCommands": "yum -y check-update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
+                "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                 "InstallationLinks": "https://git.io/vpnsetup-centos"
             },
             "CentOS8": {
-                "HelperInstallationCommands": "yum -y check-update\nyum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
+                "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                 "InstallationLinks": "https://git.io/vpnsetup-centos"
             },
             "AmazonLinux2": {
@@ -884,5 +884,4 @@
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         }
     }
-
 }
