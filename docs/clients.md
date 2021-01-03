@@ -339,9 +339,9 @@ Android devices will also disconnect Wi-Fi shortly after entering sleep mode, un
 
 ### Debian 10 kernel
 
-Debian 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode ([IPsec/XAuth mode](clients-xauth.md) is not affected).
+Debian 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show an error.
 
-To fix, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot.
+To fix, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server. Finally, re-run the VPN setup script.
 
 ### Chromebook issues
 

@@ -96,14 +96,14 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://aws.amazon.com/lightsail/" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud/virtual-servers" target="_blank">IBM Cloud</a>, <a href="https://www.ovh.com/world/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
-<a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
+<a href="aws/README.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
 Advanced users can set up the VPN server on a $35 <a href="https://www.raspberrypi.org" target="_blank">Raspberry Pi</a>. See <a href="https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">[1]</a> <a href="https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/" target="_blank">[2]</a>.
 
 <a name="debian-10-note"></a>
-\* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more <a href="docs/clients.md#debian-10-kernel" target="_blank">here</a>.   
+\* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more <a href="docs/clients.md#debian-10-kernel" target="_blank">here</a>. If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -241,7 +241,7 @@ sh vpnsetup.sh
 ```
 </details>
 
-**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a> and click the **`Raw`** button. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next steps
 
