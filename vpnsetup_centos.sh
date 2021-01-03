@@ -48,6 +48,12 @@ check_ip() {
 
 vpnsetup() {
 
+os_type=centos
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+if grep -qs "Red Hat" /etc/redhat-release; then
+  os_type=rhel
+fi
+
 if grep -qs "release 7" /etc/redhat-release; then
   os_ver=7
 elif grep -qs "release 8" /etc/redhat-release; then
@@ -56,12 +62,6 @@ else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
   exit 1
-fi
-
-os_type=centos
-os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-if grep -qs "Red Hat" /etc/redhat-release; then
-  os_type=rhel
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -190,11 +190,6 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
-swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
-  swan_ver_latest=$SWAN_VER
-fi
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exit 1
 fi
@@ -241,7 +236,6 @@ version 2.0
 
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-  protostack=netkey
   interfaces=%defaultroute
   uniqueids=no
 
@@ -500,6 +494,18 @@ service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
 
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
+swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+  && [ "$SWAN_VER" != "$swan_ver_latest" ]; then
+cat <<EOF
+
+Note: A newer version of Libreswan ($swan_ver_latest) is available. To update, run:
+  wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
+  sudo sh vpnupgrade.sh
+EOF
+fi
+
 cat <<EOF
 
 ================================================
@@ -522,15 +528,6 @@ IKEv2 guide:       https://git.io/ikev2
 ================================================
 
 EOF
-
-if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
-cat <<EOF
-Note: A newer Libreswan version $swan_ver_latest is available. To upgrade:
-  wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh
-  sudo sh vpnupgrade.sh
-
-EOF
-fi
 
 }
 

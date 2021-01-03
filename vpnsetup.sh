@@ -68,11 +68,11 @@ case $os_type in
     ;;
 esac
 
-debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-if [ "$debian_ver" = "8" ] || [ "$debian_ver" = "jessiesid" ]; then
+os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
   exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
 fi
-if [ "$debian_ver" = "10" ] && [ ! -e /dev/ppp ]; then
+if [ "$os_ver" = "10" ] && [ ! -e /dev/ppp ]; then
   exiterr "/dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10"
 fi
 
@@ -150,7 +150,7 @@ PKG_LK=/var/lib/dpkg/lock
 while fuser "$APT_LK" "$PKG_LK" >/dev/null 2>&1 \
   || lsof "$APT_LK" >/dev/null 2>&1 || lsof "$PKG_LK" >/dev/null 2>&1; do
   [ "$count" = "0" ] && bigecho "Waiting for apt to be available..."
-  [ "$count" -ge "60" ] && exiterr "Could not get apt/dpkg lock."
+  [ "$count" -ge "100" ] && exiterr "Could not get apt/dpkg lock."
   count=$((count+1))
   printf '%s' '.'
   sleep 3
@@ -198,11 +198,6 @@ SWAN_VER=4.1
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$debian_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
-swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
-  swan_ver_latest=$SWAN_VER
-fi
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
   exit 1
 fi
@@ -260,7 +255,6 @@ version 2.0
 
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-  protostack=netkey
   interfaces=%defaultroute
   uniqueids=no
 
@@ -514,6 +508,18 @@ service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
 
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
+swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+  && [ "$SWAN_VER" != "$swan_ver_latest" ]; then
+cat <<EOF
+
+Note: A newer version of Libreswan ($swan_ver_latest) is available. To update, run:
+  wget https://git.io/vpnupgrade -O vpnupgrade.sh
+  sudo sh vpnupgrade.sh
+EOF
+fi
+
 cat <<EOF
 
 ================================================
@@ -536,15 +542,6 @@ IKEv2 guide:       https://git.io/ikev2
 ================================================
 
 EOF
-
-if [ "$SWAN_VER" != "$swan_ver_latest" ]; then
-cat <<EOF
-Note: A newer Libreswan version $swan_ver_latest is available. To upgrade:
-  wget https://git.io/vpnupgrade -O vpnupgrade.sh
-  sudo sh vpnupgrade.sh
-
-EOF
-fi
 
 }
 

@@ -45,8 +45,8 @@ case $os_type in
     ;;
 esac
 
-debian_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-if [ "$debian_ver" = "8" ] || [ "$debian_ver" = "jessiesid" ]; then
+os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
   exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
 fi
 
@@ -84,14 +84,14 @@ EOF
 fi
 
 swan_ver_cur=4.1
-swan_ver_url="https://dl.ls20.com/v1/$os_type/$debian_ver/swanverupg?arch=$os_arch&ver=$swan_ver_cur&ver2=$SWAN_VER"
+swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?arch=$os_arch&ver=$swan_ver_cur&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
   swan_ver_latest=$swan_ver_cur
 fi
 if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
-  echo "Note: A newer version of this script is available, which can install Libreswan $swan_ver_latest."
-  echo "To download and run the latest version:"
+  echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
+  echo "To update to the new version, exit the script and run:"
   echo "  wget https://git.io/vpnupgrade -O vpnupgrade.sh"
   echo "  sudo sh vpnupgrade.sh"
   echo

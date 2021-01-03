@@ -25,6 +25,12 @@ exiterr2() { exiterr "'yum install' failed."; }
 
 vpnupgrade() {
 
+os_type=centos
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+if grep -qs "Red Hat" /etc/redhat-release; then
+  os_type=rhel
+fi
+
 if grep -qs "release 7" /etc/redhat-release; then
   os_ver=7
 elif grep -qs "release 8" /etc/redhat-release; then
@@ -33,12 +39,6 @@ else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
   exit 1
-fi
-
-os_type=centos
-os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-if grep -qs "Red Hat" /etc/redhat-release; then
-  os_type=rhel
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -81,8 +81,8 @@ if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9
   swan_ver_latest=$swan_ver_cur
 fi
 if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
-  echo "Note: A newer version of this script is available, which can install Libreswan $swan_ver_latest."
-  echo "To download and run the latest version:"
+  echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
+  echo "To update to the new version, exit the script and run:"
   echo "  wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh"
   echo "  sudo sh vpnupgrade.sh"
   echo

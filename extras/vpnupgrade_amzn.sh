@@ -69,8 +69,8 @@ if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9
   swan_ver_latest=$swan_ver_cur
 fi
 if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
-  echo "Note: A newer version of this script is available, which can install Libreswan $swan_ver_latest."
-  echo "To download and run the latest version:"
+  echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
+  echo "To update to the new version, exit the script and run:"
   echo "  wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh"
   echo "  sudo sh vpnupgrade.sh"
   echo
