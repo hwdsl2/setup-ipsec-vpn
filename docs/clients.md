@@ -497,8 +497,8 @@ noipdefault
 defaultroute
 usepeerdns
 connect-delay 5000
-name $VPN_USER
-password $VPN_PASSWORD
+name "$VPN_USER"
+password "$VPN_PASSWORD"
 EOF
 
 chmod 600 /etc/ppp/options.l2tpd.client
