@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # Script for automatic setup of an IPsec VPN server on Ubuntu and Debian
+# Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -52,13 +53,13 @@ os_type=$(lsb_release -si 2>/dev/null)
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
 case $os_type in
-  *[Uu]buntu*)
+  [Uu]buntu)
     os_type=ubuntu
     ;;
-  *[Dd]ebian*)
+  [Dd]ebian)
     os_type=debian
     ;;
-  *[Rr]aspbian*)
+  [Rr]aspbian)
     os_type=raspbian
     ;;
   *)

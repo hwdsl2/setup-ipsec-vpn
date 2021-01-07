@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # Script for automatic setup of an IPsec VPN server on CentOS/RHEL 7 and 8
+# Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
