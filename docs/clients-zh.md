@@ -430,35 +430,17 @@ VPN_PASSWORD='你的VPN密码'
 cat > /etc/ipsec.conf <<EOF
 # ipsec.conf - strongSwan IPsec configuration file
 
-# basic configuration
-
-config setup
-  # strictcrlpolicy=yes
-  # uniqueids = no
-
-# Add connections here.
-
-# Sample VPN connections
-
-conn %default
-  ikelifetime=60m
-  keylife=20m
-  rekeymargin=3m
-  keyingtries=1
-  keyexchange=ikev1
-  authby=secret
-  ike=aes128-sha1-modp2048!
-  esp=aes128-sha1-modp2048!
-
 conn myvpn
-  keyexchange=ikev1
-  left=%defaultroute
   auto=add
+  keyexchange=ikev1
   authby=secret
   type=transport
+  left=%defaultroute
   leftprotoport=17/1701
   rightprotoport=17/1701
   right=$VPN_SERVER_IP
+  ike=aes128-sha1-modp2048
+  esp=aes128-sha1
 EOF
 
 cat > /etc/ipsec.secrets <<EOF
