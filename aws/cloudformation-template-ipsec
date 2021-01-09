@@ -572,7 +572,7 @@
                                 "'''",
                                 "def handler(event, context):",
                                 "   try:",
-                                "       keyName = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))",
+                                "       keyName = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))",
                                 "       region = event['ResourceProperties']['Region']",
                                 "       ec2 = boto3.client('ec2',region)",
                                 "       response = ec2.create_key_pair(",
