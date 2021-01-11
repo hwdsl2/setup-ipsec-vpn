@@ -73,12 +73,39 @@ EOF
 
 ikev2setup() {
 
+if grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+  os_type=centos
+  if grep -qs "Red Hat" /etc/redhat-release; then
+    os_type=rhel
+  fi
+elif grep -qs "Amazon Linux release 2" /etc/system-release; then
+  os_type=amzn
+else
+  os_type=$(lsb_release -si 2>/dev/null)
+  [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
+  case $os_type in
+    [Uu]buntu)
+      os_type=ubuntu
+      ;;
+    [Dd]ebian)
+      os_type=debian
+      ;;
+    [Rr]aspbian)
+      os_type=raspbian
+      ;;
+    *)
+      exiterr "This script only supports Ubuntu, Debian, CentOS/RHEL 7/8 and Amazon Linux 2."
+      exit 1
+      ;;
+  esac
+fi
+
 if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo bash $0'"
 fi
 
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux //' -e 's/Libreswan //' -e 's/ (netkey) on .*//')
+swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux //' -e 's/Libreswan //' -e 's/ (netkey).*//')
 if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
   || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan" \
   || [ ! -f /etc/ppp/chap-secrets ] || [ ! -f /etc/ipsec.d/passwd ]; then
@@ -89,21 +116,16 @@ EOF
   exit 1
 fi
 
-in_container=0
-if grep -qs "hwdsl2" /opt/src/run.sh; then
-  in_container=1
-fi
-
-case "$swan_ver" in
-  3.19|3.2[01235679]|3.3[12]|4.1)
+case $swan_ver in
+  3.19|3.2[01235679]|3.3[12]|4.*)
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
   This script requires one of these versions:
-  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.1
-  To upgrade Libreswan, see:
+  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
+  To update Libreswan, see:
   https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
 EOF
     exit 1
@@ -112,6 +134,11 @@ esac
 
 command -v certutil >/dev/null 2>&1 || exiterr "'certutil' not found. Abort."
 command -v pk12util >/dev/null 2>&1 || exiterr "'pk12util' not found. Abort."
+
+in_container=0
+if grep -qs "hwdsl2" /opt/src/run.sh; then
+  in_container=1
+fi
 
 if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
   echo "It looks like IKEv2 has already been set up on this server."
@@ -333,8 +360,8 @@ fi
 
 # Check for MOBIKE support
 mobike_support=0
-case "$swan_ver" in
-  3.2[35679]|3.3[12]|4.1)
+case $swan_ver in
+  3.2[35679]|3.3[12]|4.*)
     mobike_support=1
     ;;
 esac
@@ -345,16 +372,8 @@ fi
 
 if [ "$mobike_support" = "1" ]; then
   if [ "$in_container" = "0" ]; then
-    os_type="$(lsb_release -si 2>/dev/null)"
-    if [ -z "$os_type" ]; then
-      [ -f /etc/os-release  ] && os_type="$(. /etc/os-release  && printf '%s' "$ID")"
-      [ -f /etc/lsb-release ] && os_type="$(. /etc/lsb-release && printf '%s' "$DISTRIB_ID")"
-      [ "$os_type" = "ubuntu" ] && os_type=Ubuntu
-    fi
-    [ -z "$os_type" ] && [ -f /etc/redhat-release ] && os_type=CentOS/RHEL
-    grep -qs "Amazon Linux release 2" /etc/system-release && os_type=Amzn
     # Linux kernels on Ubuntu do not support MOBIKE
-    if [ -z "$os_type" ] || [ "$os_type" = "Ubuntu" ]; then
+    if [ "$os_type" = "ubuntu" ]; then
       mobike_support=0
     fi
   fi
@@ -528,8 +547,8 @@ conn ikev2-cp
   encapsulation=yes
 EOF
 
-case "$swan_ver" in
-  3.2[35679]|3.3[12]|4.1)
+case $swan_ver in
+  3.2[35679]|3.3[12]|4.*)
     if [ -n "$dns_server_2" ]; then
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns="$dns_servers"
