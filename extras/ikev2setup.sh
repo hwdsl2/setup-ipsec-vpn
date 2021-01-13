@@ -367,28 +367,38 @@ case $swan_ver in
 esac
 
 if uname -m | grep -qi -e '^arm' -e '^aarch64'; then
-  mobike_support=0
-fi
-
-if [ "$mobike_support" = "1" ]; then
-  if [ "$in_container" = "0" ]; then
-    # Linux kernels on Ubuntu do not support MOBIKE
-    if [ "$os_type" = "ubuntu" ]; then
+  modprobe -q configs
+  if [ -f /proc/config.gz ]; then
+    if ! zcat /proc/config.gz | grep -q "CONFIG_XFRM_MIGRATE=y"; then
       mobike_support=0
     fi
+  fi
+fi
+
+kernel_conf="/boot/config-$(uname -r)"
+if [ -f "$kernel_conf" ]; then
+  if ! grep -qs "CONFIG_XFRM_MIGRATE=y" "$kernel_conf"; then
+    mobike_support=0
+  fi
+fi
+
+# Linux kernels on Ubuntu do not support MOBIKE
+if [ "$in_container" = "0" ]; then
+  if [ "$os_type" = "ubuntu" ] || uname -v | grep -qi ubuntu; then
+    mobike_support=0
+  fi
+else
+  if uname -v | grep -qi ubuntu; then
+    mobike_support=0
   fi
 fi
 
 echo
 echo -n "Checking for MOBIKE support... "
 if [ "$mobike_support" = "1" ]; then
-  if [ "$in_container" = "0" ]; then
-    echo "yes"
-  else
-    echo "running in a container, see notes below"
-  fi
+  echo "available"
 else
-  echo "no"
+  echo "not available"
 fi
 
 mobike_enable=0
@@ -396,32 +406,17 @@ if [ "$mobike_support" = "1" ]; then
   echo
   echo "The MOBIKE IKEv2 extension allows VPN clients to change network attachment points,"
   echo "e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP."
-  if [ "$in_container" = "0" ]; then
-    echo
-    printf "Do you want to enable MOBIKE support? [Y/n] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY]|'')
-        mobike_enable=1
-        ;;
-      *)
-        mobike_enable=0
-        ;;
-    esac
-  else
-    echo
-    echo "IMPORTANT: *DO NOT* enable MOBIKE support, if your Docker host runs Ubuntu Linux."
-    printf "Do you want to enable MOBIKE support? [y/N] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY])
-        mobike_enable=1
-        ;;
-      *)
-        mobike_enable=0
-        ;;
-    esac
-  fi
+  echo
+  printf "Do you want to enable MOBIKE support? [Y/n] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY]|'')
+      mobike_enable=1
+      ;;
+    *)
+      mobike_enable=0
+      ;;
+  esac
 fi
 
 cat <<EOF

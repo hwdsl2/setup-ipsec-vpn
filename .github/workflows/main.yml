@@ -141,7 +141,6 @@ jobs:
 
 
 
-
           y
           ANSWERS
 
@@ -345,7 +344,6 @@ jobs:
           wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
           sed -i 's/pk12util/pk12util -W test/' ikev2.sh
           bash ikev2.sh <<ANSWERS
-
 
 
 
