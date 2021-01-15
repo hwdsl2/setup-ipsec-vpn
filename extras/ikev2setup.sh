@@ -30,6 +30,195 @@ check_dns_name() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
 }
 
+create_mobileconfig() {
+
+  bigecho2 "Creating .mobileconfig for iOS and macOS..."
+
+  [ -z "$p12_password" ] && exiterr "Password for .p12 file cannot be empty."
+
+  if [ -z "$server_addr" ]; then
+    server_addr=$(grep "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+    [ -z "$server_addr" ] && server_addr=$(grep "leftcert=" /etc/ipsec.conf | cut -f2 -d=)
+    check_ip "$server_addr" || check_dns_name "$server_addr" || exiterr "Could not get VPN server address."
+  fi
+
+  if ! command -v base64 >/dev/null 2>&1 || ! command -v uuidgen >/dev/null 2>&1; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get -yqq update || exiterr "'apt-get update' failed."
+      apt-get -yqq install coreutils uuid-runtime || exiterr "'apt-get install' failed."
+    else
+      yum -yq install coreutils util-linux || exiterr "'yum install' failed."
+    fi
+  fi
+
+  if [ "$in_container" = "0" ]; then
+    p12_base64=$(base64 -w 52 ~/"$client_name-$SYS_DT.p12")
+  else
+    p12_base64=$(base64 -w 52 "/etc/ipsec.d/$client_name-$SYS_DT.p12")
+  fi
+  [ -z "$p12_base64" ] && exiterr "Could not encode .p12 file."
+
+  ca_base64=$(certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a | grep -v CERTIFICATE)
+  [ -z "$ca_base64" ] && exiterr "Could not encode IKEv2 VPN CA certificate."
+
+  uuid1=$(uuidgen)
+  [ -z "$uuid1" ] && exiterr "Could not generate UUID value."
+
+  if [ "$in_container" = "0" ]; then
+    mc_file=~/"$client_name-$SYS_DT.mobileconfig"
+  else
+    mc_file="/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig"
+  fi
+
+cat > "$mc_file" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>IKEv2</key>
+      <dict>
+        <key>AuthenticationMethod</key>
+        <string>Certificate</string>
+        <key>ChildSecurityAssociationParameters</key>
+        <dict>
+          <key>DiffieHellmanGroup</key>
+          <integer>14</integer>
+          <key>EncryptionAlgorithm</key>
+          <string>AES-256-GCM</string>
+          <key>LifeTimeInMinutes</key>
+          <integer>1440</integer>
+        </dict>
+        <key>DeadPeerDetectionRate</key>
+        <string>Medium</string>
+        <key>DisableRedirect</key>
+        <true/>
+        <key>EnableCertificateRevocationCheck</key>
+        <integer>0</integer>
+        <key>EnablePFS</key>
+        <integer>0</integer>
+        <key>IKESecurityAssociationParameters</key>
+        <dict>
+          <key>DiffieHellmanGroup</key>
+          <integer>14</integer>
+          <key>EncryptionAlgorithm</key>
+          <string>AES-256</string>
+          <key>IntegrityAlgorithm</key>
+          <string>SHA2-256</string>
+          <key>LifeTimeInMinutes</key>
+          <integer>1440</integer>
+        </dict>
+        <key>LocalIdentifier</key>
+        <string>$client_name</string>
+        <key>PayloadCertificateUUID</key>
+        <string>$uuid1</string>
+        <key>OnDemandEnabled</key>
+        <integer>0</integer>
+        <key>OnDemandRules</key>
+        <array>
+          <dict>
+          <key>Action</key>
+          <string>Connect</string>
+          </dict>
+        </array>
+        <key>RemoteAddress</key>
+        <string>$server_addr</string>
+        <key>RemoteIdentifier</key>
+        <string>$server_addr</string>
+        <key>UseConfigurationAttributeInternalIPSubnet</key>
+        <integer>0</integer>
+      </dict>
+      <key>IPv4</key>
+      <dict>
+        <key>OverridePrimary</key>
+        <integer>1</integer>
+      </dict>
+      <key>PayloadDescription</key>
+      <string>Configures VPN settings</string>
+      <key>PayloadDisplayName</key>
+      <string>VPN</string>
+      <key>PayloadIdentifier</key>
+      <string>com.apple.vpn.managed.$(uuidgen)</string>
+      <key>PayloadType</key>
+      <string>com.apple.vpn.managed</string>
+      <key>PayloadUUID</key>
+      <string>$(uuidgen)</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>Proxies</key>
+      <dict>
+        <key>HTTPEnable</key>
+        <integer>0</integer>
+        <key>HTTPSEnable</key>
+        <integer>0</integer>
+      </dict>
+      <key>UserDefinedName</key>
+      <string>$server_addr</string>
+      <key>VPNType</key>
+      <string>IKEv2</string>
+    </dict>
+    <dict>
+      <key>PayloadCertificateFileName</key>
+      <string>$client_name</string>
+      <key>PayloadContent</key>
+      <data>
+$p12_base64
+      </data>
+      <key>PayloadDescription</key>
+      <string>Adds a PKCS#12-formatted certificate</string>
+      <key>PayloadDisplayName</key>
+      <string>$client_name</string>
+      <key>PayloadIdentifier</key>
+      <string>com.apple.security.pkcs12.$(uuidgen)</string>
+      <key>PayloadType</key>
+      <string>com.apple.security.pkcs12</string>
+      <key>PayloadUUID</key>
+      <string>$uuid1</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+    </dict>
+    <dict>
+      <key>PayloadContent</key>
+      <data>
+$ca_base64
+      </data>
+      <key>PayloadCertificateFileName</key>
+      <string>ikev2vpnca</string>
+      <key>PayloadDescription</key>
+      <string>Adds a CA root certificate</string>
+      <key>PayloadDisplayName</key>
+      <string>Certificate Authority (CA)</string>
+      <key>PayloadIdentifier</key>
+      <string>com.apple.security.root.$(uuidgen)</string>
+      <key>PayloadType</key>
+      <string>com.apple.security.root</string>
+      <key>PayloadUUID</key>
+      <string>$(uuidgen)</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key>
+  <string>IKEv2 VPN configuration ($server_addr)</string>
+  <key>PayloadIdentifier</key>
+  <string>com.apple.vpn.managed.$(uuidgen)</string>
+  <key>PayloadRemovalDisallowed</key>
+  <false/>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>$(uuidgen)</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>
+EOF
+
+}
+
 new_client() {
 
   bigecho2 "Generating client certificate..."
@@ -44,30 +233,17 @@ new_client() {
     --keyUsage digitalSignature,keyEncipherment \
     --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null || exit 1
 
-  if [ "$export_ca" = "1" ]; then
-    bigecho "Exporting CA certificate 'IKEv2 VPN CA'..."
-
-    if [ "$in_container" = "0" ]; then
-      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ~/"ikev2vpnca-$SYS_DT.cer" || exit 1
-    else
-      certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer" || exit 1
-    fi
-  fi
-
   bigecho "Exporting .p12 file..."
 
-cat <<'EOF'
-Enter a *secure* password to protect the exported .p12 file.
-This file contains the client certificate, private key, and CA certificate.
-When importing into an iOS or macOS device, this password cannot be empty.
-
-EOF
-
+  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)
+  [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
   if [ "$in_container" = "0" ]; then
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
+    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
   else
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
+    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
   fi
+
+  create_mobileconfig
 
 }
 
@@ -181,25 +357,12 @@ if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; t
     [ -z "$client_validity" ] && client_validity=120
   done
 
-  echo
-  echo "The CA certificate was exported during initial IKEv2 setup. Required for iOS clients only."
-  printf "Do you want to export the CA certificate again? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      export_ca=1
-      ;;
-    *)
-      export_ca=0
-      ;;
-  esac
-
   # Create client configuration
   new_client
 
 cat <<EOF
 
-=============================================================
+===============================================================
 
 New IKEv2 VPN client "$client_name" added!
 
@@ -208,25 +371,25 @@ Client configuration is available at:
 EOF
 
 if [ "$in_container" = "0" ]; then
-  printf '%s\n' ~/"$client_name-$SYS_DT.p12"
-  if [ "$export_ca" = "1" ]; then
-    printf '%s\n' ~/"ikev2vpnca-$SYS_DT.cer (for iOS clients)"
-  fi
+  printf '%s\n' ~/"$client_name-$SYS_DT.p12 (for Windows & Android)"
+  printf '%s\n' ~/"$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 else
-  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
-  if [ "$export_ca" = "1" ]; then
-    printf '%s\n' "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer (for iOS clients)"
-  fi
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12 (for Windows & Android)"
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 fi
 
-cat <<'EOF'
+cat <<EOF
+
+(Important) Password for .p12 and .mobileconfig files:
+$p12_password
+Write this down, you'll need it to import to your device!
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
 To add more IKEv2 VPN clients, run this script again.
 
-=============================================================
+===============================================================
 
 EOF
 
@@ -503,7 +666,6 @@ else
 fi
 
 # Create client configuration
-export_ca=1
 new_client
 
 echo
@@ -580,7 +742,7 @@ service ipsec restart
 
 cat <<EOF
 
-=============================================================
+===============================================================
 
 IKEv2 VPN setup is now complete!
 
@@ -592,21 +754,25 @@ Client configuration is available at:
 EOF
 
 if [ "$in_container" = "0" ]; then
-  printf '%s\n' ~/"$client_name-$SYS_DT.p12"
-  printf '%s\n' ~/"ikev2vpnca-$SYS_DT.cer (for iOS clients)"
+  printf '%s\n' ~/"$client_name-$SYS_DT.p12 (for Windows & Android)"
+  printf '%s\n' ~/"$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 else
-  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12"
-  printf '%s\n' "/etc/ipsec.d/ikev2vpnca-$SYS_DT.cer (for iOS clients)"
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12 (for Windows & Android)"
+  printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 fi
 
-cat <<'EOF'
+cat <<EOF
+
+(Important) Password for .p12 and .mobileconfig files:
+$p12_password
+Write this down, you'll need it to import to your device!
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
 To add more IKEv2 VPN clients, run this script again.
 
-=============================================================
+===============================================================
 
 EOF
 
