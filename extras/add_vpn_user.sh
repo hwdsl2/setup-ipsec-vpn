@@ -41,19 +41,20 @@ fi
 
 VPN_USER=$1
 VPN_PASSWORD=$2
+VPN_IP_ADDRESS=$3
 
-if [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ] || [ -z "$VPN_IP_ADDRESS" ]; then
 cat 1>&2 <<EOF
-Usage: sudo sh $0 'username_to_add' 'password_to_add'
+Usage: sudo sh $0 'username_to_add' 'password_to_add' 'ip_address_to_add'
 EOF
   exit 1
 fi
 
-if printf '%s' "$VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_USER $VPN_PASSWORD $VPN_IP_ADDRESS" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
-case "$VPN_USER $VPN_PASSWORD" in
+case "$VPN_USER $VPN_PASSWORD $VPN_IP_ADDRESS" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
@@ -77,6 +78,7 @@ VPN user to add or update:
 
 Username: $VPN_USER
 Password: $VPN_PASSWORD
+IP address: $VPN_IP_ADDRESS
 
 Write these down. You'll need them to connect!
 
@@ -105,7 +107,7 @@ conf_bk "/etc/ipsec.d/passwd"
 # Add or update VPN user
 sed -i "/^\"$VPN_USER\" /d" /etc/ppp/chap-secrets
 cat >> /etc/ppp/chap-secrets <<EOF
-"$VPN_USER" l2tpd "$VPN_PASSWORD" *
+"$VPN_USER" l2tpd "$VPN_PASSWORD" "$VPN_IP_ADDRESS"
 EOF
 
 # shellcheck disable=SC2016

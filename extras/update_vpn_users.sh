@@ -19,10 +19,12 @@
 
 YOUR_USERNAMES=''
 YOUR_PASSWORDS=''
+YOUR_IP_ADDRESSES=''
 
 # Example:
 # YOUR_USERNAMES='username1 username2'
 # YOUR_PASSWORDS='password1 password2'
+# YOUR_IP_ADDRESSES='ip1 ip2'
 
 # =====================================================
 
@@ -60,8 +62,9 @@ fi
 
 [ -n "$YOUR_USERNAMES" ] && VPN_USERS="$YOUR_USERNAMES"
 [ -n "$YOUR_PASSWORDS" ] && VPN_PASSWORDS="$YOUR_PASSWORDS"
+[ -n "$YOUR_IP_ADDRESSES" ] && VPN_IP_ADDRESSES="$YOUR_IP_ADDRESSES"
 
-if [ -z "$VPN_USERS" ] || [ -z "$VPN_PASSWORDS" ]; then
+if [ -z "$VPN_USERS" ] || [ -z "$VPN_PASSWORDS" ] || [ -z "$VPN_IP_ADDRESSES"]; then
   exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
 fi
 
@@ -71,12 +74,15 @@ VPN_USERS=$(noquotes2 "$VPN_USERS")
 VPN_PASSWORDS=$(noquotes "$VPN_PASSWORDS")
 VPN_PASSWORDS=$(onespace "$VPN_PASSWORDS")
 VPN_PASSWORDS=$(noquotes2 "$VPN_PASSWORDS")
+VPN_IP_ADDRESSES=$(noquotes "$VPN_IP_ADDRESSES")
+VPN_IP_ADDRESSES=$(onespace "$VPN_IP_ADDRESSES")
+VPN_IP_ADDRESSES=$(noquotes2 "$VPN_IP_ADDRESSES")
 
-if printf '%s' "$VPN_USERS $VPN_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_USERS $VPN_PASSWORDS $VPN_IP_ADDRESSES" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
-case "$VPN_USERS $VPN_PASSWORDS" in
+case "$VPN_USERS $VPN_PASSWORDS $VPN_IP_ADDRESSES" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
@@ -99,20 +105,22 @@ WARNING: ALL existing VPN users will be removed
 
 ==================================================
 
-Updated list of VPN users (username | password):
+Updated list of VPN users (username | password | ip address):
 
 EOF
 
 count=1
 vpn_user=$(printf '%s' "$VPN_USERS" | cut -d ' ' -f 1)
 vpn_password=$(printf '%s' "$VPN_PASSWORDS" | cut -d ' ' -f 1)
-while [ -n "$vpn_user" ] && [ -n "$vpn_password" ]; do
+vpn_ip_address=$(printf '%s' "$VPN_IP_ADDRESSES" | cut -d ' ' -f 1)
+while [ -n "$vpn_user" ] && [ -n "$vpn_password" ] && [ -n "$vpn_ip_address" ]; do
 cat <<EOF
-$vpn_user | $vpn_password
+$vpn_user | $vpn_password | $vpn_ip_address
 EOF
   count=$((count+1))
   vpn_user=$(printf '%s' "$VPN_USERS" | cut -s -d ' ' -f "$count")
   vpn_password=$(printf '%s' "$VPN_PASSWORDS" | cut -s -d ' ' -f "$count")
+  vpn_ip_address=$(printf '%s' "$VPN_IP_ADDRESSES" | cut -s -d ' ' -f "$count")
 done
 
 cat <<'EOF'
@@ -146,10 +154,12 @@ conf_bk "/etc/ipsec.d/passwd"
 count=1
 vpn_user=$(printf '%s' "$VPN_USERS" | cut -d ' ' -f 1)
 vpn_password=$(printf '%s' "$VPN_PASSWORDS" | cut -d ' ' -f 1)
-while [ -n "$vpn_user" ] && [ -n "$vpn_password" ]; do
+vpn_ip_address=$(printf '%s' "$VPN_IP_ADDRESSES" | cut -d ' ' -f 1)
+
+while [ -n "$vpn_user" ] && [ -n "$vpn_password" ] && [ -n "$vpn_ip_address" ]; do
   vpn_password_enc=$(openssl passwd -1 "$vpn_password")
 cat >> /etc/ppp/chap-secrets <<EOF
-"$vpn_user" l2tpd "$vpn_password" *
+"$vpn_user" l2tpd "$vpn_password" "$vpn_ip_address"
 EOF
 cat >> /etc/ipsec.d/passwd <<EOF
 $vpn_user:$vpn_password_enc:xauth-psk
@@ -157,6 +167,7 @@ EOF
   count=$((count+1))
   vpn_user=$(printf '%s' "$VPN_USERS" | cut -s -d ' ' -f "$count")
   vpn_password=$(printf '%s' "$VPN_PASSWORDS" | cut -s -d ' ' -f "$count")
+  vpn_ip_address=$(printf '%s' "$VPN_IP_ADDRESSES" | cut -s -d ' ' -f "$count")
 done
 
 # Update file attributes

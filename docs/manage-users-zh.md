@@ -58,9 +58,9 @@ wget -O add_vpn_user.sh https://bit.ly/addvpnuser
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-sudo sh add_vpn_user.sh '要添加的用户名' '密码'
+sudo sh add_vpn_user.sh '要添加的用户名' '密码' 'IP'
 # 或者
-sudo sh add_vpn_user.sh '要更新的用户名' '新密码'
+sudo sh add_vpn_user.sh '要更新的用户名' '新密码' 'IP'
 ```
 
 ### 删除一个 VPN 用户
@@ -95,7 +95,7 @@ wget -O update_vpn_users.sh https://bit.ly/updatevpnusers
 
 ```bash
 nano -w update_vpn_users.sh
-[替换为你自己的值： YOUR_USERNAMES 和 YOUR_PASSWORDS]
+[替换为你自己的值： YOUR_USERNAMES、YOUR_PASSWORDS 和 YOUR_IP_ADDRESSES]
 sudo sh update_vpn_users.sh
 ```
 
@@ -108,6 +108,7 @@ sudo sh update_vpn_users.sh
 sudo \
 VPN_USERS='用户名1 用户名2 ...' \
 VPN_PASSWORDS='密码1 密码2 ...' \
+VPN_IP_ADDRESSES='IP1 IP2 ...' \
 sh update_vpn_users.sh
 ```
 
