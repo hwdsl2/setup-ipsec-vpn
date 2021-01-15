@@ -71,13 +71,13 @@ wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 ## 功能特性
 
-- **新:** 增加支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 模式
+- **新:** 增加支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 和 `IKEv2` 模式
 - **新:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">Docker 镜像</a>
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
 - 包含 `sysctl.conf` 优化设置，以达到更佳的传输性能
-- 已测试： Ubuntu 20.04/18.04/16.04, Debian 10/9 和 CentOS 8/7
+- 已测试：Ubuntu, Debian, CentOS/RHEL 和 Amazon Linux 2
 
 ## 系统要求
 

@@ -333,7 +333,9 @@ In addition, users running macOS Big Sur 11.0 should update to version 11.1 or n
 
 ### iOS/Android sleep mode
 
-To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured. If you need the VPN to auto-reconnect when the device wakes up, try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
+To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured.
+
+If you need the VPN to auto-reconnect when the device wakes up, you may <a href="ikev2-howto.md" target="_blank">set up IKEv2</a> and enable the "VPN On Demand" feature. Alternatively, you may try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo). Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
 

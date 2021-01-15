@@ -5,9 +5,7 @@
 * [Introduction](#introduction)
 * [Using helper scripts](#using-helper-scripts)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
-* [Add a client certificate](#add-a-client-certificate)
-* [Export a client certificate](#export-a-client-certificate)
-* [Revoke a client certificate](#revoke-a-client-certificate)
+* [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Known issues](#known-issues)
 * [Remove IKEv2](#remove-ikev2)
@@ -27,6 +25,8 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
 ## Using helper scripts
+
+**New:** For macOS and iOS clients, the helper script can now create .mobileconfig files to simplify client setup and improve VPN performance.
 
 **Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
 
@@ -71,7 +71,23 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
 ### OS X (macOS)
+
+First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. When finished, check to make sure "IKEv2 VPN configuration" is listed under System Preferences -> Profiles.
+
+1. Open System Preferences and go to the Network section.
+1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
+1. Check the **Show VPN status in menu bar** checkbox.
+1. Click **Connect**.
+
+(Optional feature) You can choose to enable <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand</a>. This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**.
+
+<details>
+<summary>
+If you manually set up IKEv2 without using the helper script, click here to see instructions.
+</summary>
 
 First, securely transfer the generated `.p12` file to your Mac, then double-click to import into the **login** keychain in **Keychain Access**. Next, double-click on the imported `IKEv2 VPN CA` certificate, expand **Trust** and select **Always Trust** from the **IP Security (IPsec)** drop-down menu. Close the dialog using the red "X" on the top-left corner. When prompted, use Touch ID or enter your password and click "Update Settings".
 
@@ -94,13 +110,35 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Apply** to save the VPN connection information.
 1. Click **Connect**.
+</details>
+
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ### iOS
+
+First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
+
+1. AirDrop, or
+1. Upload to your device using "File Sharing" in iTunes, then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to "Settings" to import, or
+1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
+
+When finished, check to make sure "IKEv2 VPN configuration" is listed under Settings -> General -> Profile(s).
+
+1. Go to Settings -> General -> VPN.
+1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
+1. Slide the **VPN** switch ON.
+
+(Optional feature) You can choose to enable <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand</a>. This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
+
+<details>
+<summary>
+If you manually set up IKEv2 without using the helper script, click here to see instructions.
+</summary>
 
 First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
-1. Upload to your device, tap them in the "Files" app (must first move to the "On My iPhone" folder), then follow the prompts to import, or
+1. Upload to your device using "File Sharing" in iTunes, then open the "Files" app on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to "Settings" to import, or
 1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
 
 When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
@@ -118,6 +156,9 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Tap **Certificate**. Select the new client certificate and go back.
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
+</details>
+
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
 ### Android 10 and newer
 
@@ -135,6 +176,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
 ### Android 4.x to 9.x
 
 1. Securely transfer the generated `.p12` file to your Android device.
@@ -150,15 +193,17 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-## Add a client certificate
+## Manage client certificates
+
+### Add a client certificate
 
 If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
-## Export a client certificate
+### Export a client certificate
 
 By default, the IKEv2 [helper script](#using-helper-scripts) exports client certificates after running. If you want to manually export a client certificate, first check the database with `certutil -L -d sql:/etc/ipsec.d`, then refer to "export `.p12` file" in step 4 of [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
-## Revoke a client certificate
+### Revoke a client certificate
 
 In certain circumstances, you may need to revoke a previously generated VPN client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
 

@@ -71,13 +71,13 @@ For other installation options and how to set up VPN clients, read the sections 
 
 ## Features
 
-- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` mode is supported
+- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` and `IKEv2` modes are supported
 - **New:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Includes `sysctl.conf` optimizations for improved performance
-- Tested with Ubuntu 20.04/18.04/16.04, Debian 10/9 and CentOS 8/7
+- Tested with Ubuntu, Debian, CentOS/RHEL and Amazon Linux 2
 
 ## Requirements
 

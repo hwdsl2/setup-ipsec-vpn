@@ -5,9 +5,7 @@
 * [导言](#导言)
 * [使用辅助脚本](#使用辅助脚本)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
-* [添加一个客户端证书](#添加一个客户端证书)
-* [导出一个客户端证书](#导出一个客户端证书)
-* [吊销一个客户端证书](#吊销一个客户端证书)
+* [管理客户端证书](#管理客户端证书)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [已知问题](#已知问题)
 * [移除 IKEv2](#移除-ikev2)
@@ -27,6 +25,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
 ## 使用辅助脚本
+
+**新：** 辅助脚本现在可以为 macOS 和 iOS 客户端创建 .mobileconfig 文件，以简化客户端设置并提高 VPN 性能。
 
 **重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
 
@@ -71,7 +71,23 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
 
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
 ### OS X (macOS)
+
+首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在系统偏好设置 -> 描述文件中。
+
+1. 打开系统偏好设置并转到网络部分。
+1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
+1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
+1. 单击 **连接**。
+
+（可选功能）你可以选择启用 <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand（按需连接）</a> ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。
+
+<details>
+<summary>
+如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
+</summary>
 
 首先，将生成的 `.p12` 文件安全地传送到你的 Mac，然后双击以导入到 **钥匙串访问** 中的 **登录** 钥匙串。下一步，双击导入的 `IKEv2 VPN CA` 证书，展开 **信任** 并从 **IP 安全 (IPsec)** 下拉菜单中选择 **始终信任**。单击左上角的红色 "X" 关闭窗口。根据提示使用触控 ID，或者输入密码并单击 "更新设置"。
 
@@ -94,13 +110,35 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存VPN连接信息。
 1. 单击 **连接**。
+</details>
+
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### iOS
+
+首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
+
+1. AirDrop（隔空投送），或者
+1. 使用 iTunes 的 "文件共享" 功能上传到设备，然后打开 iOS 设备上的 "文件" 应用程序，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" 应用程序中导入，或者
+1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
+
+在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在设置 -> 通用 -> 描述文件中。
+
+1. 进入设置 -> 通用 -> VPN。
+1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
+1. 启用 **VPN** 连接。
+
+（可选功能）你可以选择启用 <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand（按需连接）</a> ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
+
+<details>
+<summary>
+如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
+</summary>
 
 首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 上传到设备，在 "文件" 应用程序中单击它们（必须首先移动到 "On My iPhone" 目录下），然后按照提示导入，或者
+1. 使用 iTunes 的 "文件共享" 功能上传到设备，然后打开 iOS 设备上的 "文件" 应用程序，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" 应用程序中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
@@ -118,6 +156,7 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. 单击 **证书** 。选择新的客户端证书并返回。
 1. 单击右上角的 **完成**。
 1. 启用 **VPN** 连接。
+</details>
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -137,6 +176,8 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
 ### Android 4.x to 9.x
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
@@ -150,15 +191,19 @@ wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
 1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
-## 添加一个客户端证书
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+## 管理客户端证书
+
+### 添加一个客户端证书
 
 如果要为更多的客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
-## 导出一个客户端证书
+### 导出一个客户端证书
 
 在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本) 在运行后会导出客户端证书。如果你想要手动导出一个客户端证书，首先检查证书数据库：`certutil -L -d sql:/etc/ipsec.d`，然后参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 第 4 步中的 "导出 `.p12` 文件"。
 
-## 吊销一个客户端证书
+### 吊销一个客户端证书
 
 在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
 
