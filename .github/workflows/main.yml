@@ -134,7 +134,6 @@ jobs:
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh # hwdsl2
-          sed -i 's/pk12util/pk12util -W test/' ikev2.sh
           bash ikev2.sh <<ANSWERS
 
 
@@ -144,8 +143,8 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/ikev2vpnca*.cer
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.p12
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -161,10 +160,10 @@ jobs:
           y
           vpnclient2
 
-
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
@@ -342,7 +341,6 @@ jobs:
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
-          sed -i 's/pk12util/pk12util -W test/' ikev2.sh
           bash ikev2.sh <<ANSWERS
 
 
@@ -352,8 +350,8 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/ikev2vpnca*.cer
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
@@ -363,10 +361,10 @@ jobs:
           y
           vpnclient2
 
-
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           sed -i '/pluto/d' /var/log/auth.log
           pkill -HUP rsyslog
