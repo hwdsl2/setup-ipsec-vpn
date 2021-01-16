@@ -32,9 +32,7 @@ check_dns_name() {
 
 create_mobileconfig() {
 
-  bigecho2 "Creating .mobileconfig for iOS and macOS..."
-
-  [ -z "$p12_password" ] && exiterr "Password for .p12 file cannot be empty."
+  bigecho "Creating .mobileconfig for iOS and macOS..."
 
   if [ -z "$server_addr" ]; then
     server_addr=$(grep "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
@@ -235,12 +233,29 @@ new_client() {
 
   bigecho "Exporting .p12 file..."
 
-  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)
-  [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
-  if [ "$in_container" = "0" ]; then
-    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
+  if [ "$use_own_password" = "1" ]; then
+cat <<'EOF'
+Enter a *secure* password to protect the .p12 and .mobileconfig files.
+When importing into an iOS or macOS device, this password cannot be empty.
+
+EOF
   else
-    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
+    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)
+    [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
+  fi
+
+  if [ "$in_container" = "0" ]; then
+    if [ "$use_own_password" = "1" ]; then
+      pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
+    else
+      pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
+    fi
+  else
+    if [ "$use_own_password" = "1" ]; then
+      pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
+    else
+      pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
+    fi
   fi
 
   create_mobileconfig
@@ -357,6 +372,26 @@ if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; t
     [ -z "$client_validity" ] && client_validity=120
   done
 
+cat <<'EOF'
+
+VPN client configuration will be exported as .p12 and .mobileconfig files,
+which contain the client certificate, private key and CA certificate.
+To protect these files, this script can generate a random password for you,
+which will be displayed when finished.
+
+EOF
+
+  printf "Do you want to specify your own password instead? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      use_own_password=1
+      ;;
+    *)
+      use_own_password=0
+      ;;
+  esac
+
   # Create client configuration
   new_client
 
@@ -378,11 +413,16 @@ else
   printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 fi
 
+if [ "$use_own_password" = "0" ]; then
 cat <<EOF
 
 (Important) Password for .p12 and .mobileconfig files:
 $p12_password
 Write this down, you'll need it to import to your device!
+EOF
+fi
+
+cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
@@ -582,6 +622,26 @@ if [ "$mobike_support" = "1" ]; then
   esac
 fi
 
+cat <<'EOF'
+
+VPN client configuration will be exported as .p12 and .mobileconfig files,
+which contain the client certificate, private key and CA certificate.
+To protect these files, this script can generate a random password for you,
+which will be displayed when finished.
+
+EOF
+
+printf "Do you want to specify your own password instead? [y/N] "
+read -r response
+case $response in
+  [yY][eE][sS]|[yY])
+    use_own_password=1
+    ;;
+  *)
+    use_own_password=0
+    ;;
+esac
+
 cat <<EOF
 
 Below are the IKEv2 setup options you selected.
@@ -668,7 +728,6 @@ fi
 # Create client configuration
 new_client
 
-echo
 bigecho "Adding a new IKEv2 connection..."
 
 if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
@@ -761,11 +820,16 @@ else
   printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
 fi
 
+if [ "$use_own_password" = "0" ]; then
 cat <<EOF
 
 (Important) Password for .p12 and .mobileconfig files:
 $p12_password
 Write this down, you'll need it to import to your device!
+EOF
+fi
+
+cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients

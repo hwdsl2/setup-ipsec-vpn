@@ -140,6 +140,7 @@ jobs:
 
 
 
+
           y
           ANSWERS
 
@@ -159,6 +160,7 @@ jobs:
           bash ikev2.sh <<ANSWERS
           y
           vpnclient2
+
 
           ANSWERS
 
@@ -347,6 +349,7 @@ jobs:
 
 
 
+
           y
           ANSWERS
 
@@ -360,6 +363,7 @@ jobs:
           bash ikev2.sh <<ANSWERS
           y
           vpnclient2
+
 
           ANSWERS
 
