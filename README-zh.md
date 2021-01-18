@@ -253,6 +253,8 @@ sh vpnsetup.sh
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
 
+以上命令使用自动模式和默认选项运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">IKEv2 辅助脚本</a>。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。
+
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步

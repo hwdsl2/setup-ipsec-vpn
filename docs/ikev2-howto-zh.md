@@ -2,6 +2,8 @@
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
+**注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
+
 * [导言](#导言)
 * [使用辅助脚本](#使用辅助脚本)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
@@ -13,7 +15,7 @@
 
 ## 导言
 
-现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换 （英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a> 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换（英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a> 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
@@ -28,23 +30,21 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 **新：** 辅助脚本现在可以为 macOS 和 iOS 客户端创建 .mobileconfig 文件，以简化客户端设置并提高 VPN 性能。
 
-**重要：** 作为使用本指南的先决条件，在继续之前，你必须确保你已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）将 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a> 到最新版本。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
+**重要：** 在继续之前，你应该已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）<a href="../README-zh.md#升级libreswan" target="_blank">升级 Libreswan</a>。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
 
-你可以使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
+使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
 ```
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
 
-该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。
-
-在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。如果要为更多的客户端生成证书，只需重新运行脚本。
+该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
 ## 配置 IKEv2 VPN 客户端
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。如果要为更多的客户端生成证书，只需重新运行[辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+**注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名（如果适用）。如果要为更多的客户端生成证书，只需重新运行[辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)
@@ -203,7 +203,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 ### 导出一个客户端证书
 
-在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本) 在运行后会导出客户端证书。如果你想要手动导出一个客户端证书，首先检查证书数据库：`certutil -L -d sql:/etc/ipsec.d`，然后参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 第 4 步中的 "导出 `.p12` 文件"。
+在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端证书。如果你想要手动导出一个客户端证书，首先检查证书数据库：`certutil -L -d sql:/etc/ipsec.d`，然后参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 第 4 步中的 "导出 `.p12` 文件"。
 
 ### 吊销一个客户端证书
 

@@ -2,6 +2,8 @@
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
+**Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
+
 * [Introduction](#introduction)
 * [Using helper scripts](#using-helper-scripts)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
@@ -28,23 +30,21 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 **New:** For macOS and iOS clients, the helper script can now create .mobileconfig files to simplify client setup and improve VPN performance.
 
-**Important:** As a prerequisite to using this guide, and before continuing, you must make sure that you have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">upgraded Libreswan</a> to the latest version. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
+**Important:** Before continuing, you should have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">updated Libreswan</a>. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
 
-You may use this helper script to automatically set up IKEv2 on the VPN server:
+Use this helper script to automatically set up IKEv2 on the VPN server:
 
 ```
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
 
-The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options.
-
-When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). If you want to generate certificates for additional VPN clients, just run the script again.
+The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
 
 ## Configure IKEv2 VPN clients
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields. If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+**Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields (if applicable). If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
@@ -203,7 +203,7 @@ If you want to generate certificates for additional VPN clients, just run the [h
 
 ### Export a client certificate
 
-By default, the IKEv2 [helper script](#using-helper-scripts) exports client certificates after running. If you want to manually export a client certificate, first check the database with `certutil -L -d sql:/etc/ipsec.d`, then refer to "export `.p12` file" in step 4 of [this section](#manually-set-up-ikev2-on-the-vpn-server).
+By default, the [IKEv2 helper script](#using-helper-scripts) exports client certificates after running. If you want to manually export a client certificate, first check the database with `certutil -L -d sql:/etc/ipsec.d`, then refer to "export `.p12` file" in step 4 of [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
 ### Revoke a client certificate
 

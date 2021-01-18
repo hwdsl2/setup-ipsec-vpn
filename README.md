@@ -253,6 +253,8 @@ After successful installation, it is recommended to <a href="docs/ikev2-howto.md
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
 
+The command above runs the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a> in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options.
+
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next steps
