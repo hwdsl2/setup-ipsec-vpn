@@ -134,6 +134,7 @@ jobs:
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh # hwdsl2
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
           bash ikev2.sh <<ANSWERS
 
 
@@ -343,15 +344,8 @@ jobs:
           grep "your_vpn_username" /etc/ipsec.d/passwd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
-          bash ikev2.sh <<ANSWERS
-
-
-
-
-
-
-          y
-          ANSWERS
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+          bash ikev2.sh --auto
 
           ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient-*.p12
