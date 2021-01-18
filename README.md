@@ -64,6 +64,12 @@ wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
 
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+
+```bash
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+```
+
 For other installation options and how to set up VPN clients, read the sections below.
 
 <a name="quick-start-note"></a>
@@ -240,6 +246,12 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpnsetup.sh
 ```
 </details>
+
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+
+```bash
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+```
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 

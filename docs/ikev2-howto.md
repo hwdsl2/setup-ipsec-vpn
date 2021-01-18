@@ -33,10 +33,12 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 You may use this helper script to automatically set up IKEv2 on the VPN server:
 
 ```
-wget https://bit.ly/ikev2setup -O ikev2.sh && sudo bash ikev2.sh
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
 
-The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. Follow the prompts to set up IKEv2. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients) and check [known issues](#known-issues). If you want to generate certificates for additional VPN clients, just run the script again.
+The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options.
+
+When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). If you want to generate certificates for additional VPN clients, just run the script again.
 
 ## Configure IKEv2 VPN clients
 

@@ -8,7 +8,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 <a href="https://libreswan.org/" target="_blank">Libreswan</a> 作为 IPsec 服务器，以及 <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> 作为 L2TP 提供者。
 
-<a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">**&raquo; 另见： Docker 上的 IPsec VPN 服务器**</a>
+<a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">**&raquo; 另见：Docker 上的 IPsec VPN 服务器**</a>
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
@@ -63,6 +63,12 @@ wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
 </details>
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
+
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+
+```bash
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+```
 
 如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
 
@@ -240,6 +246,12 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpnsetup.sh
 ```
 </details>
+
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+
+```bash
+wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+```
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
