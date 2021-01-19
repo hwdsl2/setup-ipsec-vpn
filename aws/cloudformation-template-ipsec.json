@@ -404,6 +404,20 @@
                                 },
                                 "\n",
                                 "sh vpnsetup.sh\n",
+                                {
+                                    "Fn::If": [
+                                        {
+                                            "Fn::Equals": [
+                                                {
+                                                    "Ref": "IfSetupIKEV2"
+                                                },
+                                                "true"
+                                            ]
+                                        },
+                                        "wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh --auto\n",
+                                        ""
+                                    ]
+                                },
                                 "cfn-signal -e 0 ",
                                 " --stack ",
                                 {
@@ -840,6 +854,15 @@
                 "t1.micro"
             ],
             "Default": "t2.micro"
+        },
+        "IfSetupIKEV2": {
+            "Type": "String",
+            "description": "If to setup the IKEv2 on the VPN server. For more information, please visit https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md",
+            "AllowedValues": [
+                "true",
+                "false"
+            ],
+            "default": "false"
         }
     },
     "Outputs": {
