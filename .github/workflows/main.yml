@@ -237,6 +237,22 @@ jobs:
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
 
+          bash ikev2.sh <<ANSWERS
+          3
+          y
+          ANSWERS
+
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
+            systemctl restart ipsec
+          fi
+
+          sleep 10
+          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ! ipsec status | grep -q ikev2-cp
+          certutil -L -d sql:/etc/ipsec.d
+
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
           ls -ld vpnupgrade.sh
@@ -416,6 +432,17 @@ jobs:
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh <<ANSWERS
+          3
+          y
+          ANSWERS
+
+          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ! ipsec status | grep -q ikev2-cp
+          certutil -L -d sql:/etc/ipsec.d
 
           ls -ld vpnsetup.sh
           ls -ld ikev2.sh
