@@ -857,7 +857,7 @@
         },
         "IfSetupIKEV2": {
             "Type": "String",
-            "description": "If to setup the IKEv2 on the VPN server. For more information, please visit https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md",
+            "Description": "If to setup the IKEv2 on the VPN server. For more information, please visit https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md",
             "AllowedValues": [
                 "true",
                 "false"
