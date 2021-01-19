@@ -15,6 +15,8 @@ Available customization parameters:
 - Your VPN username
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
+- Whether to set up IKEv2 on the VPN server. The default value for this options is `false`.
+> **Note:** For more information about setting up IKEv2 on the VPN server, please see [this page](docs/ikev2-howto.md).
 
 > **Note:** DO NOT use these special characters within values: `\ " '`
 
