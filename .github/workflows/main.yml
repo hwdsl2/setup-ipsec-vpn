@@ -159,9 +159,19 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
-          y
+          1
           vpnclient2
 
+
+          ANSWERS
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
+          rm -f /etc/ipsec.d/vpnclient2-*
+          bash ikev2.sh <<ANSWERS
+          2
+          vpnclient2
 
           ANSWERS
 
@@ -355,9 +365,19 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
-          y
+          1
           vpnclient2
 
+
+          ANSWERS
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
+          rm -f /etc/ipsec.d/vpnclient2-*
+          bash ikev2.sh <<ANSWERS
+          2
+          vpnclient2
 
           ANSWERS
 
