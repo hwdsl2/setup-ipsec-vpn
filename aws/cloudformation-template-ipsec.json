@@ -406,14 +406,7 @@
                                 "sh vpnsetup.sh\n",
                                 {
                                     "Fn::If": [
-                                        {
-                                            "Fn::Equals": [
-                                                {
-                                                    "Ref": "IfSetupIKEV2"
-                                                },
-                                                "true"
-                                            ]
-                                        },
+                                        "IfSetupIKEV2Condition",
                                         "wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh --auto\n",
                                         ""
                                     ]
@@ -809,6 +802,16 @@
             }
         }
     },
+    "Conditions": {
+        "IfSetupIKEV2Condition": {
+            "Fn::Equals": [
+                {
+                    "Ref": "IfSetupIKEV2"
+                },
+                "true"
+            ]
+        }
+    },
     "Parameters": {
         "VpnUser": {
             "Type": "String",
@@ -862,7 +865,7 @@
                 "true",
                 "false"
             ],
-            "default": "false"
+            "Default": "false"
         }
     },
     "Outputs": {
