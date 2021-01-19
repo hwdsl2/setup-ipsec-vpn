@@ -44,7 +44,7 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields (if applicable). If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+**Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields (if applicable). If you want to generate certificates for additional VPN clients, or export configuration for an existing client, just run the [helper script](#using-helper-scripts) again.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
@@ -199,11 +199,11 @@ Once successfully connected, you can verify that your traffic is being routed pr
 
 ### Add a client certificate
 
-If you want to generate certificates for additional VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+If you want to generate certificates for additional IKEv2 VPN clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
-### Export a client certificate
+### Export configuration for an existing client
 
-By default, the [IKEv2 helper script](#using-helper-scripts) exports client certificates after running. If you want to manually export a client certificate, first check the database with `certutil -L -d sql:/etc/ipsec.d`, then refer to "export `.p12` file" in step 4 of [this section](#manually-set-up-ikev2-on-the-vpn-server).
+By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, run the helper script again and select the appropriate option.
 
 ### Revoke a client certificate
 
