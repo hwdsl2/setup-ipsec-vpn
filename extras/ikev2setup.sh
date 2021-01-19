@@ -201,6 +201,12 @@ get_server_ip() {
   check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 }
 
+get_server_address() {
+  server_addr=$(grep "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+  [ -z "$server_addr" ] && server_addr=$(grep "leftcert=" /etc/ipsec.conf | cut -f2 -d=)
+  check_ip "$server_addr" || check_dns_name "$server_addr" || exiterr "Could not get VPN server address."
+}
+
 enter_server_address() {
   echo "Do you want IKEv2 VPN clients to connect to this server using a DNS name,"
   printf "e.g. vpn.example.com, instead of its IP address? [y/N] "
@@ -236,6 +242,7 @@ enter_server_address() {
 }
 
 enter_client_name() {
+  echo
   echo "Provide a name for the IKEv2 VPN client."
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: " client_name
@@ -269,6 +276,22 @@ enter_client_name_with_defaults() {
       fi
     read -rp "Client name: [vpnclient] " client_name
     [ -z "$client_name" ] && client_name=vpnclient
+  done
+}
+
+enter_client_name_for_export() {
+  echo
+  echo "Checking for existing IKEv2 client(s)..."
+  certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' -e '\.' | tail -n +3 | cut -f1 -d ' '
+  get_server_address
+  echo
+  read -rp "Enter the name of the IKEv2 client to export: " client_name
+  while [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
+    || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
+    || ! certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
+    echo "Invalid client name, or client does not exist."
+    read -rp "Enter the name of the IKEv2 client to export: " client_name
   done
 }
 
@@ -412,19 +435,18 @@ EOF
   esac
 }
 
-confirm_add_client() {
+select_menu_option() {
   echo "It looks like IKEv2 has already been set up on this server."
-  printf "Do you want to add a new VPN client? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      echo
-      ;;
-    *)
-      echo "Abort. No changes were made."
-      exit 1
-      ;;
-  esac
+  echo
+  echo "Select an option:"
+  echo "  1) Add a new client"
+  echo "  2) Export configuration for an existing client"
+  echo "  3) Exit"
+  read -rp "Option: " selected_option
+  until [[ "$selected_option" =~ ^[1-3]$ ]]; do
+    printf '%s\n' "$selected_option: invalid selection."
+    read -rp "Option: " selected_option
+  done
 }
 
 confirm_setup_options() {
@@ -522,11 +544,7 @@ EOF
 create_mobileconfig() {
   bigecho "Creating .mobileconfig for iOS and macOS..."
 
-  if [ -z "$server_addr" ]; then
-    server_addr=$(grep "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
-    [ -z "$server_addr" ] && server_addr=$(grep "leftcert=" /etc/ipsec.conf | cut -f2 -d=)
-    check_ip "$server_addr" || check_dns_name "$server_addr" || exiterr "Could not get VPN server address."
-  fi
+  [ -z "$server_addr" ] && get_server_address
 
   if ! command -v base64 >/dev/null 2>&1 || ! command -v uuidgen >/dev/null 2>&1; then
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
@@ -829,6 +847,16 @@ New IKEv2 VPN client "$client_name" added!
 EOF
 }
 
+print_client_exported_message() {
+cat <<EOF
+
+===============================================================
+
+IKEv2 VPN client "$client_name" configuration exported!
+
+EOF
+}
+
 show_swan_update_info() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
     && [ "$swan_ver" != "$swan_ver_latest" ]; then
@@ -915,16 +943,32 @@ ikev2setup() {
   check_container
 
   if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
-    confirm_add_client
-    enter_client_name
-    enter_client_cert_validity
-    select_p12_password
-    create_client_cert
-    export_p12_file
-    create_mobileconfig
-    print_client_added_message
-    print_client_info
-    exit 0
+    select_menu_option
+    case $selected_option in
+      1)
+        enter_client_name
+        enter_client_cert_validity
+        select_p12_password
+        create_client_cert
+        export_p12_file
+        create_mobileconfig
+        print_client_added_message
+        print_client_info
+        exit 0
+        ;;
+      2)
+        enter_client_name_for_export
+        select_p12_password
+        export_p12_file
+        create_mobileconfig
+        print_client_exported_message
+        print_client_info
+        exit 0
+        ;;
+      3)
+        exit 0
+        ;;
+    esac
   fi
 
   check_ca_cert_exists
