@@ -441,9 +441,10 @@ select_menu_option() {
   echo "Select an option:"
   echo "  1) Add a new client"
   echo "  2) Export configuration for an existing client"
-  echo "  3) Exit"
+  echo "  3) Remove IKEv2"
+  echo "  4) Exit"
   read -rp "Option: " selected_option
-  until [[ "$selected_option" =~ ^[1-3]$ ]]; do
+  until [[ "$selected_option" =~ ^[1-4]$ ]]; do
     printf '%s\n' "$selected_option: invalid selection."
     read -rp "Option: " selected_option
   done
@@ -926,6 +927,52 @@ To add more IKEv2 VPN clients, run this script again.
 EOF
 }
 
+check_ipsec_conf() {
+  if grep -qs "conn ikev2-cp" /etc/ipsec.conf; then
+    echo "Error: IKEv2 configuration section found in /etc/ipsec.conf." >&2
+    echo "This script cannot automatically remove IKEv2 from this server." >&2
+    echo "To manually remove IKEv2, see https://git.io/ikev2" >&2
+    echo "Abort. No changes were made." >&2
+    exit 1
+  fi
+}
+
+confirm_remove_ikev2() {
+  echo
+  echo "This option will remove IKEv2 from the VPN server, but keep the IPsec/L2TP"
+  echo "and IPsec/XAuth (\"Cisco IPsec\") modes. All IKEv2 configuration including"
+  echo "certificates will be permanently deleted. This *cannot be undone*!"
+  echo
+  printf "Are you sure you want to remove IKEv2? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      echo
+      ;;
+    *)
+      echo "Abort. No changes were made."
+      exit 1
+      ;;
+  esac
+}
+
+delete_ikev2_conf() {
+  bigecho2 "Deleting /etc/ipsec.d/ikev2.conf..."
+  /bin/rm -f /etc/ipsec.d/ikev2.conf
+}
+
+delete_certificates() {
+  bigecho "Deleting certificates from the IPsec database..."
+  certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' | tail -n +3 | cut -f1 -d ' ' | while read -r line; do
+    certutil -D -d sql:/etc/ipsec.d -n "$line"
+  done
+  certutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA"
+}
+
+print_ikev2_removed_message() {
+  echo "IKEv2 removed!"
+}
+
 ikev2setup() {
   case $1 in
     --auto)
@@ -966,6 +1013,15 @@ ikev2setup() {
         exit 0
         ;;
       3)
+        check_ipsec_conf
+        confirm_remove_ikev2
+        delete_ikev2_conf
+        restart_ipsec_service
+        delete_certificates
+        print_ikev2_removed_message
+        exit 0
+        ;;
+      4)
         exit 0
         ;;
     esac
