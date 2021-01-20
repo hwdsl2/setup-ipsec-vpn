@@ -595,7 +595,7 @@ cat > "$mc_file" <<EOF
           <key>EncryptionAlgorithm</key>
           <string>AES-256-GCM</string>
           <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
+          <integer>1410</integer>
         </dict>
         <key>DeadPeerDetectionRate</key>
         <string>Medium</string>
@@ -614,7 +614,7 @@ cat > "$mc_file" <<EOF
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
+          <integer>1410</integer>
         </dict>
         <key>LocalIdentifier</key>
         <string>$client_name</string>
@@ -796,6 +796,8 @@ conn ikev2-cp
   fragmentation=yes
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+  ikelifetime=24h
+  salifetime=24h
   encapsulation=yes
 EOF
 
