@@ -59,6 +59,8 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
    Detailed instructions:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
+   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. See [Known issues](#known-issues).
+
 1. On the Windows computer, add a new IKEv2 VPN connection:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
@@ -497,6 +499,25 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">requires</a> Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
 1. Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
+   <details>
+   <summary>
+   Workaround for the NSS bug on Ubuntu 18.04
+   </summary>
+
+   First, install newer versions of `libnss3` related packages:
+
+   ```
+   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+   wget http://security.ubuntu.com/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+   apt-get -y update
+   apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
+     "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
+     "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+   ```
+
+   After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+   </details>
 1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
 
 ## Remove IKEv2

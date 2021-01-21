@@ -59,6 +59,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
    详细的操作步骤：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
+   **注：** Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
+
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
@@ -497,6 +499,25 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能<a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">需要</a> Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
 1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
+   <details>
+   <summary>
+   Ubuntu 18.04 上的 NSS 问题的解决方法
+   </summary>
+
+   首先安装更新版本的 `libnss3` 相关的软件包：
+
+   ```
+   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+   wget http://security.ubuntu.com/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+   apt-get -y update
+   apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
+     "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
+     "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+   ```
+
+   然后重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
+   </details>
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
 
 ## 移除 IKEv2
