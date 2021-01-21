@@ -833,6 +833,26 @@ EOF
   esac
 }
 
+apply_ubuntu1804_nss_fix() {
+  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
+    bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
+
+    nss_url1="http://security.ubuntu.com/ubuntu/pool/main/n/nss"
+    nss_url2="http://security.ubuntu.com/ubuntu/pool/universe/n/nss"
+    nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
+    nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
+    nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+    if wget -t 3 -T 30 -nv -O "/tmp/$nss_deb1" "$nss_url1/$nss_deb1" \
+      && wget -t 3 -T 30 -nv -O "/tmp/$nss_deb2" "$nss_url1/$nss_deb2" \
+      && wget -t 3 -T 30 -nv -O "/tmp/$nss_deb3" "$nss_url2/$nss_deb3"; then
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get -yqq update
+      apt-get -yqq install "/tmp/$nss_deb1" "/tmp/$nss_deb2" "/tmp/$nss_deb3"
+    fi
+    /bin/rm -f "/tmp/$nss_deb1" "/tmp/$nss_deb2" "/tmp/$nss_deb3"
+  fi
+}
+
 restart_ipsec_service() {
   bigecho "Restarting IPsec service..."
 
@@ -847,6 +867,9 @@ cat <<EOF
 
 New IKEv2 VPN client "$client_name" added!
 
+VPN server address: $server_addr
+VPN client name: $client_name
+
 EOF
 }
 
@@ -856,6 +879,9 @@ cat <<EOF
 ===============================================================
 
 IKEv2 VPN client "$client_name" configuration exported!
+
+VPN server address: $server_addr
+VPN client name: $client_name
 
 EOF
 }
@@ -1063,6 +1089,7 @@ ikev2setup() {
     use_own_password=0
   fi
 
+  apply_ubuntu1804_nss_fix
   create_ca_cert
   create_server_cert
   create_client_cert
