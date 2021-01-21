@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: vpn
+  namespace: vpn
+  labels:
+    app: ipsec-vpn-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipsec-vpn-server
+  template:
+    metadata:
+      labels:
+        app: ipsec-vpn-server
+    spec:
+      containers:
+      - image: hwdsl2/ipsec-vpn-server
+        name: vpn
+        imagePullPolicy: Always
+# Uncomment if you need your own rules        
+        #lifecycle:
+        #  postStart:
+        #    exec:
+        #      command:
+        #        - "sh"
+        #        - "-c"
+        #        - | 
+        #          ip route add 192.168.99.0/24 dev eth0;
+        #          ip route add 192.168.98.0/24 dev eth0; 
+        securityContext:
+          privileged:  true
+        resources:
+          limits:
+            cpu: 600m
+            memory: 650Mi
+          requests:
+            cpu: 200m
+            memory: 300Mi
+        ports:
+            - name: vpnisakmp
+              containerPort: 500
+              protocol: UDP
+            - name: vpnike
+              containerPort: 4500
+              protocol: UDP
+        env:
+          - name: "VPN_IPSEC_PSK"
+            value: "SuperDuperPSK"
+          - name: "VPN_USER"
+            value: "vpnuser"
+          - name: "VPN_PASSWORD"
+            value: "VPN-SuperMegaPassword.1!"
