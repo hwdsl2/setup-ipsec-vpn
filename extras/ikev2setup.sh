@@ -837,8 +837,8 @@ apply_ubuntu1804_nss_fix() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
     bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
 
-    nss_url1="http://security.ubuntu.com/ubuntu/pool/main/n/nss"
-    nss_url2="http://security.ubuntu.com/ubuntu/pool/universe/n/nss"
+    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
+    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
     nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
@@ -992,9 +992,11 @@ delete_ikev2_conf() {
 delete_certificates() {
   bigecho "Deleting certificates from the IPsec database..."
   certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' | tail -n +3 | cut -f1 -d ' ' | while read -r line; do
-    certutil -D -d sql:/etc/ipsec.d -n "$line"
+    certutil -F -d sql:/etc/ipsec.d -n "$line"
+    certutil -D -d sql:/etc/ipsec.d -n "$line" 2>/dev/null
   done
-  certutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA"
+  certutil -F -d sql:/etc/ipsec.d -n "IKEv2 VPN CA"
+  certutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
 }
 
 print_ikev2_removed_message() {
