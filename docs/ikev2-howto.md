@@ -504,12 +504,14 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
    Workaround for the NSS bug on Ubuntu 18.04
    </summary>
 
+   **Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture.
+
    First, install newer versions of `libnss3` related packages:
 
    ```
-   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-   wget http://security.ubuntu.com/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
    apt-get -y update
    apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
      "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \

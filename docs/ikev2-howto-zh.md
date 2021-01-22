@@ -504,12 +504,14 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
    Ubuntu 18.04 上的 NSS 问题的解决方法
    </summary>
 
+   **注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。
+
    首先安装更新版本的 `libnss3` 相关的软件包：
 
    ```
-   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-   wget http://security.ubuntu.com/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-   wget http://security.ubuntu.com/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+   wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
    apt-get -y update
    apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
      "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
