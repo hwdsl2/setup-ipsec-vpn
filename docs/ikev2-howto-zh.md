@@ -44,13 +44,12 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名（如果适用）。如果要为更多的客户端生成证书，或者为一个已有的客户端导出配置，只需重新运行[辅助脚本](#使用辅助脚本)。
+**注：** 如果要为更多的客户端生成证书，或者为一个已有的客户端导出配置，只需重新运行[辅助脚本](#使用辅助脚本)。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
-* [Android 10 和更新版本](#android-10-和更新版本)
-* [Android 4.x to 9.x](#android-4x-to-9x)
+* [Android](#android)
 
 ### Windows 7, 8.x 和 10
 
@@ -63,6 +62,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+
+   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
 1. （可选但推荐）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
@@ -103,7 +104,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 1. 从 **VPN 类型** 下拉菜单选择 **IKEv2**。
 1. 在 **服务名称** 字段中输入任意内容。
 1. 单击 **创建**。
-1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
+   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 和 **远程 ID** 字段中输入该域名。
 1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
    **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
@@ -151,7 +153,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 1. 单击 **添加VPN配置...**。
 1. 单击 **类型** 。选择 **IKEv2** 并返回。
 1. 在 **描述** 字段中输入任意内容。
-1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
+1. 在 **服务器** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
+   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器** 和 **远程 ID** 字段中输入该域名。
 1. 在 **远程 ID** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
 1. 在 **本地 ID** 字段中输入 `你的 VPN 客户端名称`。   
    **注：** 该名称必须和你在 IKEv2 配置过程中指定的客户端名称一致。它与你的 `.p12` 文件名的第一部分相同。
@@ -164,36 +167,57 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-### Android 10 和更新版本
+### Android
+
+1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
+1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 启动 strongSwan VPN 客户端。
+1. 单击右上角的 "更多选项" 菜单，然后单击 **导入VPN配置**。
+1. 选择你从服务器传送过来的 `.sswan` 文件。   
+   **注：** 要查找 `.sswan` 文件，单击左上角的抽拉式菜单，然后浏览到你保存文件的目录。
+1. 在 "导入VPN配置" 屏幕上，单击 **从VPN配置导入证书**，并按提示操作。
+1. 在 "选择证书" 屏幕上，选择新的客户端证书并单击 **选择**。
+1. 单击 **导入**。
+1. 单击新的 VPN 配置文件以开始连接。
+
+（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** 应用程序，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 "始终开启的 VPN" 以及 "屏蔽未使用 VPN 的所有连接" 选项。
+
+<details>
+<summary>
+如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
+</summary>
+
+**Android 10 和更新版本:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
 1. 启动 **设置** 应用程序。
 1. 进入 安全 -> 高级 -> 加密与凭据。
-1. 单击 **从存储设备（或 SD 卡）安装**。
+1. 单击 **从存储设备（或 SD 卡）安装证书**。
 1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
-   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
-1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
-1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-1. 单击 **Select user certificate**，选择新的客户端证书并确认。
-1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
+   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后浏览到你保存文件的目录。
+1. 启动 strongSwan VPN 客户端，然后单击 **添加VPN配置**。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
+   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 字段中输入该域名。
+1. 在 **VPN 类型** 下拉菜单选择 **IKEv2 证书**。
+1. 单击 **选择用户证书**，选择新的客户端证书并单击 **选择**。
+1. **（重要）** 单击 **显示高级设置**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
-
-### Android 4.x to 9.x
+**Android 4 to 9:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
-1. 启动 strongSwan VPN 客户端，然后单击 **Add VPN Profile**。
-1. 在 **Server** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。
-1. 在 **VPN Type** 下拉菜单选择 **IKEv2 Certificate**。
-1. 单击 **Select user certificate**，然后单击 **Install certificate**。
+1. 启动 strongSwan VPN 客户端，然后单击 **添加VPN配置**。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
+   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 字段中输入该域名。
+1. 在 **VPN 类型** 下拉菜单选择 **IKEv2 证书**。
+1. 单击 **选择用户证书**，然后单击 **安装证书**。
 1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
-   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后单击你的设备名称。
-1. **（重要）** 单击 **Show advanced settings**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
+   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后浏览到你保存文件的目录。
+1. **（重要）** 单击 **显示高级设置**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
+</details>
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
@@ -504,7 +528,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
    Ubuntu 18.04 上的 NSS 问题的解决方法
    </summary>
 
-   **注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。
+   **注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用这个解决方法。
 
    首先安装更新版本的 `libnss3` 相关的软件包：
 

@@ -44,13 +44,12 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields (if applicable). If you want to generate certificates for additional VPN clients, or export configuration for an existing client, just run the [helper script](#using-helper-scripts) again.
+**Note:** If you want to generate certificates for additional VPN clients, or export configuration for an existing client, just run the [helper script](#using-helper-scripts) again.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
-* [Android 10 and newer](#android-10-and-newer)
-* [Android 4.x to 9.x](#android-4x-to-9x)
+* [Android](#android)
 
 ### Windows 7, 8.x and 10
 
@@ -63,6 +62,8 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 
 1. On the Windows computer, add a new IKEv2 VPN connection:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+
+   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
 1. (Optional but recommended) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
@@ -103,7 +104,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Select **IKEv2** from the **VPN Type** drop-down menu.
 1. Enter anything you like for the **Service Name**.
 1. Click **Create**.
-1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.
+1. Enter `Your VPN Server IP` (or DNS name) for the **Server Address**.   
+   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server Address** and **Remote ID** fields.
 1. Enter `Your VPN Server IP` (or DNS name) for the **Remote ID**.
 1. Enter `Your VPN client name` in the **Local ID** field.   
    **Note:** This must match exactly the client name you specified during IKEv2 setup. Same as the first part of your `.p12` filename.
@@ -151,7 +153,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Tap **Add VPN Configuration...**.
 1. Tap **Type**. Select **IKEv2** and go back.
 1. Tap **Description** and enter anything you like.
-1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).
+1. Tap **Server** and enter `Your VPN Server IP` (or DNS name).   
+   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** and **Remote ID** fields.
 1. Tap **Remote ID** and enter `Your VPN Server IP` (or DNS name).
 1. Enter `Your VPN client name` in the **Local ID** field.   
    **Note:** This must match exactly the client name you specified during IKEv2 setup. Same as the first part of your `.p12` filename.
@@ -164,36 +167,57 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-### Android 10 and newer
+### Android
+
+1. Securely transfer the generated `.sswan` file to your Android device.
+1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+1. Launch the strongSwan VPN client.
+1. Tap the "more options" menu on top right, then tap **Import VPN profile**.
+1. Choose the `.sswan` file you transferred from the VPN server.   
+   **Note:** To find the `.sswan` file, tap the three-line menu button, then browse to the location you saved the file.
+1. On the "Import VPN profile" screen, tap **IMPORT CERTIFICATE FROM VPN PROFILE**, and follow the prompts.
+1. On the "Choose certificate" screen, select the new client certificate, then tap **Select**.
+1. Tap **IMPORT**.
+1. Tap the new VPN profile to connect.
+
+(Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the "Always-on VPN" and "Block connections without VPN" options.
+
+<details>
+<summary>
+If you manually set up IKEv2 without using the helper script, click here for instructions.
+</summary>
+
+**Android 10 and newer:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
 1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
-1. Tap **Install from storage (or SD card)**.
+1. Tap **Install certificates from storage (or SD card)**.
 1. Choose the `.p12` file you transferred from the VPN server, and follow the prompts.   
-   **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
+   **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
-1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
+1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.   
+   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** field.
 1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
 1. Tap **Select user certificate**, select the new client certificate and confirm.
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
-
-### Android 4.x to 9.x
+**Android 4 to 9:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
 1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
-1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.
+1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.   
+   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** field.
 1. Select **IKEv2 Certificate** from the **VPN Type** drop-down menu.
 1. Tap **Select user certificate**, then tap **Install certificate**.
 1. Choose the `.p12` file you transferred from the VPN server, and follow the prompts.   
-   **Note:** To find the `.p12` file, click on the three-line menu button, then click on your device name.
+   **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
+</details>
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
@@ -504,7 +528,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
    Workaround for the NSS bug on Ubuntu 18.04
    </summary>
 
-   **Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture.
+   **Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply this workaround.
 
    First, install newer versions of `libnss3` related packages:
 
