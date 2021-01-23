@@ -146,6 +146,7 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.sswan
           ls -ld /etc/ipsec.d/vpnclient-*.p12
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
@@ -166,6 +167,7 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           rm -f /etc/ipsec.d/vpnclient2-*
@@ -176,6 +178,7 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
@@ -374,6 +377,7 @@ jobs:
           bash ikev2.sh --auto
 
           ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.sswan
           ls -ld /etc/ipsec.d/vpnclient-*.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
@@ -388,6 +392,7 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           rm -f /etc/ipsec.d/vpnclient2-*
@@ -398,6 +403,7 @@ jobs:
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           sed -i '/pluto/d' /var/log/auth.log
