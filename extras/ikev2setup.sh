@@ -80,8 +80,10 @@ check_utils_exist() {
 
 check_container() {
   in_container=0
+  export_dir=~/
   if grep -qs "hwdsl2" /opt/src/run.sh; then
     in_container=1
+    export_dir="/etc/ipsec.d/"
   fi
 }
 
@@ -363,6 +365,8 @@ check_mobike_support() {
       if ! zcat /proc/config.gz | grep -q "CONFIG_XFRM_MIGRATE=y"; then
         mobike_support=0
       fi
+    else
+      mobike_support=0
     fi
   fi
 
@@ -416,7 +420,7 @@ select_mobike() {
 select_p12_password() {
 cat <<'EOF'
 
-VPN client configuration will be exported as .p12 and .mobileconfig files,
+Client configuration will be exported as .p12, .sswan and .mobileconfig files,
 which contain the client certificate, private key and CA certificate.
 To protect these files, this script can generate a random password for you,
 which will be displayed when finished.
@@ -518,7 +522,7 @@ export_p12_file() {
 
   if [ "$use_own_password" = "1" ]; then
 cat <<'EOF'
-Enter a *secure* password to protect the .p12 and .mobileconfig files.
+Enter a *secure* password to protect the client configuration files.
 When importing into an iOS or macOS device, this password cannot be empty.
 
 EOF
@@ -527,26 +531,14 @@ EOF
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
   fi
 
-  if [ "$in_container" = "0" ]; then
-    if [ "$use_own_password" = "1" ]; then
-      pk12util -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
-    else
-      pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o ~/"$client_name-$SYS_DT.p12" || exit 1
-    fi
+  if [ "$use_own_password" = "1" ]; then
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$export_dir$client_name-$SYS_DT.p12" || exit 1
   else
-    if [ "$use_own_password" = "1" ]; then
-      pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
-    else
-      pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "/etc/ipsec.d/$client_name-$SYS_DT.p12" || exit 1
-    fi
+    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$export_dir$client_name-$SYS_DT.p12" || exit 1
   fi
 }
 
-create_mobileconfig() {
-  bigecho "Creating .mobileconfig for iOS and macOS..."
-
-  [ -z "$server_addr" ] && get_server_address
-
+install_base64_uuidgen() {
   if ! command -v base64 >/dev/null 2>&1 || ! command -v uuidgen >/dev/null 2>&1; then
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
@@ -556,12 +548,15 @@ create_mobileconfig() {
       yum -yq install coreutils util-linux || exiterr "'yum install' failed."
     fi
   fi
+}
 
-  if [ "$in_container" = "0" ]; then
-    p12_base64=$(base64 -w 52 ~/"$client_name-$SYS_DT.p12")
-  else
-    p12_base64=$(base64 -w 52 "/etc/ipsec.d/$client_name-$SYS_DT.p12")
-  fi
+create_mobileconfig() {
+  bigecho "Creating .mobileconfig for iOS and macOS..."
+
+  install_base64_uuidgen
+  [ -z "$server_addr" ] && get_server_address
+
+  p12_base64=$(base64 -w 52 "$export_dir$client_name-$SYS_DT.p12")
   [ -z "$p12_base64" ] && exiterr "Could not encode .p12 file."
 
   ca_base64=$(certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a | grep -v CERTIFICATE)
@@ -570,12 +565,7 @@ create_mobileconfig() {
   uuid1=$(uuidgen)
   [ -z "$uuid1" ] && exiterr "Could not generate UUID value."
 
-  if [ "$in_container" = "0" ]; then
-    mc_file=~/"$client_name-$SYS_DT.mobileconfig"
-  else
-    mc_file="/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig"
-  fi
-
+  mc_file="$export_dir$client_name-$SYS_DT.mobileconfig"
 cat > "$mc_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -722,7 +712,40 @@ $ca_base64
 </plist>
 EOF
 
-chmod 600 "$mc_file"
+  chmod 600 "$mc_file"
+}
+
+create_android_profile() {
+  bigecho "Creating client profile for Android..."
+
+  install_base64_uuidgen
+  [ -z "$server_addr" ] && get_server_address
+
+  p12_base64_oneline=$(base64 -w 52 "$export_dir$client_name-$SYS_DT.p12" | sed 's/$/\\n/' | tr -d '\n')
+  [ -z "$p12_base64_oneline" ] && exiterr "Could not encode .p12 file."
+
+  uuid2=$(uuidgen)
+  [ -z "$uuid2" ] && exiterr "Could not generate UUID value."
+
+  sswan_file="$export_dir$client_name-$SYS_DT.sswan"
+cat > "$sswan_file" <<EOF
+{
+  "uuid": "$uuid2",
+  "name": "IKEv2 VPN profile ($server_addr)",
+  "type": "ikev2-cert",
+  "remote": {
+    "addr": "$server_addr"
+  },
+  "local": {
+    "p12": "$p12_base64_oneline",
+    "rsa-pss": "true"
+  },
+  "ike-proposal": "aes256-sha256-modp2048",
+  "esp-proposal": "aes256gcm16"
+}
+EOF
+
+chmod 600 "$sswan_file"
 }
 
 create_ca_cert() {
@@ -923,23 +946,18 @@ EOF
 }
 
 print_client_info() {
-cat <<'EOF'
+cat <<EOF
 Client configuration is available at:
 
+$export_dir$client_name-$SYS_DT.p12 (for Windows)
+$export_dir$client_name-$SYS_DT.sswan (for Android)
+$export_dir$client_name-$SYS_DT.mobileconfig (for iOS & macOS)
 EOF
-
-  if [ "$in_container" = "0" ]; then
-    printf '%s\n' ~/"$client_name-$SYS_DT.p12 (for Windows & Android)"
-    printf '%s\n' ~/"$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
-  else
-    printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.p12 (for Windows & Android)"
-    printf '%s\n' "/etc/ipsec.d/$client_name-$SYS_DT.mobileconfig (for iOS & macOS)"
-  fi
 
   if [ "$use_own_password" = "0" ]; then
 cat <<EOF
 
-(Important) Password for .p12 and .mobileconfig files:
+*IMPORTANT* Password for client config files:
 $p12_password
 Write this down, you'll need it to import to your device!
 EOF
@@ -1031,6 +1049,7 @@ ikev2setup() {
         create_client_cert
         export_p12_file
         create_mobileconfig
+        create_android_profile
         print_client_added_message
         print_client_info
         exit 0
@@ -1040,6 +1059,7 @@ ikev2setup() {
         select_p12_password
         export_p12_file
         create_mobileconfig
+        create_android_profile
         print_client_exported_message
         print_client_info
         exit 0
@@ -1099,6 +1119,7 @@ ikev2setup() {
   create_client_cert
   export_p12_file
   create_mobileconfig
+  create_android_profile
   add_ikev2_connection
   restart_ipsec_service
 
