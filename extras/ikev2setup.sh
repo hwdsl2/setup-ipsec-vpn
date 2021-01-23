@@ -721,6 +721,8 @@ $ca_base64
 </dict>
 </plist>
 EOF
+
+chmod 600 "$mc_file"
 }
 
 create_ca_cert() {
