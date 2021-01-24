@@ -566,6 +566,7 @@ create_mobileconfig() {
   [ -z "$uuid1" ] && exiterr "Could not generate UUID value."
 
   mc_file="$export_dir$client_name-$SYS_DT.mobileconfig"
+
 cat > "$mc_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -728,6 +729,7 @@ create_android_profile() {
   [ -z "$uuid2" ] && exiterr "Could not generate UUID value."
 
   sswan_file="$export_dir$client_name-$SYS_DT.sswan"
+
 cat > "$sswan_file" <<EOF
 {
   "uuid": "$uuid2",
@@ -745,7 +747,7 @@ cat > "$sswan_file" <<EOF
 }
 EOF
 
-chmod 600 "$sswan_file"
+  chmod 600 "$sswan_file"
 }
 
 create_ca_cert() {
