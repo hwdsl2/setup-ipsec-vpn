@@ -122,7 +122,7 @@ show_usage() {
     echo "Error: $1" >&2;
   fi
 cat 1>&2 <<EOF
-Usage: $0 [options]
+Usage: bash $0 [options]
 
 Options:
   --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
@@ -131,7 +131,7 @@ Options:
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
   -h, --help                    show this help message and exit
 
-If you want to customize IKEv2 options, run this script without arguments.
+To customize IKEv2 or client options, run this script without arguments.
 EOF
   exit 1
 }

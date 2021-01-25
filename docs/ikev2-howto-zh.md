@@ -46,7 +46,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 </summary>
 
 ```
-Usage: ikev2.sh [options]
+Usage: bash ikev2.sh [options]
 
 Options:
   --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
@@ -55,7 +55,7 @@ Options:
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
   -h, --help                    show this help message and exit
 
-If you want to customize IKEv2 options, run this script without arguments.
+To customize IKEv2 or client options, run this script without arguments.
 ```
 </details>
 
@@ -252,7 +252,7 @@ If you want to customize IKEv2 options, run this script without arguments.
 </summary>
 
 ```
-Usage: ikev2.sh [options]
+Usage: bash ikev2.sh [options]
 
 Options:
   --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
@@ -261,7 +261,7 @@ Options:
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
   -h, --help                    show this help message and exit
 
-If you want to customize IKEv2 options, run this script without arguments.
+To customize IKEv2 or client options, run this script without arguments.
 ```
 </details>
 
