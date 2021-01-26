@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
-在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理用户，请阅读本文档。
+在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
 - [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
 - [查看 VPN 用户](#查看-vpn-用户)
@@ -42,7 +42,7 @@ service xl2tpd restart
 
 ## 使用辅助脚本管理 VPN 用户
 
-你可以使用这些脚本来更方便地管理 VPN 用户：[add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) 和 [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh)。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。将下面的命令的参数换成你自己的值。
+你可以使用这些脚本来更方便地管理 VPN 用户：[add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) 和 [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh)。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。将下面的命令的参数换成你自己的值。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
 **注：** VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
 

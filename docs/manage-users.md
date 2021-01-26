@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
-By default, a single user account for VPN login is created. If you wish to view or manage users, read this document.
+By default, a single user account for VPN login is created. If you wish to view or manage users for the `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, read this document. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
 - [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
 - [View VPN users](#view-vpn-users)
@@ -42,7 +42,7 @@ For `IPsec/XAuth ("Cisco IPsec")`, VPN users are specified in `/etc/ipsec.d/pass
 
 ## Manage VPN users using helper scripts
 
-You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). Replace command parameters below with your own values.
+You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/add_vpn_user.sh), [del_vpn_user.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/del_vpn_user.sh) and [update_vpn_users.sh](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). Replace command parameters below with your own values. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
 **Note:** VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 

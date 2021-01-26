@@ -53,6 +53,7 @@ Options:
   --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
   --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
+  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
@@ -259,6 +260,7 @@ Options:
   --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
   --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
+  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
