@@ -81,7 +81,7 @@ check_swan_install() {
     || [ ! -f /etc/ppp/chap-secrets ] || [ ! -f /etc/ipsec.d/passwd ]; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up the IPsec VPN server before setting up IKEv2.
-  See: https://github.com/hwdsl2/setup-ipsec-vpn
+       See: https://github.com/hwdsl2/setup-ipsec-vpn
 EOF
     exit 1
   fi
@@ -93,10 +93,10 @@ EOF
     *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
-  This script requires one of these versions:
-  3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
-  To update Libreswan, see:
-  https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
+       This script requires one of these versions:
+       3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
+       To update Libreswan, see:
+       https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
 EOF
       exit 1
       ;;
@@ -129,6 +129,7 @@ Options:
   --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
   --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
   --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
+  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
@@ -139,7 +140,9 @@ EOF
 check_arguments() {
   if [ "$use_defaults" = "1" ]; then
     if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
-      show_usage "Invalid parameter. '--auto' can only be specified for initial IKEv2 setup."
+      echo "Warning: Ignoring parameter '--auto', which is valid for initial IKEv2 setup only." >&2
+      echo "         Use '-h' for usage information." >&2
+      echo >&2
     fi
   fi
   if [ "$((add_client_using_defaults + export_client_using_defaults + list_clients))" -gt 1 ]; then
@@ -173,6 +176,14 @@ check_arguments() {
   if [ "$list_clients" = "1" ]; then
     if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
       exiterr "You must first set up IKEv2 before listing clients."
+    fi
+  fi
+  if [ "$remove_ikev2" = "1" ]; then
+    if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
+      exiterr "Cannot remove IKEv2 because it has not been set up on this server."
+    fi
+    if [ "$((add_client_using_defaults + export_client_using_defaults + list_clients + use_defaults))" -gt 0 ]; then
+      show_usage "Invalid parameters. '--removeikev2' cannot be specified with other parameters."
     fi
   fi
 }
@@ -1057,8 +1068,8 @@ EOF
 check_ipsec_conf() {
   if grep -qs "conn ikev2-cp" /etc/ipsec.conf; then
     echo "Error: IKEv2 configuration section found in /etc/ipsec.conf." >&2
-    echo "This script cannot automatically remove IKEv2 from this server." >&2
-    echo "To manually remove IKEv2, see https://git.io/ikev2" >&2
+    echo "       This script cannot automatically remove IKEv2 from this server." >&2
+    echo "       To manually remove IKEv2, see https://git.io/ikev2" >&2
     echo "Abort. No changes were made." >&2
     exit 1
   fi
@@ -1066,9 +1077,10 @@ check_ipsec_conf() {
 
 confirm_remove_ikev2() {
   echo
-  echo "This option will remove IKEv2 from the VPN server, but keep the IPsec/L2TP"
-  echo "and IPsec/XAuth (\"Cisco IPsec\") modes. All IKEv2 configuration including"
-  echo "certificates will be permanently deleted. This *cannot be undone*!"
+  echo "WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP"
+  echo "         and IPsec/XAuth (\"Cisco IPsec\") modes. All IKEv2 configuration including"
+  echo "         certificates and keys will be permanently deleted."
+  echo "         This *cannot be undone*! "
   echo
   printf "Are you sure you want to remove IKEv2? [y/N] "
   read -r response
@@ -1089,7 +1101,7 @@ delete_ikev2_conf() {
 }
 
 delete_certificates() {
-  bigecho "Deleting certificates from the IPsec database..."
+  bigecho "Deleting certificates and keys from the IPsec database..."
   certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' | tail -n +3 | cut -f1 -d ' ' | while read -r line; do
     certutil -F -d sql:/etc/ipsec.d -n "$line"
     certutil -D -d sql:/etc/ipsec.d -n "$line" 2>/dev/null
@@ -1113,6 +1125,7 @@ ikev2setup() {
   add_client_using_defaults=0
   export_client_using_defaults=0
   list_clients=0
+  remove_ikev2=0
   while [ "$#" -gt 0 ]; do
     case $1 in
       --auto)
@@ -1133,6 +1146,10 @@ ikev2setup() {
         ;;
       --listclients)
         list_clients=1
+        shift
+        ;;
+      --removeikev2)
+        remove_ikev2=1
         shift
         ;;
       -h|--help)
@@ -1174,6 +1191,16 @@ ikev2setup() {
 
   if [ "$list_clients" = "1" ]; then
     list_existing_clients
+    exit 0
+  fi
+
+  if [ "$remove_ikev2" = "1" ]; then
+    check_ipsec_conf
+    confirm_remove_ikev2
+    delete_ikev2_conf
+    restart_ipsec_service
+    delete_certificates
+    print_ikev2_removed_message
     exit 0
   fi
 
