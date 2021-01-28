@@ -73,14 +73,27 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x 和 10
 
-1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令：
 
-   详细的操作步骤：   
+   ```console
+   certutil -f -importpfx ".p12文件的完整路径" NoExport
+   ```
+
+   另外，你也可以手动导入 `.p12` 文件。详情参见下面的链接。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
    **注：** Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接：   
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10 用户，推荐使用下面的 Windows PowerShell 命令来创建 VPN 连接，以达到更佳的 VPN 安全性和性能。将 `你的 VPN 服务器 IP（或者域名）` 换成你自己的值。
+
+   ```console
+   # 创建 VPN 连接
+   Add-VpnConnection -Name "My IKEv2 VPN" -ServerAddress "你的 VPN 服务器 IP（或者域名）" -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru
+   # 设置 IPsec 参数
+   Set-VpnConnectionIPsecConfiguration -ConnectionName "My IKEv2 VPN" -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force
+   ```
+
+   另外，你也可以手动创建 VPN 连接。参见这里：   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
    **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。

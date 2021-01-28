@@ -73,14 +73,27 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x and 10
 
-1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>:
 
-   Detailed instructions:   
+   ```console
+   certutil -f -importpfx "path\to\your\p12\file.p12" NoExport
+   ```
+
+   Alternatively, you can manually import the `.p12` file. See instructions at the link below. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
 
    **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. See [Known issues](#known-issues).
 
-1. On the Windows computer, add a new IKEv2 VPN connection:   
+1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10 users, it is recommended to create the VPN connection using these Windows PowerShell commands for improved security and performance. Replace `Your VPN Server IP (or DNS name)` with your own value.
+
+   ```console
+   # Create VPN connection
+   Add-VpnConnection -Name "My IKEv2 VPN" -ServerAddress "Your VPN Server IP (or DNS name)" -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru
+   # Set IPsec configuration
+   Set-VpnConnectionIPsecConfiguration -ConnectionName "My IKEv2 VPN" -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force
+   ```
+
+   Alternatively, you can manually create the VPN connection. See:   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
    **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
