@@ -116,6 +116,7 @@ jobs:
           ipsec status
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
+
           cat /var/log/fail2ban.log
           grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
@@ -181,6 +182,52 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2-*.sswan
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
+          bash ikev2.sh <<ANSWERS
+          3
+          y
+          ANSWERS
+
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
+            systemctl restart ipsec
+          fi
+
+          sleep 10
+          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ! ipsec status | grep -q ikev2-cp
+          certutil -L -d sql:/etc/ipsec.d
+
+          rm -f /etc/ipsec.d/vpnclient*
+          bash ikev2.sh --auto
+
+          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
+            systemctl restart ipsec
+            sleep 10
+            grep pluto /var/log/secure | tail -n 20
+          else
+            sleep 10
+            grep pluto /var/log/auth.log | tail -n 20
+          fi
+          ipsec status
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --addclient vpnclient2
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
+          rm -f /etc/ipsec.d/vpnclient2-*
+          bash ikev2.sh --exportclient vpnclient2
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
             pkill -HUP rsyslog
@@ -240,8 +287,7 @@ jobs:
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
 
-          bash ikev2.sh <<ANSWERS
-          3
+          bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
@@ -358,6 +404,7 @@ jobs:
           ipsec status
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
+
           cat /var/log/fail2ban.log
           grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
 
@@ -374,7 +421,15 @@ jobs:
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
-          bash ikev2.sh --auto
+          bash ikev2.sh <<ANSWERS
+
+
+
+
+
+
+          y
+          ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient-*.sswan
@@ -401,6 +456,42 @@ jobs:
           vpnclient2
 
           ANSWERS
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
+          bash ikev2.sh <<ANSWERS
+          3
+          y
+          ANSWERS
+
+          sleep 10
+          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ! ipsec status | grep -q ikev2-cp
+          certutil -L -d sql:/etc/ipsec.d
+
+          rm -f /etc/ipsec.d/vpnclient*
+          bash ikev2.sh --auto
+
+          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          sleep 10
+          grep pluto /var/log/auth.log | tail -n 20
+          ipsec status
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --addclient vpnclient2
+
+          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+
+          rm -f /etc/ipsec.d/vpnclient2-*
+          bash ikev2.sh --exportclient vpnclient2
 
           ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2-*.sswan
@@ -439,11 +530,11 @@ jobs:
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
 
-          bash ikev2.sh <<ANSWERS
-          3
+          bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
+          sleep 10
           ! ls -ld /etc/ipsec.d/ikev2.conf
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
