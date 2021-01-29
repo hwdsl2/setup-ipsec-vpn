@@ -76,7 +76,8 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令：
 
    ```console
-   certutil -f -importpfx ".p12文件的完整路径" NoExport
+   # 导入 .p12 文件（换成你自己的值）
+   certutil -f -importpfx ".p12文件的位置和名称" NoExport
    ```
 
    另外，你也可以手动导入 `.p12` 文件。详情参见下面的链接。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。   
@@ -84,21 +85,21 @@ To customize IKEv2 or client options, run this script without arguments.
 
    **注：** Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10 用户，推荐使用下面的 Windows PowerShell 命令来创建 VPN 连接，以达到更佳的 VPN 安全性和性能。将 `你的 VPN 服务器 IP（或者域名）` 换成你自己的值。
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10 用户，推荐使用这些命令创建 VPN 连接，以达到更佳的安全性和性能。从你在上一步打开的命令提示符窗口运行以下命令：
 
    ```console
+   # 将服务器地址存入变量（换成你自己的值）
+   set server_addr="你的 VPN 服务器 IP（或者域名）"
    # 创建 VPN 连接
-   Add-VpnConnection -Name "My IKEv2 VPN" -ServerAddress "你的 VPN 服务器 IP（或者域名）" -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru
+   powershell -command "Add-VpnConnection -Name 'My IKEv2 VPN' -ServerAddress '%server_addr%' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru"
    # 设置 IPsec 参数
-   Set-VpnConnectionIPsecConfiguration -ConnectionName "My IKEv2 VPN" -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force
+   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   另外，你也可以手动创建 VPN 连接。参见这里：   
+   另外，你也可以手动创建 VPN 连接。详情参见下面的链接。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
-
-1. （可选但推荐）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+1. 为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。这一步是可选的，但推荐。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
    - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -106,14 +107,15 @@ To customize IKEv2 or client options, run this script without arguments.
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
      ```
 
-1. 启用新的 VPN 连接，并且开始使用 IKEv2 VPN！   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 ### OS X (macOS)
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在系统偏好设置 -> 描述文件中。
+
+要连接到 VPN：
 
 1. 打开系统偏好设置并转到网络部分。
 1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
@@ -153,6 +155,8 @@ To customize IKEv2 or client options, run this script without arguments.
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
+如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+
 ### iOS
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
@@ -162,6 +166,8 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在设置 -> 通用 -> 描述文件中。
+
+要连接到 VPN：
 
 1. 进入设置 -> 通用 -> VPN。
 1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
@@ -200,6 +206,8 @@ To customize IKEv2 or client options, run this script without arguments.
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
+如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+
 ### Android
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
@@ -213,7 +221,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 单击 **导入**。
 1. 单击新的 VPN 配置文件以开始连接。
 
-（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** 应用程序，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 "始终开启的 VPN" 以及 "屏蔽未使用 VPN 的所有连接" 选项。
+（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** 应用程序，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
 
 <details>
 <summary>
@@ -253,6 +261,8 @@ To customize IKEv2 or client options, run this script without arguments.
 </details>
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
 ## 管理客户端证书
 

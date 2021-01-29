@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
 
-**Note: You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/L2TP mode](clients.md).**
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/L2TP mode](clients.md).
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/XAuth ("Cisco IPsec") is natively supported by Android, iOS and OS X. There is no additional software to install. Windows users can use the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft client</a>. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -18,10 +18,10 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally **faster t
 
 ## Windows
 
-**Note:** You may also connect using [IPsec/L2TP mode](clients.md). No additional software is required.
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/L2TP mode](clients.md). No additional software is required.
 
-1. Download and install the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN client</a>.   
-   **Note:** This VPN client supports Windows 2K/XP/Vista/7/8.
+1. Download and install the free <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN client</a>. When prompted during install, select **Standard Edition**.   
+   **Note:** This VPN client does NOT support Windows 10.
 1. Click Start Menu -> All Programs -> ShrewSoft VPN Client -> VPN Access Manager
 1. Click the **Add (+)** button on toolbar.
 1. Enter `Your VPN Server IP` in the **Host Name or IP Address** field.

@@ -76,7 +76,8 @@ To customize IKEv2 or client options, run this script without arguments.
 1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>:
 
    ```console
-   certutil -f -importpfx "path\to\your\p12\file.p12" NoExport
+   # Import .p12 file (replace with your own value)
+   certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
 
    Alternatively, you can manually import the `.p12` file. See instructions at the link below. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".   
@@ -84,21 +85,21 @@ To customize IKEv2 or client options, run this script without arguments.
 
    **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. See [Known issues](#known-issues).
 
-1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10 users, it is recommended to create the VPN connection using these Windows PowerShell commands for improved security and performance. Replace `Your VPN Server IP (or DNS name)` with your own value.
+1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10 users, it is recommended to create the VPN connection using these commands for improved security and performance. Run the following from the command prompt you opened above.
 
    ```console
+   # Set server address (replace with your own value)
+   set server_addr="Your VPN Server IP (or DNS name)"
    # Create VPN connection
-   Add-VpnConnection -Name "My IKEv2 VPN" -ServerAddress "Your VPN Server IP (or DNS name)" -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru
+   powershell -command "Add-VpnConnection -Name 'My IKEv2 VPN' -ServerAddress '%server_addr%' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru"
    # Set IPsec configuration
-   Set-VpnConnectionIPsecConfiguration -ConnectionName "My IKEv2 VPN" -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force
+   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   Alternatively, you can manually create the VPN connection. See:   
+   Alternatively, you can manually create the VPN connection. See instructions at the link below. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.   
    https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
 
-   **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
-
-1. (Optional but recommended) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+1. Enable stronger ciphers for IKEv2 with a one-time registry change. This is optional, but recommended. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
    - For Windows 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -106,14 +107,15 @@ To customize IKEv2 or client options, run this script without arguments.
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
      ```
 
-1. Start the new VPN connection, and enjoy your IKEv2 VPN!   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Connect
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 ### OS X (macOS)
 
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. When finished, check to make sure "IKEv2 VPN configuration" is listed under System Preferences -> Profiles.
+
+To connect to the VPN:
 
 1. Open System Preferences and go to the Network section.
 1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
@@ -153,6 +155,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
 ### iOS
 
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
@@ -162,6 +166,8 @@ First, securely transfer the generated `.mobileconfig` file to your iOS device, 
 1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
 
 When finished, check to make sure "IKEv2 VPN configuration" is listed under Settings -> General -> Profile(s).
+
+To connect to the VPN:
 
 1. Go to Settings -> General -> VPN.
 1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
@@ -200,6 +206,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+
 ### Android
 
 1. Securely transfer the generated `.sswan` file to your Android device.
@@ -213,7 +221,7 @@ Once successfully connected, you can verify that your traffic is being routed pr
 1. Tap **IMPORT**.
 1. Tap the new VPN profile to connect.
 
-(Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the "Always-on VPN" and "Block connections without VPN" options.
+(Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the **Always-on VPN** and **Block connections without VPN** options.
 
 <details>
 <summary>
@@ -253,6 +261,8 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 </details>
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
 
 ## Manage client certificates
 

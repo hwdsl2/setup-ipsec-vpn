@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
 
-**注：你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/L2TP 模式](clients-zh.md) 连接。**
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/L2TP 模式](clients-zh.md) 连接。
 
 在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来配置你的设备。IPsec/XAuth ("Cisco IPsec") 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft 客户端</a>。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
@@ -18,10 +18,10 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 
 ## Windows
 
-**注：** 你也可以使用 [IPsec/L2TP 模式](clients-zh.md) 连接，无需安装额外的软件。
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/L2TP 模式](clients-zh.md) 连接。无需安装额外的软件。
 
-1. 下载并安装免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN 客户端</a>。   
-   **注：** 该 VPN 客户端支持 Windows 2K/XP/Vista/7/8 系统。
+1. 下载并安装免费的 <a href="https://www.shrew.net/download/vpn" target="_blank">Shrew Soft VPN 客户端</a>。在安装时请选择 **Standard Edition**。   
+   **注：** 该 VPN 客户端 **不支持** Windows 10。
 1. 单击开始菜单 -> 所有程序 -> ShrewSoft VPN Client -> VPN Access Manager
 1. 单击工具栏中的 **Add (+)** 按钮。
 1. 在 **Host Name or IP Address** 字段中输入`你的 VPN 服务器 IP`。
@@ -58,7 +58,7 @@ VPN 连接成功后，你会在 VPN Connect 状态窗口中看到 **tunnel enabl
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存VPN连接信息。
 
-要连接到 VPN： 使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN：使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
 
