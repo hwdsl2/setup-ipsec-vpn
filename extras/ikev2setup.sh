@@ -110,10 +110,8 @@ check_utils_exist() {
 
 check_container() {
   in_container=0
-  export_dir=~/
   if grep -qs "hwdsl2" /opt/src/run.sh; then
     in_container=1
-    export_dir="/etc/ipsec.d/"
   fi
 }
 
@@ -274,6 +272,22 @@ show_add_client_message() {
 
 show_export_client_message() {
   bigecho2 "Exporting existing IKEv2 client '$client_name', using default options."
+}
+
+get_export_dir() {
+  export_to_home_dir=0
+  if grep -qs "hwdsl2" /opt/src/run.sh; then
+    export_dir="/etc/ipsec.d/"
+  else
+    export_dir=~/
+    if [ -n "$SUDO_USER" ] && getent group "$SUDO_USER" >/dev/null 2>&1; then
+      user_home_dir=$(getent passwd "$SUDO_USER" 2>/dev/null | cut -d: -f6)
+      if [ -d "$user_home_dir" ] && [ "$user_home_dir" != "/" ]; then
+        export_dir="$user_home_dir/"
+        export_to_home_dir=1
+      fi
+    fi
+  fi
 }
 
 get_server_ip() {
@@ -619,11 +633,17 @@ EOF
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
   fi
 
+  p12_file="$export_dir$client_name-$SYS_DT.p12"
   if [ "$use_own_password" = "1" ]; then
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$export_dir$client_name-$SYS_DT.p12" || exit 1
+    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
   else
-    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$export_dir$client_name-$SYS_DT.p12" || exit 1
+    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
   fi
+
+  if [ "$export_to_home_dir" = "1" ]; then
+    chown "$SUDO_USER:$SUDO_USER" "$p12_file"
+  fi
+  chmod 600 "$p12_file"
 }
 
 install_base64_uuidgen() {
@@ -802,6 +822,9 @@ $ca_base64
 </plist>
 EOF
 
+  if [ "$export_to_home_dir" = "1" ]; then
+    chown "$SUDO_USER:$SUDO_USER" "$mc_file"
+  fi
   chmod 600 "$mc_file"
 }
 
@@ -835,6 +858,9 @@ cat > "$sswan_file" <<EOF
 }
 EOF
 
+  if [ "$export_to_home_dir" = "1" ]; then
+    chown "$SUDO_USER:$SUDO_USER" "$sswan_file"
+  fi
   chmod 600 "$sswan_file"
 }
 
@@ -1162,6 +1188,7 @@ ikev2setup() {
   done
 
   check_arguments
+  get_export_dir
 
   if [ "$add_client_using_defaults" = "1" ]; then
     show_add_client_message
