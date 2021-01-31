@@ -1,4 +1,4 @@
-# 分步指南：如何配置 IKEv2 VPN
+# IKEv2 VPN 配置和使用指南
 
 *其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -21,8 +21,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 - Windows 7, 8.x 和 10
 - OS X (macOS)
-- Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 - iOS (iPhone/iPad)
+- Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
@@ -80,12 +80,11 @@ To customize IKEv2 or client options, run this script without arguments.
    certutil -f -importpfx ".p12文件的位置和名称" NoExport
    ```
 
-   另外，你也可以手动导入 `.p12` 文件。详情参见下面的链接。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+   另外，你也可以手动导入 `.p12` 文件。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">这里</a>。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-   **注：** Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
+   **注：** Ubuntu 18.04 用户在尝试导入 `.p12` 文件时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10 用户，推荐使用这些命令创建 VPN 连接，以达到更佳的安全性和性能。从你在上一步打开的命令提示符窗口运行以下命令：
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
    ```console
    # 将服务器地址存入变量（换成你自己的值）
@@ -96,8 +95,7 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   另外，你也可以手动创建 VPN 连接。详情参见下面的链接。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   另外，你也可以手动创建 VPN 连接。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">这里</a>。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
 1. 为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。这一步是可选的，但推荐。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
@@ -655,10 +653,11 @@ To customize IKEv2 or client options, run this script without arguments.
    vpnclient                                          u,u,u
    ```
 
-1. 删除证书。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复此命令。在完成后，再次列出 IPsec 证书数据库中的证书，并确认列表为空。
+1. 删除证书和密钥。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复这些命令。在完成后，再次列出 IPsec 证书数据库中的证书，并确认列表为空。
 
    ```bash
-   certutil -D -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -F -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -D -d sql:/etc/ipsec.d -n "Nickname" 2>/dev/null
    ```
 </details>
 

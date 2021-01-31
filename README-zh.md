@@ -265,7 +265,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 <a href="docs/clients-xauth-zh.md" target="_blank">**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**</a>
 
-<a href="docs/ikev2-howto-zh.md" target="_blank">**分步指南：如何配置 IKEv2 VPN**</a>
+<a href="docs/ikev2-howto-zh.md" target="_blank">**IKEv2 VPN 配置和使用指南**</a>
 
 如果在连接过程中遇到错误，请参见 <a href="docs/clients-zh.md#故障排除" target="_blank">故障排除</a>。
 

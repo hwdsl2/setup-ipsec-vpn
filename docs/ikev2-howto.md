@@ -1,4 +1,4 @@
-# Step-by-Step Guide: How to Set Up IKEv2 VPN
+# Guide: How to Set Up and Use IKEv2 VPN
 
 *Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
 
@@ -21,8 +21,8 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 - Windows 7, 8.x and 10
 - OS X (macOS)
-- Android 4.x and newer (using the strongSwan VPN client)
 - iOS (iPhone/iPad)
+- Android 4.x and newer (using the strongSwan VPN client)
 
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
@@ -80,12 +80,11 @@ To customize IKEv2 or client options, run this script without arguments.
    certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
 
-   Alternatively, you can manually import the `.p12` file. See instructions at the link below. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs
+   Alternatively, you can manually import the `.p12` file. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">here</a> for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. See [Known issues](#known-issues).
+   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the `.p12` file. See [Known issues](#known-issues).
 
-1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10 users, it is recommended to create the VPN connection using these commands for improved security and performance. Run the following from the command prompt you opened above.
+1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
    ```console
    # Set server address (replace with your own value)
@@ -96,8 +95,7 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES256 -CipherTransformConstants GCMAES256 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   Alternatively, you can manually create the VPN connection. See instructions at the link below. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.   
-   https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config
+   Alternatively, you can manually create the VPN connection. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">here</a> for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
 1. Enable stronger ciphers for IKEv2 with a one-time registry change. This is optional, but recommended. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
@@ -611,7 +609,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
    After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
    </details>
-1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">upgrade Libreswan</a> on your server to version 3.26 or above.
+1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">update Libreswan</a> on your server to version 3.26 or above.
 
 ## Remove IKEv2
 
@@ -655,10 +653,11 @@ To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.
    vpnclient                                          u,u,u
    ```
 
-1. Delete certificates. Replace "Nickname" below with each certificate's nickname. Repeat for each certificate. When finished, list certificates in the IPsec database again, and confirm that the list is empty.
+1. Delete certificates and keys. Replace "Nickname" below with each certificate's nickname. Repeat these commands for each certificate. When finished, list certificates in the IPsec database again, and confirm that the list is empty.
 
    ```bash
-   certutil -D -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -F -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -D -d sql:/etc/ipsec.d -n "Nickname" 2>/dev/null
    ```
 </details>
 
