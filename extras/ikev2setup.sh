@@ -547,10 +547,11 @@ select_menu_option() {
   echo "Select an option:"
   echo "  1) Add a new client"
   echo "  2) Export configuration for an existing client"
-  echo "  3) Remove IKEv2"
-  echo "  4) Exit"
+  echo "  3) List existing clients"
+  echo "  4) Remove IKEv2"
+  echo "  5) Exit"
   read -rp "Option: " selected_option
-  until [[ "$selected_option" =~ ^[1-4]$ ]]; do
+  until [[ "$selected_option" =~ ^[1-5]$ ]]; do
     printf '%s\n' "$selected_option: invalid selection."
     read -rp "Option: " selected_option
   done
@@ -1268,6 +1269,11 @@ ikev2setup() {
         exit 0
         ;;
       3)
+        echo
+        list_existing_clients
+        exit 0
+        ;;
+      4)
         check_ipsec_conf
         confirm_remove_ikev2
         delete_ikev2_conf
@@ -1276,7 +1282,7 @@ ikev2setup() {
         print_ikev2_removed_message
         exit 0
         ;;
-      4)
+      *)
         exit 0
         ;;
     esac
