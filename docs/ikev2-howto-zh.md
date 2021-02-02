@@ -9,7 +9,7 @@
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [管理客户端证书](#管理客户端证书)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
-* [已知问题](#已知问题)
+* [故障排除](#故障排除)
 * [移除 IKEv2](#移除-ikev2)
 * [参考链接](#参考链接)
 
@@ -82,7 +82,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    另外，你也可以手动导入 `.p12` 文件。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">这里</a>。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-   **注：** Ubuntu 18.04 用户在尝试导入 `.p12` 文件时可能会遇到错误 "输入的密码不正确"。参见 [已知问题](#已知问题)。
+   **注：** Ubuntu 18.04 用户在尝试导入 `.p12` 文件时可能会遇到错误 "输入的密码不正确"。参见 [故障排除](#故障排除)。
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
@@ -107,7 +107,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
 ### OS X (macOS)
 
@@ -153,7 +153,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
 ### iOS
 
@@ -204,7 +204,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
 ### Android
 
@@ -260,7 +260,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 <a href="clients-zh.md#故障排除" target="_blank">故障排除</a>。
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
 ## 管理客户端证书
 
@@ -586,32 +586,60 @@ To customize IKEv2 or client options, run this script without arguments.
 
 在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。下一步：[配置 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
-## 已知问题
+## 故障排除
+
+### 在导入客户端配置文件时提示密码不正确
+
+如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
+
+Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
+<details>
+<summary>
+Ubuntu 18.04 上的 NSS 问题的解决方法
+</summary>
+
+**注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用这个解决方法。
+
+首先安装更新版本的 `libnss3` 相关的软件包：
+
+```
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+apt-get -y update
+apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
+ "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
+ "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+```
+
+然后重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
+</details>
+
+### IKEv2 在一小时后断开连接
+
+如果 IKEv2 连接在一小时（60 分钟）后自动断开，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果不存在，编辑 `/etc/ipsec.conf`）。在 `conn ikev2-cp` 一节的末尾添加以下行，开头必须空两格：
+
+```
+  ikelifetime=24h
+  salifetime=24h
+```
+
+保存修改并运行 `service ipsec restart`。该解决方案已在 2021-01-20 添加到辅助脚本。
+
+### 无法同时连接多个 IKEv2 客户端
+
+如果要同时连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加一个客户端证书)。
+
+如果你无法同时连接同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
+
+### 其它已知问题
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能<a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">需要</a> Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
-1. Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
-   <details>
-   <summary>
-   Ubuntu 18.04 上的 NSS 问题的解决方法
-   </summary>
-
-   **注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用这个解决方法。
-
-   首先安装更新版本的 `libnss3` 相关的软件包：
-
-   ```
-   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-   wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
-   apt-get -y update
-   apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
-     "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
-     "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-   ```
-
-   然后重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
-   </details>
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
+
+### 更多故障排除信息
+
+要查看更多故障排除信息，请看 <a href="clients-zh.md#故障排除" target="_blank">这里</a>。
 
 ## 移除 IKEv2
 

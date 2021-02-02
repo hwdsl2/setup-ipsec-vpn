@@ -9,7 +9,7 @@
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
 * [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
-* [Known issues](#known-issues)
+* [Troubleshooting](#troubleshooting)
 * [Remove IKEv2](#remove-ikev2)
 * [References](#references)
 
@@ -82,7 +82,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    Alternatively, you can manually import the `.p12` file. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">here</a> for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the `.p12` file. See [Known issues](#known-issues).
+   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the `.p12` file. See [Troubleshooting](#troubleshooting).
 
 1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
@@ -107,7 +107,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ### OS X (macOS)
 
@@ -153,7 +153,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ### iOS
 
@@ -204,7 +204,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ### Android
 
@@ -260,7 +260,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## Manage client certificates
 
@@ -586,32 +586,60 @@ As an alternative to using the [helper script](#using-helper-scripts), advanced 
 
 Before continuing, you **must** restart the IPsec service. The IKEv2 setup on the VPN server is now complete. Follow instructions to [configure VPN clients](#configure-ikev2-vpn-clients).
 
-## Known issues
+## Troubleshooting
+
+### Incorrect password when trying to import client config files
+
+If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+
+Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
+<details>
+<summary>
+Workaround for the NSS bug on Ubuntu 18.04
+</summary>
+
+**Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply this workaround.
+
+First, install newer versions of `libnss3` related packages:
+
+```
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+apt-get -y update
+apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
+ "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
+ "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+```
+
+After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+</details>
+
+### IKEv2 disconnects after one hour
+
+If the IKEv2 connection disconnects automatically after one hour (60 minutes), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (or `/etc/ipsec.conf` if it does not exist), append these lines to the end of section `conn ikev2-cp`, indented by two spaces:
+
+```
+  ikelifetime=24h
+  salifetime=24h
+```
+
+Save the file and run `service ipsec restart`. As of 2021-01-20, the IKEv2 helper script was updated to include this fix.
+
+### Unable to connect multiple IKEv2 clients
+
+To connect multiple IKEv2 clients simultaneously, you must [generate a unique certificate](#add-a-client-certificate) for each.
+
+If you are unable to connect multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
+
+### Other known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">requires</a> Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
-1. Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
-   <details>
-   <summary>
-   Workaround for the NSS bug on Ubuntu 18.04
-   </summary>
-
-   **Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply this workaround.
-
-   First, install newer versions of `libnss3` related packages:
-
-   ```
-   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-   wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-   wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
-   apt-get -y update
-   apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
-     "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
-     "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-   ```
-
-   After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
-   </details>
 1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">update Libreswan</a> on your server to version 3.26 or above.
+
+### Additional troubleshooting
+
+Click <a href="clients.md#troubleshooting" target="_blank">here</a> for additional troubleshooting information.
 
 ## Remove IKEv2
 
