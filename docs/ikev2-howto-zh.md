@@ -407,13 +407,15 @@ To customize IKEv2 or client options, run this script without arguments.
    fi
    ```
 
+   **注：** 如果你在上面的第一步指定了服务器的域名（而不是 IP 地址），则必须将以下命令中的 `leftid=$PUBLIC_IP` 换成 `leftid=@$PUBLIC_IP`。
+
    ```bash
    cat > /etc/ipsec.d/ikev2.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
      leftcert=$PUBLIC_IP
-     leftid=@$PUBLIC_IP
+     leftid=$PUBLIC_IP
      leftsendcert=always
      leftsubnet=0.0.0.0/0
      leftrsasigkey=%cert

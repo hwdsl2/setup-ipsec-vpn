@@ -917,7 +917,6 @@ cat > /etc/ipsec.d/ikev2.conf <<EOF
 conn ikev2-cp
   left=%defaultroute
   leftcert=$server_addr
-  leftid=@$server_addr
   leftsendcert=always
   leftsubnet=0.0.0.0/0
   leftrsasigkey=%cert
@@ -941,6 +940,16 @@ conn ikev2-cp
   salifetime=24h
   encapsulation=yes
 EOF
+
+  if [ "$use_dns_name" = "1" ]; then
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  leftid=@$server_addr
+EOF
+  else
+cat >> /etc/ipsec.d/ikev2.conf <<EOF
+  leftid=$server_addr
+EOF
+  fi
 
   case $swan_ver in
     3.2[35679]|3.3[12]|4.*)

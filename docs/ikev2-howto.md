@@ -407,13 +407,15 @@ As an alternative to using the [helper script](#using-helper-scripts), advanced 
    fi
    ```
 
+   **Note:** If you specified the server's DNS name (instead of its IP address) in step 1 above, you must replace `leftid=$PUBLIC_IP` in the command below with `leftid=@$PUBLIC_IP`.
+
    ```bash
    cat > /etc/ipsec.d/ikev2.conf <<EOF
 
    conn ikev2-cp
      left=%defaultroute
      leftcert=$PUBLIC_IP
-     leftid=@$PUBLIC_IP
+     leftid=$PUBLIC_IP
      leftsendcert=always
      leftsubnet=0.0.0.0/0
      leftrsasigkey=%cert
