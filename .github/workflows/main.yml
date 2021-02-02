@@ -183,7 +183,7 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           bash ikev2.sh <<ANSWERS
-          3
+          4
           y
           ANSWERS
 
@@ -462,7 +462,7 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2-*.p12
 
           bash ikev2.sh <<ANSWERS
-          3
+          4
           y
           ANSWERS
 
