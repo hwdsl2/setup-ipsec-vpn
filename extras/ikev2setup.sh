@@ -14,7 +14,6 @@
 # know how you have improved it!
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-SYS_DT=$(date +%F-%T | tr ':' '_')
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
 bigecho() { echo; echo "## $1"; echo; }
@@ -634,7 +633,7 @@ EOF
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
   fi
 
-  p12_file="$export_dir$client_name-$SYS_DT.p12"
+  p12_file="$export_dir$client_name.p12"
   if [ "$use_own_password" = "1" ]; then
     pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
   else
@@ -666,7 +665,7 @@ create_mobileconfig() {
 
   [ -z "$server_addr" ] && get_server_address
 
-  p12_base64=$(base64 -w 52 "$export_dir$client_name-$SYS_DT.p12")
+  p12_base64=$(base64 -w 52 "$export_dir$client_name.p12")
   [ -z "$p12_base64" ] && exiterr "Could not encode .p12 file."
 
   ca_base64=$(certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a | grep -v CERTIFICATE)
@@ -675,7 +674,7 @@ create_mobileconfig() {
   uuid1=$(uuidgen)
   [ -z "$uuid1" ] && exiterr "Could not generate UUID value."
 
-  mc_file="$export_dir$client_name-$SYS_DT.mobileconfig"
+  mc_file="$export_dir$client_name.mobileconfig"
 
 cat > "$mc_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -834,13 +833,13 @@ create_android_profile() {
 
   [ -z "$server_addr" ] && get_server_address
 
-  p12_base64_oneline=$(base64 -w 52 "$export_dir$client_name-$SYS_DT.p12" | sed 's/$/\\n/' | tr -d '\n')
+  p12_base64_oneline=$(base64 -w 52 "$export_dir$client_name.p12" | sed 's/$/\\n/' | tr -d '\n')
   [ -z "$p12_base64_oneline" ] && exiterr "Could not encode .p12 file."
 
   uuid2=$(uuidgen)
   [ -z "$uuid2" ] && exiterr "Could not generate UUID value."
 
-  sswan_file="$export_dir$client_name-$SYS_DT.sswan"
+  sswan_file="$export_dir$client_name.sswan"
 
 cat > "$sswan_file" <<EOF
 {
@@ -1075,9 +1074,9 @@ print_client_info() {
 cat <<EOF
 Client configuration is available at:
 
-$export_dir$client_name-$SYS_DT.p12 (for Windows)
-$export_dir$client_name-$SYS_DT.sswan (for Android)
-$export_dir$client_name-$SYS_DT.mobileconfig (for iOS & macOS)
+$export_dir$client_name.p12 (for Windows)
+$export_dir$client_name.sswan (for Android)
+$export_dir$client_name.mobileconfig (for iOS & macOS)
 EOF
 
   if [ "$use_own_password" = "0" ]; then
