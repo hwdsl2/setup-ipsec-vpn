@@ -146,9 +146,9 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient*.sswan
+          ls -ld /etc/ipsec.d/vpnclient*.p12
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -167,20 +167,20 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
-          rm -f /etc/ipsec.d/vpnclient2-*
+          rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
           2
           vpnclient2
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
           bash ikev2.sh <<ANSWERS
           4
@@ -201,9 +201,9 @@ jobs:
           rm -f /etc/ipsec.d/vpnclient*
           bash ikev2.sh --auto
 
-          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient*.sswan
+          ls -ld /etc/ipsec.d/vpnclient*.p12
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -217,16 +217,16 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
-          rm -f /etc/ipsec.d/vpnclient2-*
+          rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
@@ -431,9 +431,9 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient*.sswan
+          ls -ld /etc/ipsec.d/vpnclient*.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
@@ -446,20 +446,20 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
-          rm -f /etc/ipsec.d/vpnclient2-*
+          rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
           2
           vpnclient2
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
           bash ikev2.sh <<ANSWERS
           4
@@ -476,9 +476,9 @@ jobs:
           rm -f /etc/ipsec.d/vpnclient*
           bash ikev2.sh --auto
 
-          ls -ld /etc/ipsec.d/vpnclient-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient-*.p12
+          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient*.sswan
+          ls -ld /etc/ipsec.d/vpnclient*.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
@@ -486,16 +486,16 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
-          rm -f /etc/ipsec.d/vpnclient2-*
+          rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2-*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2-*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2-*.p12
+          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2*.sswan
+          ls -ld /etc/ipsec.d/vpnclient2*.p12
 
           sed -i '/pluto/d' /var/log/auth.log
           pkill -HUP rsyslog
