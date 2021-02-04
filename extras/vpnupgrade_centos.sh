@@ -14,7 +14,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.1
+SWAN_VER=4.2
 
 ### DO NOT edit below this line ###
 
@@ -50,14 +50,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case $SWAN_VER in
-  3.2[679]|3.3[12]|4.1)
+  3.32|4.[12])
     /bin/true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
-  This script can install one of the following versions:
-  3.26-3.27, 3.29, 3.31-3.32 or 4.1
+       This script can install one of these versions:
+       3.32, 4.1 or 4.2
 EOF
     exit 1
     ;;
@@ -69,20 +69,21 @@ swan_ver_old=$(printf '%s' "$ipsec_ver_short" | sed -e 's/Libreswan //')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.
-  See: https://github.com/hwdsl2/setup-ipsec-vpn
+       See: https://github.com/hwdsl2/setup-ipsec-vpn
 EOF
   exit 1
 fi
 
-swan_ver_cur=4.1
+swan_ver_cur=4.2
 swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-  && [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
+  && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
+  && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
   echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-  echo "To update to the new version, exit the script and run:"
-  echo "  wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh"
-  echo "  sudo sh vpnupgrade.sh"
+  echo "      To update to the new version, exit this script and run:"
+  echo "      wget https://git.io/vpnupgrade-centos -O vpnupgrade.sh"
+  echo "      sudo sh vpnupgrade.sh"
   echo
   printf "Do you want to continue anyway? [y/N] "
   read -r response
@@ -128,19 +129,19 @@ Version to install: Libreswan $SWAN_VER
 EOF
 
 cat <<'EOF'
-NOTE: This script will make the following changes to your VPN configuration:
-    - Fix obsolete ipsec.conf and/or ikev2.conf options
-    - Optimize VPN ciphers
+Note: This script will make the following changes to your VPN configuration:
+      - Fix obsolete ipsec.conf and/or ikev2.conf options
+      - Optimize VPN ciphers
 
-    Your other VPN config files will not be modified.
+      Your other VPN config files will not be modified.
 
 EOF
 
-if [ "$SWAN_VER" != "4.1" ]; then
+if [ "$SWAN_VER" != "4.2" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
-    See https://libreswan.org/security/ for more information.
-    Are you sure you want to install an older version?
+         See https://libreswan.org/security/ for more information.
+         Are you sure you want to install an older version?
 
 EOF
 fi
@@ -194,25 +195,16 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-[ "$SWAN_VER" = "3.26" ] && sed -i 's/-lfreebl //' mk/config.mk
-[ "$SWAN_VER" = "3.26" ] && sed -i '/blapi\.h/d' programs/pluto/keys.c
-if [ "$SWAN_VER" = "3.31" ]; then
-  sed -i '916iif (!st->st_seen_fragvid) { return FALSE; }' programs/pluto/ikev2.c
-  sed -i '1033s/if (/if (LIN(POLICY_IKE_FRAG_ALLOW, sk->ike->sa.st_connection->policy) \&\& sk->ike->sa.st_seen_fragvid \&\& /' \
-    programs/pluto/ikev2_message.c
-fi
 [ "$SWAN_VER" = "4.1" ] && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
 EOF
-if [ "$SWAN_VER" = "3.31" ] || [ "$SWAN_VER" = "3.32" ] || [ "$SWAN_VER" = "4.1" ]; then
-  echo "USE_DH2=true" >> Makefile.inc.local
-  if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-    echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
-  fi
+echo "USE_DH2=true" >> Makefile.inc.local
+if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+  echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
 fi
-if [ "$SWAN_VER" = "4.1" ]; then
+if [ "$SWAN_VER" != "3.32" ]; then
   echo "USE_NSS_KDF=false" >> Makefile.inc.local
   echo "FINALNSSDIR=/etc/ipsec.d" >> Makefile.inc.local
 fi
@@ -259,12 +251,8 @@ elif [ "$dns_state" = "2" ]; then
   sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
 fi
 
-case $SWAN_VER in
-  3.29|3.3[12]|4.1)
-    sed -i "/ikev2=never/d" /etc/ipsec.conf
-    sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
-    ;;
-esac
+sed -i "/ikev2=never/d" /etc/ipsec.conf
+sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
 
 if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
   sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
@@ -287,15 +275,15 @@ EOF
 
 if [ "$dns_state" = "3" ]; then
 cat <<'EOF'
-IMPORTANT: Users upgrading to Libreswan 3.23 or newer must edit /etc/ipsec.conf
-    and replace all occurrences of these two lines:
-      modecfgdns1=DNS_SERVER_1
-      modecfgdns2=DNS_SERVER_2
+IMPORTANT: You must edit /etc/ipsec.conf and replace
+           all occurrences of these two lines:
+             modecfgdns1=DNS_SERVER_1
+             modecfgdns2=DNS_SERVER_2
 
-    with a single line like this:
-      modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
+           with a single line like this:
+             modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
 
-    Then run "sudo service ipsec restart".
+           Then run "sudo service ipsec restart".
 
 EOF
 fi

@@ -156,7 +156,7 @@ yum "$REPO1" -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=4.1
+SWAN_VER=4.2
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -166,7 +166,6 @@ fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 cd "libreswan-$SWAN_VER" || exit 1
-sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
 USE_DNSSEC=false
@@ -432,12 +431,14 @@ service xl2tpd restart 2>/dev/null
 swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanver?arch=$os_arch&ver=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-  && [ "$SWAN_VER" != "$swan_ver_latest" ]; then
+  && [ "$SWAN_VER" != "$swan_ver_latest" ] \
+  && printf '%s\n%s' "$SWAN_VER" "$swan_ver_latest" | sort -C -V; then
 cat <<EOF
 
-Note: A newer version of Libreswan ($swan_ver_latest) is available. To update, run:
-  wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh
-  sudo sh vpnupgrade.sh
+Note: A newer version of Libreswan ($swan_ver_latest) is available.
+      To update, run:
+      wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh
+      sudo sh vpnupgrade.sh
 EOF
 fi
 

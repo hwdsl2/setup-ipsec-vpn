@@ -218,21 +218,22 @@ check_swan_ver() {
 
 select_swan_update() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-    && [ "$swan_ver" != "$swan_ver_latest" ]; then
+    && [ "$swan_ver" != "$swan_ver_latest" ] \
+    && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    echo "It is recommended to update Libreswan before setting up IKEv2."
+    echo "      It is recommended to update Libreswan before setting up IKEv2."
     if [ "$in_container" = "0" ]; then
-      echo "To update, exit this script and run:"
+      echo "      To update, exit this script and run:"
       update_url=vpnupgrade
       if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
         update_url=vpnupgrade-centos
       elif [ "$os_type" = "amzn" ]; then
         update_url=vpnupgrade-amzn
       fi
-      echo "  wget https://git.io/$update_url -O vpnupgrade.sh"
-      echo "  sudo sh vpnupgrade.sh"
+      echo "      wget https://git.io/$update_url -O vpnupgrade.sh"
+      echo "      sudo sh vpnupgrade.sh"
     else
-      echo "To update this Docker image, see: https://git.io/updatedockervpn"
+      echo "      To update this Docker image, see: https://git.io/updatedockervpn"
     fi
     echo
     printf "Do you want to continue anyway? [y/N] "
@@ -1038,21 +1039,22 @@ EOF
 
 show_swan_update_info() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-    && [ "$swan_ver" != "$swan_ver_latest" ]; then
+    && [ "$swan_ver" != "$swan_ver_latest" ] \
+    && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     echo
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
     if [ "$in_container" = "0" ]; then
-      echo "To update to the new version, run:"
+      echo "      To update, run:"
       update_url=vpnupgrade
       if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
         update_url=vpnupgrade-centos
       elif [ "$os_type" = "amzn" ]; then
         update_url=vpnupgrade-amzn
       fi
-      echo "  wget https://git.io/$update_url -O vpnupgrade.sh"
-      echo "  sudo sh vpnupgrade.sh"
+      echo "      wget https://git.io/$update_url -O vpnupgrade.sh"
+      echo "      sudo sh vpnupgrade.sh"
     else
-      echo "To update this Docker image, see: https://git.io/updatedockervpn"
+      echo "      To update this Docker image, see: https://git.io/updatedockervpn"
     fi
   fi
 }

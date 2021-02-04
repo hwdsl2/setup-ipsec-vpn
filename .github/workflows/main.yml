@@ -243,7 +243,7 @@ jobs:
           fi
 
           sed -i '/swan_ver_url/s/^/#/' vpnupgrade.sh
-          sed -i '/^SWAN_VER=/s/4.1/3.32/' vpnupgrade.sh
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=3.32/' vpnupgrade.sh
           sh vpnupgrade.sh <<ANSWERS
           y
           ANSWERS
@@ -269,7 +269,33 @@ jobs:
             pkill -HUP rsyslog
           fi
 
-          sed -i '/^SWAN_VER=/s/3.32/4.1/' vpnupgrade.sh
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.1/' vpnupgrade.sh
+          sh vpnupgrade.sh <<ANSWERS
+          y
+          ANSWERS
+
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
+            systemctl restart ipsec
+            sleep 10
+            grep pluto /var/log/secure
+          else
+            sleep 10
+            grep pluto /var/log/auth.log
+          fi
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
+
+          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
+            sed -i '/pluto/d' /var/log/secure
+            pkill -HUP rsyslog
+          else
+            sed -i '/pluto/d' /var/log/auth.log
+            pkill -HUP rsyslog
+          fi
+
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.2/' vpnupgrade.sh
           sh vpnupgrade.sh <<ANSWERS
           y
           ANSWERS
@@ -503,7 +529,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnupgrade.sh https://git.io/vpnupgrade
 
           sed -i '/swan_ver_url/s/^/#/' vpnupgrade.sh
-          sed -i '/^SWAN_VER=/s/4.1/3.32/' vpnupgrade.sh
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=3.32/' vpnupgrade.sh
           sh vpnupgrade.sh <<ANSWERS
           y
           ANSWERS
@@ -518,7 +544,22 @@ jobs:
           sed -i '/pluto/d' /var/log/auth.log
           pkill -HUP rsyslog
 
-          sed -i '/^SWAN_VER=/s/3.32/4.1/' vpnupgrade.sh
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.1/' vpnupgrade.sh
+          sh vpnupgrade.sh <<ANSWERS
+          y
+          ANSWERS
+
+          sleep 10
+          grep pluto /var/log/auth.log
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
+
+          sed -i '/pluto/d' /var/log/auth.log
+          pkill -HUP rsyslog
+
+          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.2/' vpnupgrade.sh
           sh vpnupgrade.sh <<ANSWERS
           y
           ANSWERS
