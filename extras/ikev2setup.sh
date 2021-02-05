@@ -16,8 +16,7 @@
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
-bigecho() { echo; echo "## $1"; echo; }
-bigecho2() { echo; echo "## $1"; }
+bigecho() { echo "## $1"; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
@@ -264,14 +263,17 @@ EOF
 
 show_start_message() {
   bigecho "Starting IKEv2 setup in auto mode, using default options."
+  echo
 }
 
 show_add_client_message() {
-  bigecho2 "Adding a new IKEv2 client '$client_name', using default options."
+  bigecho "Adding a new IKEv2 client '$client_name', using default options."
+  echo
 }
 
 show_export_client_message() {
-  bigecho2 "Exporting existing IKEv2 client '$client_name', using default options."
+  bigecho "Exporting existing IKEv2 client '$client_name', using default options."
+  echo
 }
 
 get_export_dir() {
@@ -563,7 +565,7 @@ cat <<EOF
 Below are the IKEv2 setup options you selected.
 Please double check before continuing!
 
-================================================
+======================================
 
 VPN server address: $server_addr
 VPN client name: $client_name
@@ -589,7 +591,7 @@ EOF
 cat <<EOF
 DNS server(s): $dns_servers
 
-================================================
+======================================
 
 EOF
 
@@ -607,7 +609,7 @@ EOF
 }
 
 create_client_cert() {
-  bigecho2 "Generating client certificate..."
+  bigecho "Generating client certificate..."
 
   sleep $((RANDOM % 3 + 1))
 
@@ -617,7 +619,7 @@ create_client_cert() {
     -k rsa -g 4096 -v "$client_validity" \
     -d sql:/etc/ipsec.d -t ",," \
     --keyUsage digitalSignature,keyEncipherment \
-    --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null || exit 1
+    --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null 2>&1 || exiterr "Failed to create client certificate."
 }
 
 export_p12_file() {
@@ -638,7 +640,7 @@ EOF
   if [ "$use_own_password" = "1" ]; then
     pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
   else
-    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
+    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
   fi
 
   if [ "$export_to_home_dir" = "1" ]; then
@@ -654,7 +656,7 @@ install_base64_uuidgen() {
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
       apt-get -yqq update || exiterr "'apt-get update' failed."
-      apt-get -yqq install coreutils uuid-runtime || exiterr "'apt-get install' failed."
+      apt-get -yqq install coreutils uuid-runtime >/dev/null || exiterr "'apt-get install' failed."
     else
       yum -yq install coreutils util-linux || exiterr "'yum install' failed."
     fi
@@ -866,13 +868,13 @@ EOF
 }
 
 create_ca_cert() {
-  bigecho2 "Generating CA certificate..."
+  bigecho "Generating CA certificate..."
 
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -x -n "IKEv2 VPN CA" \
     -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
     -k rsa -g 4096 -v 120 \
-    -d sql:/etc/ipsec.d -t "CT,," -2 >/dev/null <<ANSWERS || exit 1
+    -d sql:/etc/ipsec.d -t "CT,," -2 >/dev/null 2>&1 <<ANSWERS || exiterr "Failed to create CA certificate."
 y
 
 N
@@ -880,7 +882,7 @@ ANSWERS
 }
 
 create_server_cert() {
-  bigecho2 "Generating VPN server certificate..."
+  bigecho "Generating server certificate..."
 
   sleep $((RANDOM % 3 + 1))
 
@@ -892,7 +894,7 @@ create_server_cert() {
       -d sql:/etc/ipsec.d -t ",," \
       --keyUsage digitalSignature,keyEncipherment \
       --extKeyUsage serverAuth \
-      --extSAN "dns:$server_addr" >/dev/null || exit 1
+      --extSAN "dns:$server_addr" >/dev/null 2>&1 || exiterr "Failed to create server certificate."
   else
     certutil -z <(head -c 1024 /dev/urandom) \
       -S -c "IKEv2 VPN CA" -n "$server_addr" \
@@ -901,7 +903,7 @@ create_server_cert() {
       -d sql:/etc/ipsec.d -t ",," \
       --keyUsage digitalSignature,keyEncipherment \
       --extKeyUsage serverAuth \
-      --extSAN "ip:$server_addr,dns:$server_addr" >/dev/null || exit 1
+      --extSAN "ip:$server_addr,dns:$server_addr" >/dev/null 2>&1 || exiterr "Failed to create server certificate."
   fi
 }
 
@@ -1014,7 +1016,7 @@ restart_ipsec_service() {
 print_client_added_message() {
 cat <<EOF
 
-===============================================================
+==========================================================
 
 New IKEv2 VPN client "$client_name" added!
 
@@ -1027,7 +1029,7 @@ EOF
 print_client_exported_message() {
 cat <<EOF
 
-===============================================================
+==========================================================
 
 IKEv2 VPN client "$client_name" configuration exported!
 
@@ -1062,7 +1064,7 @@ show_swan_update_info() {
 print_setup_complete_message() {
 cat <<EOF
 
-===============================================================
+==========================================================
 
 IKEv2 VPN setup is now complete!
 
@@ -1095,9 +1097,7 @@ cat <<'EOF'
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
-To add more IKEv2 VPN clients, run this script again.
-
-===============================================================
+==========================================================
 
 EOF
 }
@@ -1133,7 +1133,7 @@ confirm_remove_ikev2() {
 }
 
 delete_ikev2_conf() {
-  bigecho2 "Deleting /etc/ipsec.d/ikev2.conf..."
+  bigecho "Deleting /etc/ipsec.d/ikev2.conf..."
   /bin/rm -f /etc/ipsec.d/ikev2.conf
 }
 
