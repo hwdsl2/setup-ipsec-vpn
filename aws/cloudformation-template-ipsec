@@ -392,7 +392,7 @@
                                     "Ref": "VpnPassword"
                                 },
                                 "'\n",
-                                "wget -t 3 -T 30 -nv -O vpnsetup.sh ",
+                                "wget -t 3 -T 30 -nv -O vpn.sh ",
                                 {
                                     "Fn::FindInMap": [
                                         "OS",
@@ -403,7 +403,7 @@
                                     ]
                                 },
                                 "\n",
-                                "sh vpnsetup.sh\n",
+                                "sh vpn.sh\n",
                                 "cfn-signal -e 0 ",
                                 " --stack ",
                                 {

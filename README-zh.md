@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 
-使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP 和 Cisco IPsec 协议，可用于 Ubuntu/Debian/CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP, Cisco IPsec 和 IKEv2 协议，可用于 Ubuntu, Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
@@ -38,7 +38,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -48,7 +48,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -58,7 +58,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -127,7 +127,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -138,7 +138,7 @@ CentOS & RHEL
 
 ```bash
 yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -148,7 +148,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -160,10 +160,10 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh
+nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -174,10 +174,10 @@ CentOS & RHEL
 
 ```bash
 yum -y install wget nano
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh
+nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -187,10 +187,10 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh
+nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -206,11 +206,11 @@ Ubuntu & Debian
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 
@@ -223,11 +223,11 @@ CentOS & RHEL
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
 yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 
@@ -239,11 +239,11 @@ Amazon Linux 2
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 

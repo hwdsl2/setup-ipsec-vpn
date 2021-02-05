@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
-Set up your own IPsec VPN server in just a few minutes, with both IPsec/L2TP and Cisco IPsec on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2 on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
@@ -38,7 +38,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -48,7 +48,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -58,7 +58,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -127,7 +127,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -138,7 +138,7 @@ CentOS & RHEL
 
 ```bash
 yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -148,7 +148,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh && sudo sh vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -160,10 +160,10 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh
+nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -174,10 +174,10 @@ CentOS & RHEL
 
 ```bash
 yum -y install wget nano
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh
+nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -187,10 +187,10 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
-nano -w vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh
+nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
-sudo sh vpnsetup.sh
+sudo sh vpn.sh
 ```
 </details>
 
@@ -206,11 +206,11 @@ Ubuntu & Debian
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -O vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 
@@ -223,11 +223,11 @@ CentOS & RHEL
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
 yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpnsetup.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 
@@ -239,11 +239,11 @@ Amazon Linux 2
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup-amzn -O vpnsetup.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
-sh vpnsetup.sh
+sh vpn.sh
 ```
 </details>
 

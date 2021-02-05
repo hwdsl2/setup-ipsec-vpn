@@ -588,6 +588,8 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## 故障排除
 
+*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除).*
+
 ### 在导入客户端配置文件时提示密码不正确
 
 如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。

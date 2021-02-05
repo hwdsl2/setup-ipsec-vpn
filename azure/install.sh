@@ -7,4 +7,4 @@ export VPN_PASSWORD=$3
 # Wait 60 seconds for apt/dpkg lock
 sleep 60
 
-wget https://git.io/vpnsetup -O vpnsetup.sh && sh vpnsetup.sh
+wget https://git.io/vpnsetup -O vpn.sh && sh vpn.sh

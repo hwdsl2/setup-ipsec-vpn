@@ -588,6 +588,8 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Troubleshooting
 
+*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除).*
+
 ### Incorrect password when trying to import client config files
 
 If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
