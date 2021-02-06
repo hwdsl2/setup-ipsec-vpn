@@ -263,17 +263,14 @@ EOF
 
 show_start_message() {
   bigecho "Starting IKEv2 setup in auto mode, using default options."
-  echo
 }
 
 show_add_client_message() {
   bigecho "Adding a new IKEv2 client '$client_name', using default options."
-  echo
 }
 
 show_export_client_message() {
   bigecho "Exporting existing IKEv2 client '$client_name', using default options."
-  echo
 }
 
 get_export_dir() {
@@ -293,7 +290,7 @@ get_export_dir() {
 }
 
 get_server_ip() {
-  echo "Trying to auto discover IP of this server..."
+  bigecho "Trying to auto discover IP of this server..."
   public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
   check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 }
@@ -453,6 +450,7 @@ enter_custom_dns() {
   else
     echo "Using Google Public DNS (8.8.8.8, 8.8.4.4)."
   fi
+  echo
 }
 
 check_mobike_support() {
@@ -492,8 +490,7 @@ check_mobike_support() {
     fi
   fi
 
-  echo
-  echo -n "Checking for MOBIKE support... "
+  echo -n "## Checking for MOBIKE support... "
   if [ "$mobike_support" = "1" ]; then
     echo "available"
   else
@@ -652,13 +649,38 @@ EOF
 install_base64_uuidgen() {
   if ! command -v base64 >/dev/null 2>&1 || ! command -v uuidgen >/dev/null 2>&1; then
     bigecho "Installing required packages..."
-
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
-      apt-get -yqq update || exiterr "'apt-get update' failed."
-      apt-get -yqq install coreutils uuid-runtime >/dev/null || exiterr "'apt-get install' failed."
+      (
+        set -x
+        apt-get -yqq update
+      ) || exiterr "'apt-get update' failed."
+    fi
+  fi
+  if ! command -v base64 >/dev/null 2>&1; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      (
+        set -x
+        apt-get -yqq install coreutils >/dev/null
+      ) || exiterr "'apt-get install' failed."
     else
-      yum -yq install coreutils util-linux || exiterr "'yum install' failed."
+      (
+        set -x
+        yum -y -q install coreutils >/dev/null
+      ) || exiterr "'yum install' failed."
+    fi
+  fi
+  if ! command -v uuidgen >/dev/null 2>&1; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      (
+        set -x
+        apt-get -yqq install uuid-runtime >/dev/null
+      ) || exiterr "'apt-get install' failed."
+    else
+      (
+        set -x
+        yum -y -q install util-linux >/dev/null
+      ) || exiterr "'yum install' failed."
     fi
   fi
 }
@@ -989,20 +1011,21 @@ EOF
 apply_ubuntu1804_nss_fix() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
     bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
-
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
     nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
     nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-    if wget -t 3 -T 30 -nv -O "/tmp/$nss_deb1" "$nss_url1/$nss_deb1" \
-      && wget -t 3 -T 30 -nv -O "/tmp/$nss_deb2" "$nss_url1/$nss_deb2" \
-      && wget -t 3 -T 30 -nv -O "/tmp/$nss_deb3" "$nss_url2/$nss_deb3"; then
-      export DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_FRONTEND=noninteractive
+    set -x
+    if wget -t 3 -T 30 -q -O "/tmp/libnss3.deb" "$nss_url1/$nss_deb1" \
+      && wget -t 3 -T 30 -q -O "/tmp/libnss3-dev.deb" "$nss_url1/$nss_deb2" \
+      && wget -t 3 -T 30 -q -O "/tmp/libnss3-tools.deb" "$nss_url2/$nss_deb3"; then
       apt-get -yqq update
-      apt-get -yqq install "/tmp/$nss_deb1" "/tmp/$nss_deb2" "/tmp/$nss_deb3"
+      apt-get -yqq install "/tmp/libnss3.deb" "/tmp/libnss3-dev.deb" "/tmp/libnss3-tools.deb" >/dev/null
+      /bin/rm -f "/tmp/libnss3.deb" "/tmp/libnss3-dev.deb" "/tmp/libnss3-tools.deb"
     fi
-    /bin/rm -f "/tmp/$nss_deb1" "/tmp/$nss_deb2" "/tmp/$nss_deb3"
+    { set +x; } 2>&-
   fi
 }
 
@@ -1010,7 +1033,7 @@ restart_ipsec_service() {
   bigecho "Restarting IPsec service..."
 
   mkdir -p /run/pluto
-  service ipsec restart
+  service ipsec restart 2>/dev/null
 }
 
 print_client_added_message() {

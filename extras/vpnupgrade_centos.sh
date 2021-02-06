@@ -22,6 +22,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { exiterr "'yum install' failed."; }
+bigecho() { echo "## $1"; }
 
 vpnupgrade() {
 
@@ -120,7 +121,6 @@ clear
 cat <<EOF
 Welcome! This script will build and install Libreswan on your server.
 Additional packages required for compilation will also be installed.
-
 It is intended for upgrading servers to a newer Libreswan version.
 
 Current version:    $ipsec_ver_short
@@ -132,7 +132,6 @@ cat <<'EOF'
 Note: This script will make the following changes to your VPN configuration:
       - Fix obsolete ipsec.conf and/or ikev2.conf options
       - Optimize VPN ciphers
-
       Your other VPN config files will not be modified.
 
 EOF
@@ -151,8 +150,7 @@ read -r response
 case $response in
   [yY][eE][sS]|[yY])
     echo
-    echo "Please be patient. Setup is continuing..."
-    echo
+    bigecho "Please be patient. Setup is continuing..."
     ;;
   *)
     echo "Abort. No changes were made."
@@ -164,14 +162,22 @@ esac
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
-# Add the EPEL repository
-epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
-yum -y install epel-release || yum -y install "$epel_url" || exiterr2
+bigecho "Adding the EPEL repository..."
 
-# Install necessary packages
-yum -y install nss-devel nspr-devel pkgconfig pam-devel \
-  libcap-ng-devel libselinux-devel curl-devel nss-tools \
-  flex bison gcc make wget sed tar || exiterr2
+epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
+(
+  set -x
+  yum -y -q install epel-release >/dev/null || yum -y -q install "$epel_url" >/dev/null
+) || exiterr2
+
+bigecho "Installing required packages..."
+
+(
+  set -x
+  yum -y -q install nss-devel nspr-devel pkgconfig pam-devel \
+    libcap-ng-devel libselinux-devel curl-devel nss-tools \
+    flex bison gcc make wget sed tar >/dev/null
+) || exiterr2
 
 REPO1='--enablerepo=*server-*optional*'
 REPO2='--enablerepo=*releases-optional*'
@@ -179,21 +185,35 @@ REPO3='--enablerepo=[Pp]ower[Tt]ools'
 [ "$os_type" = "rhel" ] && REPO3='--enablerepo=codeready-builder-for-rhel-8-*'
 
 if [ "$os_ver" = "7" ]; then
-  yum -y install systemd-devel || exiterr2
-  yum "$REPO1" "$REPO2" -y install libevent-devel fipscheck-devel || exiterr2
+  (
+    set -x
+    yum -y -q install systemd-devel >/dev/null
+  ) || exiterr2
+  (
+    set -x
+    yum "$REPO1" "$REPO2" -y -q install libevent-devel fipscheck-devel >/dev/null
+  ) || exiterr2
 else
-  yum "$REPO3" -y install systemd-devel libevent-devel fipscheck-devel || exiterr2
+  (
+    set -x
+    yum "$REPO3" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
+  ) || exiterr2
 fi
 
-# Compile and install Libreswan
+bigecho "Downloading Libreswan..."
+
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exit 1
-fi
+(
+  set -x
+  wget -t 3 -T 30 -q -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
+) || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+
+bigecho "Compiling and installing Libreswan, please wait..."
+
 cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "4.1" ] && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
@@ -210,9 +230,11 @@ if [ "$SWAN_VER" != "3.32" ]; then
 fi
 NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
-make "-j$((NPROCS+1))" -s base && make -s install-base
+(
+  set -x
+  make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
+)
 
-# Verify the install and clean up
 cd /opt/src || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
@@ -224,7 +246,8 @@ restorecon /etc/ipsec.d/*db 2>/dev/null
 restorecon /usr/local/sbin -Rv 2>/dev/null
 restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 
-# Update IPsec config
+bigecho "Updating VPN configuration..."
+
 IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
 PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
 
@@ -258,12 +281,12 @@ if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
   sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
 fi
 
-# Restart IPsec service
+bigecho "Restarting IPsec service..."
+
 mkdir -p /run/pluto
-service ipsec restart
+service ipsec restart 2>/dev/null
 
 cat <<EOF
-
 
 ================================================
 

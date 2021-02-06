@@ -40,7 +40,7 @@ SYS_DT=$(date +%F-%T | tr ':' '_')
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 exiterr2() { exiterr "'apt-get install' failed."; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
-bigecho() { echo; echo "## $1"; echo; }
+bigecho() { echo "## $1"; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
@@ -157,53 +157,59 @@ while fuser "$APT_LK" "$PKG_LK" >/dev/null 2>&1 \
   sleep 3
 done
 
-bigecho "Populating apt-get cache..."
-
-export DEBIAN_FRONTEND=noninteractive
-apt-get -yq update || exiterr "'apt-get update' failed."
-
 bigecho "Installing packages required for setup..."
 
-apt-get -yq install wget dnsutils openssl \
-  iptables iproute2 gawk grep sed net-tools || exiterr2
+export DEBIAN_FRONTEND=noninteractive
+(
+  set -x
+  apt-get -yqq update
+) || exiterr "'apt-get update' failed."
+(
+  set -x
+  apt-get -yqq install wget dnsutils openssl \
+    iptables iproute2 gawk grep sed net-tools >/dev/null
+) || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 
-cat <<'EOF'
-In case the script hangs here for more than a few minutes,
-press Ctrl-C to abort. Then edit it and manually enter IP.
-EOF
-
 # In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
-
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
 bigecho "Installing packages required for the VPN..."
 
-apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
-  libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-  libcurl4-nss-dev flex bison gcc make libnss3-tools \
-  libevent-dev libsystemd-dev ppp xl2tpd || exiterr2
+(
+  set -x
+  apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
+    libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
+    libcurl4-nss-dev flex bison gcc make libnss3-tools \
+    libevent-dev libsystemd-dev ppp xl2tpd >/dev/null
+) || exiterr2
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
-apt-get -yq install fail2ban || exiterr2
+(
+  set -x
+  apt-get -yqq install fail2ban >/dev/null
+) || exiterr2
 
-bigecho "Compiling and installing Libreswan..."
+bigecho "Downloading Libreswan..."
 
 SWAN_VER=4.2
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
-if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exit 1
-fi
+(
+  set -x
+  wget -t 3 -T 30 -q -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
+) || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+
+bigecho "Compiling and installing Libreswan, please wait..."
+
 cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w
@@ -225,7 +231,10 @@ if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
 fi
 NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
-make "-j$((NPROCS+1))" -s base && make -s install-base
+(
+  set -x
+  make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
+)
 
 cd /opt/src || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
