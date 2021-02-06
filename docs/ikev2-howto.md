@@ -219,6 +219,14 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 1. Tap **IMPORT**.
 1. Tap the new VPN profile to connect.
 
+<details>
+<summary>
+If your device runs Android 6.0 or older, click here for additional instructions.
+</summary>
+
+If your device runs Android 6.0 (Marshmallow) or older, in order to connect using the strongSwan VPN client, you must make the following change on the VPN server: Edit `/etc/ipsec.d/ikev2.conf` on the server. Append `authby=rsa-sha1` to the end of the `conn ikev2-cp` section, indented by two spaces. Save the file and run `service ipsec restart`.
+</details>
+
 (Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the **Always-on VPN** and **Block connections without VPN** options.
 
 <details>

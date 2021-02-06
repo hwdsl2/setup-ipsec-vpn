@@ -219,6 +219,14 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 单击 **导入**。
 1. 单击新的 VPN 配置文件以开始连接。
 
+<details>
+<summary>
+如果你的设备运行 Android 6.0 或更早版本，点这里查看额外的步骤。
+</summary>
+
+如果你的设备运行 Android 6.0 (Marshmallow) 或更早版本，要使用 strongSwan VPN 客户端连接，你必须更改 VPN 服务器上的以下设置：编辑服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节的末尾添加 `authby=rsa-sha1`，开头必须空两格。保存文件并运行 `service ipsec restart`。
+</details>
+
 （可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** 应用程序，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
 
 <details>
