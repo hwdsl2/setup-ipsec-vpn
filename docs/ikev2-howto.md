@@ -58,6 +58,18 @@ Options:
 
 To customize IKEv2 or client options, run this script without arguments.
 ```
+
+When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
+
+```
+sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+By default, IKEv2 clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
+
+```
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+```
 </details>
 
 ## Configure IKEv2 VPN clients
@@ -274,27 +286,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### List existing clients
 
-If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option.
-
-<details>
-<summary>
-Click here to view detailed usage information for the IKEv2 helper script.
-</summary>
-
-```
-Usage: bash ikev2.sh [options]
-
-Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
-  --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
-  --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
-  --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
-  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
-  -h, --help                    show this help message and exit
-
-To customize IKEv2 or client options, run this script without arguments.
-```
-</details>
+If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option. To view detailed usage information for the IKEv2 helper script, see [this section](#using-helper-scripts).
 
 ### Add a client certificate
 

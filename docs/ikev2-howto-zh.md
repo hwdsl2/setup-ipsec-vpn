@@ -58,6 +58,18 @@ Options:
 
 To customize IKEv2 or client options, run this script without arguments.
 ```
+
+在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+
+```
+sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+在 VPN 已连接时，IKEv2 客户端默认配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
+
+```
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+```
 </details>
 
 ## 配置 IKEv2 VPN 客户端
@@ -274,27 +286,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### 列出已有的客户端
 
-如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。
-
-<details>
-<summary>
-单击此处以查看 IKEv2 辅助脚本的详细使用信息。
-</summary>
-
-```
-Usage: bash ikev2.sh [options]
-
-Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
-  --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
-  --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
-  --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
-  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
-  -h, --help                    show this help message and exit
-
-To customize IKEv2 or client options, run this script without arguments.
-```
-</details>
+如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。IKEv2 辅助脚本的详细使用信息请看 [这里](#使用辅助脚本)。
 
 ### 添加一个客户端证书
 
