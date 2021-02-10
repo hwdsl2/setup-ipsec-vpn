@@ -185,7 +185,16 @@ check_arguments() {
 }
 
 check_server_dns_name() {
-  check_dns_name "$VPN_DNS_NAME" || exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  if [ -n "$VPN_DNS_NAME" ]; then
+    check_dns_name "$VPN_DNS_NAME" || exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  fi
+}
+
+check_custom_dns() {
+  if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
+    || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; } then
+    exiterr "The DNS server specified is invalid."
+  fi
 }
 
 check_ca_cert_exists() {
@@ -1332,9 +1341,10 @@ ikev2setup() {
     select_p12_password
     confirm_setup_options
   else
+    check_server_dns_name
+    check_custom_dns
     show_start_message
     if [ -n "$VPN_DNS_NAME" ]; then
-      check_server_dns_name
       use_dns_name=1
       server_addr="$VPN_DNS_NAME"
     else
@@ -1347,10 +1357,19 @@ ikev2setup() {
     client_name=vpnclient
     check_client_cert_exists
     client_validity=120
-    use_custom_dns=0
-    dns_server_1=8.8.8.8
-    dns_server_2=8.8.4.4
-    dns_servers="8.8.8.8 8.8.4.4"
+    if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
+      dns_server_1="$VPN_DNS_SRV1"
+      dns_server_2="$VPN_DNS_SRV2"
+      dns_servers="$VPN_DNS_SRV1 $VPN_DNS_SRV2"
+    elif [ -n "$VPN_DNS_SRV1" ]; then
+      dns_server_1="$VPN_DNS_SRV1"
+      dns_server_2=""
+      dns_servers="$VPN_DNS_SRV1"
+    else
+      dns_server_1=8.8.8.8
+      dns_server_2=8.8.4.4
+      dns_servers="8.8.8.8 8.8.4.4"
+    fi
     check_mobike_support
     mobike_enable="$mobike_support"
     use_own_password=0
