@@ -184,6 +184,10 @@ check_arguments() {
   fi
 }
 
+check_server_dns_name() {
+  check_dns_name "$VPN_DNS_NAME" || exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+}
+
 check_ca_cert_exists() {
   if certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null 2>&1; then
     exiterr "Certificate 'IKEv2 VPN CA' already exists."
@@ -296,8 +300,8 @@ get_server_ip() {
 }
 
 get_server_address() {
-  server_addr=$(grep "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
-  [ -z "$server_addr" ] && server_addr=$(grep "leftcert=" /etc/ipsec.conf | cut -f2 -d=)
+  server_addr=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+  [ -z "$server_addr" ] && server_addr=$(grep -s "leftcert=" /etc/ipsec.conf | cut -f2 -d=)
   check_ip "$server_addr" || check_dns_name "$server_addr" || exiterr "Could not get VPN server address."
 }
 
@@ -1329,10 +1333,16 @@ ikev2setup() {
     confirm_setup_options
   else
     show_start_message
-    use_dns_name=0
-    get_server_ip
-    check_ip "$public_ip" || exiterr "Cannot detect this server's public IP."
-    server_addr="$public_ip"
+    if [ -n "$VPN_DNS_NAME" ]; then
+      check_server_dns_name
+      use_dns_name=1
+      server_addr="$VPN_DNS_NAME"
+    else
+      use_dns_name=0
+      get_server_ip
+      check_ip "$public_ip" || exiterr "Cannot detect this server's public IP."
+      server_addr="$public_ip"
+    fi
     check_server_cert_exists
     client_name=vpnclient
     check_client_cert_exists
