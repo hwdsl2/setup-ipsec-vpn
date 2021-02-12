@@ -1043,10 +1043,12 @@ apply_ubuntu1804_nss_fix() {
 }
 
 restart_ipsec_service() {
-  bigecho "Restarting IPsec service..."
+  if [ "$in_container" = "0" ] || { [ "$in_container" = "1" ] && service ipsec status >/dev/null 2>&1; } then
+    bigecho "Restarting IPsec service..."
 
-  mkdir -p /run/pluto
-  service ipsec restart 2>/dev/null
+    mkdir -p /run/pluto
+    service ipsec restart 2>/dev/null
+  fi
 }
 
 print_client_added_message() {
