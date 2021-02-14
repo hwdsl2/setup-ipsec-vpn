@@ -136,8 +136,7 @@ EOF
 check_arguments() {
   if [ "$use_defaults" = "1" ]; then
     if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
-      echo "Warning: Ignoring parameter '--auto', which is valid for initial IKEv2 setup only." >&2
-      echo "         Use '-h' for usage information." >&2
+      echo "Warning: Ignoring parameter '--auto'. Use '-h' for usage information." >&2
       echo >&2
     fi
   fi
@@ -554,7 +553,7 @@ EOF
 }
 
 select_menu_option() {
-  echo "It looks like IKEv2 has already been set up on this server."
+  echo "IKEv2 is already set up on this server."
   echo
   echo "Select an option:"
   echo "  1) Add a new client"
@@ -902,8 +901,8 @@ EOF
   chmod 600 "$sswan_file"
 }
 
-create_ca_cert() {
-  bigecho "Generating CA certificate..."
+create_ca_server_certs() {
+  bigecho "Generating CA and server certificates..."
 
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -x -n "IKEv2 VPN CA" \
@@ -914,10 +913,6 @@ y
 
 N
 ANSWERS
-}
-
-create_server_cert() {
-  bigecho "Generating server certificate..."
 
   sleep $((RANDOM % 3 + 1))
 
@@ -1023,22 +1018,26 @@ EOF
 
 apply_ubuntu1804_nss_fix() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
-    bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
     nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
     nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-    export DEBIAN_FRONTEND=noninteractive
-    set -x
-    if wget -t 3 -T 30 -q -O "/tmp/libnss3.deb" "$nss_url1/$nss_deb1" \
-      && wget -t 3 -T 30 -q -O "/tmp/libnss3-dev.deb" "$nss_url1/$nss_deb2" \
-      && wget -t 3 -T 30 -q -O "/tmp/libnss3-tools.deb" "$nss_url2/$nss_deb3"; then
-      apt-get -yqq update
-      apt-get -yqq install "/tmp/libnss3.deb" "/tmp/libnss3-dev.deb" "/tmp/libnss3-tools.deb" >/dev/null
-      /bin/rm -f "/tmp/libnss3.deb" "/tmp/libnss3-dev.deb" "/tmp/libnss3-tools.deb"
+    TMPDIR=$(mktemp -d /tmp/nss.XXX 2>/dev/null)
+    if [ -d "$TMPDIR" ]; then
+      bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
+      export DEBIAN_FRONTEND=noninteractive
+      set -x
+      if wget -t 3 -T 30 -q -O "$TMPDIR/1.deb" "$nss_url1/$nss_deb1" \
+        && wget -t 3 -T 30 -q -O "$TMPDIR/2.deb" "$nss_url1/$nss_deb2" \
+        && wget -t 3 -T 30 -q -O "$TMPDIR/3.deb" "$nss_url2/$nss_deb3"; then
+        apt-get -yqq update
+        apt-get -yqq install "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb" >/dev/null
+      fi
+      { set +x; } 2>&-
+      /bin/rm -f "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb"
+      /bin/rmdir "$TMPDIR"
     fi
-    { set +x; } 2>&-
   fi
 }
 
@@ -1378,8 +1377,7 @@ ikev2setup() {
   fi
 
   apply_ubuntu1804_nss_fix
-  create_ca_cert
-  create_server_cert
+  create_ca_server_certs
   create_client_cert
   export_p12_file
   install_base64_uuidgen
