@@ -545,9 +545,11 @@ EOF
   case $response in
     [yY][eE][sS]|[yY])
       use_own_password=1
+      echo
       ;;
     *)
       use_own_password=0
+      echo
       ;;
   esac
 }
@@ -570,7 +572,6 @@ select_menu_option() {
 
 confirm_setup_options() {
 cat <<EOF
-
 Below are the IKEv2 setup options you selected.
 Please double check before continuing!
 
@@ -632,7 +633,7 @@ create_client_cert() {
 }
 
 export_p12_file() {
-  bigecho "Exporting .p12 file..."
+  bigecho "Creating client configuration..."
 
   if [ "$use_own_password" = "1" ]; then
 cat <<'EOF'
@@ -698,8 +699,6 @@ install_base64_uuidgen() {
 }
 
 create_mobileconfig() {
-  bigecho "Creating .mobileconfig for iOS and macOS..."
-
   [ -z "$server_addr" ] && get_server_address
 
   p12_base64=$(base64 -w 52 "$export_dir$client_name.p12")
@@ -866,8 +865,6 @@ EOF
 }
 
 create_android_profile() {
-  bigecho "Creating client profile for Android..."
-
   [ -z "$server_addr" ] && get_server_address
 
   p12_base64_oneline=$(base64 -w 52 "$export_dir$client_name.p12" | sed 's/$/\\n/' | tr -d '\n')
@@ -1053,7 +1050,7 @@ restart_ipsec_service() {
 print_client_added_message() {
 cat <<EOF
 
-==========================================================
+================================================
 
 New IKEv2 VPN client "$client_name" added!
 
@@ -1066,9 +1063,9 @@ EOF
 print_client_exported_message() {
 cat <<EOF
 
-==========================================================
+================================================
 
-IKEv2 VPN client "$client_name" configuration exported!
+IKEv2 VPN client "$client_name" exported!
 
 VPN server address: $server_addr
 VPN client name: $client_name
@@ -1101,7 +1098,7 @@ show_swan_update_info() {
 print_setup_complete_message() {
 cat <<EOF
 
-==========================================================
+================================================
 
 IKEv2 VPN setup is now complete!
 
@@ -1125,7 +1122,7 @@ cat <<EOF
 
 *IMPORTANT* Password for client config files:
 $p12_password
-Write this down, you'll need it to import to your device!
+Write this down, you'll need it for import!
 EOF
   fi
 
@@ -1134,7 +1131,7 @@ cat <<'EOF'
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
 
-==========================================================
+================================================
 
 EOF
 }
@@ -1152,9 +1149,9 @@ check_ipsec_conf() {
 confirm_remove_ikev2() {
   echo
   echo "WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP"
-  echo "         and IPsec/XAuth (\"Cisco IPsec\") modes. All IKEv2 configuration including"
-  echo "         certificates and keys will be permanently deleted."
-  echo "         This *cannot be undone*! "
+  echo "         and IPsec/XAuth (\"Cisco IPsec\") modes, if installed. All IKEv2 configuration"
+  echo "         including certificates and keys will be permanently deleted."
+  echo "         This *cannot* be undone! "
   echo
   printf "Are you sure you want to remove IKEv2? [y/N] "
   read -r response
@@ -1243,8 +1240,8 @@ ikev2setup() {
     client_validity=120
     use_own_password=0
     create_client_cert
-    export_p12_file
     install_base64_uuidgen
+    export_p12_file
     create_mobileconfig
     create_android_profile
     print_client_added_message
@@ -1255,8 +1252,8 @@ ikev2setup() {
   if [ "$export_client_using_defaults" = "1" ]; then
     show_export_client_message
     use_own_password=0
-    export_p12_file
     install_base64_uuidgen
+    export_p12_file
     create_mobileconfig
     create_android_profile
     print_client_exported_message
@@ -1287,8 +1284,8 @@ ikev2setup() {
         enter_client_cert_validity
         select_p12_password
         create_client_cert
-        export_p12_file
         install_base64_uuidgen
+        export_p12_file
         create_mobileconfig
         create_android_profile
         print_client_added_message
@@ -1298,8 +1295,8 @@ ikev2setup() {
       2)
         enter_client_name_for_export
         select_p12_password
-        export_p12_file
         install_base64_uuidgen
+        export_p12_file
         create_mobileconfig
         create_android_profile
         print_client_exported_message
@@ -1379,8 +1376,8 @@ ikev2setup() {
   apply_ubuntu1804_nss_fix
   create_ca_server_certs
   create_client_cert
-  export_p12_file
   install_base64_uuidgen
+  export_p12_file
   create_mobileconfig
   create_android_profile
   add_ikev2_connection
