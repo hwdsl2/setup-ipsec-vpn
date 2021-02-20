@@ -123,16 +123,21 @@ jobs:
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
           VPN_PASSWORD='your_vpn_password' \
+          VPN_DNS_SRV1='1.1.1.1' \
+          VPN_DNS_SRV2='1.0.0.1' \
           sh vpnsetup.sh
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
           fi
 
           sleep 10
-          grep "your_ipsec_pre_shared_key" /etc/ipsec.secrets
-          grep "your_vpn_username" /etc/ppp/chap-secrets
-          grep "your_vpn_password" /etc/ppp/chap-secrets
-          grep "your_vpn_username" /etc/ipsec.d/passwd
+          grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
+          grep -q "your_vpn_username" /etc/ppp/chap-secrets
+          grep -q "your_vpn_password" /etc/ppp/chap-secrets
+          grep -q "your_vpn_username" /etc/ipsec.d/passwd
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+          grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+          grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh # hwdsl2
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
@@ -146,9 +151,9 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient*.sswan
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -167,9 +172,9 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
@@ -178,9 +183,9 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
           4
@@ -192,18 +197,22 @@ jobs:
           fi
 
           sleep 10
-          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
-          ! ipsec status | grep -q ikev2-cp
+          ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
           rm -f /etc/ipsec.d/vpnclient*
-          bash ikev2.sh --auto
+          VPN_DNS_NAME=vpn.example.com VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 
-          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient*.sswan
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -217,16 +226,16 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
@@ -322,10 +331,10 @@ jobs:
           fi
 
           sleep 10
-          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
-          ! ipsec status | grep -q ikev2-cp
+          ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
           ls -ld vpnsetup.sh
@@ -437,13 +446,18 @@ jobs:
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
           VPN_PASSWORD='your_vpn_password' \
+          VPN_DNS_SRV1='1.1.1.1' \
+          VPN_DNS_SRV2='1.0.0.1' \
           sh vpnsetup.sh
 
           sleep 10
-          grep "your_ipsec_pre_shared_key" /etc/ipsec.secrets
-          grep "your_vpn_username" /etc/ppp/chap-secrets
-          grep "your_vpn_password" /etc/ppp/chap-secrets
-          grep "your_vpn_username" /etc/ipsec.d/passwd
+          grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
+          grep -q "your_vpn_username" /etc/ppp/chap-secrets
+          grep -q "your_vpn_password" /etc/ppp/chap-secrets
+          grep -q "your_vpn_username" /etc/ipsec.d/passwd
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+          grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+          grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
@@ -457,9 +471,9 @@ jobs:
           y
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient*.sswan
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
@@ -472,9 +486,9 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
@@ -483,9 +497,9 @@ jobs:
 
           ANSWERS
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
           4
@@ -493,18 +507,22 @@ jobs:
           ANSWERS
 
           sleep 10
-          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
-          ! ipsec status | grep -q ikev2-cp
+          ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
           rm -f /etc/ipsec.d/vpnclient*
-          bash ikev2.sh --auto
+          VPN_DNS_NAME=vpn.example.com VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 
-          ls -ld /etc/ipsec.d/vpnclient*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient*.sswan
-          ls -ld /etc/ipsec.d/vpnclient*.p12
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
@@ -512,16 +530,16 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
 
-          ls -ld /etc/ipsec.d/vpnclient2*.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2*.sswan
-          ls -ld /etc/ipsec.d/vpnclient2*.p12
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
 
           sed -i '/pluto/d' /var/log/auth.log
           pkill -HUP rsyslog
@@ -576,10 +594,10 @@ jobs:
           ANSWERS
 
           sleep 10
-          ! ls -ld /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
-          ! ipsec status | grep -q ikev2-cp
+          ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
           ls -ld vpnsetup.sh
