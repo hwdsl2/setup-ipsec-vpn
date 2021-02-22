@@ -161,7 +161,7 @@ bigecho "Installing Fail2Ban to protect SSH..."
 
 bigecho "Downloading Libreswan..."
 
-SWAN_VER=4.2
+SWAN_VER=4.3
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -443,7 +443,7 @@ service xl2tpd restart 2>/dev/null
 swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanver?arch=$os_arch&ver=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-  && [ "$SWAN_VER" != "$swan_ver_latest" ] \
+  && [ -n "$SWAN_VER" ] && [ "$SWAN_VER" != "$swan_ver_latest" ] \
   && printf '%s\n%s' "$SWAN_VER" "$swan_ver_latest" | sort -C -V; then
 cat <<EOF
 

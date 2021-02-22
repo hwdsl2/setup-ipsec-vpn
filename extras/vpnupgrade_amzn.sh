@@ -14,7 +14,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.2
+SWAN_VER=4.3
 
 ### DO NOT edit below this line ###
 
@@ -39,22 +39,21 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case $SWAN_VER in
-  3.32|4.[12])
-    /bin/true
+  3.32|4.[123])
+    true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
-       3.32, 4.1 or 4.2
+       3.32, 4.1, 4.2 or 4.3
 EOF
     exit 1
     ;;
 esac
 
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-ipsec_ver_short=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan/Libreswan/' -e 's/ (netkey).*//')
-swan_ver_old=$(printf '%s' "$ipsec_ver_short" | sed -e 's/Libreswan //')
+swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.
@@ -63,7 +62,7 @@ EOF
   exit 1
 fi
 
-swan_ver_cur=4.2
+swan_ver_cur=4.3
 swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
@@ -111,7 +110,7 @@ Welcome! This script will build and install Libreswan on your server.
 Additional packages required for compilation will also be installed.
 It is intended for upgrading servers to a newer Libreswan version.
 
-Current version:    $ipsec_ver_short
+Current version:    Libreswan $swan_ver_old
 Version to install: Libreswan $SWAN_VER
 
 EOF
@@ -124,7 +123,7 @@ Note: This script will make the following changes to your VPN configuration:
 
 EOF
 
-if [ "$SWAN_VER" != "4.2" ]; then
+if [ "$SWAN_VER" != "4.3" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
