@@ -227,6 +227,30 @@ check_swan_ver() {
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 }
 
+run_swan_update() {
+  update_url=vpnupgrade
+  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
+    update_url=vpnupgrade-centos
+  elif [ "$os_type" = "amzn" ]; then
+    update_url=vpnupgrade-amzn
+  fi
+  TMPDIR=$(mktemp -d /tmp/vpnupg.XXX 2>/dev/null)
+  if [ -d "$TMPDIR" ]; then
+    set -x
+    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnupg.sh" "https://git.io/$update_url"; then
+      /bin/sh "$TMPDIR/vpnupg.sh"
+    fi
+    { set +x; } 2>&-
+    [ ! -s "$TMPDIR/vpnupg.sh" ] && echo "Error: Could not download update script." >&2
+    /bin/rm -f "$TMPDIR/vpnupg.sh"
+    /bin/rmdir "$TMPDIR"
+  else
+    echo "Error: Could not create temporary directory." >&2
+  fi
+  read -n 1 -s -r -p "Press any key to continue IKEv2 setup..."
+  echo
+}
+
 select_swan_update() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
     && [ "$swan_ver" != "$swan_ver_latest" ] \
@@ -234,30 +258,33 @@ select_swan_update() {
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
     echo "      It is recommended to update Libreswan before setting up IKEv2."
     if [ "$in_container" = "0" ]; then
-      echo "      To update, exit this script and run:"
-      update_url=vpnupgrade
-      if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
-        update_url=vpnupgrade-centos
-      elif [ "$os_type" = "amzn" ]; then
-        update_url=vpnupgrade-amzn
-      fi
-      echo "      wget https://git.io/$update_url -O vpnupgrade.sh"
-      echo "      sudo sh vpnupgrade.sh"
+      echo
+      printf "Do you want to update Libreswan? [Y/n] "
+      read -r response
+      case $response in
+        [yY][eE][sS]|[yY]|'')
+          echo
+          run_swan_update
+          ;;
+        *)
+          echo
+          ;;
+      esac
     else
       echo "      To update this Docker image, see: https://git.io/updatedockervpn"
+      echo
+      printf "Do you want to continue anyway? [y/N] "
+      read -r response
+      case $response in
+        [yY][eE][sS]|[yY])
+          echo
+          ;;
+        *)
+          echo "Abort. No changes were made."
+          exit 1
+          ;;
+      esac
     fi
-    echo
-    printf "Do you want to continue anyway? [y/N] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY])
-        echo
-        ;;
-      *)
-        echo "Abort. No changes were made."
-        exit 1
-        ;;
-    esac
   fi
 }
 
