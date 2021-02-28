@@ -21,6 +21,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
 - [Upgrade Libreswan](#upgrade-libreswan)
+- [Advanced usage](#advanced-usage)
 - [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
 - [See also](#see-also)
@@ -285,13 +286,7 @@ If you wish to view or update VPN user accounts, see <a href="docs/manage-users.
 
 For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN. Aliyun users, see <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>.
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`, then reboot your server. Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script.
-
-Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
-
-To modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
-
-When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
@@ -328,6 +323,53 @@ Amazon Linux 2
 wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 </details>
+
+## Advanced usage
+
+- [Use alternative DNS servers](#use-alternative-dns-servers)
+- [Use DNS names and server IP changes](#use-dns-names-and-server-ip-changes)
+- [Internal VPN IP addresses](#internal-vpn-ip-addresses)
+- [L2TP kernel support](#l2tp-kernel-support)
+- [Modify IPTables rules](#modify-iptables-rules)
+
+### Use alternative DNS servers
+
+Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
+
+Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a>. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1):
+
+```
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+```
+
+### Use DNS names and server IP changes
+
+For `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, you may use a DNS name (e.g. `vpn.example.com`) to connect to the VPN server instead of its IP address, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
+
+For `IKEv2` mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
+
+```
+sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+Alternatively, you may customize IKEv2 setup options by running the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">helper script</a> without the `--auto` parameter.
+
+### Internal VPN IP addresses
+
+When connecting using `IPsec/L2TP` mode, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
+
+When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server \*does not\* have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
+
+You may use these internal VPN IPs for communication. However, note that the IPs assigned to clients are dynamic, and many VPN clients have firewalls that may block such traffic.
+
+### L2TP kernel support
+
+Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
+
+### Modify IPTables rules
+
+If you want to modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
 
 ## Bugs & Questions
 

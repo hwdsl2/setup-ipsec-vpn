@@ -21,6 +21,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - [下一步](#下一步)
 - [重要提示](#重要提示)
 - [升级Libreswan](#升级libreswan)
+- [高级用法](#高级用法)
 - [问题和反馈](#问题和反馈)
 - [卸载说明](#卸载说明)
 - [另见](#另见)
@@ -285,13 +286,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>。
 
-在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`，然后重启服务器。高级用户可以在运行 VPN 脚本时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。
-
-使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)`（或者 `linux-image-extra`）软件包并运行 `service xl2tpd restart`。
-
-如果需要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
-
-在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
@@ -328,6 +323,53 @@ Amazon Linux 2
 wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 ```
 </details>
+
+## 高级用法
+
+- [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
+- [使用域名和服务器 IP 更改](#使用域名和服务器-ip-更改)
+- [VPN 内网 IP 地址](#vpn-内网-ip-地址)
+- [L2TP 内核支持](#l2tp-内核支持)
+- [更改 IPTables 规则](#更改-iptables-规则)
+
+### 使用其他的 DNS 服务器
+
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，你可以编辑以下文件：`/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` 和 `/etc/ipsec.d/ikev2.conf`（如果存在），并替换 `8.8.8.8` 和 `8.8.4.4`。然后运行 `service ipsec restart` 和 `service xl2tpd restart`。
+
+高级用户可以在运行 VPN 安装脚本和 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">IKEv2 辅助脚本</a>时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1)：
+
+```
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+```
+
+### 使用域名和服务器 IP 更改
+
+对于 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
+
+对于 `IKEv2` 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a> 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。示例如下：
+
+```
+sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+另外，你也可以自定义 IKEv2 安装选项，通过在运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">辅助脚本</a> 时去掉 `--auto` 参数来实现。
+
+### VPN 内网 IP 地址
+
+在使用 `IPsec/L2TP` 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+
+在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 \*没有\* 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
+
+你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为客户端分配 IP 是动态的，而且许多 VPN 客户端的防火墙可能不允许这些流量。
+
+### L2TP 内核支持
+
+使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)`（或者 `linux-image-extra`）软件包并运行 `service xl2tpd restart`。
+
+### 更改 IPTables 规则
+
+如果你想要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
 
 ## 问题和反馈
 
