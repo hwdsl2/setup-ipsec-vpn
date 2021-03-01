@@ -286,6 +286,8 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请看 [这里](#使用其他的-dns-服务器)。
 
+使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)`（或者 `linux-image-extra`）软件包并运行 `service xl2tpd restart`。
+
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
 ## 升级Libreswan
@@ -327,9 +329,8 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 *其他语言版本: [English](README.md#advanced-usage), [简体中文](README-zh.md#高级用法).*
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
-- [使用域名和更改服务器 IP](#使用域名和更改服务器-ip)
+- [域名和更改服务器 IP](#域名和更改服务器-ip)
 - [VPN 内网 IP](#vpn-内网-ip)
-- [L2TP 内核支持](#l2tp-内核支持)
 - [更改 IPTables 规则](#更改-iptables-规则)
 
 ### 使用其他的 DNS 服务器
@@ -343,7 +344,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
 
-### 使用域名和更改服务器 IP
+### 域名和更改服务器 IP
 
 对于 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
@@ -362,10 +363,6 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 \*没有\* 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
-
-### L2TP 内核支持
-
-使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)`（或者 `linux-image-extra`）软件包并运行 `service xl2tpd restart`。
 
 ### 更改 IPTables 规则
 

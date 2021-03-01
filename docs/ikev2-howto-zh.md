@@ -40,6 +40,11 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
+<details>
+<summary>
+你可以指定一个域名和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
+</summary>
+
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
@@ -51,7 +56,7 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
-
+</details>
 <details>
 <summary>
 单击此处以查看 IKEv2 辅助脚本的详细使用信息。

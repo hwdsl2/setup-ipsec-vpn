@@ -286,6 +286,8 @@ For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
 
+Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
+
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
 ## Upgrade Libreswan
@@ -327,9 +329,8 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 *Read this in other languages: [English](README.md#advanced-usage), [简体中文](README-zh.md#高级用法).*
 
 - [Use alternative DNS servers](#use-alternative-dns-servers)
-- [Use a DNS name and server IP changes](#use-a-dns-name-and-server-ip-changes)
+- [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 - [Internal VPN IPs](#internal-vpn-ips)
-- [L2TP kernel support](#l2tp-kernel-support)
 - [Modify IPTables rules](#modify-iptables-rules)
 
 ### Use alternative DNS servers
@@ -343,7 +344,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
 
-### Use a DNS name and server IP changes
+### DNS name and server IP changes
 
 For `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
@@ -362,10 +363,6 @@ When connecting using `IPsec/L2TP` mode, the VPN server has internal IP `192.168
 When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server \*does not\* have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
-
-### L2TP kernel support
-
-Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
 
 ### Modify IPTables rules
 

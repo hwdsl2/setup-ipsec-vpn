@@ -40,6 +40,11 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
 
+<details>
+<summary>
+You may optionally specify a DNS name and/or custom DNS servers. Click here for details.
+</summary>
+
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
@@ -51,7 +56,7 @@ By default, IKEv2 clients are set to use <a href="https://developers.google.com/
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
-
+</details>
 <details>
 <summary>
 Click here to view detailed usage information for the IKEv2 helper script.
