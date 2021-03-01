@@ -248,13 +248,11 @@ sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+After successful installation, it is recommended to set up IKEv2. Refer to the <a href="docs/ikev2-howto.md" target="_blank">IKEv2 guide</a> for more details.
 
 ```bash
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
-
-The command above runs the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a> in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options.
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
@@ -326,9 +324,11 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 
 ## Advanced usage
 
+*Read this in other languages: [English](README.md#advanced-usage), [简体中文](README-zh.md#高级用法).*
+
 - [Use alternative DNS servers](#use-alternative-dns-servers)
-- [Use DNS names and server IP changes](#use-dns-names-and-server-ip-changes)
-- [Internal VPN IP addresses](#internal-vpn-ip-addresses)
+- [Use a DNS name and server IP changes](#use-a-dns-name-and-server-ip-changes)
+- [Internal VPN IPs](#internal-vpn-ips)
 - [L2TP kernel support](#l2tp-kernel-support)
 - [Modify IPTables rules](#modify-iptables-rules)
 
@@ -336,16 +336,16 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 
 Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
 
-Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a>. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1):
+Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a>. For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1):
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
 
-### Use DNS names and server IP changes
+### Use a DNS name and server IP changes
 
-For `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, you may use a DNS name (e.g. `vpn.example.com`) to connect to the VPN server instead of its IP address, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
+For `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
 For `IKEv2` mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
 
@@ -355,13 +355,13 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 
 Alternatively, you may customize IKEv2 setup options by running the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">helper script</a> without the `--auto` parameter.
 
-### Internal VPN IP addresses
+### Internal VPN IPs
 
-When connecting using `IPsec/L2TP` mode, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
+When connecting using `IPsec/L2TP` mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
 
 When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server \*does not\* have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
-You may use these internal VPN IPs for communication. However, note that the IPs assigned to clients are dynamic, and many VPN clients have firewalls that may block such traffic.
+You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
 ### L2TP kernel support
 

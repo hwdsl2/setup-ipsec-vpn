@@ -248,13 +248,11 @@ sh vpn.sh
 ```
 </details>
 
-在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+在安装成功之后，推荐配置 IKEv2。更多信息请参见 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2 指南</a>。
 
 ```bash
 wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 ```
-
-以上命令使用自动模式和默认选项运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">IKEv2 辅助脚本</a>。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
@@ -286,7 +284,7 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 对于有外部防火墙的服务器（比如 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>。
 
-在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
+在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，请看 [这里](#使用其他的-dns-服务器)。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
@@ -326,9 +324,11 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 
 ## 高级用法
 
+*其他语言版本: [English](README.md#advanced-usage), [简体中文](README-zh.md#高级用法).*
+
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
-- [使用域名和服务器 IP 更改](#使用域名和服务器-ip-更改)
-- [VPN 内网 IP 地址](#vpn-内网-ip-地址)
+- [使用域名和更改服务器 IP](#使用域名和更改服务器-ip)
+- [VPN 内网 IP](#vpn-内网-ip)
 - [L2TP 内核支持](#l2tp-内核支持)
 - [更改 IPTables 规则](#更改-iptables-规则)
 
@@ -336,14 +336,14 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 
 在 VPN 已连接时，客户端配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。如果偏好其它的域名解析服务，你可以编辑以下文件：`/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` 和 `/etc/ipsec.d/ikev2.conf`（如果存在），并替换 `8.8.8.8` 和 `8.8.4.4`。然后运行 `service ipsec restart` 和 `service xl2tpd restart`。
 
-高级用户可以在运行 VPN 安装脚本和 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">IKEv2 辅助脚本</a>时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1)：
+高级用户可以在运行 VPN 安装脚本和 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">IKEv2 辅助脚本</a> 时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1)：
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 ```
 
-### 使用域名和服务器 IP 更改
+### 使用域名和更改服务器 IP
 
 对于 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
@@ -355,13 +355,13 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 
 另外，你也可以自定义 IKEv2 安装选项，通过在运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">辅助脚本</a> 时去掉 `--auto` 参数来实现。
 
-### VPN 内网 IP 地址
+### VPN 内网 IP
 
-在使用 `IPsec/L2TP` 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+在使用 `IPsec/L2TP` 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有内网 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
 
 在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 \*没有\* 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
-你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为客户端分配 IP 是动态的，而且许多 VPN 客户端的防火墙可能不允许这些流量。
+你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
 
 ### L2TP 内核支持
 
