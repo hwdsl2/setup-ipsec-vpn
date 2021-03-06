@@ -493,7 +493,7 @@ To customize IKEv2 or client options, run this script without arguments.
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
      -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
-     -k rsa -g 4096 -v 120 \
+     -k rsa -v 120 \
      -d sql:/etc/ipsec.d -t "CT,," -2
    ```
 
@@ -515,7 +515,7 @@ To customize IKEv2 or client options, run this script without arguments.
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
      -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
-     -k rsa -g 4096 -v 120 \
+     -k rsa -v 120 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth \
@@ -536,7 +536,7 @@ To customize IKEv2 or client options, run this script without arguments.
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
      -s "O=IKEv2 VPN,CN=vpnclient" \
-     -k rsa -g 4096 -v 120 \
+     -k rsa -v 120 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth,clientAuth -8 "vpnclient"
