@@ -756,7 +756,7 @@ cat > "$mc_file" <<EOF
           <key>DiffieHellmanGroup</key>
           <integer>14</integer>
           <key>EncryptionAlgorithm</key>
-          <string>AES-256-GCM</string>
+          <string>AES-128-GCM</string>
           <key>LifeTimeInMinutes</key>
           <integer>1410</integer>
         </dict>
@@ -915,7 +915,7 @@ cat > "$sswan_file" <<EOF
     "rsa-pss": "true"
   },
   "ike-proposal": "aes256-sha256-modp2048",
-  "esp-proposal": "aes256gcm16"
+  "esp-proposal": "aes128gcm16"
 }
 EOF
 
