@@ -128,7 +128,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### OS X (macOS)
 
-首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在系统偏好设置 -> 描述文件中。
+首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。在完成之后，检查并确保 "IKEv2 VPN" 显示在系统偏好设置 -> 描述文件中。
 
 要连接到 VPN：
 
@@ -180,7 +180,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 使用 iTunes 的 "文件共享" 功能上传到设备，然后打开 iOS 设备上的 "文件" 应用程序，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" 应用程序中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
-在完成之后，检查并确保 "IKEv2 VPN configuration" 显示在设置 -> 通用 -> 描述文件中。
+在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> 描述文件中。
 
 要连接到 VPN：
 

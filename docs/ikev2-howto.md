@@ -128,7 +128,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### OS X (macOS)
 
-First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. When finished, check to make sure "IKEv2 VPN configuration" is listed under System Preferences -> Profiles.
+First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
 To connect to the VPN:
 
@@ -180,7 +180,7 @@ First, securely transfer the generated `.mobileconfig` file to your iOS device, 
 1. Upload to your device using "File Sharing" in iTunes, then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to "Settings" to import, or
 1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
 
-When finished, check to make sure "IKEv2 VPN configuration" is listed under Settings -> General -> Profile(s).
+When finished, check to make sure "IKEv2 VPN" is listed under Settings -> General -> Profile(s).
 
 To connect to the VPN:
 

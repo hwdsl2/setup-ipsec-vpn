@@ -870,7 +870,7 @@ $ca_base64
     </dict>
   </array>
   <key>PayloadDisplayName</key>
-  <string>IKEv2 VPN configuration ($server_addr)</string>
+  <string>IKEv2 VPN ($server_addr)</string>
   <key>PayloadIdentifier</key>
   <string>com.apple.vpn.managed.$(uuidgen)</string>
   <key>PayloadRemovalDisallowed</key>
@@ -905,7 +905,7 @@ create_android_profile() {
 cat > "$sswan_file" <<EOF
 {
   "uuid": "$uuid2",
-  "name": "IKEv2 VPN profile ($server_addr)",
+  "name": "IKEv2 VPN ($server_addr)",
   "type": "ikev2-cert",
   "remote": {
     "addr": "$server_addr"
