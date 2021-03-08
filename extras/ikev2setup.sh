@@ -64,7 +64,6 @@ check_os_type() {
         ;;
       *)
         exiterr "This script only supports Ubuntu, Debian, CentOS/RHEL 7/8 and Amazon Linux 2."
-        exit 1
         ;;
     esac
     os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
