@@ -1135,8 +1135,18 @@ EOF
 }
 
 print_client_info() {
-cat <<EOF
+  if [ "$in_container" = "0" ]; then
+cat <<'EOF'
 Client configuration is available at:
+EOF
+  else
+cat <<'EOF'
+Client configuration is available inside the
+Docker container at:
+EOF
+  fi
+
+cat <<EOF
 
 $export_dir$client_name.p12 (for Windows)
 $export_dir$client_name.sswan (for Android)
