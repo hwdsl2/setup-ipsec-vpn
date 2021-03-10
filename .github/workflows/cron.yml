@@ -1,39 +1,14 @@
-name: vpn test
+name: vpn test cron
 
 on:
   push:
     branches: [master]
     paths:
-      - '**.sh'
-      - '.github/workflows/main.yml'
+      - '.github/workflows/cron.yml'
+  schedule:
+    - cron: '25 2 * * 0,4'
 
 jobs:
-  shellcheck:
-    runs-on: ubuntu-20.04
-    if: github.repository_owner == 'hwdsl2'
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-      - name: Check
-        if: success()
-        run: |
-          if [ ! -x /usr/bin/shellcheck ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install shellcheck
-          fi
-
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpnsetup.sh
-
-          export SHELLCHECK_OPTS="-e SC1091,SC1117"
-          shellcheck --version
-          shopt -s globstar
-          ls -ld -- **/*.sh
-          shellcheck **/*.sh
-
   test_set_1:
     runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
@@ -46,9 +21,6 @@ jobs:
     steps:
       - name: Build
         run: |
-          echo "Waiting 60 seconds..."
-          sleep 60
-
           mkdir -p "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
           cd "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
 
@@ -425,9 +397,6 @@ jobs:
     steps:
       - name: Test
         run: |
-          echo "Waiting 60 seconds..."
-          sleep 60
-
           mkdir -p /opt/src
           cd /opt/src
           echo "# hwdsl2" > run.sh
