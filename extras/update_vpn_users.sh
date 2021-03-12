@@ -24,6 +24,9 @@ YOUR_PASSWORDS=''
 # YOUR_USERNAMES='username1 username2'
 # YOUR_PASSWORDS='password1 password2'
 
+# WARNING: *ALL* existing VPN users will be removed
+#          and replaced with the users listed here.
+
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -41,29 +44,19 @@ if [ "$(id -u)" != 0 ]; then
   exiterr "Script must be run as root. Try 'sudo sh $0'"
 fi
 
-if [ ! -f "/etc/ppp/chap-secrets" ] || [ ! -f "/etc/ipsec.d/passwd" ]; then
+if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf \
+  || [ ! -f /etc/ppp/chap-secrets ] || [ ! -f /etc/ipsec.d/passwd ]; then
 cat 1>&2 <<'EOF'
-Error: File /etc/ppp/chap-secrets and/or /etc/ipsec.d/passwd do not exist!
-       Your must first set up the VPN server before updating VPN users.
+Error: Your must first set up the IPsec VPN server before updating VPN users.
        See: https://github.com/hwdsl2/setup-ipsec-vpn
 EOF
   exit 1
 fi
 
-if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-cat 1>&2 <<'EOF'
-Error: This script can only be used with VPN servers created using:
-       https://github.com/hwdsl2/setup-ipsec-vpn
-EOF
-  exit 1
-fi
+command -v openssl >/dev/null 2>&1 || exiterr "'openssl' not found. Abort."
 
 [ -n "$YOUR_USERNAMES" ] && VPN_USERS="$YOUR_USERNAMES"
 [ -n "$YOUR_PASSWORDS" ] && VPN_PASSWORDS="$YOUR_PASSWORDS"
-
-if [ -z "$VPN_USERS" ] || [ -z "$VPN_PASSWORDS" ]; then
-  exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
-fi
 
 VPN_USERS=$(noquotes "$VPN_USERS")
 VPN_USERS=$(onespace "$VPN_USERS")
@@ -71,6 +64,10 @@ VPN_USERS=$(noquotes2 "$VPN_USERS")
 VPN_PASSWORDS=$(noquotes "$VPN_PASSWORDS")
 VPN_PASSWORDS=$(onespace "$VPN_PASSWORDS")
 VPN_PASSWORDS=$(noquotes2 "$VPN_PASSWORDS")
+
+if [ -z "$VPN_USERS" ] || [ -z "$VPN_PASSWORDS" ]; then
+  exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
+fi
 
 if printf '%s' "$VPN_USERS $VPN_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
@@ -90,12 +87,13 @@ clear
 
 cat <<'EOF'
 
-Welcome! This script will update VPN user accounts
-for both IPsec/L2TP and IPsec/XAuth (Cisco IPsec).
+Welcome! This script will update VPN user accounts for both
+IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
 
-WARNING: ALL existing VPN users will be removed
-  and replaced with the users listed below.
-  Please double check before continuing!
+WARNING: *ALL* existing VPN users will be removed and replaced
+         with the users listed below.
+
+Please double check before continuing!
 
 ==================================================
 
@@ -118,6 +116,9 @@ done
 cat <<'EOF'
 
 Write these down. You'll need them to connect!
+
+Important notes:   https://git.io/vpnnotes
+Setup VPN clients: https://git.io/vpnclients
 
 ==================================================
 
@@ -165,8 +166,8 @@ chmod 600 /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 cat <<'EOF'
 Done!
 
-NOTE: All VPN users will share the same IPsec PSK.
-  If you forgot the PSK, check /etc/ipsec.secrets.
+Note: All VPN users will share the same IPsec PSK.
+      If you forgot the PSK, check /etc/ipsec.secrets.
 
 EOF
 
