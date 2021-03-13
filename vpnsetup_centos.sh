@@ -163,7 +163,7 @@ REPO4='--enablerepo=[Pp]ower[Tt]ools'
   set -x
   yum -y -q install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel curl-devel nss-tools \
-    flex bison gcc make ppp >/dev/null
+    flex bison gcc make util-linux ppp >/dev/null
 ) || exiterr2
 (
   set -x

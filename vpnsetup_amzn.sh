@@ -143,7 +143,7 @@ bigecho "Installing packages required for the VPN..."
   set -x
   yum -y -q install nss-devel nspr-devel pkgconfig pam-devel \
     libcap-ng-devel libselinux-devel curl-devel nss-tools \
-    flex bison gcc make ppp \
+    flex bison gcc make util-linux ppp \
     systemd-devel iptables-services \
     libevent-devel fipscheck-devel >/dev/null
 ) || exiterr2

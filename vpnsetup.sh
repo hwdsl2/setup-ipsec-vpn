@@ -185,7 +185,7 @@ bigecho "Installing packages required for the VPN..."
   apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
     libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
     libcurl4-nss-dev flex bison gcc make libnss3-tools \
-    libevent-dev libsystemd-dev ppp xl2tpd >/dev/null
+    libevent-dev libsystemd-dev uuid-runtime ppp xl2tpd >/dev/null
 ) || exiterr2
 
 bigecho "Installing Fail2Ban to protect SSH..."
