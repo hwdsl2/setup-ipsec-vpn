@@ -1,10 +1,6 @@
 name: vpn test cron
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - '.github/workflows/cron.yml'
   schedule:
     - cron: '25 2 * * 0,4'
 
