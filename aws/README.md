@@ -2,8 +2,6 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-> **Note:** This deployment template is still in **BETA**. You may encounter failures during deployment. In that case, please open a new issue.
-
 This template will create a fully-working IPsec VPN server on Amazon Elastic Compute Cloud (Amazon EC2). Please make sure to check the EC2 [pricing details](https://aws.amazon.com/ec2/pricing/on-demand/) before continuing. Using a `t2.micro` server instance for your deployment may qualify for the [AWS Free Tier](https://aws.amazon.com/free/).
 
 Available customization parameters:
