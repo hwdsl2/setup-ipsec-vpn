@@ -1,4 +1,4 @@
-# 使用 CloudFormation 在 Amazon EC2 上部署（测试版）
+# 使用 CloudFormation 在 Amazon EC2 上部署
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
