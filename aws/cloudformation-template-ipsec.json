@@ -431,7 +431,12 @@
                     "Ref": "VpnSubnet"
                 },
                 "AvailabilityZone": {
-                    "Fn::Sub": "${AWS::Region}a"
+                    "Fn::Select": [
+                        "0",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
                 },
                 "InstanceType": {
                     "Ref": "InstanceType"
