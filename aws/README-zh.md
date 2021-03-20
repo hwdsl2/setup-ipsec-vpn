@@ -1,8 +1,6 @@
-# 使用 CloudFormation 在 Amazon EC2 上部署（测试版）
+# 使用 CloudFormation 在 Amazon EC2 上部署
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
-
-> **注：** 此部署模板目前为 **测试版**，在使用时你可能会遇到错误。如果遇到问题，请创建一个新的 Issue。
 
 使用这个模板，你可以在 Amazon Elastic Compute Cloud（Amazon EC2）上快速搭建一个 IPsec VPN 服务器。在继续之前，请参见 EC2 [定价细节](https://aws.amazon.com/cn/ec2/pricing/on-demand/)。在部署中使用 `t2.micro` 服务器实例可能符合 [AWS 免费套餐](https://aws.amazon.com/cn/free/) 的资格。
 
@@ -20,7 +18,7 @@
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
-右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。
+右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。
 
 ![上传模板](upload-the-template.png)
 

@@ -1,8 +1,6 @@
-# Deploy to Amazon EC2 using CloudFormation (Beta)
+# Deploy to Amazon EC2 using CloudFormation
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
-
-> **Note:** This deployment template is still in **BETA**. You may encounter failures during deployment. In that case, please open a new issue.
 
 This template will create a fully-working IPsec VPN server on Amazon Elastic Compute Cloud (Amazon EC2). Please make sure to check the EC2 [pricing details](https://aws.amazon.com/ec2/pricing/on-demand/) before continuing. Using a `t2.micro` server instance for your deployment may qualify for the [AWS Free Tier](https://aws.amazon.com/free/).
 
@@ -20,7 +18,7 @@ Available customization parameters:
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
-Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new).
+Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new).
 
 ![Upload the template](upload-the-template.png)
 
