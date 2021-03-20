@@ -1,4 +1,4 @@
-# Deploy to Amazon EC2 using CloudFormation (Beta)
+# Deploy to Amazon EC2 using CloudFormation
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
