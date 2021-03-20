@@ -70,6 +70,16 @@ check_os_type() {
   fi
 }
 
+get_update_url() {
+  update_url=vpnupgrade
+  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
+    update_url=vpnupgrade-centos
+  elif [ "$os_type" = "amzn" ]; then
+    update_url=vpnupgrade-amzn
+  fi
+  update_url="https://git.io/$update_url"
+}
+
 check_swan_install() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
@@ -84,16 +94,18 @@ EOF
   fi
 
   case $swan_ver in
-    3.19|3.2[01235679]|3.3[12]|4.*)
+    3.2[35679]|3.3[12]|4.*)
       true
       ;;
     *)
+      get_update_url
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        This script requires one of these versions:
-       3.19-3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
-       To update Libreswan, see:
-       https://github.com/hwdsl2/setup-ipsec-vpn#upgrade-libreswan
+       3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
+       To update Libreswan, run:
+       wget $update_url -O vpnupgrade.sh
+       sudo sh vpnupgrade.sh
 EOF
       exit 1
       ;;
@@ -227,16 +239,11 @@ check_swan_ver() {
 }
 
 run_swan_update() {
-  update_url=vpnupgrade
-  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
-    update_url=vpnupgrade-centos
-  elif [ "$os_type" = "amzn" ]; then
-    update_url=vpnupgrade-amzn
-  fi
+  get_update_url
   TMPDIR=$(mktemp -d /tmp/vpnupg.XXX 2>/dev/null)
   if [ -d "$TMPDIR" ]; then
     set -x
-    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnupg.sh" "https://git.io/$update_url"; then
+    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnupg.sh" "$update_url"; then
       /bin/sh "$TMPDIR/vpnupg.sh"
     fi
     { set +x; } 2>&-
@@ -492,13 +499,7 @@ enter_custom_dns() {
 }
 
 check_mobike_support() {
-  mobike_support=0
-  case $swan_ver in
-    3.2[35679]|3.3[12]|4.*)
-      mobike_support=1
-      ;;
-  esac
-
+  mobike_support=1
   if uname -m | grep -qi -e '^arm' -e '^aarch64'; then
     modprobe -q configs
     if [ -f /proc/config.gz ]; then
@@ -1007,36 +1008,21 @@ cat >> /etc/ipsec.d/ikev2.conf <<EOF
 EOF
   fi
 
-  case $swan_ver in
-    3.2[35679]|3.3[12]|4.*)
-      if [ -n "$dns_server_2" ]; then
+  if [ -n "$dns_server_2" ]; then
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns="$dns_servers"
 EOF
-      else
+  else
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns=$dns_server_1
 EOF
-      fi
-      if [ "$mobike_enable" = "1" ]; then
-        echo "  mobike=yes" >> /etc/ipsec.d/ikev2.conf
-      else
-        echo "  mobike=no" >> /etc/ipsec.d/ikev2.conf
-      fi
-      ;;
-    3.19|3.2[012])
-      if [ -n "$dns_server_2" ]; then
-cat >> /etc/ipsec.d/ikev2.conf <<EOF
-  modecfgdns1=$dns_server_1
-  modecfgdns2=$dns_server_2
-EOF
-      else
-cat >> /etc/ipsec.d/ikev2.conf <<EOF
-  modecfgdns1=$dns_server_1
-EOF
-      fi
-      ;;
-  esac
+  fi
+
+  if [ "$mobike_enable" = "1" ]; then
+    echo "  mobike=yes" >> /etc/ipsec.d/ikev2.conf
+  else
+    echo "  mobike=no" >> /etc/ipsec.d/ikev2.conf
+  fi
 }
 
 apply_ubuntu1804_nss_fix() {
@@ -1106,14 +1092,9 @@ show_swan_update_info() {
     echo
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
     if [ "$in_container" = "0" ]; then
+      get_update_url
       echo "      To update, run:"
-      update_url=vpnupgrade
-      if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
-        update_url=vpnupgrade-centos
-      elif [ "$os_type" = "amzn" ]; then
-        update_url=vpnupgrade-amzn
-      fi
-      echo "      wget https://git.io/$update_url -O vpnupgrade.sh"
+      echo "      wget $update_url -O vpnupgrade.sh"
       echo "      sudo sh vpnupgrade.sh"
     else
       echo "      To update this Docker image, see: https://git.io/updatedockervpn"
