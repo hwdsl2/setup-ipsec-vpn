@@ -389,7 +389,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## 手动在 VPN 服务器上配置 IKEv2
 
-除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 <a href="../README-zh.md#升级libreswan" target="_blank">升级 Libreswan</a> 到最新版本。
+
+下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 

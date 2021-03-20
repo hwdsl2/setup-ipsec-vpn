@@ -389,7 +389,9 @@ In certain circumstances, you may need to revoke a previously generated VPN clie
 
 ## Manually set up IKEv2 on the VPN server
 
-As an alternative to using the [helper script](#using-helper-scripts), advanced users can manually set up IKEv2. The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
+As an alternative to using the [helper script](#using-helper-scripts), advanced users can manually set up IKEv2. Before continuing, it is recommended to <a href="../README.md#upgrade-libreswan" target="_blank">update Libreswan</a> to the latest version.
+
+The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
