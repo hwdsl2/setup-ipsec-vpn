@@ -291,7 +291,12 @@
                 "CidrBlock": "10.0.0.0/24",
                 "MapPublicIpOnLaunch": true,
                 "AvailabilityZone": {
-                    "Fn::Sub": "${AWS::Region}a"
+                    "Fn::Select": [
+                        "0",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
                 }
             },
             "Metadata": {
@@ -431,7 +436,12 @@
                     "Ref": "VpnSubnet"
                 },
                 "AvailabilityZone": {
-                    "Fn::Sub": "${AWS::Region}a"
+                    "Fn::Select": [
+                        "0",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
                 },
                 "InstanceType": {
                     "Ref": "InstanceType"
@@ -507,7 +517,12 @@
             "Type": "AWS::EC2::Volume",
             "Properties": {
                 "AvailabilityZone": {
-                    "Fn::Sub": "${AWS::Region}a"
+                    "Fn::Select": [
+                        "0",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
                 },
                 "Size": 8
             },
