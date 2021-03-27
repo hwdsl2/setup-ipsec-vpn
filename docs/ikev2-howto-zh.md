@@ -23,6 +23,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - OS X (macOS)
 - iOS (iPhone/iPad)
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
+- Linux
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
@@ -87,6 +88,7 @@ To customize IKEv2 or client options, run this script without arguments.
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
+* [Linux](#linux)
 
 ### Windows 7, 8.x 和 10
 
@@ -280,6 +282,63 @@ To customize IKEv2 or client options, run this script without arguments.
 1. **（重要）** 单击 **显示高级设置**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 </details>
+
+连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+
+### Linux
+
+在配置 Linux 客户端之前，你必须更改 VPN 服务器上的以下设置：编辑服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节的末尾添加 `authby=rsa-sha1`，开头必须空两格。保存文件并运行 `service ipsec restart`。
+
+要配置你的 Linux 计算机以作为客户端连接到 IKEv2，首先安装 NetworkManager 的 strongSwan 插件：
+
+```bash
+# Ubuntu and Debian
+sudo apt-get update
+sudo apt-get install network-manager-strongswan
+
+# Arch Linux
+sudo pacman -Syu  # 升级所有软件包
+sudo pacman -S networkmanager-strongswan
+
+# CentOS
+sudo yum install epel-release
+sudo yum --enablerepo=epel install NetworkManager-strongswan
+```
+
+下一步，将生成的 `.p12` 文件安全地从 VPN 服务器传送到你的 Linux 计算机。然后提取 CA 证书，客户端证书和私钥。将下面示例中的 `vpnclient.p12` 换成你的 `.p12` 文件名。
+
+```bash
+# 示例：提取 CA 证书，客户端证书和私钥。在完成后可以删除 .p12 文件。
+# 注：你将需要输入 import password，它可以在 IKEv2 辅助脚本的输出中找到。
+openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
+openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
+openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
+rm vpnclient.p12
+
+# （重要）保护证书和私钥文件
+sudo chown root.root ikev2vpnca.cer vpnclient.cer vpnclient.key
+sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
+```
+
+然后你可以创建并启用 VPN 连接：
+
+1. 进入 Settings -> Network -> VPN。单击 **+** 按钮。
+1. 选择 **IPsec/IKEv2 (strongswan)**。
+1. 在 **Name** 字段中输入任意内容。
+1. 在 **Gateway (Server)** 部分的 **Address** 字段中输入 `你的 VPN 服务器 IP`（或者域名）。
+1. 为 **Certificate** 字段选择 `ikev2vpnca.cer` 文件。
+1. 在 **Client** 部分的 **Authentication** 下拉菜单选择 **Certificate(/private key)**。
+1. 在 **Certificate** 下拉菜单（如果存在）选择 **Certificate/private key**。
+1. 为 **Certificate (file)** 字段选择 `vpnclient.cer` 文件。 
+1. 为 **Private key** 字段选择 `vpnclient.key` 文件。 
+1. 在 **Options** 部分，选中 **Request an inner IP address** 复选框。
+1. 在 **Cipher proposals (Algorithms)** 部分，选中 **Enable custom proposals** 复选框。
+1. 保持 **IKE** 字段空白。
+1. 在 **ESP** 字段中输入 `aes128gcm16`.
+1. 单击 **Add** 保存 VPN 连接信息。
+1. 启用 **VPN** 连接。
 
 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 

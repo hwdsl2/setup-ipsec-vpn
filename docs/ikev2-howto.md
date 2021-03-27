@@ -23,6 +23,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - OS X (macOS)
 - iOS (iPhone/iPad)
 - Android 4.x and newer (using the strongSwan VPN client)
+- Linux
 
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
@@ -87,6 +88,7 @@ To customize IKEv2 or client options, run this script without arguments.
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
+* [Linux](#linux)
 
 ### Windows 7, 8.x and 10
 
@@ -280,6 +282,65 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 </details>
+
+Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
+### Linux
+
+Before configuring Linux VPN clients, you must make the following change on the VPN server: Edit `/etc/ipsec.d/ikev2.conf` on the server. Append `authby=rsa-sha1` to the end of the `conn ikev2-cp` section, indented by two spaces. Save the file and run `service ipsec restart`.
+
+To configure your Linux computer to connect to IKEv2 as a VPN client, first install the strongSwan plugin for NetworkManager:
+
+```bash
+# Ubuntu and Debian
+sudo apt-get update
+sudo apt-get install network-manager-strongswan
+
+# Arch Linux
+sudo pacman -Syu  # upgrade all packages
+sudo pacman -S networkmanager-strongswan
+
+# CentOS
+sudo yum install epel-release
+sudo yum --enablerepo=epel install NetworkManager-strongswan
+```
+
+Next, securely transfer the generated `.p12` file from the VPN server to your Linux computer. After that, extract the CA certificate, client certificate and private key. Replace `vpnclient.p12` in the example below with the name of your `.p12` file.
+
+```bash
+# Example: Extract CA certificate, client certificate and private key.
+#          You may delete the .p12 file when finished.
+# Note: You will need to enter the import password, which can be found
+#       in the output of the IKEv2 helper script.
+openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
+openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
+openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
+rm vpnclient.p12
+
+# (Important) Protect certificate and private key files
+sudo chown root.root ikev2vpnca.cer vpnclient.cer vpnclient.key
+sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
+```
+
+You can then set up and enable the VPN connection:
+
+1. Go to Settings -> Network -> VPN. Click the **+** button.
+1. Select **IPsec/IKEv2 (strongswan)**.
+1. Enter anything you like in the **Name** field.
+1. In the **Gateway (Server)** section, enter `Your VPN Server IP` (or DNS name) for the **Address**.
+1. Select the `ikev2vpnca.cer` file for the **Certificate**.
+1. In the **Client** section, select **Certificate(/private key)** in the **Authentication** drop-down menu.
+1. Select **Certificate/private key** in the **Certificate** drop-down menu (if exists).
+1. Select the `vpnclient.cer` file for the **Certificate (file)**.
+1. Select the `vpnclient.key` file for the **Private key**.
+1. In the **Options** section, check the **Request an inner IP address** checkbox.
+1. In the **Cipher proposals (Algorithms)** section, check the **Enable custom proposals** checkbox.
+1. Leave the **IKE** field blank.
+1. Enter `aes128gcm16` in the **ESP** field.
+1. Click **Add** to save the VPN connection information.
+1. Turn the **VPN** switch ON.
 
 Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
 
