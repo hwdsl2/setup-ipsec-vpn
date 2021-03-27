@@ -320,6 +320,7 @@ openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
 rm vpnclient.p12
 
 # (Important) Protect certificate and private key files
+# Note: This step is optional, but strongly recommended.
 sudo chown root.root ikev2vpnca.cer vpnclient.cer vpnclient.key
 sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 ```

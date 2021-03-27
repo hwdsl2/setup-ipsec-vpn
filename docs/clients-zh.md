@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用更高效的 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
 
 在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
@@ -17,6 +17,8 @@
 * [故障排除](#故障排除)
 
 ## Windows
+
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐）。
 
 ### Windows 10 and 8.x
 
@@ -86,6 +88,8 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## OS X
 
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
 1. 从 **接口** 下拉菜单选择 **VPN**。
@@ -110,6 +114,8 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## Android
 
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+
 1. 启动 **设置** 应用程序。
 1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
 1. 单击 **VPN**。
@@ -132,6 +138,8 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 如果在连接过程中遇到错误，请参见 <a href="#故障排除">故障排除</a>。
 
 ## iOS
+
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -170,6 +178,8 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ## Linux
 
+**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐）。
+
 ### Ubuntu Linux
 
 Ubuntu 18.04 和更新版本用户可以使用 `apt` 安装 <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> 软件包，然后通过 GUI 配置 IPsec/L2TP VPN 客户端。Ubuntu 16.04 用户可能需要添加 `nm-l2tp` PPA，参见 <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">这里</a>。
@@ -198,7 +208,7 @@ VPN 连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_
 
 ### Fedora 和 CentOS
 
-Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用更高效的 [IPsec/XAuth](clients-xauth-zh.md#linux) 模式连接。
+Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 ### 其它 Linux
 
@@ -400,24 +410,24 @@ ipsec whack --trafficstatus
 
 ## 使用命令行配置 Linux VPN 客户端
 
-在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来使用命令行配置 Linux VPN 客户端。另外，你也可以 [使用图形界面](#linux) 配置。以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
+在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来使用命令行配置 Linux VPN 客户端。另外，你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者 [使用图形界面](#linux) 配置。以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 
 要配置 VPN 客户端，首先安装以下软件包：
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 apt-get update
-apt-get -y install strongswan xl2tpd net-tools
+apt-get install strongswan xl2tpd net-tools
 
-# CentOS & RHEL
-yum -y install epel-release
-yum --enablerepo=epel -y install strongswan xl2tpd net-tools
+# CentOS
+yum install epel-release
+yum --enablerepo=epel install strongswan xl2tpd net-tools
 
 # Fedora
-yum -y install strongswan xl2tpd net-tools
+yum install strongswan xl2tpd net-tools
 ```
 
-创建 VPN 变量 （替换为你自己的值）：
+创建 VPN 变量（替换为你自己的值）：
 
 ```bash
 VPN_SERVER_IP='你的VPN服务器IP'
@@ -451,7 +461,7 @@ EOF
 
 chmod 600 /etc/ipsec.secrets
 
-# For CentOS/RHEL & Fedora ONLY
+# For CentOS and Fedora ONLY
 mv /etc/strongswan/ipsec.conf /etc/strongswan/ipsec.conf.old 2>/dev/null
 mv /etc/strongswan/ipsec.secrets /etc/strongswan/ipsec.secrets.old 2>/dev/null
 ln -s /etc/ipsec.conf /etc/strongswan/ipsec.conf
@@ -510,10 +520,10 @@ service xl2tpd restart
 开始 IPsec 连接：
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 ipsec up myvpn
 
-# CentOS/RHEL & Fedora
+# CentOS and Fedora
 strongswan up myvpn
 ```
 
@@ -569,11 +579,11 @@ route del default dev ppp0
 要断开连接：
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 ipsec down myvpn
 
-# CentOS/RHEL & Fedora
+# CentOS and Fedora
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 strongswan down myvpn
 ```

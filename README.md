@@ -153,6 +153,8 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
+
 **Option 2:** Edit the script and provide your own VPN credentials:
 
 <details open>
@@ -196,6 +198,8 @@ sudo sh vpn.sh
 </details>
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
+
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
 
 **Option 3:** Define your VPN credentials as environment variables:
 
@@ -248,11 +252,7 @@ sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to set up IKEv2. Refer to the <a href="docs/ikev2-howto.md" target="_blank">IKEv2 guide</a> for more details.
-
-```bash
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
-```
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 

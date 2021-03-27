@@ -153,6 +153,8 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
+
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
 <details open>
@@ -196,6 +198,8 @@ sudo sh vpn.sh
 </details>
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
+
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
@@ -248,11 +252,7 @@ sh vpn.sh
 ```
 </details>
 
-在安装成功之后，推荐配置 IKEv2。更多信息请参见 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2 指南</a>。
-
-```bash
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
-```
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 

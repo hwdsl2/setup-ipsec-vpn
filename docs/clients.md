@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using the faster [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -17,6 +17,8 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 * [Troubleshooting](#troubleshooting)
 
 ## Windows
+
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended).
 
 ### Windows 10 and 8.x
 
@@ -86,6 +88,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## OS X
 
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
 1. Select **VPN** from the **Interface** drop-down menu.
@@ -109,6 +113,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Android
 
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+
 1. Launch the **Settings** application.
 1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
 1. Tap **VPN**.
@@ -131,6 +137,8 @@ Once connected, you will see a VPN icon in the notification bar. You can verify 
 If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
 
 ## iOS
+
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -169,6 +177,8 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Linux
 
+**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended).
+
 ### Ubuntu Linux
 
 Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package using `apt`, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 users may need to add the `nm-l2tp` PPA, read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>.
@@ -197,7 +207,7 @@ If you get an error when trying to connect, try <a href="https://github.com/nm-l
 
 ### Fedora and CentOS
 
-Fedora 28 (and newer) and CentOS 8/7 users can connect using the faster [IPsec/XAuth](clients-xauth.md#linux) mode.
+Fedora 28 (and newer) and CentOS 8/7 users can connect using [IPsec/XAuth](clients-xauth.md) mode.
 
 ### Other Linux
 
@@ -399,21 +409,21 @@ ipsec whack --trafficstatus
 
 ## Configure Linux VPN clients using the command line
 
-After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may configure [using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
+After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may [set up IKEv2](ikev2-howto.md) (recommended), or configure [using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 apt-get update
-apt-get -y install strongswan xl2tpd net-tools
+apt-get install strongswan xl2tpd net-tools
 
-# CentOS & RHEL
-yum -y install epel-release
-yum --enablerepo=epel -y install strongswan xl2tpd net-tools
+# CentOS
+yum install epel-release
+yum --enablerepo=epel install strongswan xl2tpd net-tools
 
 # Fedora
-yum -y install strongswan xl2tpd net-tools
+yum install strongswan xl2tpd net-tools
 ```
 
 Create VPN variables (replace with actual values):
@@ -450,7 +460,7 @@ EOF
 
 chmod 600 /etc/ipsec.secrets
 
-# For CentOS/RHEL & Fedora ONLY
+# For CentOS and Fedora ONLY
 mv /etc/strongswan/ipsec.conf /etc/strongswan/ipsec.conf.old 2>/dev/null
 mv /etc/strongswan/ipsec.secrets /etc/strongswan/ipsec.secrets.old 2>/dev/null
 ln -s /etc/ipsec.conf /etc/strongswan/ipsec.conf
@@ -509,10 +519,10 @@ service xl2tpd restart
 Start the IPsec connection:
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 ipsec up myvpn
 
-# CentOS/RHEL & Fedora
+# CentOS and Fedora
 strongswan up myvpn
 ```
 
@@ -567,11 +577,11 @@ route del default dev ppp0
 To disconnect:
 
 ```bash
-# Ubuntu & Debian
+# Ubuntu and Debian
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 ipsec down myvpn
 
-# CentOS/RHEL & Fedora
+# CentOS and Fedora
 echo "d myvpn" > /var/run/xl2tpd/l2tp-control
 strongswan down myvpn
 ```
