@@ -302,9 +302,12 @@ sudo apt-get install network-manager-strongswan
 sudo pacman -Syu  # 升级所有软件包
 sudo pacman -S networkmanager-strongswan
 
+# Fedora
+sudo yum install NetworkManager-strongswan-gnome
+
 # CentOS
 sudo yum install epel-release
-sudo yum --enablerepo=epel install NetworkManager-strongswan
+sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 ```
 
 下一步，将生成的 `.p12` 文件安全地从 VPN 服务器传送到你的 Linux 计算机。然后提取 CA 证书，客户端证书和私钥。将下面示例中的 `vpnclient.p12` 换成你的 `.p12` 文件名。

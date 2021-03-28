@@ -302,9 +302,12 @@ sudo apt-get install network-manager-strongswan
 sudo pacman -Syu  # upgrade all packages
 sudo pacman -S networkmanager-strongswan
 
+# Fedora
+sudo yum install NetworkManager-strongswan-gnome
+
 # CentOS
 sudo yum install epel-release
-sudo yum --enablerepo=epel install NetworkManager-strongswan
+sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 ```
 
 Next, securely transfer the generated `.p12` file from the VPN server to your Linux computer. After that, extract the CA certificate, client certificate and private key. Replace `vpnclient.p12` in the example below with the name of your `.p12` file.

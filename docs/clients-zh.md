@@ -419,12 +419,12 @@ ipsec whack --trafficstatus
 apt-get update
 apt-get install strongswan xl2tpd net-tools
 
+# Fedora
+yum install strongswan xl2tpd net-tools
+
 # CentOS
 yum install epel-release
 yum --enablerepo=epel install strongswan xl2tpd net-tools
-
-# Fedora
-yum install strongswan xl2tpd net-tools
 ```
 
 创建 VPN 变量（替换为你自己的值）：

@@ -418,12 +418,12 @@ To set up the VPN client, first install the following packages:
 apt-get update
 apt-get install strongswan xl2tpd net-tools
 
+# Fedora
+yum install strongswan xl2tpd net-tools
+
 # CentOS
 yum install epel-release
 yum --enablerepo=epel install strongswan xl2tpd net-tools
-
-# Fedora
-yum install strongswan xl2tpd net-tools
 ```
 
 Create VPN variables (replace with actual values):
