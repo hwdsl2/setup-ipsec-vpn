@@ -29,7 +29,7 @@ We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as th
 
 ## Quick start
 
-First, prepare your Linux server[\*](#quick-start-note) with a fresh install of one of the following OS.
+First, prepare your Linux server\* with a fresh install of one of the following OS.
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -67,7 +67,6 @@ Your VPN login details will be randomly generated, and displayed on the screen w
 
 For other installation options and how to set up VPN clients, read the sections below.
 
-<a name="quick-start-note"></a>
 \* A dedicated server or virtual private server (VPS). OpenVZ VPS is not supported.
 
 ## Features

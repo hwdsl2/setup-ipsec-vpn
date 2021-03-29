@@ -29,7 +29,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器[\*](#quick-start-note) 上全新安装以下系统之一。
+首先，在你的 Linux 服务器\* 上全新安装以下系统之一。
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -67,7 +67,6 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/
 
 如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
 
-<a name="quick-start-note"></a>
 \* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。
 
 ## 功能特性

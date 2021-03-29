@@ -217,8 +217,9 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 
 *Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
-* [Windows Error 809](#windows-error-809)
-* [Windows Error 628 or 766](#windows-error-628-or-766)
+* [Windows error 809](#windows-error-809)
+* [Windows error 789 or 691](#windows-error-789-or-691)
+* [Windows error 628 or 766](#windows-error-628-or-766)
 * [Windows 10 connecting](#windows-10-connecting)
 * [Windows 10 upgrades](#windows-10-upgrades)
 * [Windows 8/10 DNS leaks](#windows-810-dns-leaks)
@@ -232,7 +233,7 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 * [Other errors](#other-errors)
 * [Check logs and VPN status](#check-logs-and-vpn-status)
 
-### Windows Error 809
+### Windows error 809
 
 > Error 809: The network connection between your computer and the VPN server could not be established because the remote server is not responding. This could be because one of the network devices (e.g, firewalls, NAT, routers, etc) between your computer and the remote server is not configured to allow VPN connections. Please contact your Administrator or your service provider to determine which device may be causing the problem.
 
@@ -258,7 +259,15 @@ Although uncommon, some Windows systems disable IPsec encryption, causing the co
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
   ```
 
-### Windows Error 628 or 766
+### Windows error 789 or 691
+
+> Error 789: The L2TP connection attempt failed because the security layer encountered a processing error during initial negotiations with the remote computer.
+
+> Error 691: The remote connection was denied because the user name and password combination you provided is not recognized, or the selected authentication protocol is not permitted on the remote access server.
+
+For error 789, click [here](https://documentation.meraki.com/MX/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_789) for troubleshooting information. For error 691, you may try removing and recreating the VPN connection, by following the instructions in this document. Make sure that the VPN credentials are entered correctly.
+
+### Windows error 628 or 766
 
 > Error 628: The connection was terminated by the remote computer before it could be completed.
 

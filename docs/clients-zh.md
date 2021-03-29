@@ -219,6 +219,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 *其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 * [Windows 错误 809](#windows-错误-809)
+* [Windows 错误 789 或 691](#windows-错误-789-或-691)
 * [Windows 错误 628 或 766](#windows-错误-628-或-766)
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10 升级](#windows-10-升级)
@@ -258,6 +259,14 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
   ```
+
+### Windows 错误 789 或 691
+
+> 错误 789：L2TP 连接尝试失败，因为安全层在初始化与远程计算机的协商时遇到一个处理错误。
+
+> 错误 691：由于指定的用户名和/或密码无效而拒绝连接。下列条件可能会导致此情况：用户名和/或密码键入错误...
+
+对于错误 789，点击 [这里](https://documentation.meraki.com/MX/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_789) 查看故障排除信息。对于错误 691，你可以尝试删除并重新创建 VPN 连接，按照本文档中的步骤操作。请确保输入了正确的 VPN 登录凭证。
 
 ### Windows 错误 628 或 766
 
