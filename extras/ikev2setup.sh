@@ -84,8 +84,7 @@ check_swan_install() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
-    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan" \
-    || [ ! -f /etc/ppp/chap-secrets ] || [ ! -f /etc/ipsec.d/passwd ]; then
+    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up the IPsec VPN server before setting up IKEv2.
        See: https://github.com/hwdsl2/setup-ipsec-vpn
@@ -1107,7 +1106,7 @@ cat <<EOF
 
 ================================================
 
-IKEv2 VPN setup is now complete!
+IKEv2 setup successful. Details for IKEv2 mode:
 
 VPN server address: $server_addr
 VPN client name: $client_name
