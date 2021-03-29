@@ -110,7 +110,6 @@ fi
 
 bigecho "VPN setup in progress... Please be patient."
 
-# Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
@@ -158,6 +157,14 @@ bigecho "Installing Fail2Ban to protect SSH..."
   set -x
   yum --enablerepo=epel -y -q install fail2ban >/dev/null
 ) || exiterr2
+
+bigecho "Downloading IKEv2 script..."
+
+ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
+(
+  set -x
+  wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
+) || /bin/rm -f ikev2.sh
 
 bigecho "Downloading Libreswan..."
 
@@ -385,9 +392,6 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
   iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
-  # Uncomment to disallow traffic between VPN clients
-  # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
-  # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
   iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
   iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
