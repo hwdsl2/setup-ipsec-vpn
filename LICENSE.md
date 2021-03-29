@@ -1,8 +1,13 @@
 ### Creative Commons Attribution-ShareAlike 3.0 Unported License
 Link to license summary: https://creativecommons.org/licenses/by-sa/3.0/
 
-Copyright (C) 2014-2021 Lin Song    
-Based on the work of Thomas Sarlandie (Copyright 2012)
+Copyright (C) 2014-2021 [Lin Song](https://www.linkedin.com/in/linsongui)   
+Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
+
+See the [aws/](aws/) and [azure/](azure/) subfolders for their respective authors.
+
+The following four files (only) are licensed under the GPL:   
+[clients.md](docs/clients.md), [clients-zh.md](docs/clients-zh.md), [clients-xauth.md](docs/clients-xauth.md) and [clients-xauth-zh.md](docs/clients-xauth-zh.md)
 
 <p>THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS
 OF THIS CREATIVE COMMONS PUBLIC LICENSE ("CCPL" OR

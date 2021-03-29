@@ -138,3 +138,11 @@ sh update_vpn_users.sh
 # 将你的密码用 '单引号' 括起来
 openssl passwd -1 '密码1'
 ```
+
+## 授权协议
+
+版权所有 (C) 2016-2021 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a>   
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>   
+这个项目是以 <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">知识共享署名-相同方式共享3.0</a> 许可协议授权。   
+必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！
