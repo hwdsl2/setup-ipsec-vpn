@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
@@ -18,7 +18,7 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 
 ## Windows
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Windows 10 and 8.x
 
@@ -88,7 +88,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## OS X
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -113,7 +113,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Android
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Launch the **Settings** application.
 1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
@@ -138,7 +138,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## iOS
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended), or connect using [IPsec/XAuth mode](clients-xauth.md).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -177,7 +177,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ## Linux
 
-**Note:** You may also [set up IKEv2](ikev2-howto.md) (recommended).
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Ubuntu Linux
 
@@ -345,7 +345,7 @@ In addition, users running macOS Big Sur 11.0 should update to version 11.1 or n
 
 To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured.
 
-If you need the VPN to auto-reconnect when the device wakes up, you may <a href="ikev2-howto.md" target="_blank">set up IKEv2</a> and enable the "VPN On Demand" feature. Alternatively, you may try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
+If you need the VPN to auto-reconnect when the device wakes up, you may connect using [IKEv2](ikev2-howto.md) mode (recommended) and enable the "VPN On Demand" feature. Alternatively, you may try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
 
@@ -409,7 +409,7 @@ ipsec whack --trafficstatus
 
 ## Configure Linux VPN clients using the command line
 
-After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may [set up IKEv2](ikev2-howto.md) (recommended), or configure [using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
+After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may connect using [IKEv2](ikev2-howto.md) mode (recommended), or [configure using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 

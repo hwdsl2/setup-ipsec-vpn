@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](clients.md), [简体中文](clients-zh.md).*
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
@@ -18,7 +18,7 @@
 
 ## Windows
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐）。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
 ### Windows 10 and 8.x
 
@@ -88,7 +88,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## OS X
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -114,7 +114,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## Android
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 1. 启动 **设置** 应用程序。
 1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
@@ -139,7 +139,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 <a href="
 
 ## iOS
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者使用 [IPsec/XAuth 模式](clients-xauth-zh.md) 连接。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -178,7 +178,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ## Linux
 
-**注：** 你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐）。
+**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
 ### Ubuntu Linux
 
@@ -346,7 +346,7 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 
 为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 <a href="https://discussions.apple.com/thread/2333948" target="_blank">故意设计的</a> 并且不能被配置。
 
-如果需要 VPN 在设备唤醒后自动重连，你可以 <a href="ikev2-howto-zh.md" target="_blank">配置 IKEv2</a> 并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
+如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
 
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 和更新版本中不再可用。另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 <a href="https://support.google.com/android/answer/9089766?hl=zh-Hans" target="_blank">这里</a>。
 
@@ -410,7 +410,7 @@ ipsec whack --trafficstatus
 
 ## 使用命令行配置 Linux VPN 客户端
 
-在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来使用命令行配置 Linux VPN 客户端。另外，你也可以 [配置 IKEv2](ikev2-howto-zh.md)（推荐），或者 [使用图形界面](#linux) 配置。以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
+在成功 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a> 之后，按照下面的步骤来使用命令行配置 Linux VPN 客户端。另外，你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐），或者 [使用图形界面配置](#linux) 。以下步骤是基于 [Peter Sanford 的工作](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c)。这些命令必须在你的 VPN 客户端上使用 `root` 账户运行。
 
 要配置 VPN 客户端，首先安装以下软件包：
 

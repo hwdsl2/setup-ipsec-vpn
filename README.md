@@ -39,7 +39,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
@@ -49,7 +49,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
@@ -59,17 +59,11 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
-
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
-
-```bash
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
-```
 
 For other installation options and how to set up VPN clients, read the sections below.
 
@@ -153,7 +147,11 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **Option 2:** Edit the script and provide your own VPN credentials:
 
@@ -199,7 +197,11 @@ sudo sh vpn.sh
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **Option 3:** Define your VPN credentials as environment variables:
 
@@ -252,7 +254,11 @@ sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
+After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
@@ -363,6 +369,13 @@ When connecting using `IPsec/L2TP` mode, the VPN server has internal IP `192.168
 When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server \*does not\* have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
+
+Client-to-client traffic is allowed by default. If you want to \*disallow\* client-to-client traffic, run the following commands on the VPN server. Add them to `/etc/rc.local` to persist after reboot.
+
+```
+iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
+iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+```
 
 ### Modify IPTables rules
 

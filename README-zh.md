@@ -39,7 +39,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
@@ -49,7 +49,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
@@ -59,17 +59,11 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/src/ikev2.sh --auto
 ```
 </details>
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
-
-在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
-
-```bash
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
-```
 
 如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
 
@@ -153,7 +147,11 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
-在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
@@ -199,7 +197,11 @@ sudo sh vpn.sh
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
@@ -252,7 +254,11 @@ sh vpn.sh
 ```
 </details>
 
-在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>。
+在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
+
+```bash
+sudo bash /opt/src/ikev2.sh --auto
+```
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
@@ -363,6 +369,13 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 \*没有\* 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
+
+在默认配置下，允许客户端之间的流量。如果你想要 \*不允许\* 客户端之间的流量，可以在 VPN 服务器上运行以下命令。将它们添加到 `/etc/rc.local` 以便在重启后继续有效。
+
+```
+iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
+iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+```
 
 ### 更改 IPTables 规则
 
