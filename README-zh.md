@@ -336,6 +336,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](#域名和更改服务器-ip)
 - [VPN 内网 IP](#vpn-内网-ip)
+- [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 - [更改 IPTables 规则](#更改-iptables-规则)
 
 ### 使用其他的 DNS 服务器
@@ -375,6 +376,12 @@ sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### 仅限 IKEv2 的 VPN
+
+Libreswan 4.2 和更新版本支持 `ikev1-policy` 配置选项。使用此选项，高级用户可以设置仅限 IKEv2 的 VPN，即 VPN 服务器仅接受 IKEv2 连接，而 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
+
+要设置仅限 IKEv2 的 VPN，首先按照本自述文件中的说明安装 VPN 服务器并且配置 IKEv2。然后使用 `ipsec --version` 命令检查 Libreswan 版本并 [更新 Libreswan](#升级libreswan)（如果需要）。下一步，编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 
 ### 更改 IPTables 规则
 

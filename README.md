@@ -336,6 +336,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh && sudo sh vpnupgrade.sh
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 - [Internal VPN IPs](#internal-vpn-ips)
+- [IKEv2 only VPN](#ikev2-only-vpn)
 - [Modify IPTables rules](#modify-iptables-rules)
 
 ### Use alternative DNS servers
@@ -375,6 +376,12 @@ Client-to-client traffic is allowed by default. If you want to \*disallow\* clie
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### IKEv2 only VPN
+
+Libreswan 4.2 and newer versions support the `ikev1-policy` config option. Using this option, advanced users can set up an IKEv2-only VPN, i.e. only IKEv2 connections are accepted by the VPN server, while IKEv1 connections (including the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes) are dropped.
+
+To set up an IKEv2-only VPN, first install the VPN server and set up IKEv2 using instructions in this README. Then check Libreswan version using `ipsec --version`, and [update Libreswan](#upgrade-libreswan) if needed. After that, edit `/etc/ipsec.conf` on the VPN server. Append `ikev1-policy=drop` to the end of the `config setup` section, indented by two spaces. Save the file and run `service ipsec restart`. When finished, you can run `ipsec status` to verify that only the `ikev2-cp` connection is enabled.
 
 ### Modify IPTables rules
 
