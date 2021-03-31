@@ -237,6 +237,8 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 
 > Error 809: The network connection between your computer and the VPN server could not be established because the remote server is not responding. This could be because one of the network devices (e.g, firewalls, NAT, routers, etc) between your computer and the remote server is not configured to allow VPN connections. Please contact your Administrator or your service provider to determine which device may be causing the problem.
 
+**Note:** The registry change below is only required if you use IPsec/L2TP mode to connect to the VPN. It is NOT required for the [IKEv2](ikev2-howto.md) and [IPsec/XAuth](clients-xauth.md) modes.
+
 To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. **You must reboot your PC when finished.**
 
 - For Windows Vista, 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
