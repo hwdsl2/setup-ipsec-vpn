@@ -17,6 +17,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
 bigecho() { echo "## $1"; }
+bigecho2() { printf '\e[2K\r%s' "## $1"; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
@@ -294,7 +295,6 @@ select_swan_update() {
 }
 
 show_welcome_message() {
-  clear
 cat <<'EOF'
 Welcome! Use this script to set up IKEv2 after setting up your own IPsec VPN server.
 Alternatively, you may manually set up IKEv2. See: https://git.io/ikev2
@@ -334,7 +334,7 @@ get_export_dir() {
 }
 
 get_server_ip() {
-  bigecho "Trying to auto discover IP of this server..."
+  bigecho2 "Trying to auto discover IP of this server..."
   public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
   check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 }
@@ -373,6 +373,7 @@ enter_server_address() {
     done
   else
     get_server_ip
+    echo
     echo
     read -rp "Enter the IPv4 address of this VPN server: [$public_ip] " server_addr
     [ -z "$server_addr" ] && server_addr="$public_ip"
@@ -528,15 +529,15 @@ check_mobike_support() {
     fi
   fi
 
-  echo -n "## Checking for MOBIKE support... "
   if [ "$mobike_support" = "1" ]; then
-    echo "available"
+    bigecho2 "Checking for MOBIKE support... available"
   else
-    echo "not available"
+    bigecho2 "Checking for MOBIKE support... not available"
   fi
 }
 
 select_mobike() {
+  echo
   mobike_enable=0
   if [ "$mobike_support" = "1" ]; then
     echo
@@ -598,7 +599,7 @@ select_menu_option() {
 
 confirm_setup_options() {
 cat <<EOF
-Below are the IKEv2 setup options you selected.
+We are ready to set up IKEv2 now. Below are the setup options you selected.
 Please double check before continuing!
 
 ======================================
@@ -631,7 +632,7 @@ DNS server(s): $dns_servers
 
 EOF
 
-  printf "We are ready to set up IKEv2 now. Do you want to continue? [y/N] "
+  printf "Do you want to continue? [y/N] "
   read -r response
   case $response in
     [yY][eE][sS]|[yY])
@@ -645,7 +646,7 @@ EOF
 }
 
 create_client_cert() {
-  bigecho "Generating client certificate..."
+  bigecho2 "Generating client certificate..."
 
   sleep $((RANDOM % 3 + 1))
 
@@ -659,10 +660,12 @@ create_client_cert() {
 }
 
 export_p12_file() {
-  bigecho "Creating client configuration..."
+  bigecho2 "Creating client configuration..."
 
   if [ "$use_own_password" = "1" ]; then
 cat <<'EOF'
+
+
 Enter a *secure* password to protect the client configuration files.
 When importing into an iOS or macOS device, this password cannot be empty.
 
@@ -687,39 +690,24 @@ EOF
 
 install_base64_uuidgen() {
   if ! command -v base64 >/dev/null 2>&1 || ! command -v uuidgen >/dev/null 2>&1; then
-    bigecho "Installing required packages..."
+    bigecho2 "Installing required packages..."
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
-      (
-        set -x
-        apt-get -yqq update
-      ) || exiterr "'apt-get update' failed."
+      apt-get -yqq update || exiterr "'apt-get update' failed."
     fi
   fi
   if ! command -v base64 >/dev/null 2>&1; then
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
-      (
-        set -x
-        apt-get -yqq install coreutils >/dev/null
-      ) || exiterr "'apt-get install' failed."
+      apt-get -yqq install coreutils >/dev/null || exiterr "'apt-get install' failed."
     else
-      (
-        set -x
-        yum -y -q install coreutils >/dev/null
-      ) || exiterr "'yum install' failed."
+      yum -y -q install coreutils >/dev/null || exiterr "'yum install' failed."
     fi
   fi
   if ! command -v uuidgen >/dev/null 2>&1; then
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
-      (
-        set -x
-        apt-get -yqq install uuid-runtime >/dev/null
-      ) || exiterr "'apt-get install' failed."
+      apt-get -yqq install uuid-runtime >/dev/null || exiterr "'apt-get install' failed."
     else
-      (
-        set -x
-        yum -y -q install util-linux >/dev/null
-      ) || exiterr "'yum install' failed."
+      yum -y -q install util-linux >/dev/null || exiterr "'yum install' failed."
     fi
   fi
 }
@@ -925,7 +913,7 @@ EOF
 }
 
 create_ca_server_certs() {
-  bigecho "Generating CA and server certificates..."
+  bigecho2 "Generating CA and server certificates..."
 
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -x -n "IKEv2 VPN CA" \
@@ -961,7 +949,7 @@ ANSWERS
 }
 
 add_ikev2_connection() {
-  bigecho "Adding a new IKEv2 connection..."
+  bigecho2 "Adding a new IKEv2 connection..."
 
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
     echo >> /etc/ipsec.conf
@@ -1033,16 +1021,14 @@ apply_ubuntu1804_nss_fix() {
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
     TMPDIR=$(mktemp -d /tmp/nss.XXX 2>/dev/null)
     if [ -d "$TMPDIR" ]; then
-      bigecho "Applying fix for NSS bug on Ubuntu 18.04..."
+      bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
       export DEBIAN_FRONTEND=noninteractive
-      set -x
       if wget -t 3 -T 30 -q -O "$TMPDIR/1.deb" "$nss_url1/$nss_deb1" \
         && wget -t 3 -T 30 -q -O "$TMPDIR/2.deb" "$nss_url1/$nss_deb2" \
         && wget -t 3 -T 30 -q -O "$TMPDIR/3.deb" "$nss_url2/$nss_deb3"; then
         apt-get -yqq update
         apt-get -yqq install "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb" >/dev/null
       fi
-      { set +x; } 2>&-
       /bin/rm -f "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb"
       /bin/rmdir "$TMPDIR"
     fi
@@ -1051,7 +1037,7 @@ apply_ubuntu1804_nss_fix() {
 
 restart_ipsec_service() {
   if [ "$in_container" = "0" ] || { [ "$in_container" = "1" ] && service ipsec status >/dev/null 2>&1; } then
-    bigecho "Restarting IPsec service..."
+    bigecho2 "Restarting IPsec service..."
 
     mkdir -p /run/pluto
     service ipsec restart 2>/dev/null
@@ -1060,6 +1046,7 @@ restart_ipsec_service() {
 
 print_client_added_message() {
 cat <<EOF
+
 
 ================================================
 
@@ -1073,6 +1060,7 @@ EOF
 
 print_client_exported_message() {
 cat <<EOF
+
 
 ================================================
 
@@ -1102,6 +1090,7 @@ show_swan_update_info() {
 }
 
 print_setup_complete_message() {
+  printf '\e[2K\r'
 cat <<EOF
 
 ================================================
@@ -1128,7 +1117,7 @@ EOF
 
 cat <<EOF
 
-$export_dir$client_name.p12 (for Windows)
+$export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
 EOF
@@ -1188,6 +1177,7 @@ delete_ikev2_conf() {
 }
 
 delete_certificates() {
+  echo
   bigecho "Deleting certificates and keys from the IPsec database..."
   certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' | tail -n +3 | cut -f1 -d ' ' | while read -r line; do
     certutil -F -d sql:/etc/ipsec.d -n "$line"
@@ -1198,6 +1188,7 @@ delete_certificates() {
 }
 
 print_ikev2_removed_message() {
+  echo
   echo "IKEv2 removed!"
 }
 
