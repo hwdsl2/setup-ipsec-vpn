@@ -161,14 +161,6 @@ esac
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
-bigecho "Adding the EPEL repository..."
-
-epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
-(
-  set -x
-  yum -y -q install epel-release >/dev/null || yum -y -q install "$epel_url" >/dev/null
-) || exiterr2
-
 bigecho "Installing required packages..."
 
 (
@@ -178,24 +170,21 @@ bigecho "Installing required packages..."
     flex bison gcc make wget sed tar >/dev/null
 ) || exiterr2
 
-REPO1='--enablerepo=*server-*optional*'
-REPO2='--enablerepo=*releases-optional*'
-REPO3='--enablerepo=[Pp]ower[Tt]ools'
-[ "$os_type" = "rhel" ] && REPO3='--enablerepo=codeready-builder-for-rhel-8-*'
+erp="--enablerepo"
+rp1="$erp=*server-*optional*"
+rp2="$erp=*releases-optional*"
+rp3="$erp=[Pp]ower[Tt]ools"
+[ "$os_type" = "rhel" ] && rp3="$erp=codeready-builder-for-rhel-8-*"
 
 if [ "$os_ver" = "7" ]; then
   (
     set -x
-    yum -y -q install systemd-devel >/dev/null
-  ) || exiterr2
-  (
-    set -x
-    yum "$REPO1" "$REPO2" -y -q install libevent-devel fipscheck-devel >/dev/null
+    yum "$rp1" "$rp2" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
   ) || exiterr2
 else
   (
     set -x
-    yum "$REPO3" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
+    yum "$rp3" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
   ) || exiterr2
 fi
 

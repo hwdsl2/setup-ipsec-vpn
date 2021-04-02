@@ -149,13 +149,6 @@ esac
 mkdir -p /opt/src
 cd /opt/src || exit 1
 
-bigecho "Adding the EPEL repository..."
-
-(
-  set -x
-  amazon-linux-extras install epel -y >/dev/null
-) || exiterr2
-
 bigecho "Installing required packages..."
 
 (

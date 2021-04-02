@@ -152,11 +152,12 @@ epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{
 
 bigecho "Installing packages required for the VPN..."
 
-REPO1='--enablerepo=epel'
-REPO2='--enablerepo=*server-*optional*'
-REPO3='--enablerepo=*releases-optional*'
-REPO4='--enablerepo=[Pp]ower[Tt]ools'
-[ "$os_type" = "rhel" ] && REPO4='--enablerepo=codeready-builder-for-rhel-8-*'
+erp="--enablerepo"
+rp1="$erp=epel"
+rp2="$erp=*server-*optional*"
+rp3="$erp=*releases-optional*"
+rp4="$erp=[Pp]ower[Tt]ools"
+[ "$os_type" = "rhel" ] && rp4="$erp=codeready-builder-for-rhel-8-*"
 
 (
   set -x
@@ -166,44 +167,41 @@ REPO4='--enablerepo=[Pp]ower[Tt]ools'
 ) || exiterr2
 (
   set -x
-  yum "$REPO1" -y -q install xl2tpd >/dev/null 2>&1
+  yum "$rp1" -y -q install xl2tpd >/dev/null 2>&1
 ) || exiterr2
 
 use_nft=0
+p1=systemd-devel
+p2=libevent-devel
+p3=fipscheck-devel
+p4=iptables-services
 if [ "$os_ver" = "7" ]; then
   (
     set -x
-    yum -y -q install systemd-devel iptables-services >/dev/null
-  ) || exiterr2
-  (
-    set -x
-    yum "$REPO2" "$REPO3" -y -q install libevent-devel fipscheck-devel >/dev/null
+    yum "$rp2" "$rp3" -y -q install $p1 $p2 $p3 $p4 >/dev/null
   ) || exiterr2
 else
   (
     set -x
-    yum "$REPO4" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
+    yum "$rp4" -y -q install $p1 $p2 $p3 >/dev/null
   ) || exiterr2
-  if systemctl is-active --quiet firewalld.service \
+  if systemctl is-active --quiet firewalld \
+    || systemctl is-active --quiet nftables \
     || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
     use_nft=1
-    (
-      set -x
-      yum -y -q install nftables >/dev/null
-    ) || exiterr2
-  else
-    (
-      set -x
-      yum -y -q install iptables-services >/dev/null
-    ) || exiterr2
+    p4=nftables
   fi
+  (
+    set -x
+    yum -y -q install $p4 >/dev/null
+  ) || exiterr2
 fi
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
 (
   set -x
-  yum "$REPO1" -y -q install fail2ban >/dev/null
+  yum "$rp1" -y -q install fail2ban >/dev/null
 ) || exiterr2
 
 bigecho "Downloading IKEv2 script..."
@@ -461,12 +459,14 @@ if [ "$ipt_flag" = "1" ]; then
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   if [ "$use_nft" = "1" ]; then
     for vport in 500 4500 1701; do
-        nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept
+      nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept 2>/dev/null
+      nft insert rule inet nftables_svc allow udp dport "$vport" accept 2>/dev/null
+    done
+    for vnet in "$L2TP_NET" "$XAUTH_NET"; do
+      for vdir in saddr daddr; do
+        nft insert rule inet firewalld filter_FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
+        nft insert rule inet nftables_svc FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
       done
-      for vnet in "$L2TP_NET" "$XAUTH_NET"; do
-        for vdir in saddr daddr; do
-          nft insert rule inet firewalld filter_FORWARD ip "$vdir" "$vnet" accept
-        done
     done
     echo "flush ruleset" >> "$IPT_FILE"
     nft list ruleset >> "$IPT_FILE"
