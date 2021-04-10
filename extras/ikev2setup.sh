@@ -144,9 +144,22 @@ EOF
   exit 1
 }
 
+check_ikev2_exists() {
+  grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]
+}
+
+check_client_name() {
+  ! { [ "${#client_name}" -gt "64" ] || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    || case $client_name in -*) true;; *) false;; esac; }
+}
+
+check_client_cert_exists() {
+  certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1
+}
+
 check_arguments() {
   if [ "$use_defaults" = "1" ]; then
-    if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
+    if check_ikev2_exists; then
       echo "Warning: Ignoring parameter '--auto'. Use '-h' for usage information." >&2
       echo >&2
     fi
@@ -155,39 +168,27 @@ check_arguments() {
     show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient' or '--listclients'."
   fi
   if [ "$add_client_using_defaults" = "1" ]; then
-    if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-      exiterr "You must first set up IKEv2 before adding a new client."
-    fi
-    if [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
-      || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-      || case $client_name in -*) true;; *) false;; esac; then
+    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before adding a new client."
+    if [ -z "$client_name" ] || ! check_client_name; then
       exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
-    elif certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; then
+    elif check_client_cert_exists; then
       exiterr "Invalid client name. Client '$client_name' already exists."
     fi
   fi
   if [ "$export_client_using_defaults" = "1" ]; then
-    if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-      exiterr "You must first set up IKEv2 before exporting a client configuration."
-    fi
+    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before exporting a client configuration."
     get_server_address
-    if [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
-      || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    if [ -z "$client_name" ] || ! check_client_name \
       || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-      || case $client_name in -*) true;; *) false;; esac \
-      || ! certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; then
+      || ! check_client_cert_exists; then
       exiterr "Invalid client name, or client does not exist."
     fi
   fi
   if [ "$list_clients" = "1" ]; then
-    if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-      exiterr "You must first set up IKEv2 before listing clients."
-    fi
+    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before listing clients."
   fi
   if [ "$remove_ikev2" = "1" ]; then
-    if ! grep -qs "conn ikev2-cp" /etc/ipsec.conf && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-      exiterr "Cannot remove IKEv2 because it has not been set up on this server."
-    fi
+    ! check_ikev2_exists && exiterr "Cannot remove IKEv2 because it has not been set up on this server."
     if [ "$((add_client_using_defaults + export_client_using_defaults + list_clients + use_defaults))" -gt 0 ]; then
       show_usage "Invalid parameters. '--removeikev2' cannot be specified with other parameters."
     fi
@@ -216,14 +217,6 @@ check_ca_cert_exists() {
 check_server_cert_exists() {
   if certutil -L -d sql:/etc/ipsec.d -n "$server_addr" >/dev/null 2>&1; then
     echo "Error: Certificate '$server_addr' already exists." >&2
-    echo "Abort. No changes were made." >&2
-    exit 1
-  fi
-}
-
-check_client_cert_exists() {
-  if certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; then
-    echo "Error: Client '$client_name' already exists." >&2
     echo "Abort. No changes were made." >&2
     exit 1
   fi
@@ -390,13 +383,8 @@ enter_client_name() {
   echo "Provide a name for the IKEv2 VPN client."
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: " client_name
-  while [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
-    || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-    || case $client_name in -*) true;; *) false;; esac \
-    || certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
-    if [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
-      || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-      || case $client_name in -*) true;; *) false;; esac; then
+  while [ -z "$client_name" ] || ! check_client_name || check_client_cert_exists; do
+    if [ -z "$client_name" ] || ! check_client_name; then
       echo "Invalid client name."
     else
       echo "Invalid client name. Client '$client_name' already exists."
@@ -411,13 +399,8 @@ enter_client_name_with_defaults() {
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: [vpnclient] " client_name
   [ -z "$client_name" ] && client_name=vpnclient
-  while [ "${#client_name}" -gt "64" ] \
-    || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-    || case $client_name in -*) true;; *) false;; esac \
-    || certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
-      if [ "${#client_name}" -gt "64" ] \
-        || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-        || case $client_name in -*) true;; *) false;; esac; then
+  while ! check_client_name || check_client_cert_exists; do
+      if ! check_client_name; then
         echo "Invalid client name."
       else
         echo "Invalid client name. Client '$client_name' already exists."
@@ -433,11 +416,9 @@ enter_client_name_for_export() {
   get_server_address
   echo
   read -rp "Enter the name of the IKEv2 client to export: " client_name
-  while [ -z "$client_name" ] || [ "${#client_name}" -gt "64" ] \
-    || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+  while [ -z "$client_name" ] || ! check_client_name \
     || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-    || case $client_name in -*) true;; *) false;; esac \
-    || ! certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1; do
+    || ! check_client_cert_exists; do
     echo "Invalid client name, or client does not exist."
     read -rp "Enter the name of the IKEv2 client to export: " client_name
   done
@@ -1283,7 +1264,7 @@ ikev2setup() {
     exit 0
   fi
 
-  if grep -qs "conn ikev2-cp" /etc/ipsec.conf || [ -f /etc/ipsec.d/ikev2.conf ]; then
+  if check_ikev2_exists; then
     select_menu_option
     case $selected_option in
       1)
@@ -1348,6 +1329,14 @@ ikev2setup() {
   else
     check_server_dns_name
     check_custom_dns
+    if [ -n "$VPN_CLIENT_NAME" ]; then
+      client_name="$VPN_CLIENT_NAME"
+      check_client_name || exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+    else
+      client_name=vpnclient
+    fi
+    check_client_cert_exists && exiterr "Client '$client_name' already exists."
+    client_validity=120
     show_start_message
     if [ -n "$VPN_DNS_NAME" ]; then
       use_dns_name=1
@@ -1359,9 +1348,6 @@ ikev2setup() {
       server_addr="$public_ip"
     fi
     check_server_cert_exists
-    client_name=vpnclient
-    check_client_cert_exists
-    client_validity=120
     if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
       dns_server_1="$VPN_DNS_SRV1"
       dns_server_2="$VPN_DNS_SRV2"
