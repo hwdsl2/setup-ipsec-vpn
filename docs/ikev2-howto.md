@@ -29,8 +29,6 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 ## Using helper scripts
 
-**New:** For macOS and iOS clients, the helper script can now create .mobileconfig files to simplify client setup and improve VPN performance.
-
 **Important:** Before continuing, you should have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">updated Libreswan</a>. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
 
 Use this helper script to automatically set up IKEv2 on the VPN server:
@@ -43,13 +41,19 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 
 <details>
 <summary>
-You may optionally specify a DNS name and/or custom DNS servers. Click here for details.
+You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
 </summary>
 
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+
+```
+sudo VPN_CLIENT_NAME='your_client_name' bash ikev2.sh --auto
 ```
 
 By default, IKEv2 clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
@@ -363,6 +367,46 @@ To generate certificates for additional IKEv2 clients, just run the [helper scri
 ### Export configuration for an existing client
 
 By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, run the helper script again and select the appropriate option. Refer to the usage information above.
+
+### Delete a client certificate
+
+**Important:** Deleting a client certificate from the IPsec database **WILL NOT** prevent VPN client(s) from connecting using that certificate! For this use case, you **MUST** [revoke the client certificate](#revoke-a-client-certificate) instead of deleting it.
+
+<details>
+<summary>
+First, read the important note above. Then click here for instructions.
+</summary>
+
+**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below.
+
+To delete a client certificate from the IPsec database:
+
+1. List certificates in the IPsec database:
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d
+   ```
+
+   Example output:
+
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
+
+   IKEv2 VPN CA                                       CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient                                          u,u,u
+   ```
+
+1. Delete the client certificate and private key. Replace "Nickname" below with the nickname of the client certificate you want to delete, e.g. `vpnclient`.
+
+   ```bash
+   certutil -F -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -D -d sql:/etc/ipsec.d -n "Nickname" 2>/dev/null
+   ```
+
+1. (Optional) Delete the previously generated client configuration files (`.p12`, `.mobileconfig` and `.sswan` files) for this VPN client, if any.
+</details>
 
 ### Revoke a client certificate
 

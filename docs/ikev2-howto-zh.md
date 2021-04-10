@@ -29,8 +29,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 使用辅助脚本
 
-**新：** 辅助脚本现在可以为 macOS 和 iOS 客户端创建 .mobileconfig 文件，以简化客户端设置并提高 VPN 性能。
-
 **重要：** 在继续之前，你应该已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）<a href="../README-zh.md#升级libreswan" target="_blank">升级 Libreswan</a>。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
 
 使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
@@ -43,13 +41,19 @@ wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
 
 <details>
 <summary>
-你可以指定一个域名和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
+你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
 </summary>
 
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+```
+
+类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
+
+```
+sudo VPN_CLIENT_NAME='your_client_name' bash ikev2.sh --auto
 ```
 
 在 VPN 已连接时，IKEv2 客户端默认配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
@@ -361,6 +365,46 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 ### 导出一个已有的客户端的配置
 
 在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，重新运行辅助脚本并选择适当的选项。参见上面的使用信息。
+
+### 删除一个客户端证书
+
+**重要：** 从 IPsec 数据库中删除一个客户端证书 **并不能** 阻止 VPN 客户端使用该证书连接！对于此用例，你 **必须** [吊销该客户端证书](#吊销一个客户端证书)，而不是删除证书。
+
+<details>
+<summary>
+首先，请阅读上面的重要说明。然后点这里查看详情。
+</summary>
+
+**重要：** 请先阅读上面的重要说明。如果你仍然想要删除证书，参见下面的步骤。
+
+如果要从 IPsec 数据库删除一个客户端证书：
+
+1. 列出 IPsec 证书数据库中的证书：
+
+   ```bash
+   certutil -L -d sql:/etc/ipsec.d
+   ```
+
+   示例输出：
+
+   ```
+   Certificate Nickname                               Trust Attributes
+                                                      SSL,S/MIME,JAR/XPI
+
+   IKEv2 VPN CA                                       CTu,u,u
+   ($PUBLIC_IP)                                       u,u,u
+   vpnclient                                          u,u,u
+   ```
+
+1. 删除客户端证书和私钥。将下面的 "Nickname" 替换为你想要删除的客户端证书的昵称，例如 `vpnclient`。
+
+   ```bash
+   certutil -F -d sql:/etc/ipsec.d -n "Nickname"
+   certutil -D -d sql:/etc/ipsec.d -n "Nickname" 2>/dev/null
+   ```
+
+1. （可选步骤）删除之前为该客户端生成的配置文件（`.p12`, `.mobileconfig` 和 `.sswan` 文件），如果存在。
+</details>
 
 ### 吊销一个客户端证书
 
