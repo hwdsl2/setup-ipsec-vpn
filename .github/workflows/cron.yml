@@ -176,15 +176,20 @@ jobs:
           certutil -L -d sql:/etc/ipsec.d
 
           rm -f /etc/ipsec.d/vpnclient*
-          VPN_DNS_NAME=vpn.example.com VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+
+          VPN_CLIENT_NAME=vpnclient1 \
+          VPN_DNS_NAME=vpn.example.com \
+          VPN_DNS_SRV1=1.1.1.1 \
+          VPN_DNS_SRV2=1.0.0.1 \
+          bash ikev2.sh --auto
 
           grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
           grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient.sswan
-          ls -ld /etc/ipsec.d/vpnclient.p12
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient1.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient1.sswan
+          ls -ld /etc/ipsec.d/vpnclient1.p12
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             systemctl restart ipsec
             sleep 10
@@ -505,15 +510,20 @@ jobs:
           certutil -L -d sql:/etc/ipsec.d
 
           rm -f /etc/ipsec.d/vpnclient*
-          VPN_DNS_NAME=vpn.example.com VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+
+          VPN_CLIENT_NAME=vpnclient1 \
+          VPN_DNS_NAME=vpn.example.com \
+          VPN_DNS_SRV1=1.1.1.1 \
+          VPN_DNS_SRV2=1.0.0.1 \
+          bash ikev2.sh --auto
 
           grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
           grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient.sswan
-          ls -ld /etc/ipsec.d/vpnclient.p12
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient1.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient1.sswan
+          ls -ld /etc/ipsec.d/vpnclient1.p12
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
           sleep 10
           grep pluto /var/log/auth.log | tail -n 20
           ipsec status
