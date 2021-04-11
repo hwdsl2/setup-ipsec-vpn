@@ -34,11 +34,22 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
 ```
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+sudo bash /opt/src/ikev2.sh --auto
 ```
 
 该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
+<details>
+<summary>
+错误："bash: /opt/src/ikev2.sh: No such file or directory".
+</summary>
+
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。请使用以下命令下载并运行 IKEv2 辅助脚本：
+
+```
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.sh --auto
+```
+</details>
 <details>
 <summary>
 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
@@ -64,7 +75,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 </details>
 <details>
 <summary>
-单击此处以查看 IKEv2 辅助脚本的详细使用信息。
+单击此处以查看 IKEv2 辅助脚本的使用信息。
 </summary>
 
 ```
@@ -86,7 +97,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**注：** 如果要为更多的客户端生成证书，或者为一个已有的客户端导出配置，只需重新运行[辅助脚本](#使用辅助脚本)。使用参数 `-h` 显示详细的使用信息。
+**注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本)。使用参数 `-h` 显示使用信息。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)
@@ -356,15 +367,15 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 列出已有的客户端
 
-如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。IKEv2 辅助脚本的详细使用信息请看 [这里](#使用辅助脚本)。
+如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
 ### 添加一个客户端证书
 
-如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。参见上面的使用信息。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 ### 导出一个已有的客户端的配置
 
-在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，重新运行辅助脚本并选择适当的选项。参见上面的使用信息。
+在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，重新运行辅助脚本并选择适当的选项。
 
 ### 删除一个客户端证书
 

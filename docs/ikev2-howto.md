@@ -34,11 +34,22 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 Use this helper script to automatically set up IKEv2 on the VPN server:
 
 ```
-wget https://git.io/ikev2setup -O ikev2.sh && sudo bash ikev2.sh --auto
+sudo bash /opt/src/ikev2.sh --auto
 ```
 
 The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run using `bash`, not `sh`. The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
 
+<details>
+<summary>
+Error: "bash: /opt/src/ikev2.sh: No such file or directory".
+</summary>
+
+This is normal if you used an older version of the VPN setup script. Please download and run the IKEv2 helper script using this command:
+
+```
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.sh --auto
+```
+</details>
 <details>
 <summary>
 You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
@@ -64,7 +75,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
 </details>
 <details>
 <summary>
-Click here to view detailed usage information for the IKEv2 helper script.
+Click here to view usage information for the IKEv2 helper script.
 </summary>
 
 ```
@@ -86,7 +97,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you want to generate certificates for additional VPN clients, or export configuration for an existing client, just run the [helper script](#using-helper-scripts) again. Use option `-h` to show detailed usage information.
+**Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#using-helper-scripts) again. Use option `-h` to show usage information.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
@@ -358,15 +369,15 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### List existing clients
 
-If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option. To view detailed usage information for the IKEv2 helper script, see [this section](#using-helper-scripts).
+If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option. Use option `-h` to show usage information.
 
 ### Add a client certificate
 
-To generate certificates for additional IKEv2 clients, just run the [helper script](#using-helper-scripts) again. Refer to the usage information above. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+To generate certificates for additional IKEv2 clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
 ### Export configuration for an existing client
 
-By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, run the helper script again and select the appropriate option. Refer to the usage information above.
+By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, run the helper script again and select the appropriate option.
 
 ### Delete a client certificate
 
