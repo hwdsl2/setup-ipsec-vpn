@@ -299,7 +299,20 @@ EOF
 }
 
 show_start_message() {
-  bigecho "Starting IKEv2 setup in auto mode, using default options."
+  if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
+    bigecho "Starting IKEv2 setup in auto mode."
+    printf '%s' "## Using custom options: "
+    [ -n "$VPN_DNS_NAME" ] && printf '%s' "VPN_DNS_NAME "
+    [ -n "$VPN_CLIENT_NAME" ] && printf '%s' "VPN_CLIENT_NAME "
+    if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
+      printf '%s' "VPN_DNS_SRV1 VPN_DNS_SRV2"
+    elif [ -n "$VPN_DNS_SRV1" ]; then
+      printf '%s' "VPN_DNS_SRV1"
+    fi
+    echo
+  else
+    bigecho "Starting IKEv2 setup in auto mode, using default options."
+  fi
 }
 
 show_add_client_message() {
