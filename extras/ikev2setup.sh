@@ -132,14 +132,15 @@ cat 1>&2 <<EOF
 Usage: bash $0 [options]
 
 Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
-  --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
-  --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
-  --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
+  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
+  --addclient [client name]     add a new client using default options (after IKEv2 setup)
+  --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
+  --listclients                 list the names of existing clients (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
+For documentation, see: https://git.io/ikev2
 EOF
   exit 1
 }
@@ -164,19 +165,19 @@ check_arguments() {
       echo >&2
     fi
   fi
-  if [ "$((add_client_using_defaults + export_client_using_defaults + list_clients))" -gt 1 ]; then
+  if [ "$((add_client + export_client + list_clients))" -gt 1 ]; then
     show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient' or '--listclients'."
   fi
-  if [ "$add_client_using_defaults" = "1" ]; then
-    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before adding a new client."
+  if [ "$add_client" = "1" ]; then
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before adding a new client."
     if [ -z "$client_name" ] || ! check_client_name; then
       exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
     elif check_client_cert_exists; then
       exiterr "Invalid client name. Client '$client_name' already exists."
     fi
   fi
-  if [ "$export_client_using_defaults" = "1" ]; then
-    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before exporting a client configuration."
+  if [ "$export_client" = "1" ]; then
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before exporting a client configuration."
     get_server_address
     if [ -z "$client_name" ] || ! check_client_name \
       || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
@@ -185,11 +186,11 @@ check_arguments() {
     fi
   fi
   if [ "$list_clients" = "1" ]; then
-    ! check_ikev2_exists && exiterr "You must first set up IKEv2 before listing clients."
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before listing clients."
   fi
   if [ "$remove_ikev2" = "1" ]; then
-    ! check_ikev2_exists && exiterr "Cannot remove IKEv2 because it has not been set up on this server."
-    if [ "$((add_client_using_defaults + export_client_using_defaults + list_clients + use_defaults))" -gt 0 ]; then
+    check_ikev2_exists || exiterr "Cannot remove IKEv2 because it has not been set up on this server."
+    if [ "$((add_client + export_client + list_clients + use_defaults))" -gt 0 ]; then
       show_usage "Invalid parameters. '--removeikev2' cannot be specified with other parameters."
     fi
   fi
@@ -287,7 +288,7 @@ select_swan_update() {
   fi
 }
 
-show_welcome_message() {
+show_welcome() {
 cat <<'EOF'
 Welcome! Use this script to set up IKEv2 after setting up your own IPsec VPN server.
 Alternatively, you may manually set up IKEv2. See: https://git.io/ikev2
@@ -298,7 +299,7 @@ You can use the default options and just press enter if you are OK with them.
 EOF
 }
 
-show_start_message() {
+show_start_setup() {
   if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
     bigecho "Starting IKEv2 setup in auto mode."
     printf '%s' "## Using custom options: "
@@ -315,12 +316,12 @@ show_start_message() {
   fi
 }
 
-show_add_client_message() {
+show_add_client() {
   bigecho "Adding a new IKEv2 client '$client_name', using default options."
 }
 
-show_export_client_message() {
-  bigecho "Exporting existing IKEv2 client '$client_name', using default options."
+show_export_client() {
+  bigecho "Exporting existing IKEv2 client '$client_name'."
 }
 
 get_export_dir() {
@@ -906,6 +907,13 @@ EOF
   chmod 600 "$sswan_file"
 }
 
+export_client_config() {
+  install_base64_uuidgen
+  export_p12_file
+  create_mobileconfig
+  create_android_profile
+}
+
 create_ca_server_certs() {
   bigecho2 "Generating CA and server certificates..."
 
@@ -1038,7 +1046,7 @@ restart_ipsec_service() {
   fi
 }
 
-print_client_added_message() {
+print_client_added() {
 cat <<EOF
 
 
@@ -1052,7 +1060,7 @@ VPN client name: $client_name
 EOF
 }
 
-print_client_exported_message() {
+print_client_exported() {
 cat <<EOF
 
 
@@ -1083,7 +1091,7 @@ show_swan_update_info() {
   fi
 }
 
-print_setup_complete_message() {
+print_setup_complete() {
   printf '\e[2K\r'
 cat <<EOF
 
@@ -1181,7 +1189,7 @@ delete_certificates() {
   certutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
 }
 
-print_ikev2_removed_message() {
+print_ikev2_removed() {
   echo
   echo "IKEv2 removed!"
 }
@@ -1194,8 +1202,8 @@ ikev2setup() {
   check_container
 
   use_defaults=0
-  add_client_using_defaults=0
-  export_client_using_defaults=0
+  add_client=0
+  export_client=0
   list_clients=0
   remove_ikev2=0
   while [ "$#" -gt 0 ]; do
@@ -1205,13 +1213,13 @@ ikev2setup() {
         shift
         ;;
       --addclient)
-        add_client_using_defaults=1
+        add_client=1
         client_name="$2"
         shift
         shift
         ;;
       --exportclient)
-        export_client_using_defaults=1
+        export_client=1
         client_name="$2"
         shift
         shift
@@ -1236,28 +1244,22 @@ ikev2setup() {
   check_arguments
   get_export_dir
 
-  if [ "$add_client_using_defaults" = "1" ]; then
-    show_add_client_message
+  if [ "$add_client" = "1" ]; then
+    show_add_client
     client_validity=120
     use_own_password=0
     create_client_cert
-    install_base64_uuidgen
-    export_p12_file
-    create_mobileconfig
-    create_android_profile
-    print_client_added_message
+    export_client_config
+    print_client_added
     print_client_info
     exit 0
   fi
 
-  if [ "$export_client_using_defaults" = "1" ]; then
-    show_export_client_message
+  if [ "$export_client" = "1" ]; then
+    show_export_client
     use_own_password=0
-    install_base64_uuidgen
-    export_p12_file
-    create_mobileconfig
-    create_android_profile
-    print_client_exported_message
+    export_client_config
+    print_client_exported
     print_client_info
     exit 0
   fi
@@ -1273,7 +1275,7 @@ ikev2setup() {
     delete_ikev2_conf
     restart_ipsec_service
     delete_certificates
-    print_ikev2_removed_message
+    print_ikev2_removed
     exit 0
   fi
 
@@ -1285,22 +1287,16 @@ ikev2setup() {
         enter_client_cert_validity
         select_p12_password
         create_client_cert
-        install_base64_uuidgen
-        export_p12_file
-        create_mobileconfig
-        create_android_profile
-        print_client_added_message
+        export_client_config
+        print_client_added
         print_client_info
         exit 0
         ;;
       2)
         enter_client_name_for_export
         select_p12_password
-        install_base64_uuidgen
-        export_p12_file
-        create_mobileconfig
-        create_android_profile
-        print_client_exported_message
+        export_client_config
+        print_client_exported
         print_client_info
         exit 0
         ;;
@@ -1315,7 +1311,7 @@ ikev2setup() {
         delete_ikev2_conf
         restart_ipsec_service
         delete_certificates
-        print_ikev2_removed_message
+        print_ikev2_removed
         exit 0
         ;;
       *)
@@ -1329,7 +1325,7 @@ ikev2setup() {
 
   if [ "$use_defaults" = "0" ]; then
     select_swan_update
-    show_welcome_message
+    show_welcome
     enter_server_address
     check_server_cert_exists
     enter_client_name_with_defaults
@@ -1350,7 +1346,7 @@ ikev2setup() {
     fi
     check_client_cert_exists && exiterr "Client '$client_name' already exists."
     client_validity=120
-    show_start_message
+    show_start_setup
     if [ -n "$VPN_DNS_NAME" ]; then
       use_dns_name=1
       server_addr="$VPN_DNS_NAME"
@@ -1382,10 +1378,7 @@ ikev2setup() {
   apply_ubuntu1804_nss_fix
   create_ca_server_certs
   create_client_cert
-  install_base64_uuidgen
-  export_p12_file
-  create_mobileconfig
-  create_android_profile
+  export_client_config
   add_ikev2_connection
   restart_ipsec_service
 
@@ -1393,7 +1386,7 @@ ikev2setup() {
     show_swan_update_info
   fi
 
-  print_setup_complete_message
+  print_setup_complete
   print_client_info
 }
 
