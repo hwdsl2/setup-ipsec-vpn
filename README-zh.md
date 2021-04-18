@@ -297,7 +297,7 @@ sudo bash /opt/src/ikev2.sh --auto
 
 ## 升级Libreswan
 
-在 <a href="extras/" target="_blank">extras/</a> 目录提供额外的脚本，可用于升级 <a href="https://libreswan.org" target="_blank">Libreswan</a>（<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">更新日志</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `SWAN_VER` 变量。查看已安装版本： `ipsec --version`.
+在 <a href="extras/" target="_blank">extras/</a> 目录提供额外的脚本，可用于升级 <a href="https://libreswan.org" target="_blank">Libreswan</a>（<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">更新日志</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">通知列表</a>）。请在运行前根据需要修改 `SWAN_VER` 变量。目前支持的最新版本是 `4.3`。查看已安装版本：`ipsec --version`。
 
 <details open>
 <summary>

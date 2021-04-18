@@ -82,10 +82,10 @@ Click here to view usage information for the IKEv2 helper script.
 Usage: bash ikev2.sh [options]
 
 Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial IKEv2 setup only)
-  --addclient [client name]     add a new IKEv2 client using default options (after IKEv2 setup)
-  --exportclient [client name]  export an existing IKEv2 client using default options (after IKEv2 setup)
-  --listclients                 list the names of existing IKEv2 clients (after IKEv2 setup)
+  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
+  --addclient [client name]     add a new client using default options (after IKEv2 setup)
+  --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
+  --listclients                 list the names of existing clients (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -388,9 +388,9 @@ By default, the [IKEv2 helper script](#using-helper-scripts) exports client conf
 First, read the important note above. Then click here for instructions.
 </summary>
 
-**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below.
+**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below. This action **cannot be undone**!
 
-To delete a client certificate from the IPsec database:
+To delete a client certificate:
 
 1. List certificates in the IPsec database:
 
@@ -770,7 +770,7 @@ Click <a href="clients.md#troubleshooting" target="_blank">here</a> for addition
 
 ## Remove IKEv2
 
-If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, run the [helper script](#using-helper-scripts) again and select the "Remove IKEv2" option. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
+If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#using-helper-scripts) again and select the "Remove IKEv2" option. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
 
 <details>
 <summary>
