@@ -51,14 +51,17 @@ vpnsetup() {
 
 os_type=centos
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-if grep -qs "Red Hat" /etc/redhat-release; then
+rh_file="/etc/redhat-release"
+if grep -qs "Red Hat" "$rh_file"; then
   os_type=rhel
 fi
-
-if grep -qs "release 7" /etc/redhat-release; then
+if grep -qs "release 7" "$rh_file"; then
   os_ver=7
-elif grep -qs "release 8" /etc/redhat-release; then
+elif grep -qs "release 8" "$rh_file"; then
   os_ver=8
+  if grep -qi stream "$rh_file"; then
+    os_ver=8s
+  fi
 else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2

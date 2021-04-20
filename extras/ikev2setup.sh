@@ -37,15 +37,19 @@ check_run_as_root() {
 
 check_os_type() {
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  if grep -qs -e "release 7" -e "release 8" /etc/redhat-release; then
+  rh_file="/etc/redhat-release"
+  if grep -qs -e "release 7" -e "release 8" "$rh_file"; then
     os_type=centos
-    if grep -qs "Red Hat" /etc/redhat-release; then
+    if grep -qs "Red Hat" "$rh_file"; then
       os_type=rhel
     fi
-    if grep -qs "release 7" /etc/redhat-release; then
+    if grep -qs "release 7" "$rh_file"; then
       os_ver=7
-    elif grep -qs "release 8" /etc/redhat-release; then
+    elif grep -qs "release 8" "$rh_file"; then
       os_ver=8
+      if grep -qi stream "$rh_file"; then
+        os_ver=8s
+      fi
     fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
