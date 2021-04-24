@@ -557,7 +557,6 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
      ikev2=insist
      rekey=no
      pfs=no
-     fragmentation=yes
      ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
      ikelifetime=24h
