@@ -14,7 +14,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.3
+SWAN_VER=4.4
 
 ### DO NOT edit below this line ###
 
@@ -39,14 +39,14 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 case $SWAN_VER in
-  3.32|4.[123])
+  3.32|4.[1234])
     true
     ;;
   *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
-       3.32, 4.1, 4.2 or 4.3
+       3.32, 4.1-4.3 or 4.4
 EOF
     exit 1
     ;;
@@ -62,16 +62,15 @@ EOF
   exit 1
 fi
 
-swan_ver_cur=4.3
+swan_ver_cur=4.4
 swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
   && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
   && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
   echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
   echo "      To update to the new version, exit this script and run:"
-  echo "      wget https://git.io/vpnupgrade-amzn -O vpnupgrade.sh"
-  echo "      sudo sh vpnupgrade.sh"
+  echo "      wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh"
   echo
   printf "Do you want to continue anyway? [y/N] "
   read -r response
@@ -123,7 +122,7 @@ Note: This script will make the following changes to your VPN configuration:
 
 EOF
 
-if [ "$SWAN_VER" != "4.3" ]; then
+if [ "$SWAN_VER" != "4.4" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
@@ -145,7 +144,6 @@ case $response in
     ;;
 esac
 
-# Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src || exit 1
 

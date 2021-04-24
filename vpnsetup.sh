@@ -204,7 +204,7 @@ ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setu
 
 bigecho "Downloading Libreswan..."
 
-SWAN_VER=4.3
+SWAN_VER=4.4
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
@@ -268,7 +268,6 @@ version 2.0
 
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-  interfaces=%defaultroute
   uniqueids=no
 
 conn shared
@@ -295,7 +294,6 @@ conn l2tp-psk
   leftprotoport=17/1701
   rightprotoport=17/%any
   type=transport
-  phase2=esp
   also=shared
 
 conn xauth-psk
@@ -308,8 +306,6 @@ conn xauth-psk
   leftmodecfgserver=yes
   rightmodecfgclient=yes
   modecfgpull=yes
-  xauthby=file
-  fragmentation=yes
   cisco-unity=yes
   also=shared
 
@@ -522,15 +518,14 @@ service xl2tpd restart 2>/dev/null
 
 swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
 swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
   && [ -n "$SWAN_VER" ] && [ "$SWAN_VER" != "$swan_ver_latest" ] \
   && printf '%s\n%s' "$SWAN_VER" "$swan_ver_latest" | sort -C -V; then
 cat <<EOF
 
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
       To update, run:
-      wget https://git.io/vpnupgrade -O vpnupgrade.sh
-      sudo sh vpnupgrade.sh
+      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 EOF
 fi
 

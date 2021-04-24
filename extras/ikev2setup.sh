@@ -108,8 +108,7 @@ Error: Libreswan version '$swan_ver' is not supported.
        This script requires one of these versions:
        3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
        To update Libreswan, run:
-       wget $update_url -O vpnupgrade.sh
-       sudo sh vpnupgrade.sh
+       wget $update_url -O vpnup.sh && sudo sh vpnup.sh
 EOF
       exit 1
       ;;
@@ -238,15 +237,15 @@ check_swan_ver() {
 
 run_swan_update() {
   get_update_url
-  TMPDIR=$(mktemp -d /tmp/vpnupg.XXX 2>/dev/null)
+  TMPDIR=$(mktemp -d /tmp/vpnup.XXX 2>/dev/null)
   if [ -d "$TMPDIR" ]; then
     set -x
-    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnupg.sh" "$update_url"; then
-      /bin/sh "$TMPDIR/vpnupg.sh"
+    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$update_url"; then
+      /bin/sh "$TMPDIR/vpnup.sh"
     fi
     { set +x; } 2>&-
-    [ ! -s "$TMPDIR/vpnupg.sh" ] && echo "Error: Could not download update script." >&2
-    /bin/rm -f "$TMPDIR/vpnupg.sh"
+    [ ! -s "$TMPDIR/vpnup.sh" ] && echo "Error: Could not download update script." >&2
+    /bin/rm -f "$TMPDIR/vpnup.sh"
     /bin/rmdir "$TMPDIR"
   else
     echo "Error: Could not create temporary directory." >&2
@@ -256,7 +255,7 @@ run_swan_update() {
 }
 
 select_swan_update() {
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
@@ -983,7 +982,6 @@ conn ikev2-cp
   ikev2=insist
   rekey=no
   pfs=no
-  fragmentation=yes
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
   ikelifetime=24h
@@ -1079,7 +1077,7 @@ EOF
 }
 
 show_swan_update_info() {
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     echo
@@ -1087,8 +1085,7 @@ show_swan_update_info() {
     if [ "$in_container" = "0" ]; then
       get_update_url
       echo "      To update, run:"
-      echo "      wget $update_url -O vpnupgrade.sh"
-      echo "      sudo sh vpnupgrade.sh"
+      echo "      wget $update_url -O vpnup.sh && sudo sh vpnup.sh"
     else
       echo "      To update this Docker image, see: https://git.io/updatedockervpn"
     fi
