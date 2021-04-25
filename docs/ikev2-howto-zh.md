@@ -129,7 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    另外，你也可以手动创建 VPN 连接。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">这里</a>。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
-1. 为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。这一步是可选的，但推荐。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+1. （**此步骤为必须**，如果你手动创建了 VPN 连接）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
 
    - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -555,7 +555,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
      ikev2=insist
      rekey=no
      pfs=no
-     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
      ikelifetime=24h
      salifetime=24h
@@ -716,13 +716,13 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
 
-Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。
+Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
 <details>
 <summary>
 Ubuntu 18.04 上的 NSS 问题的解决方法
 </summary>
 
-**注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用这个解决方法。
+**注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。
 
 首先安装更新版本的 `libnss3` 相关的软件包：
 

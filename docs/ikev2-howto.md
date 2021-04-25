@@ -129,7 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    Alternatively, you can manually create the VPN connection. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">here</a> for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
-1. Enable stronger ciphers for IKEv2 with a one-time registry change. This is optional, but recommended. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+1. (**Required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
    - For Windows 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -557,7 +557,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
      ikev2=insist
      rekey=no
      pfs=no
-     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
      ikelifetime=24h
      salifetime=24h
@@ -718,13 +718,13 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
 
-Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>.
+Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
 <details>
 <summary>
 Workaround for the NSS bug on Ubuntu 18.04
 </summary>
 
-**Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply this workaround.
+**Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture.
 
 First, install newer versions of `libnss3` related packages:
 
