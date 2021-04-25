@@ -982,7 +982,7 @@ conn ikev2-cp
   ikev2=insist
   rekey=no
   pfs=no
-  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
   ikelifetime=24h
   salifetime=24h
