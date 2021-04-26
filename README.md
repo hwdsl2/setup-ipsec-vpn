@@ -82,9 +82,9 @@ For other installation options and how to set up VPN clients, read the sections 
 ## Requirements
 
 A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, from one of these images:
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal), 18.04 (Bionic) or 16.04 (Xenial)</a>
+- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal) or 18.04 (Bionic)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank"> or 9 (Stretch)</a>
-- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 or 7</a>
+- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8</a>[\*\*](#centos-8-note)<a href="https://wiki.centos.org/Cloud/AWS" target="_blank"> or 7</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 or 7</a>
 - <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
 
@@ -104,6 +104,8 @@ Advanced users can set up the VPN server on a $35 <a href="https://www.raspberry
 
 <a name="debian-10-note"></a>
 \* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more <a href="docs/clients.md#debian-10-kernel" target="_blank">here</a>. If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
+<a name="centos-8-note"></a>
+\*\* Support for CentOS Linux 8 will end on December 31, 2021. Read more <a href="https://wiki.centos.org/About/Product" target="_blank">here</a>.   
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 

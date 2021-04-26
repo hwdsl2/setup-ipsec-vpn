@@ -82,9 +82,9 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/
 ## 系统要求
 
 一个新创建的 <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> 实例，使用这些映像之一：
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal), 18.04 (Bionic) 或者 16.04 (Xenial)</a>
+- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)</a>
 - <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank"> 或者 9 (Stretch)</a>
-- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8 或者 7</a>
+- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8</a>[\*\*](#centos-8-note)<a href="https://wiki.centos.org/Cloud/AWS" target="_blank"> 或者 7</a>
 - <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 或者 7</a>
 - <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
 
@@ -104,6 +104,8 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo bash /opt/
 
 <a name="debian-10-note"></a>
 \* Debian 10 用户需要使用标准的 Linux 内核（而不是 "cloud" 版本）。更多信息请看 <a href="docs/clients-zh.md#debian-10-内核" target="_blank">这里</a>。如果你在 EC2 上使用 Debian 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。   
+<a name="centos-8-note"></a>
+\*\* CentOS Linux 8 的支持将于2021年12月31日结束。更多信息请看 <a href="https://wiki.centos.org/About/Product" target="_blank">这里</a>。   
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
