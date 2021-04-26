@@ -2,10 +2,6 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Mappings": {
         "OS": {
-            "Ubuntu1604": {
-                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
-                "InstallationLinks": "https://git.io/vpnsetup"
-            },
             "Ubuntu1804": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
                 "InstallationLinks": "https://git.io/vpnsetup"
@@ -667,7 +663,6 @@
                                 "       distribution = event['ResourceProperties']['Distribution']",
                                 "       ec2 = boto3.client('ec2',regionName)",
                                 "       AMIName = {",
-                                "           'Ubuntu1604': 'ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*',",
                                 "           'Ubuntu1804': 'ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*',",
                                 "           'Ubuntu2004': 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',",
                                 "           'Debian9': 'debian-stretch-hvm-x86_64-gp2-*',",
@@ -824,7 +819,6 @@
             "AllowedValues": [
                 "Ubuntu2004",
                 "Ubuntu1804",
-                "Ubuntu1604",
                 "Debian9",
                 "CentOS7",
                 "CentOS8",
