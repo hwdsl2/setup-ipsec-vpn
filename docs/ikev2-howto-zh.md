@@ -58,19 +58,19 @@ wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
-sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 ```
 
 类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
 
 ```
-sudo VPN_CLIENT_NAME='your_client_name' bash ikev2.sh --auto
+sudo VPN_CLIENT_NAME='your_client_name' bash /opt/src/ikev2.sh --auto
 ```
 
 在 VPN 已连接时，IKEv2 客户端默认配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
 
 ```
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
 ```
 </details>
 <details>

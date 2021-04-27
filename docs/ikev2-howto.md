@@ -58,19 +58,19 @@ You may optionally specify a DNS name, client name and/or custom DNS servers. Cl
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
-sudo VPN_DNS_NAME='vpn.example.com' bash ikev2.sh --auto
+sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 ```
 
 Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
 
 ```
-sudo VPN_CLIENT_NAME='your_client_name' bash ikev2.sh --auto
+sudo VPN_CLIENT_NAME='your_client_name' bash /opt/src/ikev2.sh --auto
 ```
 
 By default, IKEv2 clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
 
 ```
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash ikev2.sh --auto
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
 ```
 </details>
 <details>
