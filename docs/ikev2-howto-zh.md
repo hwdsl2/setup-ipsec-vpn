@@ -44,7 +44,7 @@ sudo bash /opt/src/ikev2.sh --auto
 错误："bash: /opt/src/ikev2.sh: No such file or directory".
 </summary>
 
-如果你使用了较早版本的 VPN 安装脚本，这是正常的。请使用以下命令下载并运行 IKEv2 辅助脚本：
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。请下载并运行 IKEv2 辅助脚本：
 
 ```
 wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.sh --auto

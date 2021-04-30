@@ -44,7 +44,7 @@ The <a href="../extras/ikev2setup.sh" target="_blank">script</a> must be run usi
 Error: "bash: /opt/src/ikev2.sh: No such file or directory".
 </summary>
 
-This is normal if you used an older version of the VPN setup script. Please download and run the IKEv2 helper script using this command:
+This is normal if you used an older version of the VPN setup script. Please download and run the IKEv2 helper script:
 
 ```
 wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.sh --auto
@@ -129,7 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    Alternatively, you can manually create the VPN connection. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">here</a> for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
-1. (**Required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+1. (**This step is required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
 
    - For Windows 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 

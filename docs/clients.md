@@ -405,17 +405,16 @@ grep pluto /var/log/secure
 grep xl2tpd /var/log/messages
 ```
 
-Check status of the IPsec VPN server:
+Check the status of the IPsec VPN server:
 
 ```bash
 ipsec status
-ipsec verify
 ```
 
-Show current established VPN connections:
+Show currently established VPN connections:
 
 ```bash
-ipsec whack --trafficstatus
+ipsec trafficstatus
 ```
 
 ## Configure Linux VPN clients using the command line

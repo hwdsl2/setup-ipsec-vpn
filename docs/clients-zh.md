@@ -406,17 +406,16 @@ grep pluto /var/log/secure
 grep xl2tpd /var/log/messages
 ```
 
-查看 IPsec VPN 服务器状态：
+检查 IPsec VPN 服务器状态：
 
 ```bash
 ipsec status
-ipsec verify
 ```
 
-显示当前已建立的 VPN 连接：
+查看当前已建立的 VPN 连接：
 
 ```bash
-ipsec whack --trafficstatus
+ipsec trafficstatus
 ```
 
 ## 使用命令行配置 Linux VPN 客户端
