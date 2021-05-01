@@ -610,7 +610,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -x -n "IKEv2 VPN CA" \
      -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
-     -k rsa -v 120 \
+     -k rsa -g 3072 -v 120 \
      -d sql:/etc/ipsec.d -t "CT,," -2
    ```
 
@@ -632,7 +632,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "$PUBLIC_IP" \
      -s "O=IKEv2 VPN,CN=$PUBLIC_IP" \
-     -k rsa -v 120 \
+     -k rsa -g 3072 -v 120 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth \
@@ -653,7 +653,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    certutil -z <(head -c 1024 /dev/urandom) \
      -S -c "IKEv2 VPN CA" -n "vpnclient" \
      -s "O=IKEv2 VPN,CN=vpnclient" \
-     -k rsa -v 120 \
+     -k rsa -g 3072 -v 120 \
      -d sql:/etc/ipsec.d -t ",," \
      --keyUsage digitalSignature,keyEncipherment \
      --extKeyUsage serverAuth,clientAuth -8 "vpnclient"

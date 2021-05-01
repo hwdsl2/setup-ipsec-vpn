@@ -646,12 +646,12 @@ EOF
 create_client_cert() {
   bigecho2 "Generating client certificate..."
 
-  sleep $((RANDOM % 3 + 1))
+  sleep 1
 
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -c "IKEv2 VPN CA" -n "$client_name" \
     -s "O=IKEv2 VPN,CN=$client_name" \
-    -k rsa -v "$client_validity" \
+    -k rsa -g 3072 -v "$client_validity" \
     -d sql:/etc/ipsec.d -t ",," \
     --keyUsage digitalSignature,keyEncipherment \
     --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null 2>&1 || exiterr "Failed to create client certificate."
@@ -923,20 +923,20 @@ create_ca_server_certs() {
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -x -n "IKEv2 VPN CA" \
     -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
-    -k rsa -v 120 \
+    -k rsa -g 3072 -v 120 \
     -d sql:/etc/ipsec.d -t "CT,," -2 >/dev/null 2>&1 <<ANSWERS || exiterr "Failed to create CA certificate."
 y
 
 N
 ANSWERS
 
-  sleep $((RANDOM % 3 + 1))
+  sleep 1
 
   if [ "$use_dns_name" = "1" ]; then
     certutil -z <(head -c 1024 /dev/urandom) \
       -S -c "IKEv2 VPN CA" -n "$server_addr" \
       -s "O=IKEv2 VPN,CN=$server_addr" \
-      -k rsa -v 120 \
+      -k rsa -g 3072 -v 120 \
       -d sql:/etc/ipsec.d -t ",," \
       --keyUsage digitalSignature,keyEncipherment \
       --extKeyUsage serverAuth \
@@ -945,7 +945,7 @@ ANSWERS
     certutil -z <(head -c 1024 /dev/urandom) \
       -S -c "IKEv2 VPN CA" -n "$server_addr" \
       -s "O=IKEv2 VPN,CN=$server_addr" \
-      -k rsa -v 120 \
+      -k rsa -g 3072 -v 120 \
       -d sql:/etc/ipsec.d -t ",," \
       --keyUsage digitalSignature,keyEncipherment \
       --extKeyUsage serverAuth \
