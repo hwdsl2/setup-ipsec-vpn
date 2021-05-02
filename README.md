@@ -382,9 +382,21 @@ iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 
 ### Access VPN server's subnet
 
-After connecting to the VPN, VPN clients can generally access services running on other devices that are within the same local subnet as the VPN server, without additional configuration.
+After connecting to the VPN, VPN clients can generally access services running on other devices that are within the same local subnet as the VPN server, without additional configuration. For example, if the VPN server's local subnet is `192.168.0.0/24`, and an Nginx server is running on IP `192.168.0.2`, VPN clients can use IP `192.168.0.2` to access the Nginx server.
 
-For example, if the VPN server's local subnet is `192.168.0.0/24`, and an Nginx server is running on IP `192.168.0.2`, VPN clients can use IP `192.168.0.2` to access the Nginx server. If unable to access, check the firewall settings on the other device.
+Please note, additional configuration is required if the VPN server has multiple network interfaces (e.g. `eth0` and `eth1`), and you want VPN clients to access the local subnet behind the network interface that is NOT for Internet access. In this scenario, you must run the following commands to add IPTables rules. To persist after reboot, you may add these commands to `/etc/rc.local`.
+
+```bash
+# Replace eth1 with the name of the network interface
+# on the VPN server that you want VPN clients to access
+netif=eth1
+iptables -I FORWARD 2 -i "$netif" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 2 -i ppp+ -o "$netif" -j ACCEPT
+iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 2 -s 192.168.43.0/24 -o "$netif" -j ACCEPT
+iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
+iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
+```
 
 ### IKEv2 only VPN
 
