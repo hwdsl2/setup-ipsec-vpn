@@ -338,6 +338,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](#域名和更改服务器-ip)
 - [VPN 内网 IP](#vpn-内网-ip)
+- [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 - [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 - [更改 IPTables 规则](#更改-iptables-规则)
 
@@ -378,6 +379,12 @@ sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### 访问 VPN 服务器的网段
+
+连接到 VPN 后，VPN 客户端通常可以访问与 VPN 服务器位于同一本地子网内的其他设备上运行的服务，而无需进行其他配置。
+
+例如，如果 VPN 服务器的本地子网为 `192.168.0.0/24`，并且一个 Nginx 服务器在 IP `192.168.0.2` 上运行，则 VPN 客户端可以使用 IP `192.168.0.2`来访问 Nginx 服务器。如果无法访问，请检查其他设备上的防火墙设置。
 
 ### 仅限 IKEv2 的 VPN
 

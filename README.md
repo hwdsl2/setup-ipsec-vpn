@@ -338,6 +338,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 - [Internal VPN IPs](#internal-vpn-ips)
+- [Access VPN server's subnet](#access-vpn-servers-subnet)
 - [IKEv2 only VPN](#ikev2-only-vpn)
 - [Modify IPTables rules](#modify-iptables-rules)
 
@@ -378,6 +379,12 @@ Client-to-client traffic is allowed by default. If you want to \*disallow\* clie
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### Access VPN server's subnet
+
+After connecting to the VPN, VPN clients can generally access services running on other devices that are within the same local subnet as the VPN server, without additional configuration.
+
+For example, if the VPN server's local subnet is `192.168.0.0/24`, and an Nginx server is running on IP `192.168.0.2`, VPN clients can use IP `192.168.0.2` to access the Nginx server. If unable to access, check the firewall settings on the other device.
 
 ### IKEv2 only VPN
 

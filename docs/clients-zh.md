@@ -230,7 +230,6 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 * [iOS 13/14 和 macOS 10.15/11](#ios-1314-和-macos-101511)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 10 内核](#debian-10-内核)
-* [Chromebook 连接问题](#chromebook-连接问题)
 * [其它错误](#其它错误)
 * [检查日志及 VPN 状态](#检查日志及-vpn-状态)
 
@@ -366,10 +365,6 @@ Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果�
 Debian 10 用户：运行 `uname -r` 以检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形，并显示错误。
 
 要解决此问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。最后重新运行 VPN 安装脚本。
-
-### Chromebook 连接问题
-
-Chromebook 用户： 如果你无法连接，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到这一行 `phase2alg=...` 并在结尾加上 `,aes_gcm-null` 。保存修改并运行 `service ipsec restart`。
 
 ### 其它错误
 
