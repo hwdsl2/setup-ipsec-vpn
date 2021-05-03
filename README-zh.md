@@ -337,7 +337,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](#域名和更改服务器-ip)
-- [VPN 内网 IP](#vpn-内网-ip)
+- [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
 - [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 - [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 - [更改 IPTables 规则](#更改-iptables-规则)
@@ -365,15 +365,45 @@ sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 
 另外，你也可以自定义 IKEv2 安装选项，通过在运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">辅助脚本</a> 时去掉 `--auto` 参数来实现。
 
-### VPN 内网 IP
+### VPN 内网 IP 和流量
 
 在使用 `IPsec/L2TP` 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有内网 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
 
-在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 \*没有\* 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
+在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 **没有** 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
 
-在默认配置下，允许客户端之间的流量。如果你想要 \*不允许\* 客户端之间的流量，可以在 VPN 服务器上运行以下命令。将它们添加到 `/etc/rc.local` 以便在重启后继续有效。
+<details>
+<summary>
+仅适用于 IPsec/L2TP 模式：你可以将静态 IP 分配给 VPN 客户端。这是可选的。点这里查看详情。
+</summary>
+
+高级用户可以将静态内网 IP 分配给 VPN 客户端。该功能 **仅适用于** `IPsec/L2TP` 模式，在 `IKEv2` 和 `IPsec/XAuth ("Cisco IPsec")` 模式下不支持。下面举例说明，这些命令必须用 `root` 账户运行。
+
+1. 首先为要分配静态 IP 的每个 VPN 客户端创建一个新的 VPN 用户。参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
+1. 编辑 VPN 服务器上的 `/etc/xl2tpd/xl2tpd.conf`。将 `ip range = 192.168.42.10-192.168.42.250` 替换为比如 `ip range = 192.168.42.100-192.168.42.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
+1. 编辑 VPN 服务器上的 `/etc/ppp/chap-secrets`。例如，如果文件内容是：
+   ```
+   "username1"  l2tpd  "password1"  *
+   "username2"  l2tpd  "password2"  *
+   "username3"  l2tpd  "password3"  *
+   ```
+
+   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.42.2`，为 VPN 用户 `username3` 分配静态 IP  `192.168.42.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
+   ```
+   "username1"  l2tpd  "password1"  *
+   "username2"  l2tpd  "password2"  192.168.42.2
+   "username3"  l2tpd  "password3"  192.168.42.3
+   ```
+
+   **注：** 分配的静态 IP 必须来自子网 `192.168.42.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `ip range`）。另外，`192.168.42.1` 保留给 VPN 服务器本身使用。在上面的示例中，你只能分配 `192.168.42.2-192.168.42.99` 范围内的静态 IP。
+1. **（重要）** 重启 xl2tpd 服务：
+   ```
+   service xl2tpd restart
+   ```
+</details>
+
+在默认配置下，允许客户端之间的流量。如果你想要 **不允许** 客户端之间的流量，可以在 VPN 服务器上运行以下命令。将它们添加到 `/etc/rc.local` 以便在重启后继续有效。
 
 ```
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
@@ -384,7 +414,7 @@ iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 
 连接到 VPN 后，VPN 客户端通常可以访问与 VPN 服务器位于同一本地子网内的其他设备上运行的服务，而无需进行其他配置。例如，如果 VPN 服务器的本地子网为 `192.168.0.0/24`，并且一个 Nginx 服务器在 IP `192.168.0.2` 上运行，则 VPN 客户端可以使用 IP `192.168.0.2`来访问 Nginx 服务器。
 
-请注意，如果 VPN 服务器具有多个网络接口（例如 `eth0` 和 `eth1`），并且你想要 VPN 客户端访问服务器上 \*不用于\* Internet 访问的网络接口后面的本地子网，则需要进行额外的配置。在此情形下，你必须运行以下命令来添加 IPTables 规则。为了在重启后仍然有效，你可以将这些命令添加到 `/etc/rc.local`。
+请注意，如果 VPN 服务器具有多个网络接口（例如 `eth0` 和 `eth1`），并且你想要 VPN 客户端访问服务器上 **不用于** Internet 访问的网络接口后面的本地子网，则需要进行额外的配置。在此情形下，你必须运行以下命令来添加 IPTables 规则。为了在重启后仍然有效，你可以将这些命令添加到 `/etc/rc.local`。
 
 ```bash
 # 将 eth1 替换为 VPN 服务器上你想要客户端访问的网络接口名称

@@ -337,7 +337,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [DNS name and server IP changes](#dns-name-and-server-ip-changes)
-- [Internal VPN IPs](#internal-vpn-ips)
+- [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
 - [Access VPN server's subnet](#access-vpn-servers-subnet)
 - [IKEv2 only VPN](#ikev2-only-vpn)
 - [Modify IPTables rules](#modify-iptables-rules)
@@ -365,15 +365,45 @@ sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 
 Alternatively, you may customize IKEv2 setup options by running the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">helper script</a> without the `--auto` parameter.
 
-### Internal VPN IPs
+### Internal VPN IPs and traffic
 
 When connecting using `IPsec/L2TP` mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
 
-When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server \*does not\* have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
+When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server **does NOT** have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
-Client-to-client traffic is allowed by default. If you want to \*disallow\* client-to-client traffic, run the following commands on the VPN server. Add them to `/etc/rc.local` to persist after reboot.
+<details>
+<summary>
+For IPsec/L2TP mode ONLY: You may optionally assign static IPs to VPN clients. Click here for details.
+</summary>
+
+Advanced users can optionally assign static internal IPs to VPN clients. This applies to `IPsec/L2TP` mode ONLY, and is NOT supported for the `IKEv2` and `IPsec/XAuth ("Cisco IPsec")` modes. See example steps below, commands must be run as `root`.
+
+1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
+1. Edit `/etc/xl2tpd/xl2tpd.conf` on the VPN server. Replace `ip range = 192.168.42.10-192.168.42.250` with e.g. `ip range = 192.168.42.100-192.168.42.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
+1. Edit `/etc/ppp/chap-secrets` on the VPN server. For example, if the file contains:
+   ```
+   "username1"  l2tpd  "password1"  *
+   "username2"  l2tpd  "password2"  *
+   "username3"  l2tpd  "password3"  *
+   ```
+
+   Let's assume that you want to assign static IP `192.168.42.2` to VPN user `username2`, assign static IP `192.168.42.3` to VPN user `username3`, while keeping `username1` unchanged (auto-assign from the pool). After editing, the file should look like:
+   ```
+   "username1"  l2tpd  "password1"  *
+   "username2"  l2tpd  "password2"  192.168.42.2
+   "username3"  l2tpd  "password3"  192.168.42.3
+   ```
+
+   **Note:** The assigned static IP(s) must be from the subnet `192.168.42.0/24`, and must NOT be from the pool of auto-assigned IPs (see `ip range` above). In addition, `192.168.42.1` is reserved for the VPN server itself. In the example above, you can only assign static IP(s) from the range `192.168.42.2-192.168.42.99`.
+1. **(Important)** Restart the xl2tpd service:
+   ```
+   service xl2tpd restart
+   ```
+</details>
+
+Client-to-client traffic is allowed by default. If you want to **disallow** client-to-client traffic, run the following commands on the VPN server. Add them to `/etc/rc.local` to persist after reboot.
 
 ```
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
