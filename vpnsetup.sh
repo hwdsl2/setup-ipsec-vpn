@@ -172,10 +172,10 @@ export DEBIAN_FRONTEND=noninteractive
 bigecho "Trying to auto discover IP of this server..."
 
 # In case auto IP discovery fails, enter server's public IP here.
-PUBLIC_IP=${VPN_PUBLIC_IP:-''}
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
+public_ip=${VPN_PUBLIC_IP:-''}
+check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
 bigecho "Installing packages required for the VPN..."
 
@@ -272,7 +272,7 @@ config setup
 
 conn shared
   left=%defaultroute
-  leftid=$PUBLIC_IP
+  leftid=$public_ip
   right=%any
   encapsulation=yes
   authby=secret
@@ -537,7 +537,7 @@ IPsec VPN server is now ready for use!
 
 Connect to your new VPN with these details:
 
-Server IP: $PUBLIC_IP
+Server IP: $public_ip
 IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
