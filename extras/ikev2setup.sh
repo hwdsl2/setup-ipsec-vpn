@@ -345,7 +345,8 @@ get_export_dir() {
 
 get_server_ip() {
   bigecho2 "Trying to auto discover IP of this server..."
-  public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+  public_ip=${VPN_PUBLIC_IP:-''}
+  check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
   check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 }
 
