@@ -355,9 +355,9 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
 
 ### DNS name and server IP changes
 
-For `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")` modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
+For <a href="docs/clients.md" target="_blank">IPsec/L2TP</a> and <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For `IKEv2` mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
+For <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
@@ -367,18 +367,20 @@ Alternatively, you may customize IKEv2 setup options by running the <a href="doc
 
 ### Internal VPN IPs and traffic
 
-When connecting using `IPsec/L2TP` mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
+When connecting using <a href="docs/clients.md" target="_blank">IPsec/L2TP</a> mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
 
-When connecting using `IPsec/XAuth ("Cisco IPsec")` or `IKEv2` mode, the VPN server **does NOT** have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
+When connecting using <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> or <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> mode, the VPN server does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
+For IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, you may optionally assign static IPs to VPN clients. Expand for details. IKEv2 mode does NOT support this feature.
+
 <details>
 <summary>
-For IPsec/L2TP mode ONLY: You may optionally assign static IPs to VPN clients. Click here for details.
+IPsec/L2TP mode: Assign static IPs to VPN clients
 </summary>
 
-Advanced users can optionally assign static internal IPs to VPN clients. This applies to `IPsec/L2TP` mode ONLY, and is NOT supported for the `IKEv2` and `IPsec/XAuth ("Cisco IPsec")` modes. See example steps below, commands must be run as `root`.
+Advanced users can optionally assign static internal IPs to VPN clients. The example steps below **ONLY** applies to `IPsec/L2TP` mode. Commands must be run as `root`.
 
 1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 1. Edit `/etc/xl2tpd/xl2tpd.conf` on the VPN server. Replace `ip range = 192.168.42.10-192.168.42.250` with e.g. `ip range = 192.168.42.100-192.168.42.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
@@ -400,6 +402,37 @@ Advanced users can optionally assign static internal IPs to VPN clients. This ap
 1. **(Important)** Restart the xl2tpd service:
    ```
    service xl2tpd restart
+   ```
+</details>
+
+<details>
+<summary>
+IPsec/XAuth ("Cisco IPsec") mode: Assign static IPs to VPN clients
+</summary>
+
+Advanced users can optionally assign static internal IPs to VPN clients. The example steps below **ONLY** applies to `IPsec/XAuth ("Cisco IPsec")` mode. Commands must be run as `root`.
+
+1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
+1. Edit `/etc/ipsec.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with e.g. `rightaddresspool=192.168.43.100-192.168.43.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (if exists). Replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as the previous step.
+1. Edit `/etc/ipsec.d/passwd` on the VPN server. For example, if the file contains:
+   ```
+   username1:password1hashed:xauth-psk
+   username2:password2hashed:xauth-psk
+   username3:password3hashed:xauth-psk
+   ```
+
+   Let's assume that you want to assign static IP `192.168.43.2` to VPN user `username2`, assign static IP `192.168.43.3` to VPN user `username3`, while keeping `username1` unchanged (auto-assign from the pool). After editing, the file should look like:
+   ```
+   username1:password1hashed:xauth-psk
+   username2:password2hashed:xauth-psk:192.168.42.2
+   username3:password3hashed:xauth-psk:192.168.42.3
+   ```
+
+   **Note:** The assigned static IP(s) must be from the subnet `192.168.43.0/24`, and must NOT be from the pool of auto-assigned IPs (see `rightaddresspool` above). In the example above, you can only assign static IP(s) from the range `192.168.43.1-192.168.43.99`.
+1. **(Important)** Restart the IPsec service:
+   ```
+   service ipsec restart
    ```
 </details>
 

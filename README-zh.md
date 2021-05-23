@@ -355,9 +355,9 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
 
 ### 域名和更改服务器 IP
 
-对于 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
+对于 <a href="docs/clients-zh.md" target="_blank">IPsec/L2TP</a> 和 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
-对于 `IKEv2` 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a> 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。示例如下：
+对于 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2</a> 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a> 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
@@ -367,18 +367,20 @@ sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 
 ### VPN 内网 IP 和流量
 
-在使用 `IPsec/L2TP` 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有内网 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+在使用 <a href="docs/clients-zh.md" target="_blank">IPsec/L2TP</a> 模式连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有内网 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
 
-在使用 `IPsec/XAuth ("Cisco IPsec")` 或 `IKEv2` 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 **没有** 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
+在使用 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> 或 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2</a> 模式连接时，VPN 服务器在虚拟网络 `192.168.43.0/24` 内 **没有** 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
 
+对于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，你可以将静态 IP 分配给 VPN 客户端。这是可选的。展开以查看详细信息。IKEv2 模式 **不支持** 此功能。
+
 <details>
 <summary>
-仅适用于 IPsec/L2TP 模式：你可以将静态 IP 分配给 VPN 客户端。这是可选的。点这里查看详情。
+IPsec/L2TP 模式：为 VPN 客户端分配静态 IP
 </summary>
 
-高级用户可以将静态内网 IP 分配给 VPN 客户端。该功能 **仅适用于** `IPsec/L2TP` 模式，在 `IKEv2` 和 `IPsec/XAuth ("Cisco IPsec")` 模式下不支持。下面举例说明，这些命令必须用 `root` 账户运行。
+高级用户可以将静态内网 IP 分配给 VPN 客户端。这是可选的。下面的示例步骤 **仅适用于** `IPsec/L2TP` 模式。这些命令必须用 `root` 账户运行。
 
 1. 首先为要分配静态 IP 的每个 VPN 客户端创建一个新的 VPN 用户。参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
 1. 编辑 VPN 服务器上的 `/etc/xl2tpd/xl2tpd.conf`。将 `ip range = 192.168.42.10-192.168.42.250` 替换为比如 `ip range = 192.168.42.100-192.168.42.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
@@ -400,6 +402,37 @@ sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
 1. **（重要）** 重启 xl2tpd 服务：
    ```
    service xl2tpd restart
+   ```
+</details>
+
+<details>
+<summary>
+IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
+</summary>
+
+高级用户可以将静态内网 IP 分配给 VPN 客户端。这是可选的。下面的示例步骤 **仅适用于** `IPsec/XAuth ("Cisco IPsec")` 模式。这些命令必须用 `root` 账户运行。
+
+1. 首先为要分配静态 IP 的每个 VPN 客户端创建一个新的 VPN 用户。参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为比如 `rightaddresspool=192.168.43.100-192.168.43.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果存在）。将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为与上一步 **相同的值**。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/passwd`。例如，如果文件内容是：
+   ```
+   username1:password1hashed:xauth-psk
+   username2:password2hashed:xauth-psk
+   username3:password3hashed:xauth-psk
+   ```
+
+   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.43.2`，为 VPN 用户 `username3` 分配静态 IP  `192.168.43.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
+   ```
+   username1:password1hashed:xauth-psk
+   username2:password2hashed:xauth-psk:192.168.42.2
+   username3:password3hashed:xauth-psk:192.168.42.3
+   ```
+
+   **注：** 分配的静态 IP 必须来自子网 `192.168.43.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `rightaddresspool`）。在上面的示例中，你只能分配 `192.168.43.1-192.168.43.99` 范围内的静态 IP。
+1. **（重要）** 重启 IPsec 服务：
+   ```
+   service ipsec restart
    ```
 </details>
 
