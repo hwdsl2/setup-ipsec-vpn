@@ -39,7 +39,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -49,7 +49,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -59,7 +59,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -151,7 +151,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **Option 2:** Edit the script and provide your own VPN credentials:
@@ -201,7 +201,7 @@ sudo sh vpn.sh
 After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **Option 3:** Define your VPN credentials as environment variables:
@@ -258,7 +258,7 @@ sh vpn.sh
 After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
@@ -350,7 +350,7 @@ Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when runn
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
 ### DNS name and server IP changes
@@ -360,7 +360,7 @@ For <a href="docs/clients.md" target="_blank">IPsec/L2TP</a> and <a href="docs/c
 For <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
-sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 Alternatively, you may customize IKEv2 setup options by running the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">helper script</a> without the `--auto` parameter.

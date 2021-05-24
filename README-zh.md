@@ -39,7 +39,7 @@ Ubuntu & Debian
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -49,7 +49,7 @@ CentOS & RHEL
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -59,7 +59,7 @@ Amazon Linux 2
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo /opt/src/ikev2.sh --auto
+wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 ```
 </details>
 
@@ -151,7 +151,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
@@ -201,7 +201,7 @@ sudo sh vpn.sh
 在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
@@ -258,7 +258,7 @@ sh vpn.sh
 在安装成功之后，推荐 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a>：
 
 ```bash
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>，<a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> 或者 <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
@@ -350,7 +350,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
 ### 域名和更改服务器 IP
@@ -360,7 +360,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
 对于 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2</a> 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 <a href="docs/ikev2-howto-zh.md" target="_blank">配置 IKEv2</a> 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
-sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 另外，你也可以自定义 IKEv2 安装选项，通过在运行 <a href="docs/ikev2-howto-zh.md#使用辅助脚本" target="_blank">辅助脚本</a> 时去掉 `--auto` 参数来实现。

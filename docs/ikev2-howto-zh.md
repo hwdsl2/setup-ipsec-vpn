@@ -34,21 +34,24 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
 ```
-sudo bash /opt/src/ikev2.sh --auto
+sudo ikev2.sh --auto
 ```
 
-该 <a href="../extras/ikev2setup.sh" target="_blank">脚本</a> 必须使用 `bash` 而不是 `sh` 运行。以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
+以上命令使用自动模式和默认选项运行 <a href="../extras/ikev2setup.sh" target="_blank">辅助脚本</a>。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
 <details>
 <summary>
-错误："bash: /opt/src/ikev2.sh: No such file or directory".
+错误："sudo: ikev2.sh: command not found".
 </summary>
 
 如果你使用了较早版本的 VPN 安装脚本，这是正常的。请下载并运行 IKEv2 辅助脚本：
 
 ```
-wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.sh --auto
+wget https://git.io/ikev2setup -O ~/ikev2.sh
+sudo bash ~/ikev2.sh --auto
 ```
+
+**注：** 该辅助脚本必须使用 `bash` 而不是 `sh` 运行。
 </details>
 <details>
 <summary>
@@ -58,19 +61,19 @@ wget https://git.io/ikev2setup -O /opt/src/ikev2.sh && sudo bash /opt/src/ikev2.
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```
-sudo VPN_DNS_NAME='vpn.example.com' bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
 
 ```
-sudo VPN_CLIENT_NAME='your_client_name' bash /opt/src/ikev2.sh --auto
+sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
 在 VPN 已连接时，IKEv2 客户端默认配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
 
 ```
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 bash /opt/src/ikev2.sh --auto
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 </details>
 <details>
