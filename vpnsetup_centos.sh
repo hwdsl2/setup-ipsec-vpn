@@ -212,8 +212,9 @@ bigecho "Downloading IKEv2 script..."
 ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
 (
   set -x
-  wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url" && chmod +x ikev2.sh
+  wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
 ) || /bin/rm -f ikev2.sh
+[ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 
 bigecho "Downloading Libreswan..."
 
