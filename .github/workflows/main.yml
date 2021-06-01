@@ -193,6 +193,12 @@ jobs:
 
           bash ikev2.sh <<ANSWERS
           4
+          vpnclient2
+          y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          5
           y
           ANSWERS
 
@@ -245,6 +251,10 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
+          y
+          ANSWERS
 
           if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
             sed -i '/pluto/d' /var/log/secure
@@ -562,6 +572,12 @@ jobs:
 
           bash ikev2.sh <<ANSWERS
           4
+          vpnclient2
+          y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          5
           y
           ANSWERS
 
@@ -604,6 +620,10 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
+          y
+          ANSWERS
 
           sed -i '/pluto/d' /var/log/auth.log
           pkill -HUP rsyslog
