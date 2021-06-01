@@ -117,6 +117,7 @@ EOF
 
 check_utils_exist() {
   command -v certutil >/dev/null 2>&1 || exiterr "'certutil' not found. Abort."
+  command -v crlutil >/dev/null 2>&1 || exiterr "'crlutil' not found. Abort."
   command -v pk12util >/dev/null 2>&1 || exiterr "'pk12util' not found. Abort."
 }
 
@@ -139,6 +140,7 @@ Options:
   --addclient [client name]     add a new client using default options (after IKEv2 setup)
   --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
   --listclients                 list the names of existing clients (after IKEv2 setup)
+  --revokeclient                Revoke a client certificate (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -161,6 +163,10 @@ check_client_cert_exists() {
   certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1
 }
 
+check_client_cert_status() {
+  cert_status=$(certutil -V -u C -d sql:/etc/ipsec.d -n "$client_name")
+}
+
 check_arguments() {
   if [ "$use_defaults" = "1" ]; then
     if check_ikev2_exists; then
@@ -168,8 +174,8 @@ check_arguments() {
       echo >&2
     fi
   fi
-  if [ "$((add_client + export_client + list_clients))" -gt 1 ]; then
-    show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient' or '--listclients'."
+  if [ "$((add_client + export_client + list_clients + revoke_client))" -gt 1 ]; then
+    show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient', '--listclients' or '--revokeclient'."
   fi
   if [ "$add_client" = "1" ]; then
     check_ikev2_exists || exiterr "You must first set up IKEv2 before adding a new client."
@@ -191,9 +197,27 @@ check_arguments() {
   if [ "$list_clients" = "1" ]; then
     check_ikev2_exists || exiterr "You must first set up IKEv2 before listing clients."
   fi
+  if [ "$revoke_client" = "1" ]; then
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before revoking a client certificate."
+    get_server_address
+    if [ -z "$client_name" ] || ! check_client_name \
+      || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
+      || ! check_client_cert_exists; then
+      exiterr "Invalid client name, or client does not exist."
+    fi
+    if ! check_client_cert_status; then
+      if printf '%s' "$cert_status" | grep -q "revoked"; then
+        exiterr "Certificate '$client_name' has already been revoked."
+      elif printf '%s' "$cert_status" | grep -q "expired"; then
+        exiterr "Certificate '$client_name' has expired."
+      else
+        exiterr "Certificate '$client_name' is invalid."
+      fi
+    fi
+  fi
   if [ "$remove_ikev2" = "1" ]; then
     check_ikev2_exists || exiterr "Cannot remove IKEv2 because it has not been set up on this server."
-    if [ "$((add_client + export_client + list_clients + use_defaults))" -gt 0 ]; then
+    if [ "$((add_client + export_client + list_clients + revoke_client + use_defaults))" -gt 0 ]; then
       show_usage "Invalid parameters. '--removeikev2' cannot be specified with other parameters."
     fi
   fi
@@ -428,23 +452,40 @@ enter_client_name_with_defaults() {
   done
 }
 
-enter_client_name_for_export() {
+enter_client_name_for() {
   echo
   list_existing_clients
   get_server_address
   echo
-  read -rp "Enter the name of the IKEv2 client to export: " client_name
+  read -rp "Enter the name of the IKEv2 client to $1: " client_name
   while [ -z "$client_name" ] || ! check_client_name \
     || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-    || ! check_client_cert_exists; do
-    echo "Invalid client name, or client does not exist."
-    read -rp "Enter the name of the IKEv2 client to export: " client_name
+    || ! check_client_cert_exists || ! check_client_cert_status; do
+    if [ -z "$client_name" ] || ! check_client_name \
+      || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
+      || ! check_client_cert_exists; then
+      echo "Invalid client name, or client does not exist."
+    else
+      printf '%s' "Error: Certificate '$client_name' "
+      if printf '%s' "$cert_status" | grep -q "revoked"; then
+        if [ "$1" = "revoke" ]; then
+          echo "has already been revoked."
+        else
+          echo "has been revoked."
+        fi
+      elif printf '%s' "$cert_status" | grep -q "expired"; then
+        echo "has expired."
+      else
+        echo "is invalid."
+      fi
+    fi
+    read -rp "Enter the name of the IKEv2 client to $1: " client_name
   done
 }
 
 enter_client_cert_validity() {
   echo
-  echo "Specify the validity period (in months) for this VPN client certificate."
+  echo "Specify the validity period (in months) for this client certificate."
   read -rp "Enter a number between 1 and 120: [120] " client_validity
   [ -z "$client_validity" ] && client_validity=120
   while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
@@ -587,10 +628,11 @@ select_menu_option() {
   echo "  1) Add a new client"
   echo "  2) Export configuration for an existing client"
   echo "  3) List existing clients"
-  echo "  4) Remove IKEv2"
-  echo "  5) Exit"
+  echo "  4) Revoke a client certificate"
+  echo "  5) Remove IKEv2"
+  echo "  6) Exit"
   read -rp "Option: " selected_option
-  until [[ "$selected_option" =~ ^[1-5]$ ]]; do
+  until [[ "$selected_option" =~ ^[1-6]$ ]]; do
     printf '%s\n' "$selected_option: invalid selection."
     read -rp "Option: " selected_option
   done
@@ -1049,6 +1091,28 @@ restart_ipsec_service() {
   fi
 }
 
+create_crl() {
+  if ! crlutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null 2>&1; then
+    crlutil -G -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -c /dev/null >/dev/null
+  fi
+  sleep 2
+}
+
+add_client_cert_to_crl() {
+  sn_txt=$(certutil -L -d sql:/etc/ipsec.d -n "$client_name" | grep -A 1 'Serial Number' | tail -n 1)
+  sn_hex=$(printf '%s' "$sn_txt" | sed -e 's/^ *//' -e 's/://g')
+  sn_dec=$((16#$sn_hex))
+  [ -z "$sn_dec" ] && exiterr "Could not find serial number of client certificate."
+
+crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null <<EOF || exiterr "Failed to add client certificate to CRL."
+addcert $sn_dec $(date -u +%Y%m%d%H%M%SZ)
+EOF
+}
+
+reload_crls() {
+  /usr/local/sbin/ipsec crls || exiterr "Failed to let Libreswan re-read the updated CRL."
+}
+
 print_client_added() {
 cat <<EOF
 
@@ -1075,6 +1139,11 @@ VPN server address: $server_addr
 VPN client name: $client_name
 
 EOF
+}
+
+print_client_revoked() {
+  echo
+  echo "Certificate '$client_name' revoked!"
 }
 
 show_swan_update_info() {
@@ -1155,6 +1224,25 @@ check_ipsec_conf() {
   fi
 }
 
+confirm_revoke_cert() {
+  echo
+  echo "WARNING: You have selected to revoke IKEv2 client certificate '$client_name'."
+  echo "         After revocation, this certificate *cannot* be used by VPN client(s)"
+  echo "         to connect to this VPN server."
+  echo
+  printf "Are you sure you want to revoke certificate '%s'? [y/N] " "$client_name"
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      echo
+      ;;
+    *)
+      echo "Abort. No changes were made."
+      exit 1
+      ;;
+  esac
+}
+
 confirm_remove_ikev2() {
   echo
   echo "WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP"
@@ -1187,6 +1275,7 @@ delete_certificates() {
     certutil -F -d sql:/etc/ipsec.d -n "$line"
     certutil -D -d sql:/etc/ipsec.d -n "$line" 2>/dev/null
   done
+  crlutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
   certutil -F -d sql:/etc/ipsec.d -n "IKEv2 VPN CA"
   certutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
 }
@@ -1207,6 +1296,7 @@ ikev2setup() {
   add_client=0
   export_client=0
   list_clients=0
+  revoke_client=0
   remove_ikev2=0
   while [ "$#" -gt 0 ]; do
     case $1 in
@@ -1228,6 +1318,12 @@ ikev2setup() {
         ;;
       --listclients)
         list_clients=1
+        shift
+        ;;
+      --revokeclient)
+        revoke_client=1
+        client_name="$2"
+        shift
         shift
         ;;
       --removeikev2)
@@ -1271,6 +1367,15 @@ ikev2setup() {
     exit 0
   fi
 
+  if [ "$revoke_client" = "1" ]; then
+    confirm_revoke_cert
+    create_crl
+    add_client_cert_to_crl
+    reload_crls
+    print_client_revoked
+    exit 0
+  fi
+
   if [ "$remove_ikev2" = "1" ]; then
     check_ipsec_conf
     confirm_remove_ikev2
@@ -1295,7 +1400,7 @@ ikev2setup() {
         exit 0
         ;;
       2)
-        enter_client_name_for_export
+        enter_client_name_for export
         select_p12_password
         export_client_config
         print_client_exported
@@ -1308,6 +1413,15 @@ ikev2setup() {
         exit 0
         ;;
       4)
+        enter_client_name_for revoke
+        confirm_revoke_cert
+        create_crl
+        add_client_cert_to_crl
+        reload_crls
+        print_client_revoked
+        exit 0
+        ;;
+      5)
         check_ipsec_conf
         confirm_remove_ikev2
         delete_ikev2_conf
