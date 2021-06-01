@@ -89,6 +89,7 @@ Options:
   --addclient [client name]     add a new client using default options (after IKEv2 setup)
   --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
   --listclients                 list the names of existing clients (after IKEv2 setup)
+  --revokeclient                Revoke a client certificate (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -422,7 +423,9 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 吊销一个客户端证书
 
-在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。
+
+另外，你也可以手动吊销客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
 
 1. 检查证书数据库，并且找到想要吊销的客户端证书的昵称。
 
@@ -808,6 +811,12 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
    IKEv2 VPN CA                                       CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
    vpnclient                                          u,u,u
+   ```
+
+1. 删除证书吊销列表 (CRL)，如果存在：
+
+   ```bash
+   crlutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
    ```
 
 1. 删除证书和密钥。将下面的 "Nickname" 替换为每个证书的昵称。为每个证书重复这些命令。在完成后，再次列出 IPsec 证书数据库中的证书，并确认列表为空。

@@ -89,6 +89,7 @@ Options:
   --addclient [client name]     add a new client using default options (after IKEv2 setup)
   --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
   --listclients                 list the names of existing clients (after IKEv2 setup)
+  --revokeclient                Revoke a client certificate (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -424,7 +425,9 @@ To delete a client certificate:
 
 ### Revoke a client certificate
 
-In certain circumstances, you may need to revoke a previously generated VPN client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
+In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script again and select the appropriate option.
+
+Alternatively, you may manually revoke a client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
 
 1. Check the database, and identify the nickname of the client certificate you want to revoke.
 
@@ -810,6 +813,12 @@ To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.
    IKEv2 VPN CA                                       CTu,u,u
    ($PUBLIC_IP)                                       u,u,u
    vpnclient                                          u,u,u
+   ```
+
+1. Delete the Certificate Revocation List (CRL), if any:
+
+   ```bash
+   crlutil -D -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" 2>/dev/null
    ```
 
 1. Delete certificates and keys. Replace "Nickname" below with each certificate's nickname. Repeat these commands for each certificate. When finished, list certificates in the IPsec database again, and confirm that the list is empty.
