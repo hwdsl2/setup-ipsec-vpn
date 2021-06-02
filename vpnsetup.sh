@@ -24,9 +24,9 @@
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these special characters within values: \ " '
 
-YOUR_IPSEC_PSK=''
-YOUR_USERNAME=''
-YOUR_PASSWORD=''
+YOUR_IPSEC_PSK='VPCGOOGLE'
+YOUR_USERNAME='Jbc913'
+YOUR_PASSWORD='gbisunp1'
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
@@ -538,10 +538,10 @@ IPsec VPN server is now ready for use!
 
 Connect to your new VPN with these details:
 
-Server IP: $10.150.0.0/20
-IPsec PSK: $VPCGOOGLE
-Username: $Jbc913
-Password: $gbisunp1
+Server IP: $
+IPsec PSK: $
+Username: $
+Password: $
 
 Write these down. You'll need them to connect!
 
