@@ -193,6 +193,17 @@ check_arguments() {
       || ! check_client_cert_exists; then
       exiterr "Invalid client name, or client does not exist."
     fi
+    if ! check_client_cert_status; then
+      printf '%s' "Error: Certificate '$client_name' " >&2
+      if printf '%s' "$cert_status" | grep -q "revoked"; then
+        echo "has been revoked." >&2
+      elif printf '%s' "$cert_status" | grep -q "expired"; then
+        echo "has expired." >&2
+      else
+        echo "is invalid." >&2
+      fi
+      exit 1
+    fi
   fi
   if [ "$list_clients" = "1" ]; then
     check_ikev2_exists || exiterr "You must first set up IKEv2 before listing clients."
@@ -206,13 +217,15 @@ check_arguments() {
       exiterr "Invalid client name, or client does not exist."
     fi
     if ! check_client_cert_status; then
+      printf '%s' "Error: Certificate '$client_name' " >&2
       if printf '%s' "$cert_status" | grep -q "revoked"; then
-        exiterr "Certificate '$client_name' has already been revoked."
+        echo "has already been revoked." >&2
       elif printf '%s' "$cert_status" | grep -q "expired"; then
-        exiterr "Certificate '$client_name' has expired."
+        echo "has expired." >&2
       else
-        exiterr "Certificate '$client_name' is invalid."
+        echo "is invalid." >&2
       fi
+      exit 1
     fi
   fi
   if [ "$remove_ikev2" = "1" ]; then
