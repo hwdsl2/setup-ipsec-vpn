@@ -538,10 +538,10 @@ IPsec VPN server is now ready for use!
 
 Connect to your new VPN with these details:
 
-Server IP: $public_ip
-IPsec PSK: $VPN_IPSEC_PSK
-Username: $VPN_USER
-Password: $VPN_PASSWORD
+Server IP: $10.150.0.0/20
+IPsec PSK: $VPCGOOGLE
+Username: $Jbc913
+Password: $gbisunp1
 
 Write these down. You'll need them to connect!
 
