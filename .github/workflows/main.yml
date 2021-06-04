@@ -25,7 +25,6 @@ jobs:
         with:
           persist-credentials: false
       - name: Check
-        if: success()
         run: |
           if [ ! -x /usr/bin/shellcheck ]; then
             export DEBIAN_FRONTEND=noninteractive
@@ -43,7 +42,66 @@ jobs:
           ls -ld -- **/*.sh
           shellcheck **/*.sh
 
+  check_urls:
+    needs: shellcheck
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Check
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          mkdir workdir
+          cd workdir
+          set -x
+
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yq update
+          sudo apt-get -yq install wget curl
+
+          wget_c="wget -t 3 -T 30 -nv -O"
+          gh_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
+
+          $wget_c vpnsetup.sh          https://git.io/vpnsetup
+          $wget_c vpnsetup_centos.sh   https://git.io/vpnsetup-centos
+          $wget_c vpnsetup_amzn.sh     https://git.io/vpnsetup-amzn
+          $wget_c ikev2setup.sh        https://git.io/ikev2setup
+          $wget_c vpnupgrade.sh        https://git.io/vpnupgrade
+          $wget_c vpnupgrade_centos.sh https://git.io/vpnupgrade-centos
+          $wget_c vpnupgrade_amzn.sh   https://git.io/vpnupgrade-amzn
+
+          $wget_c vpnsetup2.sh          "$gh_url/vpnsetup.sh"
+          $wget_c vpnsetup_centos2.sh   "$gh_url/vpnsetup_centos.sh"
+          $wget_c vpnsetup_amzn2.sh     "$gh_url/vpnsetup_amzn.sh"
+          $wget_c ikev2setup2.sh        "$gh_url/extras/ikev2setup.sh"
+          $wget_c vpnupgrade2.sh        "$gh_url/extras/vpnupgrade.sh"
+          $wget_c vpnupgrade_centos2.sh "$gh_url/extras/vpnupgrade_centos.sh"
+          $wget_c vpnupgrade_amzn2.sh   "$gh_url/extras/vpnupgrade_amzn.sh"
+
+          curl -fsSI https://bit.ly/addvpnuser | grep -q 'add_vpn_user.sh'
+          curl -fsSI https://bit.ly/delvpnuser | grep -q 'del_vpn_user.sh'
+          curl -fsSI https://bit.ly/updatevpnusers | grep -q 'update_vpn_users.sh'
+
+          diff vpnsetup.sh ../vpnsetup.sh
+          diff vpnsetup_centos.sh ../vpnsetup_centos.sh
+          diff vpnsetup_amzn.sh ../vpnsetup_amzn.sh
+          diff ikev2setup.sh ../extras/ikev2setup.sh
+          diff vpnupgrade.sh ../extras/vpnupgrade.sh
+          diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
+          diff vpnupgrade_amzn.sh ../extras/vpnupgrade_amzn.sh
+
+          diff vpnsetup2.sh ../vpnsetup.sh
+          diff vpnsetup_centos2.sh ../vpnsetup_centos.sh
+          diff vpnsetup_amzn2.sh ../vpnsetup_amzn.sh
+          diff ikev2setup2.sh ../extras/ikev2setup.sh
+          diff vpnupgrade2.sh ../extras/vpnupgrade.sh
+          diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
+          diff vpnupgrade_amzn2.sh ../extras/vpnupgrade_amzn.sh
+
   test_set_1:
+    needs: [shellcheck, check_urls]
     runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
     strategy:
@@ -55,15 +113,15 @@ jobs:
     steps:
       - name: Build
         run: |
-          echo "Waiting 60 seconds..."
-          sleep 60
-
           mkdir -p "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
           cd "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
 
           cat > run.sh <<'EOF'
           #!/bin/bash
           set -e
+
+          log1=/var/log/secure
+          log2=/var/log/messages
 
           trap 'catch $? $LINENO' ERR
 
@@ -73,56 +131,67 @@ jobs:
             exit 1
           }
 
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            yum -y update
-            yum -y -q install wget rsyslog
-            systemctl start rsyslog
-            if [ "$1" = "centos" ]; then
-              wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
-            else
-              wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
-            fi
-          else
-            export DEBIAN_FRONTEND=noninteractive
-            apt-get -yq update
-            apt-get -yq dist-upgrade
-            apt-get -yq install wget rsyslog
-            service rsyslog start
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
-          fi
+          restart_ipsec() {
+            sed -i '/pluto/d' "$log1"
+            pkill -HUP rsyslog
+            systemctl restart ipsec
+            echo "Waiting for IPsec to restart."
+            count=0
+            while ! grep -q 'listening for IKE messages' "$log1"; do
+              [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
 
-          sed -i '/swan_ver_url/s/^/#/' vpnsetup.sh
-          sh vpnsetup.sh
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl start ipsec
-            systemctl start xl2tpd
-            sleep 5
+          restart_fail2ban() {
+            rm -f /var/log/fail2ban.log
             systemctl restart fail2ban
-          else
-            sleep 5
-            service fail2ban restart
-          fi
+            echo "Waiting for Fail2ban to restart."
+            count=0
+            while ! grep -qs -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log; do
+              [ "$count" -ge "30" ] && { echo "Fail2ban failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
 
-          sleep 5
+          yum -y update
+          yum -y -q install wget rsyslog
+          systemctl start rsyslog
+
+          if [ "$1" = "centos" ]; then
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+          else
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
+          fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
+
+          sh vpnsetup.sh
+
+          systemctl start xl2tpd
+          restart_ipsec
+          restart_fail2ban
+          cat /var/log/fail2ban.log
+
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
           iptables -nL
           iptables -nL | grep -q '192\.168\.42\.0/24'
           iptables -nL -t nat
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            grep pluto /var/log/secure
-            grep xl2tpd /var/log/messages
-          else
-            grep pluto /var/log/auth.log
-            grep xl2tpd /var/log/syslog
-          fi
+          grep pluto "$log1"
+          grep xl2tpd "$log2"
           ipsec status
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
 
-          cat /var/log/fail2ban.log
-          grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -130,11 +199,8 @@ jobs:
           VPN_DNS_SRV1='1.1.1.1' \
           VPN_DNS_SRV2='1.0.0.1' \
           sh vpnsetup.sh
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-          fi
 
-          sleep 10
+          restart_ipsec
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
           grep -q "your_vpn_password" /etc/ppp/chap-secrets
@@ -143,8 +209,9 @@ jobs:
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh # hwdsl2
+          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
           bash ikev2.sh <<ANSWERS
 
 
@@ -158,14 +225,9 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure | tail -n 20
-          else
-            sleep 10
-            grep pluto /var/log/auth.log | tail -n 20
-          fi
+
+          restart_ipsec
+          grep pluto "$log1" | tail -n 20
           ipsec status
           ipsec status | grep -q ikev2-cp
 
@@ -192,9 +254,17 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
+          3
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
           4
           vpnclient2
           y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          6
           ANSWERS
 
           bash ikev2.sh <<ANSWERS
@@ -202,11 +272,7 @@ jobs:
           y
           ANSWERS
 
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-          fi
-
-          sleep 10
+          restart_ipsec
           ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
@@ -228,14 +294,9 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient1.p12
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure | tail -n 20
-          else
-            sleep 10
-            grep pluto /var/log/auth.log | tail -n 20
-          fi
+
+          restart_ipsec
+          grep pluto "$log1" | tail -n 20
           ipsec status
           ipsec status | grep -q ikev2-cp
 
@@ -252,156 +313,40 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
+          bash ikev2.sh --listclients
+
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
 
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            sed -i '/pluto/d' /var/log/secure
-            pkill -HUP rsyslog
-            if [ "$1" = "centos" ]; then
-              wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
-            else
-              wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
-            fi
-          else
-            sed -i '/pluto/d' /var/log/auth.log
-            pkill -HUP rsyslog
-            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
-          fi
+          sed -i '/pluto/d' "$log1"
+          pkill -HUP rsyslog
 
-          sed -i '/swan_ver_url/s/^/#/' vpnup.sh
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=3.32/' vpnup.sh
+          if [ "$1" = "centos" ]; then
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
+          else
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
+          fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
+
+          for ver in 3.32 4.1 4.2 4.3 4.4; do
+            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           sh vpnup.sh <<ANSWERS
           y
           ANSWERS
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure
-          else
-            sleep 10
-            grep pluto /var/log/auth.log
-          fi
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            sed -i '/pluto/d' /var/log/secure
-            pkill -HUP rsyslog
-          else
-            sed -i '/pluto/d' /var/log/auth.log
-            pkill -HUP rsyslog
-          fi
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.1/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure
-          else
-            sleep 10
-            grep pluto /var/log/auth.log
-          fi
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            sed -i '/pluto/d' /var/log/secure
-            pkill -HUP rsyslog
-          else
-            sed -i '/pluto/d' /var/log/auth.log
-            pkill -HUP rsyslog
-          fi
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.2/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure
-          else
-            sleep 10
-            grep pluto /var/log/auth.log
-          fi
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            sed -i '/pluto/d' /var/log/secure
-            pkill -HUP rsyslog
-          else
-            sed -i '/pluto/d' /var/log/auth.log
-            pkill -HUP rsyslog
-          fi
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.3/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure
-          else
-            sleep 10
-            grep pluto /var/log/auth.log
-          fi
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            sed -i '/pluto/d' /var/log/secure
-            pkill -HUP rsyslog
-          else
-            sed -i '/pluto/d' /var/log/auth.log
-            pkill -HUP rsyslog
-          fi
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.4/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-            sleep 10
-            grep pluto /var/log/secure
-          else
-            sleep 10
-            grep pluto /var/log/auth.log
-          fi
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
+            restart_ipsec
+            grep pluto "$log1"
+            ipsec status
+            ipsec status | grep -q l2tp-psk
+            ipsec status | grep -q xauth-psk
+            ipsec status | grep -q ikev2-cp
+          done
 
           bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
-          if [ "$1" = "centos" ] || [ "$1" = "amazon" ]; then
-            systemctl restart ipsec
-          fi
-
-          sleep 10
+          restart_ipsec
           ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
@@ -450,11 +395,10 @@ jobs:
           docker build -t "${OS_VERSION//:}-test" .
 
       - name: Test
-        if: success()
         run: |
           docker run -d --name "${OS_VERSION//:}-test-1" -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
             --privileged "${OS_VERSION//:}-test"
-          sleep 10
+          sleep 5
           docker exec "${OS_VERSION//:}-test-1" /opt/src/run.sh "${OS_VERSION::6}"
 
       - name: Clear
@@ -465,6 +409,7 @@ jobs:
           docker rmi "${OS_VERSION//:}-test" || true
 
   test_set_2:
+    needs: [shellcheck, check_urls]
     runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
     strategy:
@@ -477,8 +422,37 @@ jobs:
     steps:
       - name: Test
         run: |
-          echo "Waiting 60 seconds..."
-          sleep 60
+          log1=/var/log/auth.log
+          log2=/var/log/syslog
+
+          restart_ipsec() {
+            sed -i '/pluto/d' "$log1"
+            pkill -HUP rsyslog
+            service ipsec restart
+            echo "Waiting for IPsec to restart."
+            count=0
+            while ! grep -q 'listening for IKE messages' "$log1"; do
+              [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
+
+          restart_fail2ban() {
+            rm -f /var/log/fail2ban.log
+            service fail2ban restart
+            echo "Waiting for Fail2ban to restart."
+            count=0
+            while ! grep -qs -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log; do
+              [ "$count" -ge "30" ] && { echo "Fail2ban failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
 
           mkdir -p /opt/src
           cd /opt/src
@@ -489,28 +463,30 @@ jobs:
           apt-get -yq dist-upgrade
           apt-get -yq install wget rsyslog
           service rsyslog start
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
 
-          sed -i '/swan_ver_url/s/^/#/' vpnsetup.sh
+          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
+
           sh vpnsetup.sh
 
-          sleep 5
-          service fail2ban restart
-          sleep 5
+          restart_ipsec
+          restart_fail2ban
+          cat /var/log/fail2ban.log
+
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
           iptables -nL
           iptables -nL | grep -q '192\.168\.42\.0/24'
           iptables -nL -t nat
           iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
-          grep pluto /var/log/auth.log
-          grep xl2tpd /var/log/syslog
+          grep pluto "$log1"
+          grep xl2tpd "$log2"
           ipsec status
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
 
-          cat /var/log/fail2ban.log
-          grep -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -519,7 +495,7 @@ jobs:
           VPN_DNS_SRV2='1.0.0.1' \
           sh vpnsetup.sh
 
-          sleep 10
+          restart_ipsec
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
           grep -q "your_vpn_password" /etc/ppp/chap-secrets
@@ -528,8 +504,9 @@ jobs:
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
+          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
           bash ikev2.sh <<ANSWERS
 
 
@@ -543,8 +520,9 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
-          sleep 10
-          grep pluto /var/log/auth.log | tail -n 20
+
+          restart_ipsec
+          grep pluto "$log1" | tail -n 20
           ipsec status
           ipsec status | grep -q ikev2-cp
 
@@ -571,9 +549,17 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
+          3
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
           4
           vpnclient2
           y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          6
           ANSWERS
 
           bash ikev2.sh <<ANSWERS
@@ -581,7 +567,7 @@ jobs:
           y
           ANSWERS
 
-          sleep 10
+          restart_ipsec
           ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
@@ -603,8 +589,9 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient1.p12
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
-          sleep 10
-          grep pluto /var/log/auth.log | tail -n 20
+
+          restart_ipsec
+          grep pluto "$log1" | tail -n 20
           ipsec status
           ipsec status | grep -q ikev2-cp
 
@@ -621,93 +608,36 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
+          bash ikev2.sh --listclients
+
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
 
-          sed -i '/pluto/d' /var/log/auth.log
+          sed -i '/pluto/d' "$log1"
           pkill -HUP rsyslog
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          sed -i '/swan_ver_url/s/^/#/' vpnup.sh
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=3.32/' vpnup.sh
+          for ver in 3.32 4.1 4.2 4.3 4.4; do
+            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           sh vpnup.sh <<ANSWERS
           y
           ANSWERS
-
-          sleep 10
-          grep pluto /var/log/auth.log
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          sed -i '/pluto/d' /var/log/auth.log
-          pkill -HUP rsyslog
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.1/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          sleep 10
-          grep pluto /var/log/auth.log
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          sed -i '/pluto/d' /var/log/auth.log
-          pkill -HUP rsyslog
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.2/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          sleep 10
-          grep pluto /var/log/auth.log
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          sed -i '/pluto/d' /var/log/auth.log
-          pkill -HUP rsyslog
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.3/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          sleep 10
-          grep pluto /var/log/auth.log
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          sed -i '/pluto/d' /var/log/auth.log
-          pkill -HUP rsyslog
-
-          sed -i 's/^SWAN_VER=.*/SWAN_VER=4.4/' vpnup.sh
-          sh vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-
-          sleep 10
-          grep pluto /var/log/auth.log
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
+            restart_ipsec
+            grep pluto "$log1"
+            ipsec status
+            ipsec status | grep -q l2tp-psk
+            ipsec status | grep -q xauth-psk
+            ipsec status | grep -q ikev2-cp
+          done
 
           bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
-          sleep 10
+          restart_ipsec
           ls -ld /etc/ipsec.d/ikev2.conf && exit 1
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
