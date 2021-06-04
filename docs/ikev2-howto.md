@@ -15,7 +15,7 @@
 
 ## Introduction
 
-Modern operating systems (such as Windows 7 and newer) support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">improvements</a> such as Standard Mobility support through MOBIKE, and improved reliability.
+Modern operating systems (such as Windows 7 and newer) support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains [improvements](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) such as Standard Mobility support through MOBIKE, and improved reliability.
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
@@ -29,7 +29,7 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 ## Using helper scripts
 
-**Important:** Before continuing, you should have successfully <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">set up your own VPN server</a>, and (optional but recommended) <a href="../README.md#upgrade-libreswan" target="_blank">updated Libreswan</a>. **Docker users, see <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn" target="_blank">here</a>**.
+**Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), and (optional but recommended) [updated Libreswan](../README.md#upgrade-libreswan). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
 
 Use this helper script to automatically set up IKEv2 on the VPN server:
 
@@ -37,7 +37,7 @@ Use this helper script to automatically set up IKEv2 on the VPN server:
 sudo ikev2.sh --auto
 ```
 
-The command above runs the <a href="../extras/ikev2setup.sh" target="_blank">helper script</a> in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
+The command above runs the [helper script](../extras/ikev2setup.sh) in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
 
 <details>
 <summary>
@@ -70,7 +70,7 @@ Similarly, you may optionally specify a name for the first IKEv2 client. The def
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
-By default, IKEv2 clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
+By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
@@ -111,14 +111,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x and 10
 
-1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>:
+1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
    ```console
    # Import .p12 file (replace with your own value)
    certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
 
-   Alternatively, you can manually import the `.p12` file. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">here</a> for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+   Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
    **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the `.p12` file. See [Troubleshooting](#troubleshooting).
 
@@ -131,9 +131,9 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   Alternatively, you can manually create the VPN connection. Click <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">here</a> for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
+   Alternatively, you can manually create the VPN connection. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config) for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
-1. (**This step is required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">here</a>.
+1. (**This step is required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
    - For Windows 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -141,7 +141,7 @@ To customize IKEv2 or client options, run this script without arguments.
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
      ```
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -156,7 +156,7 @@ To connect to the VPN:
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Connect**.
 
-(Optional feature) You can choose to enable <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand</a>. This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**.
+(Optional feature) You can choose to enable [VPN On Demand](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules). This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**.
 
 <details>
 <summary>
@@ -187,7 +187,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Click **Connect**.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -207,7 +207,7 @@ To connect to the VPN:
 1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
 1. Slide the **VPN** switch ON.
 
-(Optional feature) You can choose to enable <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand</a>. This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
+(Optional feature) You can choose to enable [VPN On Demand](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules). This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
 
 <details>
 <summary>
@@ -238,14 +238,14 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Slide the **VPN** switch ON.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ### Android
 
 1. Securely transfer the generated `.sswan` file to your Android device.
-1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
 1. Launch the strongSwan VPN client.
 1. Tap the "more options" menu on top right, then tap **Import VPN profile**.
 1. Choose the `.sswan` file you transferred from the VPN server.   
@@ -273,7 +273,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 10 and newer:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
 1. Tap **Install certificates from storage (or SD card)**.
@@ -290,7 +290,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 4 to 9:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN Client</a> from **Google Play**.
+1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.   
    **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** field.
@@ -302,7 +302,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 1. Save the new VPN connection, then tap to connect.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -365,7 +365,7 @@ You can then set up and enable the VPN connection:
 1. Click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
-Once successfully connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -503,7 +503,7 @@ Alternatively, you may manually revoke a client certificate. This can be done us
        CRL Extensions:
    ```
 
-   **Note:** If you want to remove a certificate from the CRL, replace `addcert 3446275956 20200606220100Z` above with `rmcert 3446275956`. For other `crlutil` usage, read <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">here</a>.
+   **Note:** If you want to remove a certificate from the CRL, replace `addcert 3446275956 20200606220100Z` above with `rmcert 3446275956`. For other `crlutil` usage, read [here](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil).
 
 1. Finally, let Libreswan re-read the updated CRL.
 
@@ -513,7 +513,7 @@ Alternatively, you may manually revoke a client certificate. This can be done us
 
 ## Manually set up IKEv2 on the VPN server
 
-As an alternative to using the [helper script](#using-helper-scripts), advanced users can manually set up IKEv2. Before continuing, it is recommended to <a href="../README.md#upgrade-libreswan" target="_blank">update Libreswan</a> to the latest version.
+As an alternative to using the [helper script](#using-helper-scripts), advanced users can manually set up IKEv2. Before continuing, it is recommended to [update Libreswan](../README.md#upgrade-libreswan) to the latest version.
 
 The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
@@ -586,7 +586,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    EOF
    ```
 
-   **Note:** The <a href="https://wiki.strongswan.org/projects/strongswan/wiki/MobIke" target="_blank">MOBIKE</a> IKEv2 extension allows VPN clients to change network attachment points, e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP. If your server (or Docker host) is **NOT** running Ubuntu Linux, and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
+   **Note:** The [MOBIKE](https://wiki.strongswan.org/projects/strongswan/wiki/MobIke) IKEv2 extension allows VPN clients to change network attachment points, e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP. If your server (or Docker host) is **NOT** running Ubuntu Linux, and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
 
    For Libreswan 3.19-3.22:
 
@@ -706,7 +706,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    vpnclient                                          u,u,u
    ```
 
-   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To revoke a client certificate, follow [these steps](#revoke-a-client-certificate). For other `certutil` usage, read <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil" target="_blank">here</a>.
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To revoke a client certificate, follow [these steps](#revoke-a-client-certificate). For other `certutil` usage, read [here](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil).
 
 1. **(Important) Restart the IPsec service**:
 
@@ -724,7 +724,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
 
-Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">here</a>. As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
+Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258). As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
 <details>
 <summary>
 Workaround for the NSS bug on Ubuntu 18.04
@@ -766,12 +766,12 @@ If you are unable to connect multiple IKEv2 clients simultaneously from behind t
 
 ### Other known issues
 
-1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">requires</a> Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the <a href="clients.md" target="_blank">IPsec/L2TP</a> or <a href="clients-xauth.md" target="_blank">IPsec/XAuth</a> mode.
-1. If using the strongSwan Android VPN client, you must <a href="../README.md#upgrade-libreswan" target="_blank">update Libreswan</a> on your server to version 3.26 or above.
+1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
+1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
 
 ### Additional troubleshooting
 
-Click <a href="clients.md#troubleshooting" target="_blank">here</a> for additional troubleshooting information.
+Click [here](clients.md#troubleshooting) for additional troubleshooting information.
 
 ## Remove IKEv2
 
@@ -841,8 +841,8 @@ To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.
 
 ## License
 
-Copyright (C) 2016-2021 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a>   
+Copyright (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>   
-This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
+[![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
+This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/)  
 Attribution required: please include my name in any derivative and let me know how you have improved it!

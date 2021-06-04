@@ -18,17 +18,21 @@
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
-右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。
+右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。继续创建堆栈，在最后一步你需要确认（选择）此模板可以创建 IAM 资源。
 
-![上传模板](upload-the-template.png)
+<details>
+<summary>
+点这里查看屏幕截图
+</summary>
 
-在步骤 4，你需要确认（选择）此模板可以创建 IAM 资源。
-
-![确认 IAM](confirm-iam.png)
+![上传模板](images/upload-the-template.png)
+![指定参数](images/specify-parameters.png)
+![确认 IAM](images/confirm-iam.png)
+</details>
 
 点击下面的图标开始：
 
-<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new" target="_blank"><img src="cloudformation-launch-stack-button.png" alt="Launch stack" height="34px"></a>
+[![Launch stack](images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new)
 
 要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
@@ -61,7 +65,7 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 
 > **注：** 在保存到你的计算机之前，你可能需要修改私钥的格式，比如用换行符替换所有的空格。在保存后，需要为该私钥文件设置[适当的权限](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key)才能使用。
 
-![显示密钥](show-key.png)
+![显示密钥](images/show-key.png)
 
 要为私钥文件设置适当的权限，请在该文件所在的目录下运行以下命令：
 ```bash
@@ -77,7 +81,3 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 ## 作者
 
 版权所有 (C) 2020-2021 [S. X. Liang](https://github.com/scottpedia)
-
-## 屏幕截图
-
-![指定参数](specify-parameters.png)

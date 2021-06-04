@@ -6,9 +6,9 @@ Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco I
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
-We will use <a href="https://libreswan.org/" target="_blank">Libreswan</a> as the IPsec server, and <a href="https://github.com/xelerance/xl2tpd" target="_blank">xl2tpd</a> as the L2TP provider.
+We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-<a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">**&raquo; See also: IPsec VPN Server on Docker**</a>
+[**&raquo; See also: IPsec VPN Server on Docker**](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
@@ -72,7 +72,7 @@ For other installation options and how to set up VPN clients, read the sections 
 ## Features
 
 - **New:** The faster IPsec/XAuth ("Cisco IPsec") and IKEv2 modes are supported
-- **New:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
+- **New:** A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
@@ -81,31 +81,31 @@ For other installation options and how to set up VPN clients, read the sections 
 
 ## Requirements
 
-A newly created <a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a> instance, from one of these images:
-- <a href="https://cloud-images.ubuntu.com/locator/" target="_blank">Ubuntu 20.04 (Focal) or 18.04 (Bionic)</a>
-- <a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank">Debian 10 (Buster)</a>[\*](#debian-10-note)<a href="https://wiki.debian.org/Cloud/AmazonEC2Image" target="_blank"> or 9 (Stretch)</a>
-- <a href="https://wiki.centos.org/Cloud/AWS" target="_blank">CentOS 8</a>[\*\*](#centos-8-note)<a href="https://wiki.centos.org/Cloud/AWS" target="_blank"> or 7</a>
-- <a href="https://aws.amazon.com/partners/redhat/faqs/" target="_blank">Red Hat Enterprise Linux (RHEL) 8 or 7</a>
-- <a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a>
+A newly created [Amazon EC2](https://aws.amazon.com/ec2/) instance, from one of these images:
+- [Ubuntu 20.04 (Focal) or 18.04 (Bionic)](https://cloud-images.ubuntu.com/locator/)
+- [Debian 10 (Buster)](https://wiki.debian.org/Cloud/AmazonEC2Image)[\*](#debian-10-note)[ or 9 (Stretch)](https://wiki.debian.org/Cloud/AmazonEC2Image)
+- [CentOS 8](https://wiki.centos.org/Cloud/AWS)[\*\*](#centos-8-note)[ or 7](https://wiki.centos.org/Cloud/AWS)
+- [Red Hat Enterprise Linux (RHEL) 8 or 7](https://aws.amazon.com/partners/redhat/faqs/)
+- [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/)
 
-See <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup" target="_blank">detailed instructions</a> and <a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 pricing</a>. Alternatively, you may also deploy rapidly using <a href="aws/README.md" target="_blank">CloudFormation</a>.
+See [detailed instructions](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) and [EC2 pricing](https://aws.amazon.com/ec2/pricing/). Alternatively, you may also deploy rapidly using [CloudFormation](aws/README.md).
 
 **-OR-**
 
-A dedicated server or virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+A dedicated server or virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try [OpenVPN](https://github.com/Nyr/openvpn-install).
 
-This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://aws.amazon.com/lightsail/" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud/virtual-servers" target="_blank">IBM Cloud</a>, <a href="https://www.ovh.com/world/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
+This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [IBM Cloud](https://www.ibm.com/cloud/virtual-servers), [OVH](https://www.ovh.com/world/vps/) and [Rackspace](https://www.rackspace.com).
 
-<a href="aws/README.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Deploy to DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
+[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com/) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
-<a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
+[**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-Advanced users can set up the VPN server on a $35 <a href="https://www.raspberrypi.org" target="_blank">Raspberry Pi</a>. See <a href="https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/" target="_blank">[1]</a> <a href="https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/" target="_blank">[2]</a>.
+Advanced users can set up the VPN server on a $35 [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
 
 <a name="debian-10-note"></a>
-\* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more <a href="docs/clients.md#debian-10-kernel" target="_blank">here</a>. If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
+\* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more [here](docs/clients.md#debian-10-kernel). If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
 <a name="centos-8-note"></a>
-\*\* Support for CentOS Linux 8 will end on December 31, 2021. Read more <a href="https://wiki.centos.org/About/Product" target="_blank">here</a>.   
+\*\* Support for CentOS Linux 8 will end on December 31, 2021. Read more [here](https://wiki.centos.org/About/Product).   
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -148,7 +148,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
 sudo ikev2.sh --auto
@@ -198,7 +198,7 @@ sudo sh vpn.sh
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
 sudo ikev2.sh --auto
@@ -255,25 +255,25 @@ sh vpn.sh
 ```
 </details>
 
-After successful installation, it is recommended to <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>:
+After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
 sudo ikev2.sh --auto
 ```
 
-**Note:** If unable to download via `wget`, you may also open <a href="vpnsetup.sh" target="_blank">vpnsetup.sh</a>, <a href="vpnsetup_centos.sh" target="_blank">vpnsetup_centos.sh</a> or <a href="vpnsetup_amzn.sh" target="_blank">vpnsetup_amzn.sh</a>, and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), [vpnsetup_centos.sh](vpnsetup_centos.sh) or [vpnsetup_amzn.sh](vpnsetup_amzn.sh), and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next steps
 
 Get your computer or device to use the VPN. Please refer to:
 
-<a href="docs/clients.md" target="_blank">**Configure IPsec/L2TP VPN Clients**</a>
+[**Configure IPsec/L2TP VPN Clients**](docs/clients.md)
 
-<a href="docs/clients-xauth.md" target="_blank">**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**</a>
+[**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**](docs/clients-xauth.md)
 
-<a href="docs/ikev2-howto.md" target="_blank">**Guide: How to Set Up and Use IKEv2 VPN**</a>
+[**Guide: How to Set Up and Use IKEv2 VPN**](docs/ikev2-howto.md)
 
-If you get an error when trying to connect, see <a href="docs/clients.md#troubleshooting" target="_blank">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](docs/clients.md#troubleshooting).
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
@@ -281,17 +281,17 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 *Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows users**: A <a href="docs/clients.md#windows-error-809" target="_blank">one-time registry change</a> is required if the VPN server or client is behind NAT (e.g. home router).
+**Windows users**: A [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
-**Android users**: If you encounter connection issues, try <a href="docs/clients.md#android-mtumss-issues" target="_blank">these steps</a>.
+**Android users**: If you encounter connection issues, try [these steps](docs/clients.md#android-mtumss-issues).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth mode</a>, or <a href="docs/ikev2-howto.md" target="_blank">set up IKEv2</a>.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](docs/clients-xauth.md), or [set up IKEv2](docs/ikev2-howto.md).
 
-If you wish to view or update VPN user accounts, see <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
+If you wish to view or update VPN user accounts, see [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
 
-For servers with an external firewall (e.g. <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html" target="_blank">EC2</a>/<a href="https://cloud.google.com/vpc/docs/firewalls" target="_blank">GCE</a>), open UDP ports 500 and 4500 for the VPN. Aliyun users, see <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/433" target="_blank">#433</a>.
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
 
 Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
 
@@ -299,7 +299,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts in <a href="extras/" target="_blank">extras/</a> can be used to upgrade <a href="https://libreswan.org" target="_blank">Libreswan</a> (<a href="https://github.com/libreswan/libreswan/blob/master/CHANGES" target="_blank">changelog</a> | <a href="https://lists.libreswan.org/mailman/listinfo/swan-announce" target="_blank">announce</a>). Edit the `SWAN_VER` variable as necessary. The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
+The additional scripts in [extras/](extras/) can be used to upgrade [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)). Edit the `SWAN_VER` variable as necessary. The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
 
 <details open>
 <summary>
@@ -345,9 +345,9 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 ### Use alternative DNS servers
 
-Clients are set to use <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a> when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
 
-Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">IKEv2 helper script</a>. For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1):
+Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the [IKEv2 helper script](docs/ikev2-howto.md#using-helper-scripts). For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1):
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
@@ -356,21 +356,21 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 
 ### DNS name and server IP changes
 
-For <a href="docs/clients.md" target="_blank">IPsec/L2TP</a> and <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
+For [IPsec/L2TP](docs/clients.md) and [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when <a href="docs/ikev2-howto.md" target="_blank">setting up IKEv2</a>. The DNS name must be a fully qualified domain name (FQDN). Example:
+For [IKEv2](docs/ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](docs/ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-Alternatively, you may customize IKEv2 setup options by running the <a href="docs/ikev2-howto.md#using-helper-scripts" target="_blank">helper script</a> without the `--auto` parameter.
+Alternatively, you may customize IKEv2 setup options by running the [helper script](docs/ikev2-howto.md#using-helper-scripts) without the `--auto` parameter.
 
 ### Internal VPN IPs and traffic
 
-When connecting using <a href="docs/clients.md" target="_blank">IPsec/L2TP</a> mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
+When connecting using [IPsec/L2TP](docs/clients.md) mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
 
-When connecting using <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> or <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> mode, the VPN server does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
+When connecting using [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) or [IKEv2](docs/ikev2-howto.md) mode, the VPN server does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
@@ -383,7 +383,7 @@ IPsec/L2TP mode: Assign static IPs to VPN clients
 
 The example below **ONLY** applies to IPsec/L2TP mode. Commands must be run as `root`.
 
-1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
+1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
 1. Edit `/etc/xl2tpd/xl2tpd.conf` on the VPN server. Replace `ip range = 192.168.42.10-192.168.42.250` with e.g. `ip range = 192.168.42.100-192.168.42.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
 1. Edit `/etc/ppp/chap-secrets` on the VPN server. For example, if the file contains:
    ```
@@ -413,7 +413,7 @@ IPsec/XAuth ("Cisco IPsec") mode: Assign static IPs to VPN clients
 
 The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
 
-1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
+1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
 1. Edit `/etc/ipsec.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with e.g. `rightaddresspool=192.168.43.100-192.168.43.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
 1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (if exists). Replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as the previous step.
 1. Edit `/etc/ipsec.d/passwd` on the VPN server. For example, if the file contains:
@@ -448,7 +448,7 @@ iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 
 With [split tunneling](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), VPN clients will only send traffic for specific destination subnet(s) through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has [some limitations](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), and is not supported by all VPN clients.
 
-Advanced users can optionally enable split tunneling for the <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> and/or <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
+Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) and/or [IKEv2](docs/ikev2-howto.md) modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
 
 <details>
 <summary>
@@ -457,7 +457,7 @@ IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
 
 The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
 
-1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:
+1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
    For a single subnet:
    ```
    leftsubnet=10.123.123.0/24
@@ -479,7 +479,7 @@ IKEv2 mode: Enable split tunneling
 
 The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`.
 
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
    For a single subnet:
    ```
    leftsubnet=10.123.123.0/24
@@ -524,23 +524,23 @@ If you want to modify the IPTables rules after install, edit `/etc/iptables.rule
 
 ## Bugs & Questions
 
-- Got a question? Please first search other people's comments <a href="https://gist.github.com/hwdsl2/9030462#comments" target="_blank">in this Gist</a> and <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread" target="_blank">on my blog</a>.
-- Ask VPN related questions on the <a href="https://lists.libreswan.org/mailman/listinfo/swan" target="_blank">Libreswan</a> or <a href="https://lists.strongswan.org/mailman/listinfo/users" target="_blank">strongSwan</a> mailing list, or read these wikis: <a href="https://libreswan.org/wiki/Main_Page" target="_blank">[1]</a> <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks" target="_blank">[2]</a> <a href="https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation" target="_blank">[3]</a> <a href="https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server" target="_blank">[4]</a> <a href="https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup" target="_blank">[5]</a>.
-- If you found a reproducible bug, open a <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue" target="_blank">GitHub Issue</a> to submit a bug report.
+- Got a question? Please first search other people's comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
+- Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
+- If you found a reproducible bug, open a [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) to submit a bug report.
 
 ## Uninstallation
 
-See <a href="docs/uninstall.md" target="_blank">Uninstall the VPN</a>.
+See [Uninstall the VPN](docs/uninstall.md).
 
 ## See also
 
-- <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">IPsec VPN Server on Docker</a>
+- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## License
 
-Copyright (C) 2014-2021 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a> <a href="https://www.linkedin.com/in/linsongui" target="_blank"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View my profile on LinkedIn"></a>   
-Based on <a href="https://github.com/sarfata/voodooprivacy" target="_blank">the work of Thomas Sarlandie</a> (Copyright 2012)
+Copyright (C) 2014-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>   
-This work is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>  
+[![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
+This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/)  
 Attribution required: please include my name in any derivative and let me know how you have improved it!

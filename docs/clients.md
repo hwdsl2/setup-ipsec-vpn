@@ -4,7 +4,7 @@
 
 **Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
-After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
+After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
 ---
 * Platforms
@@ -38,11 +38,11 @@ After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">settin
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-**Note:** This <a href="#windows-error-809">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
+**Note:** This [one-time registry change](#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 Alternatively, instead of following the steps above, you may create the VPN connection using these Windows PowerShell commands. Replace `Your VPN Server IP` and `Your VPN IPsec PSK` with your own values, enclosed in single quotes:
 
@@ -80,11 +80,11 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -L2tp
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-**Note:** This <a href="#windows-error-809">one-time registry change</a> is required if the VPN server and/or client is behind NAT (e.g. home router).
+**Note:** This [one-time registry change](#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## OS X
 
@@ -107,9 +107,9 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. **(Important)** Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
-To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## Android
 
@@ -132,9 +132,9 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Check the **Save account information** checkbox.
 1. Tap **Connect**.
 
-Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## iOS
 
@@ -152,9 +152,9 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Tap **Done**.
 1. Slide the **VPN** switch ON.
 
-Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## Chromebook
 
@@ -171,9 +171,9 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 1. Enter `Your VPN Password` for the **Password**.
 1. Click **Connect**.
 
-Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see <a href="#troubleshooting">Troubleshooting</a>.
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## Linux
 
@@ -181,7 +181,7 @@ If you get an error when trying to connect, see <a href="#troubleshooting">Troub
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome" target="_blank">network-manager-l2tp-gnome</a> package using `apt`, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 users may need to add the `nm-l2tp` PPA, read more <a href="https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721" target="_blank">here</a>.
+Ubuntu 18.04 (and newer) users can install the [network-manager-l2tp-gnome](https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome) package using `apt`, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 users may need to add the `nm-l2tp` PPA, read more [here](https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721).
 
 1. Go to Settings -> Network -> VPN. Click the **+** button.
 1. Select **Layer 2 Tunneling Protocol (L2TP)**.
@@ -201,9 +201,9 @@ Ubuntu 18.04 (and newer) users can install the <a href="https://packages.ubuntu.
 1. Click **OK**, then click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
-Once connected, you can verify that your traffic is being routed properly by <a href="https://www.google.com/search?q=my+ip" target="_blank">looking up your IP address on Google</a>. It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, try <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/blob/master/README.md#issue-with-not-stopping-system-xl2tpd-service" target="_blank">this fix</a>.
+If you get an error when trying to connect, try [this fix](https://github.com/nm-l2tp/NetworkManager-l2tp/blob/master/README.md#issue-with-not-stopping-system-xl2tpd-service).
 
 ### Fedora and CentOS
 
@@ -211,7 +211,7 @@ Fedora 28 (and newer) and CentOS 8/7 users can connect using [IPsec/XAuth](clien
 
 ### Other Linux
 
-First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-Packages" target="_blank">here</a> to see if the `network-manager-l2tp` and `network-manager-l2tp-gnome` packages are available for your Linux distribution. If yes, install them (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
+First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-Packages) to see if the `network-manager-l2tp` and `network-manager-l2tp-gnome` packages are available for your Linux distribution. If yes, install them (select strongSwan) and follow the instructions above. Alternatively, you may [configure Linux VPN clients using the command line](#configure-linux-vpn-clients-using-the-command-line).
 
 ## Troubleshooting
 
@@ -240,7 +240,7 @@ First check <a href="https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuil
 
 **Note:** The registry change below is only required if you use IPsec/L2TP mode to connect to the VPN. It is NOT required for the [IKEv2](ikev2-howto.md) and [IPsec/XAuth](clients-xauth.md) modes.
 
-To fix this error, a <a href="https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809" target="_blank">one-time registry change</a> is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an <a href="http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/" target="_blank">elevated command prompt</a>. **You must reboot your PC when finished.**
+To fix this error, a [one-time registry change](https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809) is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/). **You must reboot your PC when finished.**
 
 - For Windows Vista, 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
 
@@ -304,9 +304,9 @@ After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-
 
 ### Windows 8/10 DNS leaks
 
-Windows 8.x and 10 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter are from the local network segment. To fix, you may either <a href="https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/" target="_blank">disable smart multi-homed name resolution</a>, or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). When finished, <a href="https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-" target="_blank">clear the DNS cache</a> and reboot your PC.
+Windows 8.x and 10 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter are from the local network segment. To fix, you may either [disable smart multi-homed name resolution](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/), or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). When finished, [clear the DNS cache](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-) and reboot your PC.
 
-In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to <a href="https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users" target="_blank">disable IPv6</a> in Windows. If you need a VPN with IPv6 support, you could instead try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>.
+In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to [disable IPv6](https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users) in Windows. If you need a VPN with IPv6 support, you could instead try [OpenVPN](https://github.com/Nyr/openvpn-install).
 
 ### Android MTU/MSS issues
 
@@ -323,9 +323,9 @@ iptables -t mangle -A FORWARD -m policy --pol ipsec --dir out \
 echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 ```
 
-**Docker users:** Instead of running the commands above, you may apply this fix by adding `VPN_ANDROID_MTU_FIX=yes` to <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image" target="_blank">your env file</a>, then re-create the Docker container.
+**Docker users:** Instead of running the commands above, you may apply this fix by adding `VPN_ANDROID_MTU_FIX=yes` to [your env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image), then re-create the Docker container.
 
-References: <a href="https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#MTUMSS-issues" target="_blank">[1]</a> <a href="https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/" target="_blank">[2]</a>.
+References: [[1]](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#MTUMSS-issues) [[2]](https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/).
 
 ### Android 6 and 7
 
@@ -334,7 +334,7 @@ If your Android 6.x or 7.x device cannot connect, try these steps:
 1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value. i.e. Replace `sha2-truncbug=no` with `sha2-truncbug=yes`, or replace `sha2-truncbug=yes` with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
 
-**Docker users:** You may set `sha2-truncbug=yes` (default is `no`) in `/etc/ipsec.conf` by adding `VPN_SHA2_TRUNCBUG=yes` to <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image" target="_blank">your env file</a>, then re-create the Docker container.
+**Docker users:** You may set `sha2-truncbug=yes` (default is `no`) in `/etc/ipsec.conf` by adding `VPN_SHA2_TRUNCBUG=yes` to [your env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image), then re-create the Docker container.
 
 ![Android VPN workaround](images/vpn-profile-Android.png)
 
@@ -351,15 +351,15 @@ After trying the steps above, if your computer is still not sending traffic over
 
 If your iOS 13/14, macOS 10.15 (Catalina) or macOS 11 (Big Sur) device cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
 
-In addition, users running macOS Big Sur 11.0 should update to version 11.1 or newer, to fix some issues with VPN connections. To check your macOS version and update, refer to <a href="https://www.businessinsider.com/how-to-check-mac-os-version" target="_blank">this article</a>.
+In addition, users running macOS Big Sur 11.0 should update to version 11.1 or newer, to fix some issues with VPN connections. To check your macOS version and update, refer to [this article](https://www.businessinsider.com/how-to-check-mac-os-version).
 
 ### iOS/Android sleep mode
 
-To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is <a href="https://discussions.apple.com/thread/2333948" target="_blank">by design</a> and cannot be configured.
+To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi shortly after the screen turns off (sleep mode). As a result, the IPsec VPN disconnects. This behavior is [by design](https://discussions.apple.com/thread/2333948) and cannot be configured.
 
-If you need the VPN to auto-reconnect when the device wakes up, you may connect using [IKEv2](ikev2-howto.md) mode (recommended) and enable the "VPN On Demand" feature. Alternatively, you may try <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a> instead, which <a href="https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/" target="_blank">has support for options</a> such as "Reconnect on Wakeup" and "Seamless Tunnel".
+If you need the VPN to auto-reconnect when the device wakes up, you may connect using [IKEv2](ikev2-howto.md) mode (recommended) and enable the "VPN On Demand" feature. Alternatively, you may try [OpenVPN](https://github.com/Nyr/openvpn-install) instead, which [has support for options](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
-Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more <a href="https://support.google.com/android/answer/9089766?hl=en" target="_blank">here</a>.
+Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more [here](https://support.google.com/android/answer/9089766?hl=en).
 
 ### Debian 10 kernel
 
@@ -416,7 +416,7 @@ ipsec trafficstatus
 
 ## Configure Linux VPN clients using the command line
 
-After <a href="https://github.com/hwdsl2/setup-ipsec-vpn" target="_blank">setting up your own VPN server</a>, follow these steps to configure Linux VPN clients using the command line. Alternatively, you may connect using [IKEv2](ikev2-howto.md) mode (recommended), or [configure using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
+After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), follow these steps to configure Linux VPN clients using the command line. Alternatively, you may connect using [IKEv2](ikev2-howto.md) mode (recommended), or [configure using the GUI](#linux). Instructions below are based on [the work of Peter Sanford](https://gist.github.com/psanford/42c550a1a6ad3cb70b13e4aaa94ddb1c). Commands must be run as `root` on your VPN client.
 
 To set up the VPN client, first install the following packages:
 
@@ -555,7 +555,7 @@ Exclude your VPN server's IP from the new default route (replace with actual val
 route add YOUR_VPN_SERVER_IP gw X.X.X.X
 ```
 
-If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with <a href="https://www.google.com/search?q=my+ip" target="_blank">actual value</a>):
+If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with [actual value](https://www.google.com/search?q=my+ip)):
 
 ```bash
 route add YOUR_LOCAL_PC_PUBLIC_IP gw X.X.X.X
@@ -595,15 +595,15 @@ strongswan down myvpn
 
 ## Credits
 
-This document was adapted from the <a href="https://github.com/StreisandEffect/streisand" target="_blank">Streisand</a> project, maintained by Joshua Lund and contributors.
+This document was adapted from the [Streisand](https://github.com/StreisandEffect/streisand) project, maintained by Joshua Lund and contributors.
 
 ## License
 
 Note: This license applies to this document only.
 
-Copyright (C) 2016-2021 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a>   
-Based on <a href="https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2" target="_blank">the work of Joshua Lund</a> (Copyright 2014-2016)
+Copyright (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Based on [the work of Joshua Lund](https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2) (Copyright 2014-2016)
 
-This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.

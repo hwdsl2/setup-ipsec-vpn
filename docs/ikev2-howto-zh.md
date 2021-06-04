@@ -15,7 +15,7 @@
 
 ## 导言
 
-现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换（英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2" target="_blank">功能改进</a> 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换（英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 [功能改进](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
@@ -29,7 +29,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 使用辅助脚本
 
-**重要：** 在继续之前，你应该已经成功地 <a href="../README-zh.md" target="_blank">搭建自己的 VPN 服务器</a>，并且（可选但推荐）<a href="../README-zh.md#升级libreswan" target="_blank">升级 Libreswan</a>。**Docker 用户请看 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn" target="_blank">这里</a>**。
+**重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)，并且（可选但推荐）[升级 Libreswan](../README-zh.md#升级libreswan)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
 
 使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
 
@@ -37,7 +37,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 sudo ikev2.sh --auto
 ```
 
-以上命令使用自动模式和默认选项运行 <a href="../extras/ikev2setup.sh" target="_blank">辅助脚本</a>。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
+以上命令使用自动模式和默认选项运行 [辅助脚本](../extras/ikev2setup.sh)。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
 <details>
 <summary>
@@ -70,7 +70,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
-在 VPN 已连接时，IKEv2 客户端默认配置为使用 <a href="https://developers.google.com/speed/public-dns/" target="_blank">Google Public DNS</a>。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
+在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
@@ -111,14 +111,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x 和 10
 
-1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 <a href="http://www.cnblogs.com/xxcanghai/p/4610054.html" target="_blank">提升权限命令提示符</a> 并运行以下命令：
+1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
    ```console
    # 导入 .p12 文件（换成你自己的值）
    certutil -f -importpfx ".p12文件的位置和名称" NoExport
    ```
 
-   另外，你也可以手动导入 `.p12` 文件。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs" target="_blank">这里</a>。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+   另外，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
    **注：** Ubuntu 18.04 用户在尝试导入 `.p12` 文件时可能会遇到错误 "输入的密码不正确"。参见 [故障排除](#故障排除)。
 
@@ -131,9 +131,9 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   另外，你也可以手动创建 VPN 连接。详细步骤请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config" target="_blank">这里</a>。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
+   另外，你也可以手动创建 VPN 连接。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
-1. （**此步骤为必须**，如果你手动创建了 VPN 连接）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 <a href="https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048" target="_blank">这里</a>。
+1. （**此步骤为必须**，如果你手动创建了 VPN 连接）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
    - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -141,7 +141,7 @@ To customize IKEv2 or client options, run this script without arguments.
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
      ```
 
-要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -156,7 +156,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **连接**。
 
-（可选功能）你可以选择启用 <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand（按需连接）</a> ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。
+（可选功能）你可以选择启用 [VPN On Demand（按需连接）](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules) ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。
 
 <details>
 <summary>
@@ -187,7 +187,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 单击 **连接**。
 </details>
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -207,7 +207,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
 1. 启用 **VPN** 连接。
 
-（可选功能）你可以选择启用 <a href="https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules" target="_blank">VPN On Demand（按需连接）</a> ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
+（可选功能）你可以选择启用 [VPN On Demand（按需连接）](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules) ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
 
 <details>
 <summary>
@@ -238,14 +238,14 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 启用 **VPN** 连接。
 </details>
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
 ### Android
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
 1. 启动 strongSwan VPN 客户端。
 1. 单击右上角的 "更多选项" 菜单，然后单击 **导入VPN配置**。
 1. 选择你从服务器传送过来的 `.sswan` 文件。   
@@ -273,7 +273,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 10 和更新版本:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
 1. 启动 **设置** 应用程序。
 1. 进入 安全 -> 高级 -> 加密与凭据。
 1. 单击 **从存储设备（或 SD 卡）安装证书**。
@@ -290,7 +290,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 4 to 9:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 <a href="https://play.google.com/store/apps/details?id=org.strongswan.android" target="_blank">strongSwan VPN 客户端</a>。
+1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
 1. 启动 strongSwan VPN 客户端，然后单击 **添加VPN配置**。
 1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
    **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 字段中输入该域名。
@@ -302,7 +302,7 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 </details>
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -363,7 +363,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 1. 单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
-连接成功后，你可以到 <a href="https://www.ipchicken.com" target="_blank">这里</a> 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -501,7 +501,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
        CRL Extensions:
    ```
 
-   **注：** 如果需要从 CRL 删除一个证书，可以将上面的 `addcert 3446275956 20200606220100Z` 替换为 `rmcert 3446275956`。关于 `crlutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil" target="_blank">这里</a>。
+   **注：** 如果需要从 CRL 删除一个证书，可以将上面的 `addcert 3446275956 20200606220100Z` 替换为 `rmcert 3446275956`。关于 `crlutil` 的其它用法参见 [这里](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil)。
 
 1. 最后，让 Libreswan 重新读取已更新的 CRL。
 
@@ -511,7 +511,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ## 手动在 VPN 服务器上配置 IKEv2
 
-除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 <a href="../README-zh.md#升级libreswan" target="_blank">升级 Libreswan</a> 到最新版本。
+除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
 
 下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
@@ -584,7 +584,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    EOF
    ```
 
-   **注：** <a href="https://wiki.strongswan.org/projects/strongswan/wiki/MobIke" target="_blank">MOBIKE</a>  IKEv2 协议扩展允许 VPN 客户端更改网络连接点，例如在移动数据和 Wi-Fi 之间切换，并使 VPN 保持连接。如果你的服务器（或者 Docker 主机）的操作系统 **不是** Ubuntu Linux，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
+   **注：** [MOBIKE](https://wiki.strongswan.org/projects/strongswan/wiki/MobIke)  IKEv2 协议扩展允许 VPN 客户端更改网络连接点，例如在移动数据和 Wi-Fi 之间切换，并使 VPN 保持连接。如果你的服务器（或者 Docker 主机）的操作系统 **不是** Ubuntu Linux，并且你想要启用 MOBIKE 支持，可以将上面命令中的 `mobike=no` 换成 `mobike=yes`。**不要** 在 Ubuntu 系统或者 Raspberry Pi 上启用该选项。
 
    如果是 Libreswan 3.19-3.22：
 
@@ -704,7 +704,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    vpnclient                                          u,u,u
    ```
 
-   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要吊销一个客户端证书，请转到[这一节](#吊销一个客户端证书)。关于 `certutil` 的其它用法参见 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil" target="_blank">这里</a>。
+   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要吊销一个客户端证书，请转到[这一节](#吊销一个客户端证书)。关于 `certutil` 的其它用法参见 [这里](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil)。
 
 1. **（重要）重启 IPsec 服务**：
 
@@ -722,7 +722,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
 
-Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 <a href="https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258" target="_blank">这里</a>。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
+Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258)。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
 <details>
 <summary>
 Ubuntu 18.04 上的 NSS 问题的解决方法
@@ -764,12 +764,12 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
 
 ### 其它已知问题
 
-1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能<a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc" target="_blank">需要</a> Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 <a href="clients-zh.md" target="_blank">IPsec/L2TP</a> 或 <a href="clients-xauth-zh.md" target="_blank">IPsec/XAuth</a> 模式。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan <a href="../README-zh.md#升级libreswan" target="_blank">升级</a>到版本 3.26 或以上。
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
 
 ### 更多故障排除信息
 
-要查看更多故障排除信息，请看 <a href="clients-zh.md#故障排除" target="_blank">这里</a>。
+要查看更多故障排除信息，请看 [这里](clients-zh.md#故障排除)。
 
 ## 移除 IKEv2
 
@@ -839,8 +839,8 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
 
 ## 授权协议
 
-版权所有 (C) 2016-2021 <a href="https://www.linkedin.com/in/linsongui" target="_blank">Lin Song</a>   
+版权所有 (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>   
-这个项目是以 <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">知识共享署名-相同方式共享3.0</a> 许可协议授权。   
+[![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
+这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！
