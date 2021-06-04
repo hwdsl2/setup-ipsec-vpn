@@ -216,6 +216,8 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 ## 故障排除
 
+**另见：** [IKEv2 故障排除](ikev2-howto-zh.md#故障排除)，[检查日志及 VPN 状态](#检查日志及-vpn-状态) 和 [高级用法](../README-zh.md#高级用法)。
+
 *其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
 * [Windows 错误 809](#windows-错误-809)
@@ -356,7 +358,7 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 
 为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 <a href="https://discussions.apple.com/thread/2333948" target="_blank">故意设计的</a> 并且不能被配置。
 
-如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://docs.openvpn.net/connecting/connecting-to-access-server-with-apple-ios/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
+如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 <a href="https://github.com/Nyr/openvpn-install" target="_blank">OpenVPN</a>，它支持 <a href="https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/" target="_blank">一些选项</a> 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
 
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 和更新版本中不再可用。另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 <a href="https://support.google.com/android/answer/9089766?hl=zh-Hans" target="_blank">这里</a>。
 

@@ -71,7 +71,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 ## 功能特性
 
-- **新:** 增加支持更高效的 `IPsec/XAuth ("Cisco IPsec")` 和 `IKEv2` 模式
+- **新:** 增加支持更高效的 IPsec/XAuth ("Cisco IPsec") 和 IKEv2 模式
 - **新:** 现在可以下载 VPN 服务器的预构建 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md" target="_blank">Docker 镜像</a>
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
@@ -96,7 +96,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 这也包括各种公共云服务中的 Linux 虚拟机，比如 <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://aws.amazon.com/lightsail/" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud/virtual-servers" target="_blank">IBM Cloud</a>, <a href="https://www.ovh.com/world/vps/" target="_blank">OVH</a> 和 <a href="https://www.rackspace.com" target="_blank">Rackspace</a>。
 
-<a href="aws/README-zh.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README-zh.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
+<a href="aws/README-zh.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README-zh.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Deploy to DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**</a>
 
@@ -338,6 +338,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](#域名和更改服务器-ip)
 - [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
+- [VPN 分流](#vpn-分流)
 - [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 - [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 - [更改 IPTables 规则](#更改-iptables-规则)
@@ -373,14 +374,14 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
 
-对于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，你可以将静态 IP 分配给 VPN 客户端。这是可选的。展开以查看详细信息。IKEv2 模式 **不支持** 此功能。
+对于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。展开以查看详细信息。IKEv2 模式 **不支持** 此功能。
 
 <details>
 <summary>
 IPsec/L2TP 模式：为 VPN 客户端分配静态 IP
 </summary>
 
-高级用户可以将静态内网 IP 分配给 VPN 客户端。这是可选的。下面的示例步骤 **仅适用于** `IPsec/L2TP` 模式。这些命令必须用 `root` 账户运行。
+下面的示例 **仅适用于** IPsec/L2TP 模式。这些命令必须用 `root` 账户运行。
 
 1. 首先为要分配静态 IP 的每个 VPN 客户端创建一个新的 VPN 用户。参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
 1. 编辑 VPN 服务器上的 `/etc/xl2tpd/xl2tpd.conf`。将 `ip range = 192.168.42.10-192.168.42.250` 替换为比如 `ip range = 192.168.42.100-192.168.42.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
@@ -410,7 +411,7 @@ IPsec/L2TP 模式：为 VPN 客户端分配静态 IP
 IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
 </summary>
 
-高级用户可以将静态内网 IP 分配给 VPN 客户端。这是可选的。下面的示例步骤 **仅适用于** `IPsec/XAuth ("Cisco IPsec")` 模式。这些命令必须用 `root` 账户运行。
+下面的示例 **仅适用于** IPsec/XAuth ("Cisco IPsec") 模式。这些命令必须用 `root` 账户运行。
 
 1. 首先为要分配静态 IP 的每个 VPN 客户端创建一个新的 VPN 用户。参见 <a href="docs/manage-users-zh.md" target="_blank">管理 VPN 用户</a>。该文档包含辅助脚本，以方便管理 VPN 用户。
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为比如 `rightaddresspool=192.168.43.100-192.168.43.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
@@ -442,6 +443,56 @@ IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### VPN 分流
+
+在启用 [VPN 分流 (split tunneling)](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。VPN 分流 [有一些局限性](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling)，而且并非所有的 VPN 客户端都支持。
+
+高级用户可以为 <a href="docs/clients-xauth-zh.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> 和/或 <a href="docs/ikev2-howto-zh.md" target="_blank">IKEv2</a> 模式启用 VPN 分流。这是可选的。IPsec/L2TP 模式 **不支持** 此功能。
+
+<details>
+<summary>
+IPsec/XAuth ("Cisco IPsec") 模式：启用 VPN 分流 (split tunneling)
+</summary>
+
+下面的示例 **仅适用于** IPsec/XAuth ("Cisco IPsec") 模式。这些命令必须用 `root` 账户运行。
+
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `conn xauth-psk` 小节中，将 `leftsubnet=0.0.0.0/0` 替换为你想要 VPN 客户端通过 VPN 隧道发送流量的子网。例如：
+   对于单个子网：
+   ```
+   leftsubnet=10.123.123.0/24
+   ```
+   对于多个子网（使用 `leftsubnets`）：
+   ```
+   leftsubnets="10.123.123.0/24,10.100.0.0/16"
+   ```
+1. **（重要）** 重启 IPsec 服务：
+   ```
+   service ipsec restart
+   ```
+</details>
+
+<details>
+<summary>
+IKEv2 模式：启用 VPN 分流 (split tunneling)
+</summary>
+
+下面的示例 **仅适用于** IKEv2 模式。这些命令必须用 `root` 账户运行。
+
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节中，将 `leftsubnet=0.0.0.0/0` 替换为你想要 VPN 客户端通过 VPN 隧道发送流量的子网。例如：
+   对于单个子网：
+   ```
+   leftsubnet=10.123.123.0/24
+   ```
+   对于多个子网（使用 `leftsubnets`）：
+   ```
+   leftsubnets="10.123.123.0/24,10.100.0.0/16"
+   ```
+1. **（重要）** 重启 IPsec 服务：
+   ```
+   service ipsec restart
+   ```
+</details>
 
 ### 访问 VPN 服务器的网段
 

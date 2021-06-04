@@ -2,7 +2,7 @@
 
 *其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md).*
 
-在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
+在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
 - [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
 - [查看 VPN 用户](#查看-vpn-用户)
@@ -28,9 +28,9 @@ service xl2tpd restart
 
 ## 查看 VPN 用户
 
-在默认情况下，VPN 安装脚本将为 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 模式创建相同的用户。
+在默认情况下，VPN 安装脚本将为 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式创建相同的用户。
 
-对于 `IPsec/L2TP`，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
+对于 IPsec/L2TP，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
 
 ```bash
 "用户名1"  l2tpd  "密码1"  *
@@ -38,7 +38,7 @@ service xl2tpd restart
 ... ...
 ```
 
-对于 `IPsec/XAuth ("Cisco IPsec")`，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
+对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
 
 ## 使用辅助脚本管理 VPN 用户
 
@@ -113,7 +113,7 @@ sh update_vpn_users.sh
 
 ## 手动管理 VPN 用户
 
-对于 `IPsec/L2TP`，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
+对于 IPsec/L2TP，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
 
 ```bash
 "用户名1"  l2tpd  "密码1"  *
@@ -123,7 +123,7 @@ sh update_vpn_users.sh
 
 你可以添加更多用户，每个用户对应文件中的一行。**不要**在值中使用这些字符：`\ " '`
 
-对于 `IPsec/XAuth ("Cisco IPsec")`，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。该文件的格式如下：
+对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。该文件的格式如下：
 
 ```bash
 用户名1:密码1的加盐哈希值:xauth-psk

@@ -71,7 +71,7 @@ For other installation options and how to set up VPN clients, read the sections 
 
 ## Features
 
-- **New:** The faster `IPsec/XAuth ("Cisco IPsec")` and `IKEv2` modes are supported
+- **New:** The faster IPsec/XAuth ("Cisco IPsec") and IKEv2 modes are supported
 - **New:** A pre-built <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server" target="_blank">Docker image</a> of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
@@ -96,7 +96,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 This also includes Linux VMs in public clouds, such as <a href="https://blog.ls20.com/digitalocean" target="_blank">DigitalOcean</a>, <a href="https://blog.ls20.com/vultr" target="_blank">Vultr</a>, <a href="https://blog.ls20.com/linode" target="_blank">Linode</a>, <a href="https://cloud.google.com/compute/" target="_blank">Google Compute Engine</a>, <a href="https://aws.amazon.com/lightsail/" target="_blank">Amazon Lightsail</a>, <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a>, <a href="https://www.ibm.com/cloud/virtual-servers" target="_blank">IBM Cloud</a>, <a href="https://www.ovh.com/world/vps/" target="_blank">OVH</a> and <a href="https://www.rackspace.com" target="_blank">Rackspace</a>.
 
-<a href="aws/README.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Install on DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
+<a href="aws/README.md" target="_blank"><img src="docs/images/aws-deploy-button.png" alt="Deploy to AWS" /></a> <a href="azure/README.md" target="_blank"><img src="docs/images/azure-deploy-button.png" alt="Deploy to Azure" /></a> <a href="http://dovpn.carlfriess.com/" target="_blank"><img src="docs/images/do-install-button.png" alt="Deploy to DigitalOcean" /></a> <a href="https://cloud.linode.com/stackscripts/37239" target="_blank"><img src="docs/images/linode-deploy-button.png" alt="Deploy to Linode" /></a>
 
 <a href="https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps" target="_blank">**&raquo; I want to run my own VPN but don't have a server for that**</a>
 
@@ -338,6 +338,7 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 - [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
+- [Split tunneling](#split-tunneling)
 - [Access VPN server's subnet](#access-vpn-servers-subnet)
 - [IKEv2 only VPN](#ikev2-only-vpn)
 - [Modify IPTables rules](#modify-iptables-rules)
@@ -373,14 +374,14 @@ When connecting using <a href="docs/clients-xauth.md" target="_blank">IPsec/XAut
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
-For IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, you may optionally assign static IPs to VPN clients. Expand for details. IKEv2 mode does NOT support this feature.
+For the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, advanced users may optionally assign static IPs to VPN clients. Expand for details. IKEv2 mode does NOT support this feature.
 
 <details>
 <summary>
 IPsec/L2TP mode: Assign static IPs to VPN clients
 </summary>
 
-Advanced users can optionally assign static internal IPs to VPN clients. The example steps below **ONLY** applies to `IPsec/L2TP` mode. Commands must be run as `root`.
+The example below **ONLY** applies to IPsec/L2TP mode. Commands must be run as `root`.
 
 1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 1. Edit `/etc/xl2tpd/xl2tpd.conf` on the VPN server. Replace `ip range = 192.168.42.10-192.168.42.250` with e.g. `ip range = 192.168.42.100-192.168.42.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
@@ -410,7 +411,7 @@ Advanced users can optionally assign static internal IPs to VPN clients. The exa
 IPsec/XAuth ("Cisco IPsec") mode: Assign static IPs to VPN clients
 </summary>
 
-Advanced users can optionally assign static internal IPs to VPN clients. The example steps below **ONLY** applies to `IPsec/XAuth ("Cisco IPsec")` mode. Commands must be run as `root`.
+The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
 
 1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to <a href="docs/manage-users.md" target="_blank">Manage VPN Users</a>. Helper scripts are included for convenience.
 1. Edit `/etc/ipsec.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with e.g. `rightaddresspool=192.168.43.100-192.168.43.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
@@ -442,6 +443,56 @@ Client-to-client traffic is allowed by default. If you want to **disallow** clie
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 ```
+
+### Split tunneling
+
+With [split tunneling](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), VPN clients will only send traffic for specific destination subnet(s) through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has [some limitations](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), and is not supported by all VPN clients.
+
+Advanced users can optionally enable split tunneling for the <a href="docs/clients-xauth.md" target="_blank">IPsec/XAuth ("Cisco IPsec")</a> and/or <a href="docs/ikev2-howto.md" target="_blank">IKEv2</a> modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
+
+<details>
+<summary>
+IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
+</summary>
+
+The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
+
+1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:
+   For a single subnet:
+   ```
+   leftsubnet=10.123.123.0/24
+   ```
+   For multiple subnets (use `leftsubnets` instead):
+   ```
+   leftsubnets="10.123.123.0/24,10.100.0.0/16"
+   ```
+1. **(Important)** Restart the IPsec service:
+   ```
+   service ipsec restart
+   ```
+</details>
+
+<details>
+<summary>
+IKEv2 mode: Enable split tunneling
+</summary>
+
+The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`.
+
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:
+   For a single subnet:
+   ```
+   leftsubnet=10.123.123.0/24
+   ```
+   For multiple subnets (use `leftsubnets` instead):
+   ```
+   leftsubnets="10.123.123.0/24,10.100.0.0/16"
+   ```
+1. **(Important)** Restart the IPsec service:
+   ```
+   service ipsec restart
+   ```
+</details>
 
 ### Access VPN server's subnet
 
