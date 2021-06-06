@@ -217,7 +217,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 
 *Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
-**See also:** [IKEv2 troubleshooting](ikev2-howto.md#troubleshooting), [check logs and VPN status](#check-logs-and-vpn-status) and [advanced usage](../README.md#advanced-usage).
+**See also:** [check logs and VPN status](#check-logs-and-vpn-status), [IKEv2 troubleshooting](ikev2-howto.md#troubleshooting) and [advanced usage](advanced-usage.md).
 
 * [Windows error 809](#windows-error-809)
 * [Windows error 789 or 691](#windows-error-789-or-691)

@@ -21,6 +21,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
 - [Upgrade Libreswan](#upgrade-libreswan)
+- [Manage VPN users](#manage-vpn-users)
 - [Advanced usage](#advanced-usage)
 - [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
@@ -94,18 +95,18 @@ See [detailed instructions](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-
 
 A dedicated server or virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try [OpenVPN](https://github.com/Nyr/openvpn-install).
 
-This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [IBM Cloud](https://www.ibm.com/cloud/virtual-servers), [OVH](https://www.ovh.com/world/vps/) and [Rackspace](https://www.rackspace.com).
+This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [OVH](https://www.ovhcloud.com/en/vps/) and [IBM Cloud](https://www.ibm.com/cloud/virtual-servers).
 
 [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com/) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-Advanced users can set up the VPN server on a $35 [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
+Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
 
 <a name="debian-10-note"></a>
-\* Debian 10 users should use the standard Linux kernel (not the "cloud" version). Read more [here](docs/clients.md#debian-10-kernel). If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
+\* Debian 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel). If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
 <a name="centos-8-note"></a>
-\*\* Support for CentOS Linux 8 will end on December 31, 2021. Read more [here](https://wiki.centos.org/About/Product).   
+\*\* Support for CentOS Linux 8 [will end on December 31, 2021](https://wiki.centos.org/About/Product).
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -291,7 +292,7 @@ If you wish to view or update VPN user accounts, see [Manage VPN Users](docs/man
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, you may [use alternative DNS servers](docs/advanced-usage.md).
 
 Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
 
@@ -299,7 +300,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts in [extras/](extras/) can be used to upgrade [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)). Edit the `SWAN_VER` variable as necessary. The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
+The additional scripts in [extras/](extras/) can be used to upgrade [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)). The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
 
 <details open>
 <summary>
@@ -331,196 +332,13 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 ```
 </details>
 
+## Manage VPN users
+
+See [Manage VPN users](docs/manage-users.md).
+
 ## Advanced usage
 
-*Read this in other languages: [English](README.md#advanced-usage), [简体中文](README-zh.md#高级用法).*
-
-- [Use alternative DNS servers](#use-alternative-dns-servers)
-- [DNS name and server IP changes](#dns-name-and-server-ip-changes)
-- [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
-- [Split tunneling](#split-tunneling)
-- [Access VPN server's subnet](#access-vpn-servers-subnet)
-- [IKEv2 only VPN](#ikev2-only-vpn)
-- [Modify IPTables rules](#modify-iptables-rules)
-
-### Use alternative DNS servers
-
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
-
-Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the [IKEv2 helper script](docs/ikev2-howto.md#using-helper-scripts). For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1):
-
-```
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
-```
-
-### DNS name and server IP changes
-
-For [IPsec/L2TP](docs/clients.md) and [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
-
-For [IKEv2](docs/ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](docs/ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). Example:
-
-```
-sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
-```
-
-Alternatively, you may customize IKEv2 setup options by running the [helper script](docs/ikev2-howto.md#using-helper-scripts) without the `--auto` parameter.
-
-### Internal VPN IPs and traffic
-
-When connecting using [IPsec/L2TP](docs/clients.md) mode, the VPN server has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
-
-When connecting using [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) or [IKEv2](docs/ikev2-howto.md) mode, the VPN server does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
-
-You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
-
-For the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, advanced users may optionally assign static IPs to VPN clients. Expand for details. IKEv2 mode does NOT support this feature.
-
-<details>
-<summary>
-IPsec/L2TP mode: Assign static IPs to VPN clients
-</summary>
-
-The example below **ONLY** applies to IPsec/L2TP mode. Commands must be run as `root`.
-
-1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
-1. Edit `/etc/xl2tpd/xl2tpd.conf` on the VPN server. Replace `ip range = 192.168.42.10-192.168.42.250` with e.g. `ip range = 192.168.42.100-192.168.42.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
-1. Edit `/etc/ppp/chap-secrets` on the VPN server. For example, if the file contains:
-   ```
-   "username1"  l2tpd  "password1"  *
-   "username2"  l2tpd  "password2"  *
-   "username3"  l2tpd  "password3"  *
-   ```
-
-   Let's assume that you want to assign static IP `192.168.42.2` to VPN user `username2`, assign static IP `192.168.42.3` to VPN user `username3`, while keeping `username1` unchanged (auto-assign from the pool). After editing, the file should look like:
-   ```
-   "username1"  l2tpd  "password1"  *
-   "username2"  l2tpd  "password2"  192.168.42.2
-   "username3"  l2tpd  "password3"  192.168.42.3
-   ```
-
-   **Note:** The assigned static IP(s) must be from the subnet `192.168.42.0/24`, and must NOT be from the pool of auto-assigned IPs (see `ip range` above). In addition, `192.168.42.1` is reserved for the VPN server itself. In the example above, you can only assign static IP(s) from the range `192.168.42.2-192.168.42.99`.
-1. **(Important)** Restart the xl2tpd service:
-   ```
-   service xl2tpd restart
-   ```
-</details>
-
-<details>
-<summary>
-IPsec/XAuth ("Cisco IPsec") mode: Assign static IPs to VPN clients
-</summary>
-
-The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
-
-1. First, create a new VPN user for each VPN client that you want to assign a static IP to. Refer to [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
-1. Edit `/etc/ipsec.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with e.g. `rightaddresspool=192.168.43.100-192.168.43.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (if exists). Replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as the previous step.
-1. Edit `/etc/ipsec.d/passwd` on the VPN server. For example, if the file contains:
-   ```
-   username1:password1hashed:xauth-psk
-   username2:password2hashed:xauth-psk
-   username3:password3hashed:xauth-psk
-   ```
-
-   Let's assume that you want to assign static IP `192.168.43.2` to VPN user `username2`, assign static IP `192.168.43.3` to VPN user `username3`, while keeping `username1` unchanged (auto-assign from the pool). After editing, the file should look like:
-   ```
-   username1:password1hashed:xauth-psk
-   username2:password2hashed:xauth-psk:192.168.42.2
-   username3:password3hashed:xauth-psk:192.168.42.3
-   ```
-
-   **Note:** The assigned static IP(s) must be from the subnet `192.168.43.0/24`, and must NOT be from the pool of auto-assigned IPs (see `rightaddresspool` above). In the example above, you can only assign static IP(s) from the range `192.168.43.1-192.168.43.99`.
-1. **(Important)** Restart the IPsec service:
-   ```
-   service ipsec restart
-   ```
-</details>
-
-Client-to-client traffic is allowed by default. If you want to **disallow** client-to-client traffic, run the following commands on the VPN server. Add them to `/etc/rc.local` to persist after reboot.
-
-```
-iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
-iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
-```
-
-### Split tunneling
-
-With [split tunneling](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), VPN clients will only send traffic for specific destination subnet(s) through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has [some limitations](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling), and is not supported by all VPN clients.
-
-Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](docs/clients-xauth.md) and/or [IKEv2](docs/ikev2-howto.md) modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
-
-<details>
-<summary>
-IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
-</summary>
-
-The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
-
-1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
-   For a single subnet:
-   ```
-   leftsubnet=10.123.123.0/24
-   ```
-   For multiple subnets (use `leftsubnets` instead):
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
-   ```
-1. **(Important)** Restart the IPsec service:
-   ```
-   service ipsec restart
-   ```
-</details>
-
-<details>
-<summary>
-IKEv2 mode: Enable split tunneling
-</summary>
-
-The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`.
-
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
-   For a single subnet:
-   ```
-   leftsubnet=10.123.123.0/24
-   ```
-   For multiple subnets (use `leftsubnets` instead):
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
-   ```
-1. **(Important)** Restart the IPsec service:
-   ```
-   service ipsec restart
-   ```
-</details>
-
-### Access VPN server's subnet
-
-After connecting to the VPN, VPN clients can generally access services running on other devices that are within the same local subnet as the VPN server, without additional configuration. For example, if the VPN server's local subnet is `192.168.0.0/24`, and an Nginx server is running on IP `192.168.0.2`, VPN clients can use IP `192.168.0.2` to access the Nginx server.
-
-Please note, additional configuration is required if the VPN server has multiple network interfaces (e.g. `eth0` and `eth1`), and you want VPN clients to access the local subnet behind the network interface that is NOT for Internet access. In this scenario, you must run the following commands to add IPTables rules. To persist after reboot, you may add these commands to `/etc/rc.local`.
-
-```bash
-# Replace eth1 with the name of the network interface
-# on the VPN server that you want VPN clients to access
-netif=eth1
-iptables -I FORWARD 2 -i "$netif" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -I FORWARD 2 -i ppp+ -o "$netif" -j ACCEPT
-iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -I FORWARD 2 -s 192.168.43.0/24 -o "$netif" -j ACCEPT
-iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
-iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
-```
-
-### IKEv2 only VPN
-
-Libreswan 4.2 and newer versions support the `ikev1-policy` config option. Using this option, advanced users can set up an IKEv2-only VPN, i.e. only IKEv2 connections are accepted by the VPN server, while IKEv1 connections (including the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes) are dropped.
-
-To set up an IKEv2-only VPN, first install the VPN server and set up IKEv2 using instructions in this README. Then check Libreswan version using `ipsec --version`, and [update Libreswan](#upgrade-libreswan) if needed. After that, edit `/etc/ipsec.conf` on the VPN server. Append `ikev1-policy=drop` to the end of the `config setup` section, indented by two spaces. Save the file and run `service ipsec restart`. When finished, you can run `ipsec status` to verify that only the `ikev2-cp` connection is enabled.
-
-### Modify IPTables rules
-
-If you want to modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
+See [Advanced usage](docs/advanced-usage.md).
 
 ## Bugs & Questions
 

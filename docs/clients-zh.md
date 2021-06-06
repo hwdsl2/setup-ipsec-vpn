@@ -218,7 +218,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 *其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
 
-**另见：** [IKEv2 故障排除](ikev2-howto-zh.md#故障排除)，[检查日志及 VPN 状态](#检查日志及-vpn-状态) 和 [高级用法](../README-zh.md#高级用法)。
+**另见：** [检查日志及 VPN 状态](#检查日志及-vpn-状态)，[IKEv2 故障排除](ikev2-howto-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
 * [Windows 错误 809](#windows-错误-809)
 * [Windows 错误 789 或 691](#windows-错误-789-或-691)
