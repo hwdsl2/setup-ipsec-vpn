@@ -58,7 +58,7 @@ sudo bash ~/ikev2.sh --auto
 You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
 </summary>
 
-When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
+When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate, which is required for VPN clients to connect. Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
@@ -89,7 +89,7 @@ Options:
   --addclient [client name]     add a new client using default options (after IKEv2 setup)
   --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
   --listclients                 list the names of existing clients (after IKEv2 setup)
-  --revokeclient                Revoke a client certificate (after IKEv2 setup)
+  --revokeclient                revoke a client certificate (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -119,8 +119,6 @@ To customize IKEv2 or client options, run this script without arguments.
    ```
 
    Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
-
-   **Note:** Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the `.p12` file. See [Troubleshooting](#troubleshooting).
 
 1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
 
@@ -370,6 +368,12 @@ Once successfully connected, you can verify that your traffic is being routed pr
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 ## Manage client certificates
+
+* [List existing clients](#list-existing-clients)
+* [Add a client certificate](#add-a-client-certificate)
+* [Export configuration for an existing client](#export-configuration-for-an-existing-client)
+* [Delete a client certificate](#delete-a-client-certificate)
+* [Revoke a client certificate](#revoke-a-client-certificate)
 
 ### List existing clients
 
@@ -720,7 +724,14 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 *Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除).*
 
-### Incorrect password when trying to import client config files
+**See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
+
+* [Incorrect password when trying to import](#incorrect-password-when-trying-to-import)
+* [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
+* [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
+* [Other known issues](#other-known-issues)
+
+### Incorrect password when trying to import
 
 If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
 
@@ -768,10 +779,6 @@ If you are unable to connect multiple IKEv2 clients simultaneously from behind t
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
-
-### Additional troubleshooting
-
-Click [here](clients.md#troubleshooting) for additional troubleshooting information.
 
 ## Remove IKEv2
 

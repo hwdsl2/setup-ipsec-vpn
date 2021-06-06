@@ -336,9 +336,22 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
 
+- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
+- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
+- [使用辅助脚本管理 VPN 用户](docs/manage-users-zh.md#使用辅助脚本管理-vpn-用户)
+- [手动管理 VPN 用户](docs/manage-users-zh.md#手动管理-vpn-用户)
+
 ## 高级用法
 
 请参见 [高级用法](docs/advanced-usage-zh.md)。
+
+- [使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
+- [域名和更改服务器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
+- [VPN 内网 IP 和流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
+- [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
+- [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
+- [仅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)
+- [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
 
 ## 问题和反馈
 

@@ -2,13 +2,13 @@
 
 *Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md).*
 
-- [Use alternative DNS servers](#use-alternative-dns-servers)
-- [DNS name and server IP changes](#dns-name-and-server-ip-changes)
-- [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
-- [Split tunneling](#split-tunneling)
-- [Access VPN server's subnet](#access-vpn-servers-subnet)
-- [IKEv2 only VPN](#ikev2-only-vpn)
-- [Modify IPTables rules](#modify-iptables-rules)
+* [Use alternative DNS servers](#use-alternative-dns-servers)
+* [DNS name and server IP changes](#dns-name-and-server-ip-changes)
+* [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
+* [Split tunneling](#split-tunneling)
+* [Access VPN server's subnet](#access-vpn-servers-subnet)
+* [IKEv2 only VPN](#ikev2-only-vpn)
+* [Modify IPTables rules](#modify-iptables-rules)
 
 ## Use alternative DNS servers
 
@@ -25,7 +25,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 
 For [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). Example:
+For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate, which is required for VPN clients to connect. Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto

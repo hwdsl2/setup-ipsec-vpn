@@ -2,13 +2,13 @@
 
 *其他语言版本: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md).*
 
-- [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
-- [域名和更改服务器 IP](#域名和更改服务器-ip)
-- [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
-- [VPN 分流](#vpn-分流)
-- [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
-- [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
-- [更改 IPTables 规则](#更改-iptables-规则)
+* [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
+* [域名和更改服务器 IP](#域名和更改服务器-ip)
+* [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
+* [VPN 分流](#vpn-分流)
+* [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
+* [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
+* [更改 IPTables 规则](#更改-iptables-规则)
 
 ## 使用其他的 DNS 服务器
 
@@ -25,7 +25,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 
 对于 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
-对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 [配置 IKEv2](ikev2-howto-zh.md) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。示例如下：
+对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 [配置 IKEv2](ikev2-howto-zh.md) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。它将包含在生成的服务器证书中，这是 VPN 客户端连接所必需的。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto

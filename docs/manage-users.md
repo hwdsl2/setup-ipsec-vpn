@@ -4,10 +4,10 @@
 
 By default, a single user account for VPN login is created. If you wish to view or manage users for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, read this document. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
-- [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
-- [View VPN users](#view-vpn-users)
-- [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
-- [Manually manage VPN users](#manually-manage-vpn-users)
+* [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
+* [View VPN users](#view-vpn-users)
+* [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
+* [Manually manage VPN users](#manually-manage-vpn-users)
 
 ## View or update the IPsec PSK
 

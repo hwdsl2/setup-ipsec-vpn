@@ -288,7 +288,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](docs/clients-xauth.md), or [set up IKEv2](docs/ikev2-howto.md).
 
-If you wish to view or update VPN user accounts, see [Manage VPN Users](docs/manage-users.md). Helper scripts are included for convenience.
+If you wish to view or update VPN user accounts, see [Manage VPN users](docs/manage-users.md). Helper scripts are included for convenience.
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
@@ -336,9 +336,22 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 
 See [Manage VPN users](docs/manage-users.md).
 
+- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
+- [View VPN users](docs/manage-users.md#view-vpn-users)
+- [Manage VPN users using helper scripts](docs/manage-users.md#manage-vpn-users-using-helper-scripts)
+- [Manually manage VPN users](docs/manage-users.md#manually-manage-vpn-users)
+
 ## Advanced usage
 
 See [Advanced usage](docs/advanced-usage.md).
+
+- [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
+- [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
+- [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
+- [Split tunneling](docs/advanced-usage.md#split-tunneling)
+- [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
+- [IKEv2 only VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
 
 ## Bugs & Questions
 

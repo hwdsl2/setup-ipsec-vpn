@@ -58,7 +58,7 @@ sudo bash ~/ikev2.sh --auto
 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
 </summary>
 
-在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。它将包含在生成的服务器证书中，这是 VPN 客户端连接所必需的。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
@@ -89,7 +89,7 @@ Options:
   --addclient [client name]     add a new client using default options (after IKEv2 setup)
   --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
   --listclients                 list the names of existing clients (after IKEv2 setup)
-  --revokeclient                Revoke a client certificate (after IKEv2 setup)
+  --revokeclient                revoke a client certificate (after IKEv2 setup)
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -119,8 +119,6 @@ To customize IKEv2 or client options, run this script without arguments.
    ```
 
    另外，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
-
-   **注：** Ubuntu 18.04 用户在尝试导入 `.p12` 文件时可能会遇到错误 "输入的密码不正确"。参见 [故障排除](#故障排除)。
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
 
@@ -369,21 +367,27 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ## 管理客户端证书
 
+* [列出已有的客户端](#列出已有的客户端)
+* [添加客户端证书](#添加客户端证书)
+* [导出已有的客户端的配置](#导出已有的客户端的配置)
+* [删除客户端证书](#删除客户端证书)
+* [吊销客户端证书](#吊销客户端证书)
+
 ### 列出已有的客户端
 
 如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
-### 添加一个客户端证书
+### 添加客户端证书
 
 如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
-### 导出一个已有的客户端的配置
+### 导出已有的客户端的配置
 
 在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，重新运行辅助脚本并选择适当的选项。
 
-### 删除一个客户端证书
+### 删除客户端证书
 
-**重要：** 从 IPsec 数据库中删除一个客户端证书 **并不能** 阻止 VPN 客户端使用该证书连接！对于此用例，你 **必须** [吊销该客户端证书](#吊销一个客户端证书)，而不是删除证书。
+**重要：** 从 IPsec 数据库中删除一个客户端证书 **并不能** 阻止 VPN 客户端使用该证书连接！对于此用例，你 **必须** [吊销该客户端证书](#吊销客户端证书)，而不是删除证书。
 
 <details>
 <summary>
@@ -421,7 +425,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 1. （可选步骤）删除之前为该客户端生成的配置文件（`.p12`, `.mobileconfig` 和 `.sswan` 文件），如果存在。
 </details>
 
-### 吊销一个客户端证书
+### 吊销客户端证书
 
 在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。
 
@@ -704,7 +708,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    vpnclient                                          u,u,u
    ```
 
-   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要吊销一个客户端证书，请转到[这一节](#吊销一个客户端证书)。关于 `certutil` 的其它用法参见 [这里](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil)。
+   **注：** 如需显示证书内容，可使用 `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`。要吊销客户端证书，请转到[这一节](#吊销客户端证书)。关于 `certutil` 的其它用法参见 [这里](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil)。
 
 1. **（重要）重启 IPsec 服务**：
 
@@ -718,9 +722,16 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 *其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除).*
 
-### 在导入客户端配置文件时提示密码不正确
+**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
-如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
+* [在导入时提示密码不正确](#在导入时提示密码不正确)
+* [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
+* [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
+* [其它已知问题](#其它已知问题)
+
+### 在导入时提示密码不正确
+
+如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
 
 Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258)。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
 <details>
@@ -742,7 +753,7 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
  "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
 ```
 
-然后重新 [导出 IKEv2 客户端的配置](#导出一个已有的客户端的配置)。
+然后重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
 </details>
 
 ### IKEv2 在一小时后断开连接
@@ -758,7 +769,7 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
 
 ### 无法同时连接多个 IKEv2 客户端
 
-如果要同时连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加一个客户端证书)。
+如果要同时连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
 
 如果你无法同时连接同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
 
@@ -766,10 +777,6 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
-
-### 更多故障排除信息
-
-要查看更多故障排除信息，请看 [这里](clients-zh.md#故障排除)。
 
 ## 移除 IKEv2
 
