@@ -74,7 +74,7 @@ EOF
 esac
 
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
+swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.

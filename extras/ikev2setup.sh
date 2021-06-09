@@ -87,7 +87,7 @@ get_update_url() {
 
 check_swan_install() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-  swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
+  swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
     || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
