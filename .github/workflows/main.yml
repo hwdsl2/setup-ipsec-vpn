@@ -135,9 +135,10 @@ jobs:
             sed -i '/pluto/d' "$log1"
             pkill -HUP rsyslog
             systemctl restart ipsec
+            sleep 1
             echo "Waiting for IPsec to restart."
             count=0
-            while ! grep -q 'listening for IKE messages' "$log1"; do
+            while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
               [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
               count=$((count+1))
               printf '%s' '.'
@@ -429,9 +430,10 @@ jobs:
             sed -i '/pluto/d' "$log1"
             pkill -HUP rsyslog
             service ipsec restart
+            sleep 1
             echo "Waiting for IPsec to restart."
             count=0
-            while ! grep -q 'listening for IKE messages' "$log1"; do
+            while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
               [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
               count=$((count+1))
               printf '%s' '.'
