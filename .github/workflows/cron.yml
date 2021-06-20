@@ -152,10 +152,12 @@ jobs:
 
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
-          iptables -nL
-          iptables -nL | grep -q '192\.168\.42\.0/24'
-          iptables -nL -t nat
-          iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
           grep pluto "$log1"
           grep xl2tpd "$log2"
           ipsec status
@@ -448,10 +450,12 @@ jobs:
 
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
-          iptables -nL
-          iptables -nL | grep -q '192\.168\.42\.0/24'
-          iptables -nL -t nat
-          iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
           grep pluto "$log1"
           grep xl2tpd "$log2"
           ipsec status
