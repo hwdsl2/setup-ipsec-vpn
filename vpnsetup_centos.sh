@@ -434,6 +434,12 @@ if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
 fi
 
+ipi='iptables -I INPUT'
+ipf='iptables -I FORWARD'
+ipp='iptables -t nat -I POSTROUTING'
+res='RELATED,ESTABLISHED'
+nff='nft insert rule inet firewalld'
+nfn='nft insert rule inet nftables_svc'
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   if [ "$use_nft" = "1" ]; then
@@ -442,31 +448,32 @@ if [ "$ipt_flag" = "1" ]; then
   else
     iptables-save > "$IPT_FILE.old-$SYS_DT"
   fi
-  iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
-  iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
-  iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I INPUT 4 -p udp -m multiport --dports 500,4500 -j ACCEPT
-  iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-  iptables -I INPUT 6 -p udp --dport 1701 -j DROP
-  iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I FORWARD 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
-  iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
-  iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+  $ipi 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
+  $ipi 2 -m conntrack --ctstate INVALID -j DROP
+  $ipi 3 -m conntrack --ctstate "$res" -j ACCEPT
+  $ipi 4 -p udp -m multiport --dports 500,4500 -j ACCEPT
+  $ipi 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+  $ipi 6 -p udp --dport 1701 -j DROP
+  $ipf 1 -m conntrack --ctstate INVALID -j DROP
+  $ipf 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate "$res" -j ACCEPT
+  $ipf 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
+  $ipf 4 -i ppp+ -o ppp+ -j ACCEPT
+  $ipf 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
+  $ipf 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+  $ipf 7 -s "$XAUTH_NET" -o ppp+ -j ACCEPT
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
+  $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+  $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   if [ "$use_nft" = "1" ]; then
     for vport in 500 4500 1701; do
-      nft insert rule inet firewalld filter_INPUT udp dport "$vport" accept 2>/dev/null
-      nft insert rule inet nftables_svc allow udp dport "$vport" accept 2>/dev/null
+      $nff filter_INPUT udp dport "$vport" accept 2>/dev/null
+      $nfn allow udp dport "$vport" accept 2>/dev/null
     done
     for vnet in "$L2TP_NET" "$XAUTH_NET"; do
       for vdir in saddr daddr; do
-        nft insert rule inet firewalld filter_FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
-        nft insert rule inet nftables_svc FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
+        $nff filter_FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
+        $nfn FORWARD ip "$vdir" "$vnet" accept 2>/dev/null
       done
     done
     echo "flush ruleset" >> "$IPT_FILE"

@@ -374,24 +374,29 @@ if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
   ipt_flag=1
 fi
 
+ipi='iptables -I INPUT'
+ipf='iptables -I FORWARD'
+ipp='iptables -t nat -I POSTROUTING'
+res='RELATED,ESTABLISHED'
 if [ "$ipt_flag" = "1" ]; then
   service fail2ban stop >/dev/null 2>&1
   iptables-save > "$IPT_FILE.old-$SYS_DT"
-  iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
-  iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
-  iptables -I INPUT 3 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I INPUT 4 -p udp -m multiport --dports 500,4500 -j ACCEPT
-  iptables -I INPUT 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-  iptables -I INPUT 6 -p udp --dport 1701 -j DROP
-  iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
-  iptables -I FORWARD 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
-  iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
-  iptables -I FORWARD 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-  iptables -I FORWARD 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+  $ipi 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
+  $ipi 2 -m conntrack --ctstate INVALID -j DROP
+  $ipi 3 -m conntrack --ctstate "$res" -j ACCEPT
+  $ipi 4 -p udp -m multiport --dports 500,4500 -j ACCEPT
+  $ipi 5 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+  $ipi 6 -p udp --dport 1701 -j DROP
+  $ipf 1 -m conntrack --ctstate INVALID -j DROP
+  $ipf 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate "$res" -j ACCEPT
+  $ipf 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
+  $ipf 4 -i ppp+ -o ppp+ -j ACCEPT
+  $ipf 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
+  $ipf 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+  $ipf 7 -s "$XAUTH_NET" -o ppp+ -j ACCEPT
   iptables -A FORWARD -j DROP
-  iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
-  iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
+  $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+  $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 fi

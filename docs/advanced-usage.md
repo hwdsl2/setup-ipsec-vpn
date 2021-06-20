@@ -1,4 +1,4 @@
-# Advanced usage
+# Advanced Usage
 
 *Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md).*
 
@@ -109,6 +109,8 @@ Client-to-client traffic is allowed by default. If you want to **disallow** clie
 ```
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
+iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
 
 ## Split tunneling

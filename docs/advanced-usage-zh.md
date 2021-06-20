@@ -109,6 +109,8 @@ IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
 ```
 iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
+iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
+iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
 
 ## VPN 分流
