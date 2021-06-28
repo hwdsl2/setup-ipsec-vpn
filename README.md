@@ -10,7 +10,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 [**&raquo; See also: IPsec VPN Server on Docker**](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
-*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
+*Read this in other languages: [English](README-en.md), [简体中文](README.md).*
 
 #### Table of Contents
 
