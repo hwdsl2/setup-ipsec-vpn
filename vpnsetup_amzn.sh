@@ -184,7 +184,7 @@ bigecho "Compiling and installing Libreswan, please wait..."
 
 cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
-WERROR_CFLAGS=-w
+WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 USE_DH2=true
 USE_NSS_KDF=false

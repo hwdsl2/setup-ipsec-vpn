@@ -174,7 +174,7 @@ bigecho "Compiling and installing Libreswan, please wait..."
 cd "libreswan-$SWAN_VER" || exit 1
 [ "$SWAN_VER" = "4.1" ] && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
-WERROR_CFLAGS=-w
+WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 EOF
 echo "USE_DH2=true" >> Makefile.inc.local
