@@ -67,11 +67,19 @@ check_os_type() {
       [Rr]aspbian)
         os_type=raspbian
         ;;
+      [Aa]lpine)
+        os_type=alpine
+        [ "$in_container" != "1" ] && exiterr "This script only supports Alpine Linux in a Docker container."
+        ;;
       *)
         exiterr "This script only supports Ubuntu, Debian, CentOS/RHEL 7/8 and Amazon Linux 2."
         ;;
     esac
-    os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+    if [ "$os_type" = "alpine" ]; then
+      os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID")
+    else
+      os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+    fi
   fi
 }
 
@@ -86,7 +94,7 @@ get_update_url() {
 }
 
 check_swan_install() {
-  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+  ipsec_ver=$(ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
     || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
@@ -267,7 +275,7 @@ check_swan_ver() {
   if [ "$in_container" = "0" ]; then
     swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverikev2?arch=$os_arch&ver=$swan_ver&auto=$use_defaults"
   else
-    swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanverikev2?ver=$swan_ver&auto=$use_defaults"
+    swan_ver_url="https://dl.ls20.com/v1/docker/$os_type/$os_arch/swanverikev2?ver=$swan_ver&auto=$use_defaults"
   fi
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 }
@@ -725,7 +733,7 @@ When importing into an iOS or macOS device, this password cannot be empty.
 
 EOF
   else
-    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)
+    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 18)
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
   fi
 
@@ -734,6 +742,13 @@ EOF
     pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
   else
     pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
+    if [ "$os_type" = "alpine" ]; then
+      pem_file="$export_dir$client_name.temp.pem"
+      openssl pkcs12 -in "$p12_file" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+      openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+        -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+      /bin/rm -f "$pem_file"
+    fi
   fi
 
   if [ "$export_to_home_dir" = "1" ]; then
@@ -967,7 +982,9 @@ EOF
 }
 
 export_client_config() {
-  install_base64_uuidgen
+  if [ "$os_type" != "alpine" ]; then
+    install_base64_uuidgen
+  fi
   export_p12_file
   create_mobileconfig
   create_android_profile
@@ -1123,7 +1140,7 @@ EOF
 }
 
 reload_crls() {
-  /usr/local/sbin/ipsec crls || exiterr "Failed to let Libreswan re-read the updated CRL."
+  ipsec crls || exiterr "Failed to let Libreswan re-read the updated CRL."
 }
 
 print_client_added() {
@@ -1300,10 +1317,10 @@ print_ikev2_removed() {
 
 ikev2setup() {
   check_run_as_root
+  check_container
   check_os_type
   check_swan_install
   check_utils_exist
-  check_container
 
   use_defaults=0
   add_client=0
@@ -1393,7 +1410,11 @@ ikev2setup() {
     check_ipsec_conf
     confirm_remove_ikev2
     delete_ikev2_conf
-    restart_ipsec_service
+    if [ "$os_type" = "alpine" ]; then
+      ipsec auto --delete ikev2-cp
+    else
+      restart_ipsec_service
+    fi
     delete_certificates
     print_ikev2_removed
     exit 0
@@ -1405,7 +1426,12 @@ ikev2setup() {
       1)
         enter_client_name
         enter_client_cert_validity
-        select_p12_password
+        if [ "$os_type" = "alpine" ]; then
+          use_own_password=0
+          echo
+        else
+          select_p12_password
+        fi
         create_client_cert
         export_client_config
         print_client_added
@@ -1414,7 +1440,12 @@ ikev2setup() {
         ;;
       2)
         enter_client_name_for export
-        select_p12_password
+        if [ "$os_type" = "alpine" ]; then
+          use_own_password=0
+          echo
+        else
+          select_p12_password
+        fi
         export_client_config
         print_client_exported
         print_client_info
@@ -1438,7 +1469,11 @@ ikev2setup() {
         check_ipsec_conf
         confirm_remove_ikev2
         delete_ikev2_conf
-        restart_ipsec_service
+        if [ "$os_type" = "alpine" ]; then
+          ipsec auto --delete ikev2-cp
+        else
+          restart_ipsec_service
+        fi
         delete_certificates
         print_ikev2_removed
         exit 0
@@ -1462,7 +1497,12 @@ ikev2setup() {
     enter_custom_dns
     check_mobike_support
     select_mobike
-    select_p12_password
+    if [ "$os_type" = "alpine" ]; then
+      use_own_password=0
+      echo
+    else
+      select_p12_password
+    fi
     confirm_setup_options
   else
     check_server_dns_name
@@ -1509,7 +1549,11 @@ ikev2setup() {
   create_client_cert
   export_client_config
   add_ikev2_connection
-  restart_ipsec_service
+  if [ "$os_type" = "alpine" ]; then
+    ipsec auto --add ikev2-cp >/dev/null
+  else
+    restart_ipsec_service
+  fi
 
   if [ "$use_defaults" = "1" ]; then
     show_swan_update_info
