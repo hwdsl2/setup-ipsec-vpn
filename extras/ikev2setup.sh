@@ -618,31 +618,8 @@ select_mobike() {
   fi
 }
 
-select_p12_password() {
-cat <<'EOF'
-
-Client configuration will be exported as .p12, .sswan and .mobileconfig files,
-which contain the client certificate, private key and CA certificate.
-To protect these files, this script can generate a random password for you,
-which will be displayed when finished.
-
-EOF
-
-  printf "Do you want to specify your own password instead? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      use_own_password=1
-      echo
-      ;;
-    *)
-      use_own_password=0
-      echo
-      ;;
-  esac
-}
-
 select_menu_option() {
+  echo
   echo "IKEv2 is already set up on this server."
   echo
   echo "Select an option:"
@@ -661,6 +638,7 @@ select_menu_option() {
 
 confirm_setup_options() {
 cat <<EOF
+
 We are ready to set up IKEv2 now. Below are the setup options you selected.
 Please double check before continuing!
 
@@ -724,31 +702,17 @@ create_client_cert() {
 export_p12_file() {
   bigecho2 "Creating client configuration..."
 
-  if [ "$use_own_password" = "1" ]; then
-cat <<'EOF'
-
-
-Enter a *secure* password to protect the client configuration files.
-When importing into an iOS or macOS device, this password cannot be empty.
-
-EOF
-  else
-    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 18)
-    [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
-  fi
+  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 18)
+  [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
 
   p12_file="$export_dir$client_name.p12"
-  if [ "$use_own_password" = "1" ]; then
-    pk12util -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" || exit 1
-  else
-    pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
-    if [ "$os_type" = "alpine" ]; then
-      pem_file="$export_dir$client_name.temp.pem"
-      openssl pkcs12 -in "$p12_file" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-      openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
-        -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-      /bin/rm -f "$pem_file"
-    fi
+  pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
+  if [ "$os_type" = "alpine" ]; then
+    pem_file="$export_dir$client_name.temp.pem"
+    openssl pkcs12 -in "$p12_file" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+      -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    /bin/rm -f "$pem_file"
   fi
 
   if [ "$export_to_home_dir" = "1" ]; then
@@ -1172,7 +1136,6 @@ EOF
 }
 
 print_client_revoked() {
-  echo
   echo "Certificate '$client_name' revoked!"
 }
 
@@ -1223,16 +1186,11 @@ cat <<EOF
 $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
-EOF
-
-  if [ "$use_own_password" = "0" ]; then
-cat <<EOF
 
 *IMPORTANT* Password for client config files:
 $p12_password
 Write this down, you'll need it for import!
 EOF
-  fi
 
 cat <<'EOF'
 
@@ -1375,7 +1333,6 @@ ikev2setup() {
   if [ "$add_client" = "1" ]; then
     show_add_client
     client_validity=120
-    use_own_password=0
     create_client_cert
     export_client_config
     print_client_added
@@ -1385,7 +1342,6 @@ ikev2setup() {
 
   if [ "$export_client" = "1" ]; then
     show_export_client
-    use_own_password=0
     export_client_config
     print_client_exported
     print_client_info
@@ -1426,12 +1382,7 @@ ikev2setup() {
       1)
         enter_client_name
         enter_client_cert_validity
-        if [ "$os_type" = "alpine" ]; then
-          use_own_password=0
-          echo
-        else
-          select_p12_password
-        fi
+        echo
         create_client_cert
         export_client_config
         print_client_added
@@ -1440,12 +1391,7 @@ ikev2setup() {
         ;;
       2)
         enter_client_name_for export
-        if [ "$os_type" = "alpine" ]; then
-          use_own_password=0
-          echo
-        else
-          select_p12_password
-        fi
+        echo
         export_client_config
         print_client_exported
         print_client_info
@@ -1497,12 +1443,6 @@ ikev2setup() {
     enter_custom_dns
     check_mobike_support
     select_mobike
-    if [ "$os_type" = "alpine" ]; then
-      use_own_password=0
-      echo
-    else
-      select_p12_password
-    fi
     confirm_setup_options
   else
     check_server_dns_name
@@ -1541,7 +1481,6 @@ ikev2setup() {
     fi
     check_mobike_support
     mobike_enable="$mobike_support"
-    use_own_password=0
   fi
 
   apply_ubuntu1804_nss_fix
