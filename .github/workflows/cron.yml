@@ -192,7 +192,6 @@ jobs:
 
 
 
-
           y
           ANSWERS
 
@@ -209,7 +208,6 @@ jobs:
           1
           vpnclient2
 
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -220,7 +218,6 @@ jobs:
           bash ikev2.sh <<ANSWERS
           2
           vpnclient2
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -490,7 +487,6 @@ jobs:
 
 
 
-
           y
           ANSWERS
 
@@ -507,7 +503,6 @@ jobs:
           1
           vpnclient2
 
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -518,7 +513,6 @@ jobs:
           bash ikev2.sh <<ANSWERS
           2
           vpnclient2
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
