@@ -179,7 +179,6 @@ check_arguments() {
   if [ "$use_defaults" = "1" ]; then
     if check_ikev2_exists; then
       echo "Warning: Ignoring parameter '--auto'. Use '-h' for usage information." >&2
-      echo >&2
     fi
   fi
   if [ "$((add_client + export_client + list_clients + revoke_client))" -gt 1 ]; then
