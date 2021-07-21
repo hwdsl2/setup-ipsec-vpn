@@ -66,6 +66,15 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
 
+<details>
+<summary>
+单击此处查看 VPN 安装脚本的示例输出（终端记录）。
+</summary>
+
+**注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据**无效**。
+<p align="center"><img src="docs/images/script-demo.svg"></p>
+</details>
+
 如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
 
 \* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。

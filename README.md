@@ -66,6 +66,15 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
 
+<details>
+<summary>
+Click here to see the VPN setup scripts in action (terminal recording).
+</summary>
+
+**Note:** This terminal recording is for demonstration purposes only. VPN credentials in this recording are NOT valid.
+<p align="center"><img src="docs/images/script-demo.svg"></p>
+</details>
+
 For other installation options and how to set up VPN clients, read the sections below.
 
 \* A dedicated server or virtual private server (VPS). OpenVZ VPS is not supported.
