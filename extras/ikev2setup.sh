@@ -701,7 +701,7 @@ create_client_cert() {
 export_p12_file() {
   bigecho2 "Creating client configuration..."
 
-  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 18)
+  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
   [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
 
   p12_file="$export_dir$client_name.p12"
