@@ -349,7 +349,7 @@ EOF
 show_start_setup() {
   if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
     bigecho "Starting IKEv2 setup in auto mode."
-    printf '%s' "## Using custom options: "
+    printf '%s' "## Using custom option(s): "
     [ -n "$VPN_DNS_NAME" ] && printf '%s' "VPN_DNS_NAME "
     [ -n "$VPN_CLIENT_NAME" ] && printf '%s' "VPN_CLIENT_NAME "
     if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
@@ -1155,9 +1155,12 @@ show_swan_update_info() {
 }
 
 print_setup_complete() {
-  printf '\e[2K\r'
+  if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
+    printf '\e[2K\r'
+  else
+    printf '\e[2K\e[1A\e[2K\r'
+  fi
 cat <<EOF
-
 ================================================
 
 IKEv2 setup successful. Details for IKEv2 mode:
@@ -1181,7 +1184,6 @@ EOF
   fi
 
 cat <<EOF
-
 $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
