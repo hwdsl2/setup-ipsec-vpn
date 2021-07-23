@@ -68,14 +68,14 @@ Your VPN login details will be randomly generated, and displayed on the screen w
 
 <details>
 <summary>
-Click here to see the VPN setup scripts in action (terminal recording).
+Click here to see the VPN scripts in action (terminal recording).
 </summary>
 
-**Note:** This terminal recording is for demonstration purposes only. VPN credentials in this recording are NOT valid.
+**Note:** This recording is for demonstration purposes only. VPN credentials in this recording are **NOT** valid.
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
-For other installation options and how to set up VPN clients, read the sections below.
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other installation options and client setup, read the sections below.
 
 \* A dedicated server or virtual private server (VPS). OpenVZ VPS is not supported.
 
@@ -110,7 +110,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
 
 <a name="debian-10-note"></a>
 \* Debian 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel). If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   

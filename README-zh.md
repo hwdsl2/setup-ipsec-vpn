@@ -68,14 +68,14 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 <details>
 <summary>
-单击此处查看 VPN 安装脚本的示例输出（终端记录）。
+单击此处查看 VPN 脚本的示例输出（终端记录）。
 </summary>
 
 **注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据**无效**。
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
-如需了解其它安装选项，以及如何配置 VPN 客户端，请继续阅读以下部分。
+另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它安装选项以及客户端配置，请继续阅读以下部分。
 
 \* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。
 
@@ -110,7 +110,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 [**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。参见 [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)。
+另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。参见 [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)。
 
 <a name="debian-10-note"></a>
 \* Debian 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。如果在 EC2 上使用 Debian 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。   
