@@ -36,7 +36,7 @@ jobs:
           pwd
           ls -ld vpnsetup.sh
 
-          export SHELLCHECK_OPTS="-e SC1091,SC1117"
+          export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
           shellcheck --version
           shopt -s globstar
           ls -ld -- **/*.sh
