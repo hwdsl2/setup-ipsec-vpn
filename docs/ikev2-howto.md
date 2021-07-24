@@ -379,13 +379,25 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option. Use option `-h` to show usage information.
 
+```
+sudo ikev2.sh --listclients
+```
+
 ### Add a client certificate
 
 To generate certificates for additional IKEv2 clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
+```
+sudo ikev2.sh --addclient [client name]
+```
+
 ### Export configuration for an existing client
 
-By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, run the helper script again and select the appropriate option.
+By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, you may use:
+
+```
+sudo ikev2.sh --exportclient [client name]
+```
 
 ### Delete a client certificate
 
@@ -733,7 +745,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ### Incorrect password when trying to import
 
-If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+If you forgot the password for client config files, check file `vpnclient.p12.password` in the same folder (if exists). Alternatively, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
 
 Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258). As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
 <details>

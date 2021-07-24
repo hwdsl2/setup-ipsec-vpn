@@ -352,8 +352,8 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 1. 为 **Certificate** 字段选择 `ikev2vpnca.cer` 文件。
 1. 在 **Client** 部分的 **Authentication** 下拉菜单选择 **Certificate(/private key)**。
 1. 在 **Certificate** 下拉菜单（如果存在）选择 **Certificate/private key**。
-1. 为 **Certificate (file)** 字段选择 `vpnclient.cer` 文件。 
-1. 为 **Private key** 字段选择 `vpnclient.key` 文件。 
+1. 为 **Certificate (file)** 字段选择 `vpnclient.cer` 文件。
+1. 为 **Private key** 字段选择 `vpnclient.key` 文件。
 1. 在 **Options** 部分，选中 **Request an inner IP address** 复选框。
 1. 在 **Cipher proposals (Algorithms)** 部分，选中 **Enable custom proposals** 复选框。
 1. 保持 **IKE** 字段空白。
@@ -377,13 +377,25 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
+```
+sudo ikev2.sh --listclients
+```
+
 ### 添加客户端证书
 
 如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
+```
+sudo ikev2.sh --addclient [client name]
+```
+
 ### 导出已有的客户端的配置
 
-在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，重新运行辅助脚本并选择适当的选项。
+在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，可以运行：
+
+```
+sudo ikev2.sh --exportclient [client name]
+```
 
 ### 删除客户端证书
 
@@ -731,7 +743,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 在导入时提示密码不正确
 
-如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
+如果你忘记了客户端配置文件的密码，可以查看相同目录下的文件 `vpnclient.p12.password`（如果存在）。或者你也可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
 
 Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258)。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
 <details>
