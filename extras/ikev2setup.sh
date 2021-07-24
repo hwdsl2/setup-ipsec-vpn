@@ -104,7 +104,6 @@ Error: Your must first set up the IPsec VPN server before setting up IKEv2.
 EOF
     exit 1
   fi
-
   case $swan_ver in
     3.2[35679]|3.3[12]|4.*)
       true
@@ -419,7 +418,6 @@ enter_server_address() {
       echo
       ;;
   esac
-
   if [ "$use_dns_name" = "1" ]; then
     read -rp "Enter the DNS name of this VPN server: " server_addr
     until check_dns_name "$server_addr"; do
@@ -533,20 +531,17 @@ enter_custom_dns() {
       dns_servers="8.8.8.8 8.8.4.4"
       ;;
   esac
-
   if [ "$use_custom_dns" = "1" ]; then
     read -rp "Enter primary DNS server: " dns_server_1
     until check_ip "$dns_server_1"; do
       echo "Invalid DNS server."
       read -rp "Enter primary DNS server: " dns_server_1
     done
-
     read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
     until [ -z "$dns_server_2" ] || check_ip "$dns_server_2"; do
       echo "Invalid DNS server."
       read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
     done
-
     if [ -n "$dns_server_2" ]; then
       dns_servers="$dns_server_1 $dns_server_2"
     else
@@ -570,14 +565,12 @@ check_mobike_support() {
       mobike_support=0
     fi
   fi
-
   kernel_conf="/boot/config-$(uname -r)"
   if [ -f "$kernel_conf" ]; then
     if ! grep -qs "CONFIG_XFRM_MIGRATE=y" "$kernel_conf"; then
       mobike_support=0
     fi
   fi
-
   # Linux kernels on Ubuntu do not support MOBIKE
   if [ "$in_container" = "0" ]; then
     if [ "$os_type" = "ubuntu" ] || uname -v | grep -qi ubuntu; then
@@ -588,7 +581,6 @@ check_mobike_support() {
       mobike_support=0
     fi
   fi
-
   if [ "$mobike_support" = "1" ]; then
     bigecho2 "Checking for MOBIKE support... available"
   else
@@ -647,13 +639,11 @@ VPN server address: $server_addr
 VPN client name: $client_name
 
 EOF
-
   if [ "$client_validity" = "1" ]; then
     echo "Client cert valid for: 1 month"
   else
     echo "Client cert valid for: $client_validity months"
   fi
-
   if [ "$mobike_support" = "1" ]; then
     if [ "$mobike_enable" = "1" ]; then
       echo "MOBIKE support: Enable"
@@ -663,14 +653,12 @@ EOF
   else
     echo "MOBIKE support: Not available"
   fi
-
 cat <<EOF
 DNS server(s): $dns_servers
 
 ======================================
 
 EOF
-
   printf "Do you want to continue? [y/N] "
   read -r response
   case $response in
@@ -686,9 +674,7 @@ EOF
 
 create_client_cert() {
   bigecho2 "Generating client certificate..."
-
   sleep 1
-
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -c "IKEv2 VPN CA" -n "$client_name" \
     -s "O=IKEv2 VPN,CN=$client_name" \
@@ -698,12 +684,27 @@ create_client_cert() {
     --extKeyUsage serverAuth,clientAuth -8 "$client_name" >/dev/null 2>&1 || exiterr "Failed to create client certificate."
 }
 
+create_p12_password() {
+  p12_password_file="${export_dir}vpnclient.p12.password"
+  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$p12_password_file"; then
+    . "$p12_password_file"
+    p12_password="$IKEV2_CONFIG_PASSWORD"
+  else
+    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
+    [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
+    if [ ! -f "$p12_password_file" ]; then
+      printf '%s\n' "IKEV2_CONFIG_PASSWORD=$p12_password" > "$p12_password_file"
+      if [ "$export_to_home_dir" = "1" ]; then
+        chown "$SUDO_USER:$SUDO_USER" "$p12_password_file"
+      fi
+      chmod 600 "$p12_password_file"
+    fi
+  fi
+}
+
 export_p12_file() {
   bigecho2 "Creating client configuration..."
-
-  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
-  [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
-
+  create_p12_password
   p12_file="$export_dir$client_name.p12"
   pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
   if [ "$os_type" = "alpine" ]; then
@@ -713,7 +714,6 @@ export_p12_file() {
       -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
     /bin/rm -f "$pem_file"
   fi
-
   if [ "$export_to_home_dir" = "1" ]; then
     chown "$SUDO_USER:$SUDO_USER" "$p12_file"
   fi
@@ -746,18 +746,13 @@ install_base64_uuidgen() {
 
 create_mobileconfig() {
   [ -z "$server_addr" ] && get_server_address
-
   p12_base64=$(base64 -w 52 "$export_dir$client_name.p12")
   [ -z "$p12_base64" ] && exiterr "Could not encode .p12 file."
-
   ca_base64=$(certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a | grep -v CERTIFICATE)
   [ -z "$ca_base64" ] && exiterr "Could not encode IKEv2 VPN CA certificate."
-
   uuid1=$(uuidgen)
   [ -z "$uuid1" ] && exiterr "Could not generate UUID value."
-
   mc_file="$export_dir$client_name.mobileconfig"
-
 cat > "$mc_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -903,7 +898,6 @@ $ca_base64
 </dict>
 </plist>
 EOF
-
   if [ "$export_to_home_dir" = "1" ]; then
     chown "$SUDO_USER:$SUDO_USER" "$mc_file"
   fi
@@ -912,15 +906,11 @@ EOF
 
 create_android_profile() {
   [ -z "$server_addr" ] && get_server_address
-
   p12_base64_oneline=$(base64 -w 52 "$export_dir$client_name.p12" | sed 's/$/\\n/' | tr -d '\n')
   [ -z "$p12_base64_oneline" ] && exiterr "Could not encode .p12 file."
-
   uuid2=$(uuidgen)
   [ -z "$uuid2" ] && exiterr "Could not generate UUID value."
-
   sswan_file="$export_dir$client_name.sswan"
-
 cat > "$sswan_file" <<EOF
 {
   "uuid": "$uuid2",
@@ -937,7 +927,6 @@ cat > "$sswan_file" <<EOF
   "esp-proposal": "aes128gcm16"
 }
 EOF
-
   if [ "$export_to_home_dir" = "1" ]; then
     chown "$SUDO_USER:$SUDO_USER" "$sswan_file"
   fi
@@ -955,7 +944,6 @@ export_client_config() {
 
 create_ca_server_certs() {
   bigecho2 "Generating CA and server certificates..."
-
   certutil -z <(head -c 1024 /dev/urandom) \
     -S -x -n "IKEv2 VPN CA" \
     -s "O=IKEv2 VPN,CN=IKEv2 VPN CA" \
@@ -965,9 +953,7 @@ y
 
 N
 ANSWERS
-
   sleep 1
-
   if [ "$use_dns_name" = "1" ]; then
     certutil -z <(head -c 1024 /dev/urandom) \
       -S -c "IKEv2 VPN CA" -n "$server_addr" \
@@ -991,12 +977,10 @@ ANSWERS
 
 add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
-
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' /etc/ipsec.conf; then
     echo >> /etc/ipsec.conf
     echo 'include /etc/ipsec.d/*.conf' >> /etc/ipsec.conf
   fi
-
 cat > /etc/ipsec.d/ikev2.conf <<EOF
 
 conn ikev2-cp
@@ -1024,7 +1008,6 @@ conn ikev2-cp
   salifetime=24h
   encapsulation=yes
 EOF
-
   if [ "$use_dns_name" = "1" ]; then
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   leftid=@$server_addr
@@ -1034,7 +1017,6 @@ cat >> /etc/ipsec.d/ikev2.conf <<EOF
   leftid=$server_addr
 EOF
   fi
-
   if [ -n "$dns_server_2" ]; then
 cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns="$dns_servers"
@@ -1044,7 +1026,6 @@ cat >> /etc/ipsec.d/ikev2.conf <<EOF
   modecfgdns=$dns_server_1
 EOF
   fi
-
   if [ "$mobike_enable" = "1" ]; then
     echo "  mobike=yes" >> /etc/ipsec.d/ikev2.conf
   else
@@ -1078,7 +1059,6 @@ apply_ubuntu1804_nss_fix() {
 restart_ipsec_service() {
   if [ "$in_container" = "0" ] || { [ "$in_container" = "1" ] && service ipsec status >/dev/null 2>&1; } then
     bigecho2 "Restarting IPsec service..."
-
     mkdir -p /run/pluto
     service ipsec restart 2>/dev/null
   fi
@@ -1096,7 +1076,6 @@ add_client_cert_to_crl() {
   sn_hex=$(printf '%s' "$sn_txt" | sed -e 's/^ *//' -e 's/://g')
   sn_dec=$((16#$sn_hex))
   [ -z "$sn_dec" ] && exiterr "Could not find serial number of client certificate."
-
 crlutil -M -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null <<EOF || exiterr "Failed to add client certificate to CRL."
 addcert $sn_dec $(date -u +%Y%m%d%H%M%SZ)
 EOF
@@ -1182,7 +1161,6 @@ Client configuration is available inside the
 Docker container at:
 EOF
   fi
-
 cat <<EOF
 $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
@@ -1192,7 +1170,6 @@ $export_dir$client_name.mobileconfig (for iOS & macOS)
 $p12_password
 Write this down, you'll need it for import!
 EOF
-
 cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
