@@ -8,8 +8,6 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-[**&raquo; See also: IPsec VPN Server on Docker**](https://github.com/hwdsl2/docker-ipsec-vpn-server)
-
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
 #### Table of Contents
@@ -25,7 +23,6 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 - [Advanced usage](#advanced-usage)
 - [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
-- [See also](#see-also)
 - [License](#license)
 
 ## Quick start
@@ -371,10 +368,6 @@ See [Advanced usage](docs/advanced-usage.md).
 ## Uninstallation
 
 See [Uninstall the VPN](docs/uninstall.md).
-
-## See also
-
-- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ## License
 

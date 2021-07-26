@@ -8,8 +8,6 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-[**&raquo; 另见：Docker 上的 IPsec VPN 服务器**](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
-
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
 #### 目录
@@ -25,7 +23,6 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - [高级用法](#高级用法)
 - [问题和反馈](#问题和反馈)
 - [卸载说明](#卸载说明)
-- [另见](#另见)
 - [授权协议](#授权协议)
 
 ## 快速开始
@@ -371,10 +368,6 @@ wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
 ## 卸载说明
 
 请参见 [卸载 VPN](docs/uninstall-zh.md)。
-
-## 另见
-
-- [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 
 ## 授权协议
 

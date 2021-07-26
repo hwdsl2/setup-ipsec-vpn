@@ -743,7 +743,7 @@ sudo ikev2.sh --exportclient [client name]
 
 ### 在导入时提示密码不正确
 
-如果你忘记了客户端配置文件的密码，可以查看相同目录下的文件 `vpnclient.p12.password`（如果存在）。或者你也可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
+如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
 
 Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258)。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
 <details>

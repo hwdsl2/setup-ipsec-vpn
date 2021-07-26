@@ -745,7 +745,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ### Incorrect password when trying to import
 
-If you forgot the password for client config files, check file `vpnclient.p12.password` in the same folder (if exists). Alternatively, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
 
 Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258). As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
 <details>
