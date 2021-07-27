@@ -59,9 +59,9 @@ if grep -qs "release 7" "$rh_file"; then
   os_ver=7
 elif grep -qs "release 8" "$rh_file"; then
   os_ver=8
-  if grep -qi stream "$rh_file"; then
-    os_ver=8s
-  fi
+  grep -qi stream "$rh_file" && os_ver=8s
+  grep -qi rocky "$rh_file" && os_type=rocky
+  grep -qi alma "$rh_file" && os_type=alma
 else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
@@ -150,7 +150,7 @@ bigecho "Adding the EPEL repository..."
 epel_url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E '%{rhel}').noarch.rpm"
 (
   set -x
-  yum -y -q install epel-release >/dev/null || yum -y -q install "$epel_url" >/dev/null
+  yum -y -q install epel-release >/dev/null 2>&1 || yum -y -q install "$epel_url" >/dev/null
 ) || exiterr2
 
 bigecho "Installing packages required for the VPN..."

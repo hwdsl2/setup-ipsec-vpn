@@ -36,21 +36,19 @@ check_run_as_root() {
 }
 
 check_os_type() {
+  os_type=centos
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   rh_file="/etc/redhat-release"
-  if grep -qs -e "release 7" -e "release 8" "$rh_file"; then
-    os_type=centos
-    if grep -qs "Red Hat" "$rh_file"; then
-      os_type=rhel
-    fi
-    if grep -qs "release 7" "$rh_file"; then
-      os_ver=7
-    elif grep -qs "release 8" "$rh_file"; then
-      os_ver=8
-      if grep -qi stream "$rh_file"; then
-        os_ver=8s
-      fi
-    fi
+  if grep -qs "Red Hat" "$rh_file"; then
+    os_type=rhel
+  fi
+  if grep -qs "release 7" "$rh_file"; then
+    os_ver=7
+  elif grep -qs "release 8" "$rh_file"; then
+    os_ver=8
+    grep -qi stream "$rh_file" && os_ver=8s
+    grep -qi rocky "$rh_file" && os_type=rocky
+    grep -qi alma "$rh_file" && os_type=alma
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
@@ -85,7 +83,7 @@ check_os_type() {
 
 get_update_url() {
   update_url=vpnupgrade
-  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ]; then
+  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
     update_url=vpnupgrade-centos
   elif [ "$os_type" = "amzn" ]; then
     update_url=vpnupgrade-amzn

@@ -36,9 +36,9 @@ if grep -qs "release 7" "$rh_file"; then
   os_ver=7
 elif grep -qs "release 8" "$rh_file"; then
   os_ver=8
-  if grep -qi stream "$rh_file"; then
-    os_ver=8s
-  fi
+  grep -qi stream "$rh_file" && os_ver=8s
+  grep -qi rocky "$rh_file" && os_type=rocky
+  grep -qi alma "$rh_file" && os_type=alma
 else
   echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
   echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
