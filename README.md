@@ -43,7 +43,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -84,18 +84,16 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 - Encapsulates all VPN traffic in UDP - does not need ESP protocol
 - Can be directly used as "user-data" for a new Amazon EC2 instance
 - Includes `sysctl.conf` optimizations for improved performance
-- Tested with Ubuntu, Debian, CentOS/RHEL and Amazon Linux 2
 
 ## Requirements
 
-A newly created [Amazon EC2](https://aws.amazon.com/ec2/) instance, from one of these images:
+A newly created [Amazon EC2](https://aws.amazon.com/ec2/) instance, from one of these images. You may deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup), or [manually deploy](#installation). Refer to [EC2 pricing](https://aws.amazon.com/ec2/pricing/).
 - [Ubuntu 20.04 (Focal) or 18.04 (Bionic)](https://cloud-images.ubuntu.com/locator/)
 - [Debian 10 (Buster)](https://wiki.debian.org/Cloud/AmazonEC2Image)[\*](#debian-10-note)[ or 9 (Stretch)](https://wiki.debian.org/Cloud/AmazonEC2Image)
 - [CentOS 8](https://wiki.centos.org/Cloud/AWS)[\*\*](#centos-8-note)[ or 7](https://wiki.centos.org/Cloud/AWS)
+- [Rocky Linux 8](https://aws.amazon.com/marketplace/seller-profile?id=01538adc-2664-49d5-b926-3381dffce12d)
 - [Red Hat Enterprise Linux (RHEL) 8 or 7](https://aws.amazon.com/partners/redhat/faqs/)
 - [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/)
-
-See [detailed instructions](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) and [EC2 pricing](https://aws.amazon.com/ec2/pricing/). Alternatively, you may also deploy rapidly using [CloudFormation](aws/README.md).
 
 **-OR-**
 
@@ -136,7 +134,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -178,7 +176,7 @@ sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -231,7 +229,7 @@ sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -320,7 +318,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash

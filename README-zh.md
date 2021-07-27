@@ -43,7 +43,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -84,18 +84,16 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 - 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
 - 可直接作为 Amazon EC2 实例创建时的用户数据使用
 - 包含 `sysctl.conf` 优化设置，以达到更佳的传输性能
-- 已测试：Ubuntu, Debian, CentOS/RHEL 和 Amazon Linux 2
 
 ## 系统要求
 
-一个新创建的 [Amazon EC2](https://aws.amazon.com/ec2/) 实例，使用这些映像之一：
+一个新创建的 [Amazon EC2](https://aws.amazon.com/ec2/) 实例，使用这些映像之一。你可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署，或者 [手动部署](#安装说明)。参见 [EC2 定价细节](https://aws.amazon.com/cn/ec2/pricing/)。
 - [Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)](https://cloud-images.ubuntu.com/locator/)
 - [Debian 10 (Buster)](https://wiki.debian.org/Cloud/AmazonEC2Image)[\*](#debian-10-note)[ 或者 9 (Stretch)](https://wiki.debian.org/Cloud/AmazonEC2Image)
 - [CentOS 8](https://wiki.centos.org/Cloud/AWS)[\*\*](#centos-8-note)[ 或者 7](https://wiki.centos.org/Cloud/AWS)
+- [Rocky Linux 8](https://aws.amazon.com/marketplace/seller-profile?id=01538adc-2664-49d5-b926-3381dffce12d)
 - [Red Hat Enterprise Linux (RHEL) 8 或者 7](https://aws.amazon.com/partners/redhat/faqs/)
 - [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/)
-
-请参见 [详细步骤](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 以及 [EC2 定价细节](https://aws.amazon.com/cn/ec2/pricing/)。另外，你也可以使用 [CloudFormation](aws/README-zh.md) 来快速部署。
 
 **-或者-**
 
@@ -136,7 +134,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -178,7 +176,7 @@ sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -231,7 +229,7 @@ sh vpn.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash
@@ -320,7 +318,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-CentOS & RHEL
+CentOS/RHEL & Rocky Linux
 </summary>
 
 ```bash

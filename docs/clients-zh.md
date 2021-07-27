@@ -398,7 +398,7 @@ service xl2tpd restart
 grep pluto /var/log/auth.log
 grep xl2tpd /var/log/syslog
 
-# CentOS/RHEL & Amazon Linux 2
+# CentOS/RHEL, Rocky Linux & Amazon Linux 2
 grep pluto /var/log/secure
 grep xl2tpd /var/log/messages
 ```
