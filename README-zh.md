@@ -87,30 +87,27 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 
 ## 系统要求
 
-一个新创建的 [Amazon EC2](https://aws.amazon.com/ec2/) 实例，使用这些映像之一。你可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署，或者 [手动部署](#安装说明)。参见 [EC2 定价细节](https://aws.amazon.com/cn/ec2/pricing/)。
-- [Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)](https://cloud-images.ubuntu.com/locator/)
-- [Debian 10 (Buster)](https://wiki.debian.org/Cloud/AmazonEC2Image)[\*](#debian-10-note)[ 或者 9 (Stretch)](https://wiki.debian.org/Cloud/AmazonEC2Image)
-- [CentOS 8](https://wiki.centos.org/Cloud/AWS)[\*\*](#centos-8-note)[ 或者 7](https://wiki.centos.org/Cloud/AWS)
-- [Rocky Linux 8](https://aws.amazon.com/marketplace/seller-profile?id=01538adc-2664-49d5-b926-3381dffce12d)
-- [Red Hat Enterprise Linux (RHEL) 8 或者 7](https://aws.amazon.com/partners/redhat/faqs/)
-- [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/)
+一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以下操作系统之一：
 
-**-或者-**
+- Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
+- Debian 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
+- CentOS 8[\*\*](#centos-8-note) 或者 7
+- Rocky Linux 8
+- Red Hat Enterprise Linux (RHEL) 8 或者 7
+- Amazon Linux 2
 
-一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以上操作系统之一。OpenVZ VPS 不受支持，用户可以另外尝试 [OpenVPN](https://github.com/Nyr/openvpn-install)。
-
-这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [OVH](https://www.ovhcloud.com/en/vps/) 和 [IBM Cloud](https://www.ibm.com/cloud/virtual-servers)。
+这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [OVH](https://www.ovhcloud.com/en/vps/) 和 [IBM Cloud](https://www.ibm.com/cloud/virtual-servers)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署。
 
 [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md) [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com/) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
 [**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。参见 [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)。
+另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。如果在 EC2 上使用 Debian 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。   
+\* Debian 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 的支持 [将于2021年12月31日结束](https://wiki.centos.org/About/Product)。
+\*\* CentOS Linux 8 的支持将于 2021 年 12 月 31 日 [结束](https://wiki.centos.org/About/Product)。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
@@ -272,11 +269,11 @@ sudo ikev2.sh --auto
 
 配置你的计算机或其它设备使用 VPN 。请参见：
 
+[**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
+
 [**配置 IPsec/L2TP VPN 客户端**](docs/clients-zh.md)
 
 [**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**](docs/clients-xauth-zh.md)
-
-[**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
 
 如果在连接过程中遇到错误，请参见 [故障排除](docs/clients-zh.md#故障排除)。
 
@@ -290,9 +287,9 @@ sudo ikev2.sh --auto
 
 **Android 用户** 如果遇到连接问题，请尝试 [这些步骤](docs/clients-zh.md#android-mtumss-问题)。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](docs/clients-xauth-zh.md)，或者 [配置 IKEv2](docs/ikev2-howto-zh.md)。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。
 
-如果需要查看或更改 VPN 用户账户，请参见 [管理 VPN 用户](docs/manage-users-zh.md)。该文档包含辅助脚本，以方便管理 VPN 用户。
+要查看或更改 VPN 用户账户，请参见 [管理 VPN 用户](docs/manage-users-zh.md)。该文档包含辅助脚本，以方便管理 VPN 用户。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 

@@ -87,30 +87,27 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Requirements
 
-A newly created [Amazon EC2](https://aws.amazon.com/ec2/) instance, from one of these images. You may deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup), or [manually deploy](#installation). Refer to [EC2 pricing](https://aws.amazon.com/ec2/pricing/).
-- [Ubuntu 20.04 (Focal) or 18.04 (Bionic)](https://cloud-images.ubuntu.com/locator/)
-- [Debian 10 (Buster)](https://wiki.debian.org/Cloud/AmazonEC2Image)[\*](#debian-10-note)[ or 9 (Stretch)](https://wiki.debian.org/Cloud/AmazonEC2Image)
-- [CentOS 8](https://wiki.centos.org/Cloud/AWS)[\*\*](#centos-8-note)[ or 7](https://wiki.centos.org/Cloud/AWS)
-- [Rocky Linux 8](https://aws.amazon.com/marketplace/seller-profile?id=01538adc-2664-49d5-b926-3381dffce12d)
-- [Red Hat Enterprise Linux (RHEL) 8 or 7](https://aws.amazon.com/partners/redhat/faqs/)
-- [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/)
+A dedicated server or virtual private server (VPS), freshly installed with one of the following OS:
 
-**-OR-**
+- Ubuntu 20.04 (Focal) or 18.04 (Bionic)
+- Debian 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
+- CentOS 8[\*\*](#centos-8-note) or 7
+- Rocky Linux 8
+- Red Hat Enterprise Linux (RHEL) 8 or 7
+- Amazon Linux 2
 
-A dedicated server or virtual private server (VPS), freshly installed with one of the above OS. OpenVZ VPS is not supported, users could instead try [OpenVPN](https://github.com/Nyr/openvpn-install).
-
-This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [OVH](https://www.ovhcloud.com/en/vps/) and [IBM Cloud](https://www.ibm.com/cloud/virtual-servers).
+This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Google Compute Engine](https://cloud.google.com/compute/), [Amazon Lightsail](https://aws.amazon.com/lightsail/), [Microsoft Azure](https://azure.microsoft.com), [OVH](https://www.ovhcloud.com/en/vps/) and [IBM Cloud](https://www.ibm.com/cloud/virtual-servers). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
 [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com/) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). See [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/).
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel). If using Debian 10 on EC2, you must first switch to the standard Linux kernel before running the VPN setup script.   
+\* Debian 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* Support for CentOS Linux 8 [will end on December 31, 2021](https://wiki.centos.org/About/Product).
+\*\* Support for CentOS Linux 8 [will end](https://wiki.centos.org/About/Product) on December 31, 2021.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -272,11 +269,11 @@ sudo ikev2.sh --auto
 
 Get your computer or device to use the VPN. Please refer to:
 
+[**Guide: How to Set Up and Use IKEv2 VPN**](docs/ikev2-howto.md)
+
 [**Configure IPsec/L2TP VPN Clients**](docs/clients.md)
 
 [**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**](docs/clients-xauth.md)
-
-[**Guide: How to Set Up and Use IKEv2 VPN**](docs/ikev2-howto.md)
 
 If you get an error when trying to connect, see [Troubleshooting](docs/clients.md#troubleshooting).
 
@@ -290,9 +287,9 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 **Android users**: If you encounter connection issues, try [these steps](docs/clients.md#android-mtumss-issues).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](docs/clients-xauth.md), or [set up IKEv2](docs/ikev2-howto.md).
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IKEv2](docs/ikev2-howto.md) or [IPsec/XAuth](docs/clients-xauth.md) mode.
 
-If you wish to view or update VPN user accounts, see [Manage VPN users](docs/manage-users.md). Helper scripts are included for convenience.
+To view or update VPN user accounts, see [Manage VPN users](docs/manage-users.md). Helper scripts are included for convenience.
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 

@@ -367,6 +367,8 @@ Debian 10 users: Run `uname -r` to check your server's Linux kernel version. If 
 
 To fix, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server. Finally, re-run the VPN setup script.
 
+If using Debian 10 on [Amazon EC2](https://aws.amazon.com/ec2/), you must first switch to the standard Linux kernel before running the VPN setup script.
+
 ### Other errors
 
 If you encounter other errors, refer to the links below:

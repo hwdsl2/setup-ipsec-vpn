@@ -368,6 +368,8 @@ Debian 10 用户：运行 `uname -r` 以检查你的服务器的 Linux 内核版
 
 要解决此问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。最后重新运行 VPN 安装脚本。
 
+如果在 [Amazon EC2](https://aws.amazon.com/ec2/) 上使用 Debian 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。
+
 ### 其它错误
 
 如果你遇到其它错误，请参见以下链接：
