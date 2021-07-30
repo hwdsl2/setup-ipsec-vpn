@@ -81,6 +81,20 @@ check_os_type() {
   fi
 }
 
+confirm_or_abort() {
+  printf '%s' "$1"
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      echo
+      ;;
+    *)
+      echo "Abort. No changes were made."
+      exit 1
+      ;;
+  esac
+}
+
 get_update_url() {
   update_url=vpnupgrade
   if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
@@ -133,10 +147,19 @@ check_container() {
   fi
 }
 
+show_header() {
+cat <<'EOF'
+
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   30 July 2021
+
+EOF
+}
+
 show_usage() {
   if [ -n "$1" ]; then
     echo "Error: $1" >&2;
   fi
+  show_header
 cat 1>&2 <<EOF
 Usage: bash $0 [options]
 
@@ -160,16 +183,24 @@ check_ikev2_exists() {
 }
 
 check_client_name() {
-  ! { [ "${#client_name}" -gt "64" ] || printf '%s' "$client_name" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-    || case $client_name in -*) true;; *) false;; esac; }
+  ! { [ "${#1}" -gt "64" ] || printf '%s' "$1" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    || case $1 in -*) true;; *) false;; esac; }
 }
 
-check_client_cert_exists() {
-  certutil -L -d sql:/etc/ipsec.d -n "$client_name" >/dev/null 2>&1
+check_cert_exists() {
+  certutil -L -d sql:/etc/ipsec.d -n "$1" >/dev/null 2>&1
 }
 
-check_client_cert_status() {
-  cert_status=$(certutil -V -u C -d sql:/etc/ipsec.d -n "$client_name")
+check_cert_exists_and_exit() {
+  if certutil -L -d sql:/etc/ipsec.d -n "$1" >/dev/null 2>&1; then
+    echo "Error: Certificate '$1' already exists." >&2
+    echo "Abort. No changes were made." >&2
+    exit 1
+  fi
+}
+
+check_cert_status() {
+  cert_status=$(certutil -V -u C -d sql:/etc/ipsec.d -n "$1")
 }
 
 check_arguments() {
@@ -182,22 +213,22 @@ check_arguments() {
     show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient', '--listclients' or '--revokeclient'."
   fi
   if [ "$add_client" = "1" ]; then
-    check_ikev2_exists || exiterr "You must first set up IKEv2 before adding a new client."
-    if [ -z "$client_name" ] || ! check_client_name; then
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before adding a client."
+    if [ -z "$client_name" ] || ! check_client_name "$client_name"; then
       exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
-    elif check_client_cert_exists; then
+    elif check_cert_exists "$client_name"; then
       exiterr "Invalid client name. Client '$client_name' already exists."
     fi
   fi
   if [ "$export_client" = "1" ]; then
-    check_ikev2_exists || exiterr "You must first set up IKEv2 before exporting a client configuration."
+    check_ikev2_exists || exiterr "You must first set up IKEv2 before exporting a client."
     get_server_address
-    if [ -z "$client_name" ] || ! check_client_name \
+    if [ -z "$client_name" ] || ! check_client_name "$client_name" \
       || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-      || ! check_client_cert_exists; then
+      || ! check_cert_exists "$client_name"; then
       exiterr "Invalid client name, or client does not exist."
     fi
-    if ! check_client_cert_status; then
+    if ! check_cert_status "$client_name"; then
       printf '%s' "Error: Certificate '$client_name' " >&2
       if printf '%s' "$cert_status" | grep -q "revoked"; then
         echo "has been revoked." >&2
@@ -215,12 +246,12 @@ check_arguments() {
   if [ "$revoke_client" = "1" ]; then
     check_ikev2_exists || exiterr "You must first set up IKEv2 before revoking a client certificate."
     get_server_address
-    if [ -z "$client_name" ] || ! check_client_name \
+    if [ -z "$client_name" ] || ! check_client_name "$client_name" \
       || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-      || ! check_client_cert_exists; then
+      || ! check_cert_exists "$client_name"; then
       exiterr "Invalid client name, or client does not exist."
     fi
-    if ! check_client_cert_status; then
+    if ! check_cert_status "$client_name"; then
       printf '%s' "Error: Certificate '$client_name' " >&2
       if printf '%s' "$cert_status" | grep -q "revoked"; then
         echo "has already been revoked." >&2
@@ -249,21 +280,7 @@ check_server_dns_name() {
 check_custom_dns() {
   if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
     || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; } then
-    exiterr "The DNS server specified is invalid."
-  fi
-}
-
-check_ca_cert_exists() {
-  if certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" >/dev/null 2>&1; then
-    exiterr "Certificate 'IKEv2 VPN CA' already exists."
-  fi
-}
-
-check_server_cert_exists() {
-  if certutil -L -d sql:/etc/ipsec.d -n "$server_addr" >/dev/null 2>&1; then
-    echo "Error: Certificate '$server_addr' already exists." >&2
-    echo "Abort. No changes were made." >&2
-    exit 1
+    exiterr "Invalid DNS server(s)."
   fi
 }
 
@@ -317,17 +334,7 @@ select_swan_update() {
     else
       echo "      To update this Docker image, see: https://git.io/updatedockervpn"
       echo
-      printf "Do you want to continue anyway? [y/N] "
-      read -r response
-      case $response in
-        [yY][eE][sS]|[yY])
-          echo
-          ;;
-        *)
-          echo "Abort. No changes were made."
-          exit 1
-          ;;
-      esac
+      confirm_or_abort "Do you want to continue anyway? [y/N] "
     fi
   fi
 }
@@ -441,8 +448,8 @@ enter_client_name() {
   echo "Provide a name for the IKEv2 VPN client."
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: " client_name
-  while [ -z "$client_name" ] || ! check_client_name || check_client_cert_exists; do
-    if [ -z "$client_name" ] || ! check_client_name; then
+  while [ -z "$client_name" ] || ! check_client_name "$client_name" || check_cert_exists "$client_name"; do
+    if [ -z "$client_name" ] || ! check_client_name "$client_name"; then
       echo "Invalid client name."
     else
       echo "Invalid client name. Client '$client_name' already exists."
@@ -457,8 +464,8 @@ enter_client_name_with_defaults() {
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: [vpnclient] " client_name
   [ -z "$client_name" ] && client_name=vpnclient
-  while ! check_client_name || check_client_cert_exists; do
-      if ! check_client_name; then
+  while ! check_client_name "$client_name" || check_cert_exists "$client_name"; do
+      if ! check_client_name "$client_name"; then
         echo "Invalid client name."
       else
         echo "Invalid client name. Client '$client_name' already exists."
@@ -474,12 +481,12 @@ enter_client_name_for() {
   get_server_address
   echo
   read -rp "Enter the name of the IKEv2 client to $1: " client_name
-  while [ -z "$client_name" ] || ! check_client_name \
+  while [ -z "$client_name" ] || ! check_client_name "$client_name" \
     || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-    || ! check_client_cert_exists || ! check_client_cert_status; do
-    if [ -z "$client_name" ] || ! check_client_name \
+    || ! check_cert_exists "$client_name" || ! check_cert_status "$client_name"; do
+    if [ -z "$client_name" ] || ! check_client_name "$client_name" \
       || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-      || ! check_client_cert_exists; then
+      || ! check_cert_exists "$client_name"; then
       echo "Invalid client name, or client does not exist."
     else
       printf '%s' "Error: Certificate '$client_name' "
@@ -611,7 +618,6 @@ select_mobike() {
 }
 
 select_menu_option() {
-  echo
   echo "IKEv2 is already set up on this server."
   echo
   echo "Select an option:"
@@ -660,17 +666,7 @@ DNS server(s): $dns_servers
 ======================================
 
 EOF
-  printf "Do you want to continue? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      echo
-      ;;
-    *)
-      echo "Abort. No changes were made."
-      exit 1
-      ;;
-  esac
+  confirm_or_abort "Do you want to continue? [y/N] "
 }
 
 create_client_cert() {
@@ -687,22 +683,12 @@ create_client_cert() {
 
 create_p12_password() {
   config_file="/etc/ipsec.d/.vpnconfig"
-  config_file_old="${export_dir}vpnclient.p12.password"
-  update_config=0
   if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file"; then
     . "$config_file"
     p12_password="$IKEV2_CONFIG_PASSWORD"
-  elif grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file_old"; then
-    . "$config_file_old"
-    p12_password="$IKEV2_CONFIG_PASSWORD"
-    /bin/rm -f "$config_file_old"
-    update_config=1
   else
     p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
-    update_config=1
-  fi
-  if [ "$update_config" = "1" ]; then
     mkdir -p /etc/ipsec.d
     printf '%s\n' "IKEV2_CONFIG_PASSWORD='$p12_password'" >> "$config_file"
     chmod 600 "$config_file"
@@ -1198,42 +1184,20 @@ check_ipsec_conf() {
 }
 
 confirm_revoke_cert() {
-  echo
   echo "WARNING: You have selected to revoke IKEv2 client certificate '$client_name'."
   echo "         After revocation, this certificate *cannot* be used by VPN client(s)"
   echo "         to connect to this VPN server."
   echo
-  printf "Are you sure you want to revoke certificate '%s'? [y/N] " "$client_name"
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      echo
-      ;;
-    *)
-      echo "Abort. No changes were made."
-      exit 1
-      ;;
-  esac
+  confirm_or_abort "Are you sure you want to revoke '$client_name'? [y/N] "
 }
 
 confirm_remove_ikev2() {
-  echo
   echo "WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP"
   echo "         and IPsec/XAuth (\"Cisco IPsec\") modes, if installed. All IKEv2 configuration"
   echo "         including certificates and keys will be permanently deleted."
   echo "         This *cannot* be undone! "
   echo
-  printf "Are you sure you want to remove IKEv2? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      echo
-      ;;
-    *)
-      echo "Abort. No changes were made."
-      exit 1
-      ;;
-  esac
+  confirm_or_abort "Are you sure you want to remove IKEv2? [y/N] "
 }
 
 delete_ikev2_conf() {
@@ -1320,6 +1284,7 @@ ikev2setup() {
   get_export_dir
 
   if [ "$add_client" = "1" ]; then
+    show_header
     show_add_client
     client_validity=120
     create_client_cert
@@ -1330,6 +1295,7 @@ ikev2setup() {
   fi
 
   if [ "$export_client" = "1" ]; then
+    show_header
     show_export_client
     export_client_config
     print_client_exported
@@ -1338,11 +1304,13 @@ ikev2setup() {
   fi
 
   if [ "$list_clients" = "1" ]; then
+    show_header
     list_existing_clients
     exit 0
   fi
 
   if [ "$revoke_client" = "1" ]; then
+    show_header
     confirm_revoke_cert
     create_crl
     add_client_cert_to_crl
@@ -1353,6 +1321,7 @@ ikev2setup() {
 
   if [ "$remove_ikev2" = "1" ]; then
     check_ipsec_conf
+    show_header
     confirm_remove_ikev2
     delete_ikev2_conf
     if [ "$os_type" = "alpine" ]; then
@@ -1366,6 +1335,7 @@ ikev2setup() {
   fi
 
   if check_ikev2_exists; then
+    show_header
     select_menu_option
     case $selected_option in
       1)
@@ -1393,6 +1363,7 @@ ikev2setup() {
         ;;
       4)
         enter_client_name_for revoke
+        echo
         confirm_revoke_cert
         create_crl
         add_client_cert_to_crl
@@ -1402,6 +1373,7 @@ ikev2setup() {
         ;;
       5)
         check_ipsec_conf
+        echo
         confirm_remove_ikev2
         delete_ikev2_conf
         if [ "$os_type" = "alpine" ]; then
@@ -1419,14 +1391,15 @@ ikev2setup() {
     esac
   fi
 
-  check_ca_cert_exists
+  check_cert_exists_and_exit "IKEv2 VPN CA"
   check_swan_ver
 
   if [ "$use_defaults" = "0" ]; then
     select_swan_update
+    show_header
     show_welcome
     enter_server_address
-    check_server_cert_exists
+    check_cert_exists_and_exit "$server_addr"
     enter_client_name_with_defaults
     enter_client_cert_validity
     enter_custom_dns
@@ -1438,11 +1411,12 @@ ikev2setup() {
     check_custom_dns
     if [ -n "$VPN_CLIENT_NAME" ]; then
       client_name="$VPN_CLIENT_NAME"
-      check_client_name || exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+      check_client_name "$client_name" \
+        || exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
     else
       client_name=vpnclient
     fi
-    check_client_cert_exists && exiterr "Client '$client_name' already exists."
+    check_cert_exists "$client_name" && exiterr "Client '$client_name' already exists."
     client_validity=120
     show_start_setup
     if [ -n "$VPN_DNS_NAME" ]; then
@@ -1454,7 +1428,7 @@ ikev2setup() {
       check_ip "$public_ip" || exiterr "Cannot detect this server's public IP."
       server_addr="$public_ip"
     fi
-    check_server_cert_exists
+    check_cert_exists_and_exit "$server_addr"
     if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
       dns_server_1="$VPN_DNS_SRV1"
       dns_server_2="$VPN_DNS_SRV2"
