@@ -150,7 +150,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   30 July 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   31 July 2021
 
 EOF
 }
@@ -634,6 +634,14 @@ select_menu_option() {
   done
 }
 
+print_server_client_info() {
+cat <<EOF
+VPN server address: $server_addr
+VPN client name: $client_name
+
+EOF
+}
+
 confirm_setup_options() {
 cat <<EOF
 
@@ -642,10 +650,8 @@ Please double check before continuing!
 
 ======================================
 
-VPN server address: $server_addr
-VPN client name: $client_name
-
 EOF
+  print_server_client_info
   if [ "$client_validity" = "1" ]; then
     echo "Client cert valid for: 1 month"
   else
@@ -1086,10 +1092,8 @@ cat <<EOF
 
 New IKEv2 VPN client "$client_name" added!
 
-VPN server address: $server_addr
-VPN client name: $client_name
-
 EOF
+  print_server_client_info
 }
 
 print_client_exported() {
@@ -1100,10 +1104,8 @@ cat <<EOF
 
 IKEv2 VPN client "$client_name" exported!
 
-VPN server address: $server_addr
-VPN client name: $client_name
-
 EOF
+  print_server_client_info
 }
 
 print_client_revoked() {
@@ -1131,16 +1133,15 @@ print_setup_complete() {
     printf '\e[2K\r'
   else
     printf '\e[2K\e[1A\e[2K\r'
+    [ "$use_defaults" = "1" ] && printf '\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\r'
   fi
 cat <<EOF
 ================================================
 
 IKEv2 setup successful. Details for IKEv2 mode:
 
-VPN server address: $server_addr
-VPN client name: $client_name
-
 EOF
+  print_server_client_info
 }
 
 print_client_info() {
@@ -1418,6 +1419,7 @@ ikev2setup() {
     fi
     check_cert_exists "$client_name" && exiterr "Client '$client_name' already exists."
     client_validity=120
+    show_header
     show_start_setup
     if [ -n "$VPN_DNS_NAME" ]; then
       use_dns_name=1
