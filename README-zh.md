@@ -43,7 +43,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
 
 <details>
 <summary>
-CentOS/RHEL & Rocky Linux
+CentOS/RHEL, Rocky Linux & AlmaLinux
 </summary>
 
 ```bash
@@ -93,6 +93,7 @@ wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh -
 - Debian 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
 - CentOS 8[\*\*](#centos-8-note) 或者 7
 - Rocky Linux 8
+- AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 
@@ -131,7 +132,7 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS/RHEL & Rocky Linux
+CentOS/RHEL, Rocky Linux & AlmaLinux
 </summary>
 
 ```bash
@@ -173,7 +174,7 @@ sudo sh vpn.sh
 
 <details>
 <summary>
-CentOS/RHEL & Rocky Linux
+CentOS/RHEL, Rocky Linux & AlmaLinux
 </summary>
 
 ```bash
@@ -226,7 +227,7 @@ sh vpn.sh
 
 <details>
 <summary>
-CentOS/RHEL & Rocky Linux
+CentOS/RHEL, Rocky Linux & AlmaLinux
 </summary>
 
 ```bash
@@ -315,7 +316,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-CentOS/RHEL & Rocky Linux
+CentOS/RHEL, Rocky Linux & AlmaLinux
 </summary>
 
 ```bash
