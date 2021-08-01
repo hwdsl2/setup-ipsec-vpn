@@ -81,6 +81,11 @@ check_os_type() {
   fi
 }
 
+abort_and_exit() {
+  echo "Abort. No changes were made." >&2
+  exit 1
+}
+
 confirm_or_abort() {
   printf '%s' "$1"
   read -r response
@@ -89,8 +94,7 @@ confirm_or_abort() {
       echo
       ;;
     *)
-      echo "Abort. No changes were made."
-      exit 1
+      abort_and_exit
       ;;
   esac
 }
@@ -194,8 +198,7 @@ check_cert_exists() {
 check_cert_exists_and_exit() {
   if certutil -L -d sql:/etc/ipsec.d -n "$1" >/dev/null 2>&1; then
     echo "Error: Certificate '$1' already exists." >&2
-    echo "Abort. No changes were made." >&2
-    exit 1
+    abort_and_exit
   fi
 }
 
@@ -448,13 +451,15 @@ enter_client_name() {
   echo "Provide a name for the IKEv2 VPN client."
   echo "Use one word only, no special characters except '-' and '_'."
   read -rp "Client name: " client_name
-  while [ -z "$client_name" ] || ! check_client_name "$client_name" || check_cert_exists "$client_name"; do
-    if [ -z "$client_name" ] || ! check_client_name "$client_name"; then
+  [ -z "$client_name" ] && abort_and_exit
+  while ! check_client_name "$client_name" || check_cert_exists "$client_name"; do
+    if ! check_client_name "$client_name"; then
       echo "Invalid client name."
     else
       echo "Invalid client name. Client '$client_name' already exists."
     fi
     read -rp "Client name: " client_name
+    [ -z "$client_name" ] && abort_and_exit
   done
 }
 
@@ -481,12 +486,12 @@ enter_client_name_for() {
   get_server_address
   echo
   read -rp "Enter the name of the IKEv2 client to $1: " client_name
-  while [ -z "$client_name" ] || ! check_client_name "$client_name" \
-    || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-    || ! check_cert_exists "$client_name" || ! check_cert_status "$client_name"; do
-    if [ -z "$client_name" ] || ! check_client_name "$client_name" \
-      || [ "$client_name" = "IKEv2 VPN CA" ] || [ "$client_name" = "$server_addr" ] \
-      || ! check_cert_exists "$client_name"; then
+  [ -z "$client_name" ] && abort_and_exit
+  while ! check_client_name "$client_name" || [ "$client_name" = "IKEv2 VPN CA" ] \
+    || [ "$client_name" = "$server_addr" ] || ! check_cert_exists "$client_name" \
+    || ! check_cert_status "$client_name"; do
+    if ! check_client_name "$client_name" || [ "$client_name" = "IKEv2 VPN CA" ] \
+    || [ "$client_name" = "$server_addr" ] || ! check_cert_exists "$client_name"; then
       echo "Invalid client name, or client does not exist."
     else
       printf '%s' "Error: Certificate '$client_name' "
@@ -503,6 +508,7 @@ enter_client_name_for() {
       fi
     fi
     read -rp "Enter the name of the IKEv2 client to $1: " client_name
+    [ -z "$client_name" ] && abort_and_exit
   done
 }
 
@@ -1179,8 +1185,7 @@ check_ipsec_conf() {
     echo "Error: IKEv2 configuration section found in /etc/ipsec.conf." >&2
     echo "       This script cannot automatically remove IKEv2 from this server." >&2
     echo "       To manually remove IKEv2, see https://git.io/ikev2" >&2
-    echo "Abort. No changes were made." >&2
-    exit 1
+    abort_and_exit
   fi
 }
 
