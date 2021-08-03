@@ -28,8 +28,8 @@ jobs:
         run: |
           if [ ! -x /usr/bin/shellcheck ]; then
             export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install shellcheck
+            sudo apt-get -yqq update
+            sudo apt-get -yqq install shellcheck
           fi
 
           cd "$GITHUB_WORKSPACE"
@@ -58,8 +58,8 @@ jobs:
           set -x
 
           export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get -yq update
-          sudo apt-get -yq install wget curl
+          sudo apt-get -yqq update
+          sudo apt-get -yqq install wget curl
 
           wget_c="wget -t 3 -T 30 -nv -O"
           gh_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
@@ -106,7 +106,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["centos:8", "centos:8s", "centos:7", "amazonlinux:2"]
+        os_version: ["centos:8", "centos:8s", "centos:7", "rockylinux:8", "almalinux:8", "amazonlinux:2"]
       fail-fast: false
     env:
       OS_VERSION: ${{ matrix.os_version }}
@@ -161,11 +161,11 @@ jobs:
             echo
           }
 
-          yum -y update
+          yum -y -q update
           yum -y -q install wget rsyslog
           systemctl start rsyslog
 
-          if [ "$1" = "centos" ]; then
+          if [ "$1" != "amazon" ]; then
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
           else
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
@@ -322,7 +322,7 @@ jobs:
           sed -i '/pluto/d' "$log1"
           pkill -HUP rsyslog
 
-          if [ "$1" = "centos" ]; then
+          if [ "$1" != "amazon" ]; then
             wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
           else
             wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
@@ -362,6 +362,8 @@ jobs:
 
           if [ "$OS_VERSION" = "centos:8s" ]; then
             echo "FROM quay.io/centos/centos:stream8" > Dockerfile
+          elif [ "$OS_VERSION" = "rockylinux:8" ]; then
+            echo "FROM rockylinux/rockylinux:8" > Dockerfile
           else
             echo "FROM $OS_VERSION" > Dockerfile
           fi
@@ -418,7 +420,7 @@ jobs:
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
-      options: --privileged -v /lib/modules:/lib/modules:ro
+      options: --cap-add=NET_ADMIN --device=/dev/ppp
     steps:
       - name: Test
         run: |
@@ -460,9 +462,9 @@ jobs:
           echo "# hwdsl2" > run.sh
 
           export DEBIAN_FRONTEND=noninteractive
-          apt-get -yq update
-          apt-get -yq dist-upgrade
-          apt-get -yq install wget rsyslog
+          apt-get -yqq update
+          apt-get -yqq dist-upgrade
+          apt-get -yqq install wget rsyslog
           service rsyslog start
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
