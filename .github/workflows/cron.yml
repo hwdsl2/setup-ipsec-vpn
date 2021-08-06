@@ -195,17 +195,19 @@ jobs:
           y
           ANSWERS
 
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
 
           restart_ipsec
           grep pluto "$log1" | tail -n 20
-          ipsec status
           ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
           1
+          invalidclient:
+          vpnclient
           vpnclient2
 
           ANSWERS
@@ -217,6 +219,7 @@ jobs:
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
           2
+          nonexistclient
           vpnclient2
           ANSWERS
 
@@ -230,12 +233,31 @@ jobs:
 
           bash ikev2.sh <<ANSWERS
           4
+          nonexistclient
           vpnclient2
           y
           ANSWERS
 
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          4
+          vpnclient2
+
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          2
+          vpnclient2
+
+          ANSWERS
+
           bash ikev2.sh <<ANSWERS
+          100
           6
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          5
+
           ANSWERS
 
           bash ikev2.sh <<ANSWERS
@@ -252,6 +274,11 @@ jobs:
 
           rm -f /etc/ipsec.d/vpnclient*
 
+          VPN_DNS_SRV1=invaliddns \
+          bash ikev2.sh --auto 2>&1 | grep -i "invalid"
+
+          sed -i '/^include /d' /etc/ipsec.conf
+
           VPN_CLIENT_NAME=vpnclient1 \
           VPN_DNS_NAME=vpn.example.com \
           VPN_DNS_SRV1=1.1.1.1 \
@@ -267,15 +294,19 @@ jobs:
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
 
           restart_ipsec
-          grep pluto "$log1" | tail -n 20
-          ipsec status
           ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --auto --addclient invalidclient: 2>&1 | grep -i "warning"
+          bash ikev2.sh --addclient invalidclient: 2>&1 | grep -i "invalid"
+          bash ikev2.sh --addclient vpnclient1 2>&1 | grep -i "already exists"
 
           bash ikev2.sh --addclient vpnclient2
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --exportclient nonexistclient 2>&1 | grep -i "does not exist"
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
@@ -284,11 +315,92 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
-          bash ikev2.sh --listclients
+          bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
 
+          bash ikev2.sh --listclients | grep "vpnclient1"
+          bash ikev2.sh --listclients | grep "vpnclient2"
+
+          bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
+
+          bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
+          bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
+          bash ikev2.sh -h 2>&1 | grep -i "usage:"
+          bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
+
+          bash ikev2.sh --removeikev2 --exportclient vpnclient1 2>&1 | grep -i "invalid"
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+          y
+          invalidfqdn
+          vpn.example.com
+
+
+          y
+          invaliddns
+          1.1.1.1
+          invaliddns
+          1.0.0.1
+          y
+          ANSWERS
+
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+
+          invalidip
+          1.2.3.4
+          invalidclient:
+          vpnclient1
+          1000
+          12
+          y
+          1.1.1.1
+
+          y
+          ANSWERS
+
+          grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          VPN_DNS_SRV1=1.1.1.1 \
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
 
           sed -i '/pluto/d' "$log1"
           pkill -HUP rsyslog
@@ -306,8 +418,7 @@ jobs:
           y
           ANSWERS
             restart_ipsec
-            grep pluto "$log1"
-            ipsec status
+            ipsec --version
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
             ipsec status | grep -q ikev2-cp
@@ -492,17 +603,19 @@ jobs:
           y
           ANSWERS
 
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
 
           restart_ipsec
           grep pluto "$log1" | tail -n 20
-          ipsec status
           ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh <<ANSWERS
           1
+          invalidclient:
+          vpnclient
           vpnclient2
 
           ANSWERS
@@ -514,6 +627,7 @@ jobs:
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
           2
+          nonexistclient
           vpnclient2
           ANSWERS
 
@@ -527,12 +641,31 @@ jobs:
 
           bash ikev2.sh <<ANSWERS
           4
+          nonexistclient
           vpnclient2
           y
           ANSWERS
 
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          4
+          vpnclient2
+
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          2
+          vpnclient2
+
+          ANSWERS
+
           bash ikev2.sh <<ANSWERS
+          100
           6
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          5
+
           ANSWERS
 
           bash ikev2.sh <<ANSWERS
@@ -549,6 +682,12 @@ jobs:
 
           rm -f /etc/ipsec.d/vpnclient*
 
+          VPN_DNS_SRV1=invaliddns \
+          bash ikev2.sh --auto 2>&1 | grep -i "invalid"
+
+          apt-get -yqq remove uuid-runtime
+          sed -i '/^include /d' /etc/ipsec.conf
+
           VPN_CLIENT_NAME=vpnclient1 \
           VPN_DNS_NAME=vpn.example.com \
           VPN_DNS_SRV1=1.1.1.1 \
@@ -564,15 +703,19 @@ jobs:
           grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
 
           restart_ipsec
-          grep pluto "$log1" | tail -n 20
-          ipsec status
           ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --auto --addclient invalidclient: 2>&1 | grep -i "warning"
+          bash ikev2.sh --addclient invalidclient: 2>&1 | grep -i "invalid"
+          bash ikev2.sh --addclient vpnclient1 2>&1 | grep -i "already exists"
 
           bash ikev2.sh --addclient vpnclient2
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --exportclient nonexistclient 2>&1 | grep -i "does not exist"
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh --exportclient vpnclient2
@@ -581,11 +724,92 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
 
-          bash ikev2.sh --listclients
+          bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
 
+          bash ikev2.sh --listclients | grep "vpnclient1"
+          bash ikev2.sh --listclients | grep "vpnclient2"
+
+          bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
+
+          bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
+          bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
+          bash ikev2.sh -h 2>&1 | grep -i "usage:"
+          bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
+
+          bash ikev2.sh --removeikev2 --exportclient vpnclient1 2>&1 | grep -i "invalid"
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+          y
+          invalidfqdn
+          vpn.example.com
+
+
+          y
+          invaliddns
+          1.1.1.1
+          invaliddns
+          1.0.0.1
+          y
+          ANSWERS
+
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+
+          invalidip
+          1.2.3.4
+          invalidclient:
+          vpnclient1
+          1000
+          12
+          y
+          1.1.1.1
+
+          y
+          ANSWERS
+
+          grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          VPN_DNS_SRV1=1.1.1.1 \
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
 
           sed -i '/pluto/d' "$log1"
           pkill -HUP rsyslog
@@ -599,8 +823,7 @@ jobs:
           y
           ANSWERS
             restart_ipsec
-            grep pluto "$log1"
-            ipsec status
+            ipsec --version
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
             ipsec status | grep -q ikev2-cp
