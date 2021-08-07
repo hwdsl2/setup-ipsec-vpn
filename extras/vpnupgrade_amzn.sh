@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script to upgrade Libreswan on Amazon Linux 2
+# Script to update Libreswan on Amazon Linux 2
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -102,12 +102,9 @@ if [ "$swan_ver_old" = "$SWAN_VER" ]; then
   esac
 fi
 
-clear
-
 cat <<EOF
-Welcome! This script will build and install Libreswan on your server.
-Additional packages required for compilation will also be installed.
-It is intended for upgrading servers to a newer Libreswan version.
+
+Welcome! Use this script to update Libreswan on your IPsec VPN server.
 
 Current version:    Libreswan $swan_ver_old
 Version to install: Libreswan $SWAN_VER

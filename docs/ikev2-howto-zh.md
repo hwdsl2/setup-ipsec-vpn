@@ -78,7 +78,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 </details>
 <details>
 <summary>
-单击此处以查看 IKEv2 辅助脚本的使用信息。
+单击此处查看 IKEv2 脚本的使用信息。
 </summary>
 
 ```
@@ -86,10 +86,10 @@ Usage: bash ikev2.sh [options]
 
 Options:
   --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
-  --addclient [client name]     add a new client using default options (after IKEv2 setup)
-  --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
-  --listclients                 list the names of existing clients (after IKEv2 setup)
-  --revokeclient                revoke a client certificate (after IKEv2 setup)
+  --addclient [client name]     add a new client using default options
+  --exportclient [client name]  export configuration for an existing client
+  --listclients                 list the names of existing clients
+  --revokeclient                revoke a client certificate
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 

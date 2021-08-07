@@ -83,11 +83,9 @@ if printf '%s' "$VPN_USERS" | tr ' ' '\n' | sort | uniq -c | grep -qv '^ *1 '; t
   exiterr "VPN usernames must not contain duplicates."
 fi
 
-clear
-
 cat <<'EOF'
 
-Welcome! This script will update VPN user accounts for both
+Welcome! Use this script to update VPN user accounts for both
 IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
 
 WARNING: *ALL* existing VPN users will be removed and replaced

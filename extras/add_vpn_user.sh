@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script to add/update an VPN user for both IPsec/L2TP and Cisco IPsec
+# Script to add/update a VPN user for both IPsec/L2TP and Cisco IPsec
 #
 # Copyright (C) 2018-2021 Lin Song <linsongui@gmail.com>
 #
@@ -54,11 +54,9 @@ case "$VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
-clear
-
 cat <<EOF
 
-Welcome! This script will add or update an VPN user account for both
+Welcome! Use this script to add or update a VPN user account for both
 IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
 
 If the username you specified already exists, it will be updated

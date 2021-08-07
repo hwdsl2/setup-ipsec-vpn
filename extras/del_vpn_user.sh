@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Script to delete an VPN user for both IPsec/L2TP and Cisco IPsec
+# Script to delete a VPN user for both IPsec/L2TP and Cisco IPsec
 #
 # Copyright (C) 2018-2021 Lin Song <linsongui@gmail.com>
 #
@@ -68,11 +68,9 @@ EOF
   exit 1
 fi
 
-clear
-
 cat <<EOF
 
-Welcome! This script will delete an VPN user account for both
+Welcome! Use this script to delete a VPN user account for both
 IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
 
 Please double check before continuing!

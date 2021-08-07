@@ -169,10 +169,10 @@ Usage: bash $0 [options]
 
 Options:
   --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
-  --addclient [client name]     add a new client using default options (after IKEv2 setup)
-  --exportclient [client name]  export configuration for an existing client (after IKEv2 setup)
-  --listclients                 list the names of existing clients (after IKEv2 setup)
-  --revokeclient                Revoke a client certificate (after IKEv2 setup)
+  --addclient [client name]     add a new client using default options
+  --exportclient [client name]  export configuration for an existing client
+  --listclients                 list the names of existing clients
+  --revokeclient                revoke a client certificate
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -344,8 +344,7 @@ select_swan_update() {
 
 show_welcome() {
 cat <<'EOF'
-Welcome! Use this script to set up IKEv2 after setting up your own IPsec VPN server.
-Alternatively, you may manually set up IKEv2. See: https://git.io/ikev2
+Welcome! Use this script to set up IKEv2 on your IPsec VPN server.
 
 I need to ask you a few questions before starting setup.
 You can use the default options and just press enter if you are OK with them.
@@ -548,10 +547,10 @@ enter_custom_dns() {
       echo "Invalid DNS server."
       read -rp "Enter primary DNS server: " dns_server_1
     done
-    read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
+    read -rp "Enter secondary DNS server (enter to skip): " dns_server_2
     until [ -z "$dns_server_2" ] || check_ip "$dns_server_2"; do
       echo "Invalid DNS server."
-      read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
+      read -rp "Enter secondary DNS server (enter to skip): " dns_server_2
     done
     if [ -n "$dns_server_2" ]; then
       dns_servers="$dns_server_1 $dns_server_2"
