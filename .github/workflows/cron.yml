@@ -89,7 +89,7 @@ jobs:
 
           cat > run.sh <<'EOF'
           #!/bin/bash
-          set -e
+          set -eEx
 
           log1=/var/log/secure
           log2=/var/log/messages
@@ -103,10 +103,9 @@ jobs:
           }
 
           restart_ipsec() {
-            sed -i '/pluto/d' "$log1"
-            pkill -HUP rsyslog
-            systemctl restart ipsec
-            sleep 1
+            if ! command -v amazon-linux-extras; then
+              systemctl restart ipsec
+            fi
             echo "Waiting for IPsec to restart."
             count=0
             while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
@@ -402,9 +401,6 @@ jobs:
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
-          sed -i '/pluto/d' "$log1"
-          pkill -HUP rsyslog
-
           if [ "$1" != "amazon" ]; then
             wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
           else
@@ -506,14 +502,12 @@ jobs:
     steps:
       - name: Test
         run: |
+          set -ex
+
           log1=/var/log/auth.log
           log2=/var/log/syslog
 
           restart_ipsec() {
-            sed -i '/pluto/d' "$log1"
-            pkill -HUP rsyslog
-            service ipsec restart
-            sleep 1
             echo "Waiting for IPsec to restart."
             count=0
             while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
@@ -810,9 +804,6 @@ jobs:
           grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           restart_ipsec
           ipsec status | grep -q ikev2-cp
-
-          sed -i '/pluto/d' "$log1"
-          pkill -HUP rsyslog
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
