@@ -55,7 +55,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           mkdir workdir
           cd workdir
-          set -x
+          set -ex
 
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get -yqq update
@@ -67,6 +67,7 @@ jobs:
           $wget_c vpnsetup.sh          https://git.io/vpnsetup
           $wget_c vpnsetup_centos.sh   https://git.io/vpnsetup-centos
           $wget_c vpnsetup_amzn.sh     https://git.io/vpnsetup-amzn
+          $wget_c quickstart.sh        https://git.io/vpnquickstart
           $wget_c ikev2setup.sh        https://git.io/ikev2setup
           $wget_c vpnupgrade.sh        https://git.io/vpnupgrade
           $wget_c vpnupgrade_centos.sh https://git.io/vpnupgrade-centos
@@ -75,6 +76,7 @@ jobs:
           $wget_c vpnsetup2.sh          "$gh_url/vpnsetup.sh"
           $wget_c vpnsetup_centos2.sh   "$gh_url/vpnsetup_centos.sh"
           $wget_c vpnsetup_amzn2.sh     "$gh_url/vpnsetup_amzn.sh"
+          $wget_c quickstart2.sh        "$gh_url/extras/quickstart.sh"
           $wget_c ikev2setup2.sh        "$gh_url/extras/ikev2setup.sh"
           $wget_c vpnupgrade2.sh        "$gh_url/extras/vpnupgrade.sh"
           $wget_c vpnupgrade_centos2.sh "$gh_url/extras/vpnupgrade_centos.sh"
@@ -87,6 +89,7 @@ jobs:
           diff vpnsetup.sh ../vpnsetup.sh
           diff vpnsetup_centos.sh ../vpnsetup_centos.sh
           diff vpnsetup_amzn.sh ../vpnsetup_amzn.sh
+          diff quickstart.sh ../extras/quickstart.sh
           diff ikev2setup.sh ../extras/ikev2setup.sh
           diff vpnupgrade.sh ../extras/vpnupgrade.sh
           diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
@@ -95,6 +98,7 @@ jobs:
           diff vpnsetup2.sh ../vpnsetup.sh
           diff vpnsetup_centos2.sh ../vpnsetup_centos.sh
           diff vpnsetup_amzn2.sh ../vpnsetup_amzn.sh
+          diff quickstart2.sh ../extras/quickstart.sh
           diff ikev2setup2.sh ../extras/ikev2setup.sh
           diff vpnupgrade2.sh ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
