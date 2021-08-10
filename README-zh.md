@@ -27,39 +27,14 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器\* 上全新安装以下系统之一。
+首先，在你的 Linux 服务器\* 上全新安装以下系统之一：   
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux 或者 Amazon Linux 2
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
+wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
-```
-</details>
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
 

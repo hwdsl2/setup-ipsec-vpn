@@ -27,48 +27,23 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 ## Quick start
 
-First, prepare your Linux server\* with a fresh install of one of the following OS.
+First, prepare your Linux server\* with a fresh install of one of the following OS:   
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux or Amazon Linux 2
 
 Use this one-liner to set up an IPsec VPN server:
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
+wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh && sudo ikev2.sh --auto
-```
-</details>
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
 
 <details>
 <summary>
-Click here to see the VPN scripts in action (terminal recording).
+Click here to see the VPN script in action (terminal recording).
 </summary>
 
-**Note:** This recording is for demonstration purposes only. VPN credentials in this recording are **NOT** valid.
+**Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
