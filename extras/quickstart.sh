@@ -79,7 +79,17 @@ check_iface() {
   def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
   [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
+  check_wl=0
   if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      if ! uname -m | grep -qi -e '^arm' -e '^aarch64'; then
+        check_wl=1
+      fi
+    else
+      check_wl=1
+    fi
+  fi
+  if [ "$check_wl" = "1" ]; then
     case $def_iface in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
