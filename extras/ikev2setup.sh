@@ -29,13 +29,13 @@ check_dns_name() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
 }
 
-check_run_as_root() {
+check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo bash $0'"
   fi
 }
 
-check_os_type() {
+check_os() {
   os_type=centos
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   rh_file="/etc/redhat-release"
@@ -154,7 +154,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   31 July 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   10 Aug 2021
 
 EOF
 }
@@ -298,14 +298,16 @@ check_swan_ver() {
 
 run_swan_update() {
   get_update_url
-  TMPDIR=$(mktemp -d /tmp/vpnup.XXX 2>/dev/null)
+  TMPDIR=$(mktemp -d /tmp/vpnup.XXXXX 2>/dev/null)
   if [ -d "$TMPDIR" ]; then
-    set -x
-    if wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$update_url"; then
-      /bin/sh "$TMPDIR/vpnup.sh"
+    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$update_url"; ); then
+      (
+        set -x
+        /bin/sh "$TMPDIR/vpnup.sh"
+      )
+    else
+      echo "Error: Could not download update script." >&2
     fi
-    { set +x; } 2>&-
-    [ ! -s "$TMPDIR/vpnup.sh" ] && echo "Error: Could not download update script." >&2
     /bin/rm -f "$TMPDIR/vpnup.sh"
     /bin/rmdir "$TMPDIR"
   else
@@ -1044,7 +1046,7 @@ apply_ubuntu1804_nss_fix() {
     nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-    TMPDIR=$(mktemp -d /tmp/nss.XXX 2>/dev/null)
+    TMPDIR=$(mktemp -d /tmp/nss.XXXXX 2>/dev/null)
     if [ -d "$TMPDIR" ]; then
       bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
       export DEBIAN_FRONTEND=noninteractive
@@ -1086,7 +1088,7 @@ EOF
 }
 
 reload_crls() {
-  ipsec crls || exiterr "Failed to let Libreswan re-read the updated CRL."
+  ipsec crls
 }
 
 print_client_added() {
@@ -1232,9 +1234,9 @@ print_ikev2_removed() {
 }
 
 ikev2setup() {
-  check_run_as_root
+  check_root
   check_container
-  check_os_type
+  check_os
   check_swan_install
   check_utils_exist
 
