@@ -98,6 +98,14 @@ check_iface() {
   fi
 }
 
+check_iptables() {
+  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+    if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
+      exiterr "IPTables check failed. Reboot and re-run this script."
+    fi
+  fi
+}
+
 install_wget() {
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
     export DEBIAN_FRONTEND=noninteractive
@@ -119,7 +127,7 @@ install_wget() {
 
 get_setup_url() {
   base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
-  sh_file="vpnsetup.sh"
+  sh_file="vpnsetup_ubuntu.sh"
   if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
     sh_file="vpnsetup_centos.sh"
   elif [ "$os_type" = "amzn" ]; then
@@ -133,8 +141,8 @@ run_setup() {
   get_setup_url
   TMPDIR=$(mktemp -d /tmp/vpnsetup.XXXXX 2>/dev/null)
   if [ -d "$TMPDIR" ]; then
-    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url"; ); then
-      if ( set -x; /bin/sh "$TMPDIR/vpn.sh"; ); then
+    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url" ); then
+      if /bin/sh "$TMPDIR/vpn.sh"; then
         if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
           sleep 1
           /bin/bash /opt/src/ikev2.sh --auto || status=1
@@ -158,6 +166,7 @@ quickstart() {
   check_vz
   check_os
   check_iface
+  check_iptables
   install_wget
   get_setup_url
   run_setup

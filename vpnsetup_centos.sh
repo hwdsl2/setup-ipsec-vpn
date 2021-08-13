@@ -63,9 +63,7 @@ elif grep -qs "release 8" "$rh_file"; then
   grep -qi rocky "$rh_file" && os_type=rocky
   grep -qi alma "$rh_file" && os_type=alma
 else
-  echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
-  echo "For Ubuntu/Debian, use https://git.io/vpnsetup" >&2
-  exit 1
+  exiterr "This script only supports CentOS/RHEL 7 and 8."
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -139,11 +137,10 @@ bigecho "Installing packages required for setup..."
 
 bigecho "Trying to auto discover IP of this server..."
 
-# In case auto IP discovery fails, enter server's public IP here.
 public_ip=${VPN_PUBLIC_IP:-''}
 check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
 check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
+check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it as variable 'VPN_PUBLIC_IP' and re-run this script."
 
 bigecho "Adding the EPEL repository..."
 
