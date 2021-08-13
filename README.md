@@ -95,36 +95,9 @@ To install the VPN, please choose one of the following options:
 
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
 wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
-```
-</details>
 
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
@@ -134,45 +107,12 @@ sudo ikev2.sh --auto
 
 **Option 2:** Edit the script and provide your own VPN credentials:
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
 wget https://git.io/vpnsetup -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-yum -y install wget nano
-wget https://git.io/vpnsetup-centos -O vpn.sh
-nano -w vpn.sh
-[Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
-sudo sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh
-nano -w vpn.sh
-[Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
-sudo sh vpn.sh
-```
-</details>
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
@@ -184,11 +124,6 @@ sudo ikev2.sh --auto
 
 **Option 3:** Define your VPN credentials as environment variables:
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
@@ -198,40 +133,6 @@ VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-# All values MUST be placed inside 'single quotes'
-# DO NOT use these special characters within values: \ " '
-yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpn.sh
-sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
-VPN_USER='your_vpn_username' \
-VPN_PASSWORD='your_vpn_password' \
-sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-# All values MUST be placed inside 'single quotes'
-# DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup-amzn -O vpn.sh
-sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
-VPN_USER='your_vpn_username' \
-VPN_PASSWORD='your_vpn_password' \
-sh vpn.sh
-```
-</details>
 
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
@@ -239,7 +140,7 @@ After successful installation, it is recommended to [set up IKEv2](docs/ikev2-ho
 sudo ikev2.sh --auto
 ```
 
-**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), [vpnsetup_centos.sh](vpnsetup_centos.sh) or [vpnsetup_amzn.sh](vpnsetup_amzn.sh), and click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
 ## Next steps
 

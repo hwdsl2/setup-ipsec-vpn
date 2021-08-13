@@ -93,38 +93,11 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 要安装 VPN，请从以下选项中选择一个：
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证 （完成后会在屏幕上显示）：
-
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）：
 
 ```bash
 wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpn.sh && sudo sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh && sudo sh vpn.sh
-```
-</details>
 
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
@@ -134,45 +107,12 @@ sudo ikev2.sh --auto
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
 wget https://git.io/vpnsetup -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-yum -y install wget nano
-wget https://git.io/vpnsetup-centos -O vpn.sh
-nano -w vpn.sh
-[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
-sudo sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnsetup-amzn -O vpn.sh
-nano -w vpn.sh
-[替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
-sudo sh vpn.sh
-```
-</details>
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
@@ -184,11 +124,6 @@ sudo ikev2.sh --auto
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
-
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
@@ -198,40 +133,6 @@ VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-# 所有变量值必须用 '单引号' 括起来
-# *不要* 在值中使用这些字符：  \ " '
-yum -y install wget
-wget https://git.io/vpnsetup-centos -O vpn.sh
-sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
-VPN_USER='你的VPN用户名' \
-VPN_PASSWORD='你的VPN密码' \
-sh vpn.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-# 所有变量值必须用 '单引号' 括起来
-# *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup-amzn -O vpn.sh
-sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
-VPN_USER='你的VPN用户名' \
-VPN_PASSWORD='你的VPN密码' \
-sh vpn.sh
-```
-</details>
 
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
@@ -239,7 +140,7 @@ sh vpn.sh
 sudo ikev2.sh --auto
 ```
 
-**注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，[vpnsetup_centos.sh](vpnsetup_centos.sh) 或者 [vpnsetup_amzn.sh](vpnsetup_amzn.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+**注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步
 
