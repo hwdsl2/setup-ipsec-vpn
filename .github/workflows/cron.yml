@@ -139,11 +139,7 @@ jobs:
           yum -y -q install wget rsyslog
           systemctl start rsyslog
 
-          if [ "$1" != "amazon" ]; then
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
-          else
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
-          fi
+          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           sh vpnsetup.sh
