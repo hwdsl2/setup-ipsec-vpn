@@ -16,15 +16,15 @@
             },
             "CentOS7": {
                 "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
-                "InstallationLinks": "https://git.io/vpnsetup-centos"
+                "InstallationLinks": "https://git.io/vpnsetup"
             },
             "CentOS8": {
                 "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n",
-                "InstallationLinks": "https://git.io/vpnsetup-centos"
+                "InstallationLinks": "https://git.io/vpnsetup"
             },
             "AmazonLinux2": {
                 "HelperInstallationCommands": "export PATH=\"$PATH:/opt/aws/bin\"\n",
-                "InstallationLinks": "https://git.io/vpnsetup-amzn"
+                "InstallationLinks": "https://git.io/vpnsetup"
             }
         }
     },
