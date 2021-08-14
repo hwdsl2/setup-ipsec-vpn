@@ -26,6 +26,8 @@ bigecho() { echo "## $1"; }
 
 vpnupgrade() {
 
+[ -n "$VPN_UPDATE_SWAN_VER" ] && SWAN_VER="$VPN_UPDATE_SWAN_VER"
+
 os_type=centos
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 rh_file="/etc/redhat-release"
@@ -40,9 +42,7 @@ elif grep -qs "release 8" "$rh_file"; then
   grep -qi rocky "$rh_file" && os_type=rocky
   grep -qi alma "$rh_file" && os_type=alma
 else
-  echo "Error: This script only supports CentOS/RHEL 7 and 8." >&2
-  echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
-  exit 1
+  exiterr "This script only supports CentOS/RHEL 7 and 8."
 fi
 
 if [ -f /proc/user_beancounters ]; then
@@ -85,7 +85,7 @@ if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|
   && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
   echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
   echo "      To update to the new version, exit this script and run:"
-  echo "      wget https://git.io/vpnupgrade-centos -O vpnup.sh && sudo sh vpnup.sh"
+  echo "      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh"
   echo
   printf "Do you want to continue anyway? [y/N] "
   read -r response

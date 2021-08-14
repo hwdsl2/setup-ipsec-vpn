@@ -100,13 +100,7 @@ confirm_or_abort() {
 }
 
 get_update_url() {
-  update_url=vpnupgrade
-  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
-    update_url=vpnupgrade-centos
-  elif [ "$os_type" = "amzn" ]; then
-    update_url=vpnupgrade-amzn
-  fi
-  update_url="https://git.io/$update_url"
+  update_url="https://git.io/vpnupgrade"
 }
 
 check_swan_install() {

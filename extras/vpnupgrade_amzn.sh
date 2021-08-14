@@ -26,12 +26,11 @@ bigecho() { echo "## $1"; }
 
 vpnupgrade() {
 
+[ -n "$VPN_UPDATE_SWAN_VER" ] && SWAN_VER="$VPN_UPDATE_SWAN_VER"
+
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 if ! grep -qs "Amazon Linux release 2" /etc/system-release; then
-  echo "Error: This script only supports Amazon Linux 2." >&2
-  echo "For Ubuntu/Debian, use https://git.io/vpnupgrade" >&2
-  echo "For CentOS/RHEL, use https://git.io/vpnupgrade-centos" >&2
-  exit 1
+  exiterr "This script only supports Amazon Linux 2."
 fi
 
 if [ "$(id -u)" != 0 ]; then
@@ -70,7 +69,7 @@ if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|
   && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
   echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
   echo "      To update to the new version, exit this script and run:"
-  echo "      wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh"
+  echo "      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh"
   echo
   printf "Do you want to continue anyway? [y/N] "
   read -r response

@@ -542,7 +542,7 @@ cat <<EOF
 
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
       To update, run:
-      wget https://git.io/vpnupgrade-centos -O vpnup.sh && sudo sh vpnup.sh
+      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 EOF
 fi
 

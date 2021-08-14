@@ -26,6 +26,8 @@ bigecho() { echo "## $1"; }
 
 vpnupgrade() {
 
+[ -n "$VPN_UPDATE_SWAN_VER" ] && SWAN_VER="$VPN_UPDATE_SWAN_VER"
+
 os_type=$(lsb_release -si 2>/dev/null)
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
@@ -40,9 +42,7 @@ case $os_type in
     os_type=raspbian
     ;;
   *)
-    echo "Error: This script only supports Ubuntu and Debian." >&2
-    echo "For CentOS/RHEL, use https://git.io/vpnupgrade-centos" >&2
-    exit 1
+    exiterr "This script only supports Ubuntu and Debian."
     ;;
 esac
 
