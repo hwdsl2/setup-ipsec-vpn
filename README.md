@@ -178,37 +178,11 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-The additional scripts in [extras/](extras/) can be used to upgrade [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)). The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
-
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
+You may use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.4`. Check which version is installed: `ipsec --version`.
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-wget https://git.io/vpnupgrade-centos -O vpnup.sh && sudo sh vpnup.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
-```
-</details>
 
 ## Manage VPN users
 

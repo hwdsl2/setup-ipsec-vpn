@@ -178,37 +178,11 @@ sudo ikev2.sh --auto
 
 ## 升级Libreswan
 
-在 [extras/](extras/) 目录提供额外的脚本，可用于升级 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.4`。查看已安装版本：`ipsec --version`。
-
-<details open>
-<summary>
-Ubuntu & Debian
-</summary>
+你可以使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.4`。查看已安装版本：`ipsec --version`。
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 ```
-</details>
-
-<details>
-<summary>
-CentOS/RHEL, Rocky Linux & AlmaLinux
-</summary>
-
-```bash
-wget https://git.io/vpnupgrade-centos -O vpnup.sh && sudo sh vpnup.sh
-```
-</details>
-
-<details>
-<summary>
-Amazon Linux 2
-</summary>
-
-```bash
-wget https://git.io/vpnupgrade-amzn -O vpnup.sh && sudo sh vpnup.sh
-```
-</details>
 
 ## 管理 VPN 用户
 
