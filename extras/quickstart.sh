@@ -106,22 +106,39 @@ check_iptables() {
   fi
 }
 
+wait_for_apt() {
+  count=0
+  apt_lk=/var/lib/apt/lists/lock
+  pkg_lk=/var/lib/dpkg/lock
+  while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
+    || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
+    [ "$count" = "0" ] && echo "## Waiting for apt to be available..."
+    [ "$count" -ge "100" ] && exiterr "Could not get apt/dpkg lock."
+    count=$((count+1))
+    printf '%s' '.'
+    sleep 3
+  done
+}
+
 install_wget() {
-  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
-    export DEBIAN_FRONTEND=noninteractive
-    (
-      set -x
-      apt-get -yqq update
-    ) || exiterr "'apt-get update' failed."
-    (
-      set -x
-      apt-get -yqq install wget >/dev/null
-    ) || exiterr "'apt-get install wget' failed."
-  else
-    (
-      set -x
-      yum -y -q install wget >/dev/null
-    ) || exiterr "'yum install wget' failed."
+  if ! command -v wget >/dev/null 2>&1; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      wait_for_apt
+      export DEBIAN_FRONTEND=noninteractive
+      (
+        set -x
+        apt-get -yqq update
+      ) || exiterr "'apt-get update' failed."
+      (
+        set -x
+        apt-get -yqq install wget >/dev/null
+      ) || exiterr "'apt-get install wget' failed."
+    else
+      (
+        set -x
+        yum -y -q install wget >/dev/null
+      ) || exiterr "'yum install wget' failed."
+    fi
   fi
 }
 
@@ -138,10 +155,10 @@ get_setup_url() {
 
 run_setup() {
   status=0
-  get_setup_url
   TMPDIR=$(mktemp -d /tmp/vpnsetup.XXXXX 2>/dev/null)
   if [ -d "$TMPDIR" ]; then
-    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url" ); then
+    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url" \
+      || curl -fsL "$setup_url" -o "$TMPDIR/vpn.sh" 2>/dev/null ); then
       if /bin/sh "$TMPDIR/vpn.sh"; then
         if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
           sleep 1
