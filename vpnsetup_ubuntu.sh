@@ -139,20 +139,20 @@ fi
 
 bigecho "VPN setup in progress... Please be patient."
 
-mkdir -p /opt/src
-cd /opt/src || exit 1
-
 count=0
-APT_LK=/var/lib/apt/lists/lock
-PKG_LK=/var/lib/dpkg/lock
-while fuser "$APT_LK" "$PKG_LK" >/dev/null 2>&1 \
-  || lsof "$APT_LK" >/dev/null 2>&1 || lsof "$PKG_LK" >/dev/null 2>&1; do
+apt_lk=/var/lib/apt/lists/lock
+pkg_lk=/var/lib/dpkg/lock
+while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
+  || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
   [ "$count" = "0" ] && bigecho "Waiting for apt to be available..."
   [ "$count" -ge "100" ] && exiterr "Could not get apt/dpkg lock."
   count=$((count+1))
   printf '%s' '.'
   sleep 3
 done
+
+mkdir -p /opt/src
+cd /opt/src || exit 1
 
 bigecho "Installing packages required for setup..."
 
