@@ -38,20 +38,24 @@ jobs:
           $wget_c vpnsetup.sh          https://git.io/vpnsetup
           $wget_c vpnsetup_centos.sh   https://git.io/vpnsetup-centos
           $wget_c vpnsetup_amzn.sh     https://git.io/vpnsetup-amzn
+          $wget_c vpnsetup_ubuntu.sh   https://git.io/vpnsetup-ubuntu
           $wget_c quickstart.sh        https://git.io/vpnquickstart
           $wget_c ikev2setup.sh        https://git.io/ikev2setup
           $wget_c vpnupgrade.sh        https://git.io/vpnupgrade
           $wget_c vpnupgrade_centos.sh https://git.io/vpnupgrade-centos
           $wget_c vpnupgrade_amzn.sh   https://git.io/vpnupgrade-amzn
+          $wget_c vpnupgrade_ubuntu.sh https://git.io/vpnupgrade-ubuntu
 
           $wget_c vpnsetup2.sh          "$gh_url/vpnsetup.sh"
           $wget_c vpnsetup_centos2.sh   "$gh_url/vpnsetup_centos.sh"
           $wget_c vpnsetup_amzn2.sh     "$gh_url/vpnsetup_amzn.sh"
+          $wget_c vpnsetup_ubuntu2.sh   "$gh_url/vpnsetup_ubuntu.sh"
           $wget_c quickstart2.sh        "$gh_url/extras/quickstart.sh"
           $wget_c ikev2setup2.sh        "$gh_url/extras/ikev2setup.sh"
           $wget_c vpnupgrade2.sh        "$gh_url/extras/vpnupgrade.sh"
           $wget_c vpnupgrade_centos2.sh "$gh_url/extras/vpnupgrade_centos.sh"
           $wget_c vpnupgrade_amzn2.sh   "$gh_url/extras/vpnupgrade_amzn.sh"
+          $wget_c vpnupgrade_ubuntu2.sh "$gh_url/extras/vpnupgrade_ubuntu.sh"
 
           curl -fsSI https://bit.ly/addvpnuser | grep -q 'add_vpn_user.sh'
           curl -fsSI https://bit.ly/delvpnuser | grep -q 'del_vpn_user.sh'
@@ -60,20 +64,24 @@ jobs:
           diff vpnsetup.sh ../vpnsetup.sh
           diff vpnsetup_centos.sh ../vpnsetup_centos.sh
           diff vpnsetup_amzn.sh ../vpnsetup_amzn.sh
+          diff vpnsetup_ubuntu.sh ../vpnsetup_ubuntu.sh
           diff quickstart.sh ../extras/quickstart.sh
           diff ikev2setup.sh ../extras/ikev2setup.sh
           diff vpnupgrade.sh ../extras/vpnupgrade.sh
           diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
           diff vpnupgrade_amzn.sh ../extras/vpnupgrade_amzn.sh
+          diff vpnupgrade_ubuntu.sh ../extras/vpnupgrade_ubuntu.sh
 
           diff vpnsetup2.sh ../vpnsetup.sh
           diff vpnsetup_centos2.sh ../vpnsetup_centos.sh
           diff vpnsetup_amzn2.sh ../vpnsetup_amzn.sh
+          diff vpnsetup_ubuntu2.sh ../vpnsetup_ubuntu.sh
           diff quickstart2.sh ../extras/quickstart.sh
           diff ikev2setup2.sh ../extras/ikev2setup.sh
           diff vpnupgrade2.sh ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
           diff vpnupgrade_amzn2.sh ../extras/vpnupgrade_amzn.sh
+          diff vpnupgrade_ubuntu2.sh ../extras/vpnupgrade_ubuntu.sh
 
   test_set_1:
     needs: check_urls
@@ -139,7 +147,11 @@ jobs:
           yum -y -q install wget rsyslog
           systemctl start rsyslog
 
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          if [ "$1" != "amazon" ]; then
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+          else
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
+          fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           sh vpnsetup.sh
@@ -543,7 +555,7 @@ jobs:
           apt-get -yqq install wget rsyslog
           service rsyslog start
 
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           sh vpnsetup.sh
@@ -805,7 +817,7 @@ jobs:
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 3.32 4.1 4.2 4.3 4.4; do
