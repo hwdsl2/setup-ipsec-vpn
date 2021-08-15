@@ -78,7 +78,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 [**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
 \* Debian 11 或者 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
@@ -102,7 +102,10 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
 ```bash
+# 使用默认选项配置 IKEv2
 sudo ikev2.sh --auto
+# 或者你也可以自定义 IKEv2 选项
+sudo ikev2.sh
 ```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
@@ -119,7 +122,10 @@ sudo sh vpn.sh
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
 ```bash
+# 使用默认选项配置 IKEv2
 sudo ikev2.sh --auto
+# 或者你也可以自定义 IKEv2 选项
+sudo ikev2.sh
 ```
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
@@ -137,7 +143,10 @@ sh vpn.sh
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
 ```bash
+# 使用默认选项配置 IKEv2
 sudo ikev2.sh --auto
+# 或者你也可以自定义 IKEv2 选项
+sudo ikev2.sh
 ```
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。

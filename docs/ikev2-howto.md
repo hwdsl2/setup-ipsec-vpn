@@ -31,13 +31,16 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 **Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), and (optional but recommended) [updated Libreswan](../README.md#upgrade-libreswan). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
 
-Use this helper script to automatically set up IKEv2 on the VPN server:
+Use this [helper script](../extras/ikev2setup.sh) to automatically set up IKEv2 on the VPN server:
 
-```
+```bash
+# Set up IKEv2 using default options
 sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
 ```
 
-The command above runs the [helper script](../extras/ikev2setup.sh) in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
+When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
 
 <details>
 <summary>

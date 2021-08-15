@@ -31,13 +31,16 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 **重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)，并且（可选但推荐）[升级 Libreswan](../README-zh.md#升级libreswan)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
 
-使用这个辅助脚本来自动地在 VPN 服务器上配置 IKEv2：
+使用这个 [辅助脚本](../extras/ikev2setup.sh) 来自动地在 VPN 服务器上配置 IKEv2：
 
-```
+```bash
+# 使用默认选项配置 IKEv2
 sudo ikev2.sh --auto
+# 或者你也可以自定义 IKEv2 选项
+sudo ikev2.sh
 ```
 
-以上命令使用自动模式和默认选项运行 [辅助脚本](../extras/ikev2setup.sh)。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
+在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
 
 <details>
 <summary>

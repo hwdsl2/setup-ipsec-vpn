@@ -228,9 +228,9 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 * [Android MTU/MSS issues](#android-mtumss-issues)
 * [Android 6 and 7](#android-6-and-7)
 * [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
-* [iOS 13/14 and macOS 10.15/11](#ios-1314-and-macos-101511)
+* [iOS 13 and macOS 10.15/11](#ios-13-and-macos-101511)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
-* [Debian 10 kernel](#debian-10-kernel)
+* [Debian 10/11 kernel](#debian-1011-kernel)
 * [Other errors](#other-errors)
 * [Check logs and VPN status](#check-logs-and-vpn-status)
 
@@ -347,9 +347,9 @@ OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but y
 
 After trying the steps above, if your computer is still not sending traffic over the VPN, check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
 
-### iOS 13/14 and macOS 10.15/11
+### iOS 13 and macOS 10.15/11
 
-If your iOS 13/14, macOS 10.15 (Catalina) or macOS 11 (Big Sur) device cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
+If your device running iOS 13 or above, macOS 10.15 (Catalina) or macOS 11 (Big Sur) cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
 
 In addition, users running macOS Big Sur 11.0 should update to version 11.1 or newer, to fix some issues with VPN connections. To check your macOS version and update, refer to [this article](https://www.businessinsider.com/how-to-check-mac-os-version).
 
@@ -359,9 +359,10 @@ To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi s
 
 If you need the VPN to auto-reconnect when the device wakes up, you may connect using [IKEv2](ikev2-howto.md) mode (recommended) and enable the "VPN On Demand" feature. Alternatively, you may try [OpenVPN](https://github.com/Nyr/openvpn-install) instead, which [has support for options](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
+<a name="debian-10-kernel"></a>
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more [here](https://support.google.com/android/answer/9089766?hl=en).
 
-### Debian 10 kernel
+### Debian 10/11 kernel
 
 Debian 11 or 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show an error.
 

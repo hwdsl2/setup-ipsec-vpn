@@ -78,7 +78,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
-A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
 \* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
@@ -102,7 +102,10 @@ wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
+# Set up IKEv2 using default options
 sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
 ```
 
 **Option 2:** Edit the script and provide your own VPN credentials:
@@ -119,7 +122,10 @@ sudo sh vpn.sh
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
+# Set up IKEv2 using default options
 sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
 ```
 
 **Option 3:** Define your VPN credentials as environment variables:
@@ -137,7 +143,10 @@ sh vpn.sh
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
+# Set up IKEv2 using default options
 sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
 ```
 
 **Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
