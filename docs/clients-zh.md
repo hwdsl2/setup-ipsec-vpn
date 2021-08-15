@@ -364,11 +364,11 @@ Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果�
 
 ### Debian 10 内核
 
-Debian 10 用户：运行 `uname -r` 以检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形，并显示错误。
+Debian 11 或者 10 用户：运行 `uname -r` 以检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形，并显示错误。
 
 要解决此问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。最后重新运行 VPN 安装脚本。
 
-如果在 [Amazon EC2](https://aws.amazon.com/ec2/) 上使用 Debian 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。
+如果在 [Amazon EC2](https://aws.amazon.com/ec2/) 上使用 Debian 11 或者 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。
 
 ### 其它错误
 

@@ -65,7 +65,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 A dedicated server or virtual private server (VPS), freshly installed with one of the following OS:
 
 - Ubuntu 20.04 (Focal) or 18.04 (Bionic)
-- Debian 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
+- Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
 - CentOS 8[\*\*](#centos-8-note) or 7
 - Rocky Linux 8
 - AlmaLinux OS 8
@@ -81,7 +81,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can set up the VPN server on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
+\* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
 \*\* Support for CentOS Linux 8 [will end](https://wiki.centos.org/About/Product) on December 31, 2021.
 

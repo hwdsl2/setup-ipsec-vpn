@@ -65,7 +65,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以下操作系统之一：
 
 - Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
-- Debian 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
+- Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
 - CentOS 8[\*\*](#centos-8-note) 或者 7
 - Rocky Linux 8
 - AlmaLinux OS 8
@@ -81,7 +81,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在一个 [Raspberry Pi](https://www.raspberrypi.org) 上搭建 VPN 服务器。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
+\* Debian 11 或者 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
 \*\* CentOS Linux 8 的支持将于 2021 年 12 月 31 日 [结束](https://wiki.centos.org/About/Product)。
 

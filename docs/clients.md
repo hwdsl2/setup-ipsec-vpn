@@ -363,11 +363,11 @@ Android devices will also disconnect Wi-Fi shortly after entering sleep mode, un
 
 ### Debian 10 kernel
 
-Debian 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show an error.
+Debian 11 or 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show an error.
 
-To fix, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server. Finally, re-run the VPN setup script.
+To fix this issue, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server. Finally, re-run the VPN setup script.
 
-If using Debian 10 on [Amazon EC2](https://aws.amazon.com/ec2/), you must first switch to the standard Linux kernel before running the VPN setup script.
+If using Debian 11 or 10 on [Amazon EC2](https://aws.amazon.com/ec2/), you must first switch to the standard Linux kernel before running the VPN setup script.
 
 ### Other errors
 
