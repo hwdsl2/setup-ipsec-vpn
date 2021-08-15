@@ -73,6 +73,10 @@ EOF
     ;;
 esac
 
+if [ "$SWAN_VER" = "3.32" ] && [ "$os_ver" = "11" ]; then
+  exiterr "Libreswan 3.32 is not supported on Debian 11."
+fi
+
 ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
 swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
 if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then

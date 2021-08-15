@@ -69,8 +69,8 @@ check_os() {
     if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
       exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
     fi
-    if [ "$os_ver" = "10" ] && [ ! -e /dev/ppp ]; then
-      exiterr "/dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10"
+    if { [ "$os_ver" = "10" ] || [ "$os_ver" = "11" ]; } && [ ! -e /dev/ppp ]; then
+      exiterr "/dev/ppp is missing. Debian 11 or 10 users, see: https://git.io/vpndebian10"
     fi
   fi
 }
