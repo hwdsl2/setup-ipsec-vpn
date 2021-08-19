@@ -218,7 +218,7 @@ run_setup() {
       VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
       VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-      /bin/sh "$TMPDIR/vpn.sh" || status=1
+      /bin/bash "$TMPDIR/vpn.sh" || status=1
     else
       status=1
       echo "Error: Could not download VPN setup script." >&2

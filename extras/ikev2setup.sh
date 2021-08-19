@@ -297,7 +297,7 @@ run_swan_update() {
     if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$update_url"; ); then
       (
         set -x
-        /bin/sh "$TMPDIR/vpnup.sh"
+        /bin/bash "$TMPDIR/vpnup.sh"
       )
     else
       echo "Error: Could not download update script." >&2

@@ -142,7 +142,7 @@ run_setup() {
   if [ -d "$TMPDIR" ]; then
     if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$setup_url" \
       || curl -fsL "$setup_url" -o "$TMPDIR/vpnup.sh" 2>/dev/null ); then
-      VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/sh "$TMPDIR/vpnup.sh" || status=1
+      VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/bash "$TMPDIR/vpnup.sh" || status=1
     else
       status=1
       echo "Error: Could not download update script." >&2

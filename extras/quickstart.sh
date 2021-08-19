@@ -159,7 +159,7 @@ run_setup() {
   if [ -d "$TMPDIR" ]; then
     if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url" \
       || curl -fsL "$setup_url" -o "$TMPDIR/vpn.sh" 2>/dev/null ); then
-      if /bin/sh "$TMPDIR/vpn.sh"; then
+      if /bin/bash "$TMPDIR/vpn.sh"; then
         if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
           sleep 1
           /bin/bash /opt/src/ikev2.sh --auto || status=1
