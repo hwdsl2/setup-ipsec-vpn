@@ -212,7 +212,7 @@ jobs:
           VPN_PASSWORD='your_vpn_password' \
           VPN_DNS_SRV1='1.1.1.1' \
           VPN_DNS_SRV2='1.0.0.1' \
-          sh vpnsetup.sh
+          bash vpnsetup.sh
 
           restart_ipsec
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
@@ -450,12 +450,13 @@ jobs:
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 3.32 4.1 4.2 4.3 4.4; do
+            [ "$ver" = "4.3" ] && shc=sh || shc=bash
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          sh vpnup.sh <<ANSWERS
+          "$shc" vpnup.sh <<ANSWERS
           y
           ANSWERS
             restart_ipsec
-            ipsec --version
+            ipsec --version | grep "$ver"
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
             ipsec status | grep -q ikev2-cp
@@ -615,7 +616,7 @@ jobs:
           VPN_PASSWORD='your_vpn_password' \
           VPN_DNS_SRV1='1.1.1.1' \
           VPN_DNS_SRV2='1.0.0.1' \
-          sh vpnsetup.sh
+          bash vpnsetup.sh
 
           restart_ipsec
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
@@ -852,12 +853,13 @@ jobs:
           os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
           for ver in 3.32 4.1 4.2 4.3 4.4; do
             [ "$ver" = "3.32" ] && [ "$os_ver" = "11" ] && continue
+            [ "$ver" = "4.3" ] && shc=sh || shc=bash
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          sh vpnup.sh <<ANSWERS
+          "$shc" vpnup.sh <<ANSWERS
           y
           ANSWERS
             restart_ipsec
-            ipsec --version
+            ipsec --version | grep "$ver"
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
             ipsec status | grep -q ikev2-cp
