@@ -420,7 +420,7 @@ jobs:
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          for ver in 3.32 4.1 4.2 4.3 4.4; do
+          for ver in 3.32 4.1 4.2 4.3 4.4 4.5; do
             [ "$ver" = "4.3" ] && shc=sh || shc=bash
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           "$shc" vpnup.sh <<ANSWERS
@@ -822,7 +822,7 @@ jobs:
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-          for ver in 3.32 4.1 4.2 4.3 4.4; do
+          for ver in 3.32 4.1 4.2 4.3 4.4 4.5; do
             [ "$ver" = "3.32" ] && [ "$os_ver" = "11" ] && continue
             [ "$ver" = "4.3" ] && shc=sh || shc=bash
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
