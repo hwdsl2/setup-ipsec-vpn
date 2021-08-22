@@ -791,6 +791,8 @@ cat > "$mc_file" <<EOF
       <string>Configures VPN settings</string>
       <key>PayloadDisplayName</key>
       <string>VPN</string>
+      <key>PayloadOrganization</key>
+      <string>IKEv2 VPN</string>
       <key>PayloadIdentifier</key>
       <string>com.apple.vpn.managed.$(uuidgen)</string>
       <key>PayloadType</key>
