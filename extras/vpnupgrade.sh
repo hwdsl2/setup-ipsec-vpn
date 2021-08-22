@@ -15,7 +15,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.4
+SWAN_VER=4.5
 
 ### DO NOT edit below this line ###
 
@@ -75,16 +75,16 @@ check_os() {
   fi
 }
 
-check_swan_ver() {
+check_libreswan() {
   case $SWAN_VER in
-    3.32|4.[1234])
+    3.32|4.[1-5])
       true
       ;;
     *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
-       3.32, 4.1-4.3 or 4.4
+       3.32, 4.1-4.4 or 4.5
 EOF
       exit 1
       ;;
@@ -158,7 +158,7 @@ vpnupgrade() {
   check_root
   check_vz
   check_os
-  check_swan_ver
+  check_libreswan
   install_wget
   get_setup_url
   run_setup
