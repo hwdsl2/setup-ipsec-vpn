@@ -99,11 +99,7 @@ confirm_or_abort() {
   esac
 }
 
-get_update_url() {
-  update_url="https://git.io/vpnupgrade"
-}
-
-check_swan_install() {
+check_libreswan() {
   ipsec_ver=$(ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
@@ -119,13 +115,12 @@ EOF
       true
       ;;
     *)
-      get_update_url
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        This script requires one of these versions:
        3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
        To update Libreswan, run:
-       wget $update_url -O vpnup.sh && sudo sh vpnup.sh
+       wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 EOF
       exit 1
       ;;
@@ -148,7 +143,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   10 Aug 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   22 Aug 2021
 
 EOF
 }
@@ -287,55 +282,29 @@ check_swan_ver() {
   else
     swan_ver_url="https://dl.ls20.com/v1/docker/$os_type/$os_arch/swanverikev2?ver=$swan_ver&auto=$use_defaults"
   fi
+  [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
 }
 
-run_swan_update() {
-  get_update_url
-  TMPDIR=$(mktemp -d /tmp/vpnup.XXXXX 2>/dev/null)
-  if [ -d "$TMPDIR" ]; then
-    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$update_url"; ); then
-      (
-        set -x
-        /bin/bash "$TMPDIR/vpnup.sh"
-      )
-    else
-      echo "Error: Could not download update script." >&2
-    fi
-    /bin/rm -f "$TMPDIR/vpnup.sh"
-    /bin/rmdir "$TMPDIR"
-  else
-    echo "Error: Could not create temporary directory." >&2
-  fi
-  read -n 1 -s -r -p "Press any key to continue IKEv2 setup..."
-  echo
-}
-
-select_swan_update() {
+show_update_info() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
-    && [ "$swan_ver" != "$swan_ver_latest" ] \
+    && [ "$1" = "0" ] && check_ikev2_exists && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    echo "      It is recommended to update Libreswan before setting up IKEv2."
     if [ "$in_container" = "0" ]; then
-      echo
-      printf "Do you want to update Libreswan? [Y/n] "
-      read -r response
-      case $response in
-        [yY][eE][sS]|[yY]|'')
-          echo
-          run_swan_update
-          ;;
-        *)
-          echo
-          ;;
-      esac
+      echo "      To update, run:"
+      echo "      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh"
     else
       echo "      To update this Docker image, see: https://git.io/updatedockervpn"
-      echo
-      confirm_or_abort "Do you want to continue anyway? [y/N] "
     fi
+    echo
   fi
+}
+
+finish() {
+  check_swan_ver "$1" "$2"
+  show_update_info "$1"
+  exit "$1"
 }
 
 show_welcome() {
@@ -1033,6 +1002,12 @@ EOF
   fi
 }
 
+start_setup() {
+  # shellcheck disable=SC2154
+  trap 'dlo=$dl;dl=$LINENO' DEBUG 2>/dev/null
+  trap 'finish $? $((dlo+1))' EXIT
+}
+
 apply_ubuntu1804_nss_fix() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
@@ -1111,22 +1086,6 @@ EOF
 
 print_client_revoked() {
   echo "Certificate '$client_name' revoked!"
-}
-
-show_swan_update_info() {
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
-    && [ "$swan_ver" != "$swan_ver_latest" ] \
-    && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
-    echo
-    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    if [ "$in_container" = "0" ]; then
-      get_update_url
-      echo "      To update, run:"
-      echo "      wget $update_url -O vpnup.sh && sudo sh vpnup.sh"
-    else
-      echo "      To update this Docker image, see: https://git.io/updatedockervpn"
-    fi
-  fi
 }
 
 print_setup_complete() {
@@ -1231,7 +1190,7 @@ ikev2setup() {
   check_root
   check_container
   check_os
-  check_swan_install
+  check_libreswan
   check_utils_exist
 
   use_defaults=0
@@ -1393,10 +1352,8 @@ ikev2setup() {
   fi
 
   check_cert_exists_and_exit "IKEv2 VPN CA"
-  check_swan_ver
 
   if [ "$use_defaults" = "0" ]; then
-    select_swan_update
     show_header
     show_welcome
     enter_server_address
@@ -1448,6 +1405,7 @@ ikev2setup() {
     mobike_enable="$mobike_support"
   fi
 
+  start_setup
   apply_ubuntu1804_nss_fix
   create_ca_server_certs
   create_client_cert
@@ -1458,11 +1416,6 @@ ikev2setup() {
   else
     restart_ipsec_service
   fi
-
-  if [ "$use_defaults" = "1" ]; then
-    show_swan_update_info
-  fi
-
   print_setup_complete
   print_client_info
 }
