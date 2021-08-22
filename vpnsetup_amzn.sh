@@ -186,7 +186,7 @@ get_ikev2_script() {
 
 get_libreswan() {
   bigecho "Downloading Libreswan..."
-  SWAN_VER=4.4
+  SWAN_VER=4.5
   swan_file="libreswan-$SWAN_VER.tar.gz"
   swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
   swan_url2="https://download.libreswan.org/$swan_file"
