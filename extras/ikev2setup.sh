@@ -1017,18 +1017,17 @@ apply_ubuntu1804_nss_fix() {
     nss_deb1="libnss3_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
-    TMPDIR=$(mktemp -d /tmp/nss.XXXXX 2>/dev/null)
-    if [ -d "$TMPDIR" ]; then
+    if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
       bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
       export DEBIAN_FRONTEND=noninteractive
-      if wget -t 3 -T 30 -q -O "$TMPDIR/1.deb" "$nss_url1/$nss_deb1" \
-        && wget -t 3 -T 30 -q -O "$TMPDIR/2.deb" "$nss_url1/$nss_deb2" \
-        && wget -t 3 -T 30 -q -O "$TMPDIR/3.deb" "$nss_url2/$nss_deb3"; then
+      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$nss_url1/$nss_deb1" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$nss_url1/$nss_deb2" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$nss_url2/$nss_deb3"; then
         apt-get -yqq update
-        apt-get -yqq install "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb" >/dev/null
+        apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
       fi
-      /bin/rm -f "$TMPDIR/1.deb" "$TMPDIR/2.deb" "$TMPDIR/3.deb"
-      /bin/rmdir "$TMPDIR"
+      /bin/rm -f "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb"
+      /bin/rmdir "$tmpdir"
     fi
   fi
 }

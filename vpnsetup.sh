@@ -209,22 +209,21 @@ get_setup_url() {
 
 run_setup() {
   status=0
-  TMPDIR=$(mktemp -d /tmp/vpnsetup.XXXXX 2>/dev/null)
-  if [ -d "$TMPDIR" ]; then
-    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpn.sh" "$setup_url" \
-      || curl -fsL "$setup_url" -o "$TMPDIR/vpn.sh" 2>/dev/null ); then
+  if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
+    if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url" \
+      || curl -fsL "$setup_url" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
       VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" VPN_PASSWORD="$VPN_PASSWORD" \
       VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \
       VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
       VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-      /bin/bash "$TMPDIR/vpn.sh" || status=1
+      /bin/bash "$tmpdir/vpn.sh" || status=1
     else
       status=1
       echo "Error: Could not download VPN setup script." >&2
     fi
-    /bin/rm -f "$TMPDIR/vpn.sh"
-    /bin/rmdir "$TMPDIR"
+    /bin/rm -f "$tmpdir/vpn.sh"
+    /bin/rmdir "$tmpdir"
   else
     exiterr "Could not create temporary directory."
   fi

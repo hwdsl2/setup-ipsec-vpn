@@ -138,17 +138,16 @@ get_setup_url() {
 
 run_setup() {
   status=0
-  TMPDIR=$(mktemp -d /tmp/vpnup.XXXXX 2>/dev/null)
-  if [ -d "$TMPDIR" ]; then
-    if ( set -x; wget -t 3 -T 30 -q -O "$TMPDIR/vpnup.sh" "$setup_url" \
-      || curl -fsL "$setup_url" -o "$TMPDIR/vpnup.sh" 2>/dev/null ); then
-      VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/bash "$TMPDIR/vpnup.sh" || status=1
+  if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
+    if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url" \
+      || curl -fsL "$setup_url" -o "$tmpdir/vpnup.sh" 2>/dev/null ); then
+      VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/bash "$tmpdir/vpnup.sh" || status=1
     else
       status=1
       echo "Error: Could not download update script." >&2
     fi
-    /bin/rm -f "$TMPDIR/vpnup.sh"
-    /bin/rmdir "$TMPDIR"
+    /bin/rm -f "$tmpdir/vpnup.sh"
+    /bin/rmdir "$tmpdir"
   else
     exiterr "Could not create temporary directory."
   fi
