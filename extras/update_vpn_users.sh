@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script to update VPN users for both IPsec/L2TP and Cisco IPsec
 #

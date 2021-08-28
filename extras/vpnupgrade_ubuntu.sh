@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script to update Libreswan on Ubuntu and Debian
 #

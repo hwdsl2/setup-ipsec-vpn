@@ -58,9 +58,9 @@ wget -O add_vpn_user.sh https://bit.ly/addvpnuser
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-sudo sh add_vpn_user.sh 'username_to_add' 'password'
+sudo bash add_vpn_user.sh 'username_to_add' 'password'
 # OR
-sudo sh add_vpn_user.sh 'username_to_update' 'new_password'
+sudo bash add_vpn_user.sh 'username_to_update' 'new_password'
 ```
 
 ### Delete a VPN user
@@ -75,7 +75,7 @@ wget -O del_vpn_user.sh https://bit.ly/delvpnuser
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-sudo sh del_vpn_user.sh 'username_to_delete'
+sudo bash del_vpn_user.sh 'username_to_delete'
 ```
 
 ### Update all VPN users
@@ -96,7 +96,7 @@ To use this script, choose one of the following options:
 ```bash
 nano -w update_vpn_users.sh
 [Replace with your own values: YOUR_USERNAMES and YOUR_PASSWORDS]
-sudo sh update_vpn_users.sh
+sudo bash update_vpn_users.sh
 ```
 
 **Option 2:** Define VPN user details as environment variables:
@@ -108,7 +108,7 @@ sudo sh update_vpn_users.sh
 sudo \
 VPN_USERS='username1 username2 ...' \
 VPN_PASSWORDS='password1 password2 ...' \
-sh update_vpn_users.sh
+bash update_vpn_users.sh
 ```
 
 ## Manually manage VPN users

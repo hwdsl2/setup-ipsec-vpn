@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script for automatic setup of an IPsec VPN server on Ubuntu and Debian
 # Works on any dedicated server or virtual private server (VPS)
