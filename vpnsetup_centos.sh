@@ -238,23 +238,34 @@ get_ikev2_script() {
   [ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 }
 
-get_libreswan() {
-  bigecho "Downloading Libreswan..."
+check_libreswan() {
   SWAN_VER=4.5
-  swan_file="libreswan-$SWAN_VER.tar.gz"
-  swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
-  swan_url2="https://download.libreswan.org/$swan_file"
-  (
-    set -x
-    wget -t 3 -T 30 -q -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
-  ) || exit 1
-  /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-  tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+  swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
+  [ "$swan_ver_old" = "$SWAN_VER" ]
+}
+
+get_libreswan() {
+  if ! check_libreswan; then
+    bigecho "Downloading Libreswan..."
+    swan_file="libreswan-$SWAN_VER.tar.gz"
+    swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
+    swan_url2="https://download.libreswan.org/$swan_file"
+    (
+      set -x
+      wget -t 3 -T 30 -q -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
+    ) || exit 1
+    /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+    tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+  else
+    bigecho "Libreswan $SWAN_VER is already installed, skipping..."
+  fi
 }
 
 install_libreswan() {
-  bigecho "Compiling and installing Libreswan, please wait..."
-  cd "libreswan-$SWAN_VER" || exit 1
+  if ! check_libreswan; then
+    bigecho "Compiling and installing Libreswan, please wait..."
+    cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
@@ -262,20 +273,21 @@ USE_DH2=true
 USE_NSS_KDF=false
 FINALNSSDIR=/etc/ipsec.d
 EOF
-  if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
-    echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
-  fi
-  NPROCS=$(grep -c ^processor /proc/cpuinfo)
-  [ -z "$NPROCS" ] && NPROCS=1
-  (
-    set -x
-    make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
-  )
+    if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
+      echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+    fi
+    NPROCS=$(grep -c ^processor /proc/cpuinfo)
+    [ -z "$NPROCS" ] && NPROCS=1
+    (
+      set -x
+      make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
+    )
 
-  cd /opt/src || exit 1
-  /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-  if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
-    exiterr "Libreswan $SWAN_VER failed to build."
+    cd /opt/src || exit 1
+    /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+    if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+      exiterr "Libreswan $SWAN_VER failed to build."
+    fi
   fi
 }
 
