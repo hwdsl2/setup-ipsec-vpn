@@ -41,7 +41,7 @@ noquotes2() { printf '%s' "$1" | sed -e 's/" "/ /g' -e "s/' '/ /g"; }
 update_vpn_users() {
 
 if [ "$(id -u)" != 0 ]; then
-  exiterr "Script must be run as root. Try 'sudo sh $0'"
+  exiterr "Script must be run as root. Try 'sudo bash $0'"
 fi
 
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf \

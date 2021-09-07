@@ -27,7 +27,7 @@ bigecho() { echo "## $1"; }
 
 check_root() {
   if [ "$(id -u)" != 0 ]; then
-    exiterr "Script must be run as root. Try 'sudo sh $0'"
+    exiterr "Script must be run as root. Try 'sudo bash $0'"
   fi
 }
 

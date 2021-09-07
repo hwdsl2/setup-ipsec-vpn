@@ -19,7 +19,7 @@ conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 add_vpn_user() {
 
 if [ "$(id -u)" != 0 ]; then
-  exiterr "Script must be run as root. Try 'sudo sh $0'"
+  exiterr "Script must be run as root. Try 'sudo bash $0'"
 fi
 
 if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf \
@@ -38,8 +38,8 @@ VPN_PASSWORD=$2
 
 if [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
 cat 1>&2 <<EOF
-Usage: sudo sh $0 'username_to_add' 'password'
-       sudo sh $0 'username_to_update' 'new_password'
+Usage: sudo bash $0 'username_to_add' 'password'
+       sudo bash $0 'username_to_update' 'new_password'
 EOF
   exit 1
 fi
