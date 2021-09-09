@@ -135,9 +135,10 @@ stop_services() {
 
 remove_ipsec() {
   bigecho "Removing IPsec..."
-  rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec
-  rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
-    /etc/init.d/ipsec /usr/lib/systemd/system/ipsec.service
+  /bin/rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec /usr/local/share/doc/libreswan
+  /bin/rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
+    /usr/lib/systemd/system/ipsec.service /etc/logrotate.d/libreswan \
+    /usr/lib/tmpfiles.d/libreswan.conf
 }
 
 remove_xl2tpd() {
@@ -217,6 +218,16 @@ update_iptables_rules() {
         fi
       fi
     else
+      nft_bk=$(find /etc/sysconfig -maxdepth 1 -name 'nftables.conf.old-*-*-*-*_*_*' -print0 \
+        | xargs -r -0 ls -1 -t | head -1)
+      if [ -f "$nft_bk" ] \
+        && [ "$(diff -y --suppress-common-lines "$IPT_FILE" "$nft_bk" | wc -l)" = "25" ]; then
+        bigecho "Restoring nftables rules..."
+        conf_bk "$IPT_FILE"
+        /bin/cp -f "$nft_bk" "$IPT_FILE" && /bin/rm -f "$nft_bk"
+        nft flush ruleset
+        systemctl restart nftables
+      else
 cat <<'EOF'
 
 Note: This script cannot automatically remove nftables rules for the VPN.
@@ -225,15 +236,16 @@ Note: This script cannot automatically remove nftables rules for the VPN.
       /etc/sysconfig/nftables.conf.old-date-time.
 
 EOF
+      fi
     fi
   fi
 }
 
 remove_config_files() {
   bigecho "Removing VPN configuration..."
-  rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
+  /bin/rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
       /etc/pam.d/pluto /etc/sysconfig/pluto /etc/default/pluto
-  rm -rf /etc/ipsec.d /etc/xl2tpd
+  /bin/rm -rf /etc/ipsec.d /etc/xl2tpd
 }
 
 remove_vpn() {
