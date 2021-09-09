@@ -31,9 +31,10 @@ Alternatively, you may manually uninstall the VPN by following these steps. Comm
 ```bash
 service ipsec stop
 service xl2tpd stop
-rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec
-rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service \
-      /etc/init.d/ipsec /usr/lib/systemd/system/ipsec.service
+rm -rf /usr/local/sbin/ipsec /usr/local/libexec/ipsec /usr/local/share/doc/libreswan
+rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
+      /usr/lib/systemd/system/ipsec.service /etc/logrotate.d/libreswan \
+      /usr/lib/tmpfiles.d/libreswan.conf
 ```
 
 ### Second step
