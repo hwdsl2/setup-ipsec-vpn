@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script to update Libreswan on Ubuntu, Debian, CentOS/RHEL, Rocky Linux,
-# AlmaLinux and Amazon Linux 2
+# AlmaLinux, Amazon Linux 2 and Alpine Linux
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -64,31 +64,59 @@ check_os() {
       [Rr]aspbian)
         os_type=raspbian
         ;;
+      [Aa]lpine)
+        os_type=alpine
+        ;;
       *)
-        exiterr "This script only supports Ubuntu, Debian, CentOS/RHEL 7/8 and Amazon Linux 2."
+        echo "Error: This script only supports one of the following OS:" >&2
+        echo "       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux," >&2
+        echo "       Amazon Linux 2 and Alpine Linux" >&2
+        exit 1
         ;;
     esac
-    os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-    if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
-      exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
+    if [ "$os_type" = "alpine" ]; then
+      os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
+      if [ "$os_ver" != "3.14" ]; then
+        exiterr "This script only supports Alpine Linux 3.14."
+      fi
+    else
+      os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+      if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
+        exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
+      fi
     fi
   fi
 }
 
 check_libreswan() {
-  case $SWAN_VER in
-    3.32|4.[1-5])
-      true
-      ;;
-    *)
+  if [ "$os_type" != "alpine" ]; then
+    case $SWAN_VER in
+      3.32|4.[1-5])
+        true
+        ;;
+      *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
        3.32, 4.1-4.4 or 4.5
 EOF
-      exit 1
-      ;;
-  esac
+        exit 1
+        ;;
+    esac
+  else
+    case $SWAN_VER in
+      4.5)
+        true
+        ;;
+      *)
+cat 1>&2 <<EOF
+Error: Libreswan version '$SWAN_VER' is not supported.
+       This script can install Libreswan 4.5.
+EOF
+        exit 1
+        ;;
+    esac
+  fi
 
   if [ "$SWAN_VER" = "3.32" ] && [ "$os_ver" = "11" ]; then
     exiterr "Libreswan 3.32 is not supported on Debian 11."
@@ -104,7 +132,7 @@ EOF
   fi
 }
 
-install_wget() {
+install_pkgs() {
   if ! command -v wget >/dev/null 2>&1; then
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
@@ -116,12 +144,18 @@ install_wget() {
         set -x
         apt-get -yqq install wget >/dev/null
       ) || exiterr "'apt-get install wget' failed."
-    else
+    elif [ "$os_type" != "alpine" ]; then
       (
         set -x
         yum -y -q install wget >/dev/null
       ) || exiterr "'yum install wget' failed."
     fi
+  fi
+  if [ "$os_type" = "alpine" ]; then
+    (
+      set -x
+      apk add -U -q bash wget sed grep
+    ) || exiterr "'apk add' failed."
   fi
 }
 
@@ -132,6 +166,8 @@ get_setup_url() {
     sh_file="vpnupgrade_centos.sh"
   elif [ "$os_type" = "amzn" ]; then
     sh_file="vpnupgrade_amzn.sh"
+  elif [ "$os_type" = "alpine" ]; then
+    sh_file="vpnupgrade_alpine.sh"
   fi
   setup_url="$base_url/$sh_file"
 }
@@ -158,7 +194,7 @@ vpnupgrade() {
   check_vz
   check_os
   check_libreswan
-  install_wget
+  install_pkgs
   get_setup_url
   run_setup
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Script to uninstall IPsec VPN on Ubuntu, Debian, CentOS/RHEL,
-# Rocky Linux, AlmaLinux and Amazon Linux 2
+# Rocky Linux, AlmaLinux, Amazon Linux 2 and Alpine Linux
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -53,8 +53,14 @@ check_os() {
       [Rr]aspbian)
         os_type=raspbian
         ;;
+      [Aa]lpine)
+        os_type=alpine
+        ;;
       *)
-        exiterr "This script only supports Ubuntu, Debian, CentOS/RHEL 7/8 and Amazon Linux 2."
+        echo "Error: This script only supports one of the following OS:" >&2
+        echo "       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux," >&2
+        echo "       Amazon Linux 2 and Alpine Linux" >&2
+        exit 1
         ;;
     esac
   fi
@@ -70,7 +76,9 @@ check_libreswan() {
 
 check_iface() {
   def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
-  [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
+  if [ "$os_type" != "alpine" ]; then
+    [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
+  fi
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
   if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
     check_wl=0
@@ -146,6 +154,8 @@ remove_xl2tpd() {
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
     export DEBIAN_FRONTEND=noninteractive
     apt-get -yqq purge xl2tpd >/dev/null
+  elif [ "$os_type" = "alpine" ]; then
+    apk del -q xl2tpd
   else
     yum -y -q remove xl2tpd >/dev/null
   fi
@@ -155,7 +165,11 @@ update_sysctl() {
   if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
     bigecho "Updating sysctl settings..."
     conf_bk "/etc/sysctl.conf"
-    sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
+    if [ "$os_type" = "alpine" ]; then
+      sed -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
+    else
+      sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
+    fi
     echo 0 > /proc/sys/net/ipv4/ip_forward
   fi
 }
@@ -164,13 +178,18 @@ update_rclocal() {
   if grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     bigecho "Updating rc.local..."
     conf_bk "/etc/rc.local"
-    sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+4d' /etc/rc.local
+    if [ "$os_type" = "alpine" ]; then
+      sed -i '/# Added by hwdsl2 VPN script/,+4d' /etc/rc.local
+    else
+      sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+4d' /etc/rc.local
+    fi
   fi
 }
 
 update_iptables_rules() {
   use_nft=0
-  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ] \
+    || [ "$os_type" = "alpine" ]; then
     IPT_FILE=/etc/iptables.rules
     IPT_FILE2=/etc/iptables/rules.v4
   else
