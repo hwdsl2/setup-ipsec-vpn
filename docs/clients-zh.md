@@ -392,7 +392,7 @@ service xl2tpd restart
 
 **Docker 用户：** 运行 `docker restart ipsec-vpn-server`。
 
-然后重启你的 VPN 客户端设备，并重试连接。如果仍然无法连接，可以尝试删除并重新创建 VPN 连接，按照本文档中的步骤操作。请确保输入了正确的 VPN 登录凭证。
+然后重启你的 VPN 客户端设备，并重试连接。如果仍然无法连接，可以尝试删除并重新创建 VPN 连接。请确保输入了正确的 VPN 登录凭证。
 
 检查 Libreswan (IPsec) 和 xl2tpd 日志是否有错误：
 
@@ -403,6 +403,10 @@ grep xl2tpd /var/log/syslog
 
 # CentOS/RHEL, Rocky Linux, AlmaLinux & Amazon Linux 2
 grep pluto /var/log/secure
+grep xl2tpd /var/log/messages
+
+# Alpine Linux
+grep pluto /var/log/messages
 grep xl2tpd /var/log/messages
 ```
 
