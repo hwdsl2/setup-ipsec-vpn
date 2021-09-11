@@ -149,9 +149,9 @@ check_iptables() {
   fi
 }
 
-# shellcheck disable=SC2154,SC2039,SC3047
 start_setup() {
   bigecho "VPN setup in progress... Please be patient."
+  # shellcheck disable=SC2154
   trap 'dlo=$dl;dl=$LINENO' DEBUG 2>/dev/null
   trap 'finish $? $((dlo+1))' EXIT
   mkdir -p /opt/src

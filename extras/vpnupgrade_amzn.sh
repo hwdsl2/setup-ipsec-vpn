@@ -120,8 +120,8 @@ EOF
   esac
 }
 
-# shellcheck disable=SC2154,SC2039,SC3047
 start_setup() {
+  # shellcheck disable=SC2154
   trap 'dlo=$dl;dl=$LINENO' DEBUG 2>/dev/null
   trap 'finish $? $((dlo+1))' EXIT
   mkdir -p /opt/src
