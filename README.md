@@ -28,7 +28,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 ## Quick start
 
 First, prepare your Linux server\* with a fresh install of one of the following OS:   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux or Amazon Linux 2
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Linux
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -71,6 +71,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 - AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
+- Alpine Linux 3.14
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 

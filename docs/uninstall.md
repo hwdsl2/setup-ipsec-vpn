@@ -47,9 +47,13 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
 
 `yum remove xl2tpd`
 
+#### Alpine Linux
+
+`apk del xl2tpd`
+
 ### Third step
 
-#### Ubuntu & Debian
+#### Ubuntu, Debian & Alpine Linux
 
 Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`. In addition, edit `/etc/iptables/rules.v4` if the file exists.   
 
