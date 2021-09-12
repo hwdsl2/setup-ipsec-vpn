@@ -90,7 +90,7 @@ check_os() {
       *)
         echo "Error: This script only supports one of the following OS:" >&2
         echo "       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux," >&2
-        echo "       Amazon Linux 2 and Alpine Linux" >&2
+        echo "       Amazon Linux 2 or Alpine Linux" >&2
         exit 1
         ;;
     esac
