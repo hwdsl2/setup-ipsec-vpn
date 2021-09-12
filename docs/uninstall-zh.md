@@ -7,7 +7,7 @@
 **重要：** 此脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被 **永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作 **不可撤销**！
 
 ```bash
-wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh -O vpnunst.sh
+wget https://git.io/vpnuninstall -O vpnunst.sh
 sudo bash vpnunst.sh
 ```
 
