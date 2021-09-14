@@ -718,6 +718,13 @@ install_base64_uuidgen() {
   fi
 }
 
+install_uuidgen() {
+  if ! command -v uuidgen >/dev/null 2>&1; then
+    bigecho2 "Installing required packages..."
+    apk add -U -q uuidgen || exiterr "'apk add' failed."
+  fi
+}
+
 create_mobileconfig() {
   [ -z "$server_addr" ] && get_server_address
   p12_base64=$(base64 -w 52 "$export_dir$client_name.p12")
@@ -912,6 +919,8 @@ EOF
 export_client_config() {
   if [ "$os_type" != "alpine" ]; then
     install_base64_uuidgen
+  else
+    install_uuidgen
   fi
   export_p12_file
   create_mobileconfig
