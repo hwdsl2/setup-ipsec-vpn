@@ -159,7 +159,7 @@ install_pkgs() {
   if [ "$os_type" = "alpine" ]; then
     (
       set -x
-      apk add -U -q bash net-tools wget sed grep
+      apk add -U -q bash coreutils grep net-tools sed wget
     ) || exiterr "'apk add' failed."
   fi
 }
