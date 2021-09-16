@@ -221,6 +221,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           if grep -qi stream /etc/redhat-release; then
             mkdir /etc/xl2tpd
           fi
@@ -259,6 +260,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           if grep -qi stream /etc/redhat-release; then
             mkdir /etc/xl2tpd
           fi
@@ -277,7 +279,21 @@ jobs:
           VPN_DNS_SRV2='1.0.0.1' \
           bash vpnsetup.sh
 
+          systemctl restart xl2tpd
           restart_ipsec
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
           grep -q "your_vpn_password" /etc/ppp/chap-secrets
@@ -285,6 +301,9 @@ jobs:
           grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
@@ -551,10 +570,6 @@ jobs:
           ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
-          ls -ld vpnsetup.sh
-          ls -ld ikev2.sh
-          ls -ld vpnup.sh
-
           exit 0
           EOF
 
@@ -693,6 +708,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
           sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
@@ -727,6 +743,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
@@ -739,6 +756,19 @@ jobs:
           bash vpnsetup.sh
 
           restart_ipsec
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
           grep -q "your_vpn_password" /etc/ppp/chap-secrets
@@ -746,6 +776,9 @@ jobs:
           grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
@@ -1011,10 +1044,6 @@ jobs:
           ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
 
-          ls -ld vpnsetup.sh
-          ls -ld ikev2.sh
-          ls -ld vpnup.sh
-
   test_set_3:
     needs: [shellcheck, check_urls]
     runs-on: ubuntu-20.04
@@ -1085,6 +1114,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           killall pluto || true
           killall xl2tpd || true
 
@@ -1120,6 +1150,7 @@ jobs:
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           killall pluto || true
           killall xl2tpd || true
 
@@ -1134,7 +1165,21 @@ jobs:
           bash vpnsetup.sh
 
           ipsec initnss
+          xl2tpd -c /etc/xl2tpd/xl2tpd.conf
           restart_ipsec
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
           grep -q "your_vpn_password" /etc/ppp/chap-secrets
@@ -1142,6 +1187,9 @@ jobs:
           grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
@@ -1405,7 +1453,3 @@ jobs:
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp && exit 1
           certutil -L -d sql:/etc/ipsec.d
-
-          ls -ld vpnsetup.sh
-          ls -ld ikev2.sh
-          ls -ld vpnup.sh
