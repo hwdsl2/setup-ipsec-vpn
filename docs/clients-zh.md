@@ -231,7 +231,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
 * [iOS 13 和 macOS 10.15/11](#ios-13-和-macos-101511)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
-* [Debian 10/11 内核](#debian-1011-内核)
+* [Debian 11/10 内核](#debian-1110-内核)
 * [其它错误](#其它错误)
 * [检查日志及 VPN 状态](#检查日志及-vpn-状态)
 
@@ -363,13 +363,11 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 <a name="debian-10-内核"></a>
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 和更新版本中不再可用。另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 [这里](https://support.google.com/android/answer/9089766?hl=zh-Hans)。
 
-### Debian 10/11 内核
+### Debian 11/10 内核
 
-Debian 11 或者 10 用户：运行 `uname -r` 以检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形，并显示错误。
+Debian 11 或者 10 用户：运行 `uname -r` 检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形并显示警告。在这种情况下，你可以另外使用 [IKEv2](ikev2-howto-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接到 VPN。
 
-要解决此问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。最后重新运行 VPN 安装脚本。
-
-如果在 [Amazon EC2](https://aws.amazon.com/ec2/) 上使用 Debian 11 或者 10，你必须首先换用标准的 Linux 内核，然后运行 VPN 安装脚本。
+要解决 IPsec/L2TP 模式的问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。
 
 ### 其它错误
 

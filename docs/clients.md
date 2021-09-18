@@ -230,7 +230,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 * [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
 * [iOS 13 and macOS 10.15/11](#ios-13-and-macos-101511)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
-* [Debian 10/11 kernel](#debian-1011-kernel)
+* [Debian 11/10 kernel](#debian-1110-kernel)
 * [Other errors](#other-errors)
 * [Check logs and VPN status](#check-logs-and-vpn-status)
 
@@ -362,13 +362,11 @@ If you need the VPN to auto-reconnect when the device wakes up, you may connect 
 <a name="debian-10-kernel"></a>
 Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more [here](https://support.google.com/android/answer/9089766?hl=en).
 
-### Debian 10/11 kernel
+### Debian 11/10 kernel
 
-Debian 11 or 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show an error.
+Debian 11 or 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show a warning. In this case, you may instead use [IKEv2](ikev2-howto.md) or [IPsec/XAuth](clients-xauth.md) mode to connect to the VPN.
 
-To fix this issue, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server. Finally, re-run the VPN setup script.
-
-If using Debian 11 or 10 on [Amazon EC2](https://aws.amazon.com/ec2/), you must first switch to the standard Linux kernel before running the VPN setup script.
+To fix the issue with IPsec/L2TP mode, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server.
 
 ### Other errors
 
