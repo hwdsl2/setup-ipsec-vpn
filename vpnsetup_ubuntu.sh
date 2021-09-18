@@ -77,13 +77,9 @@ check_os() {
       exiterr "This script only supports Ubuntu and Debian."
       ;;
   esac
-
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
   if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
     exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
-  fi
-  if { [ "$os_ver" = "10" ] || [ "$os_ver" = "11" ]; } && [ ! -e /dev/ppp ]; then
-    exiterr "/dev/ppp is missing. Debian 11 or 10 users, see: https://git.io/vpndebian10"
   fi
 }
 
@@ -588,6 +584,14 @@ IKEv2 guide:       https://git.io/ikev2
 ================================================
 
 EOF
+  if [ ! -e /dev/ppp ]; then
+cat <<'EOF'
+Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
+         IKEv2 (https://git.io/ikev2) or IPsec/XAuth ("Cisco IPsec") mode
+         to connect. Debian 11/10 users, see https://git.io/vpndebian10.
+
+EOF
+  fi
 }
 
 check_swan_ver() {
