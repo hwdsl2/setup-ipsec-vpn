@@ -58,7 +58,7 @@ check_vz() {
 check_lxc() {
   # shellcheck disable=SC2154
   if [ "$container" = "lxc" ] && [ ! -e /dev/ppp ]; then
-cat >&2 <<'EOF'
+cat 1>&2 <<'EOF'
 Error: /dev/ppp is missing. LXC containers require configuration.
        See: https://github.com/hwdsl2/setup-ipsec-vpn/issues/1014
 EOF

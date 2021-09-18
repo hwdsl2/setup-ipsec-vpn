@@ -587,8 +587,8 @@ EOF
   if [ ! -e /dev/ppp ]; then
 cat <<'EOF'
 Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
-         IKEv2 (https://git.io/ikev2) or IPsec/XAuth ("Cisco IPsec") mode
-         to connect. Debian 11/10 users, see https://git.io/vpndebian10.
+         IKEv2 (https://git.io/ikev2) or IPsec/XAuth mode to connect.
+         Debian 11/10 users, see https://git.io/vpndebian10
 
 EOF
   fi
