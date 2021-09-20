@@ -1,6 +1,9 @@
 #!/bin/bash
 #
-# Script to set up IKEv2 on Ubuntu, Debian, CentOS/RHEL and Amazon Linux 2
+# Script to set up and manage IKEv2 on Ubuntu, Debian, CentOS/RHEL,
+# Rocky Linux, AlmaLinux, Amazon Linux 2 and Alpine Linux
+#
+# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -69,9 +72,11 @@ check_os() {
         os_type=alpine
         ;;
       *)
-        echo "Error: This script only supports one of the following OS:" >&2
-        echo "       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux," >&2
-        echo "       Amazon Linux 2 or Alpine Linux" >&2
+cat 1>&2 <<'EOF'
+Error: This script only supports one of the following OS:
+       Ubuntu, Debian, CentOS/RHEL 7/8, Rocky Linux, AlmaLinux,
+       Amazon Linux 2 or Alpine Linux
+EOF
         exit 1
         ;;
     esac
@@ -148,7 +153,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   22 Aug 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   19 Sep 2021
 
 EOF
 }
@@ -575,10 +580,12 @@ select_mobike() {
   echo
   mobike_enable=0
   if [ "$mobike_support" = "1" ]; then
-    echo
-    echo "The MOBIKE IKEv2 extension allows VPN clients to change network attachment points,"
-    echo "e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP."
-    echo
+cat <<'EOF'
+
+The MOBIKE IKEv2 extension allows VPN clients to change network attachment points,
+e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP.
+
+EOF
     printf "Do you want to enable MOBIKE support? [Y/n] "
     read -r response
     case $response in
@@ -593,15 +600,17 @@ select_mobike() {
 }
 
 select_menu_option() {
-  echo "IKEv2 is already set up on this server."
-  echo
-  echo "Select an option:"
-  echo "  1) Add a new client"
-  echo "  2) Export configuration for an existing client"
-  echo "  3) List existing clients"
-  echo "  4) Revoke a client certificate"
-  echo "  5) Remove IKEv2"
-  echo "  6) Exit"
+cat <<'EOF'
+IKEv2 is already set up on this server.
+
+Select an option:
+  1) Add a new client
+  2) Export configuration for an existing client
+  3) List existing clients
+  4) Revoke a client certificate
+  5) Remove IKEv2
+  6) Exit
+EOF
   read -rp "Option: " selected_option
   until [[ "$selected_option" =~ ^[1-6]$ ]]; do
     printf '%s\n' "$selected_option: invalid selection."
@@ -1151,27 +1160,33 @@ EOF
 
 check_ipsec_conf() {
   if grep -qs "conn ikev2-cp" /etc/ipsec.conf; then
-    echo "Error: IKEv2 configuration section found in /etc/ipsec.conf." >&2
-    echo "       This script cannot automatically remove IKEv2 from this server." >&2
-    echo "       To manually remove IKEv2, see https://git.io/ikev2" >&2
+cat 1>&2 <<'EOF'
+Error: IKEv2 configuration section found in /etc/ipsec.conf.
+       This script cannot automatically remove IKEv2 from this server.
+       To manually remove IKEv2, see https://git.io/ikev2
+EOF
     abort_and_exit
   fi
 }
 
 confirm_revoke_cert() {
-  echo "WARNING: You have selected to revoke IKEv2 client certificate '$client_name'."
-  echo "         After revocation, this certificate *cannot* be used by VPN client(s)"
-  echo "         to connect to this VPN server."
-  echo
+cat <<EOF
+WARNING: You have selected to revoke IKEv2 client certificate '$client_name'.
+         After revocation, this certificate *cannot* be used by VPN client(s)
+         to connect to this VPN server.
+
+EOF
   confirm_or_abort "Are you sure you want to revoke '$client_name'? [y/N] "
 }
 
 confirm_remove_ikev2() {
-  echo "WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP"
-  echo "         and IPsec/XAuth (\"Cisco IPsec\") modes, if installed. All IKEv2 configuration"
-  echo "         including certificates and keys will be permanently deleted."
-  echo "         This *cannot* be undone! "
-  echo
+cat <<'EOF'
+WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP
+         and IPsec/XAuth ("Cisco IPsec") modes, if installed. All IKEv2 configuration
+         including certificates and keys will be *permanently deleted*.
+         This *cannot* be undone!
+
+EOF
   confirm_or_abort "Are you sure you want to remove IKEv2? [y/N] "
 }
 

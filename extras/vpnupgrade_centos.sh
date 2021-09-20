@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to update Libreswan on CentOS and RHEL
+# Script to update Libreswan on CentOS/RHEL, Rocky Linux and AlmaLinux
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -52,7 +52,7 @@ check_os() {
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
   else
-    exiterr "This script only supports CentOS/RHEL 7 and 8."
+    exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
   fi
 }
 

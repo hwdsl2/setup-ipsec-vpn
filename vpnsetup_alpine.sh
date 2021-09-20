@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Script for automatic setup of an IPsec VPN server on Alpine Linux
+# Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #

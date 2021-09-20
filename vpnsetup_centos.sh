@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# Script for automatic setup of an IPsec VPN server on CentOS and RHEL
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL,
+# Rocky Linux and AlmaLinux
 # Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -74,7 +75,7 @@ check_os() {
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
   else
-    exiterr "This script only supports CentOS/RHEL 7 and 8."
+    exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
   fi
 }
 

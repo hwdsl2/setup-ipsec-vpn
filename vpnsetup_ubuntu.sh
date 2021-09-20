@@ -168,7 +168,7 @@ wait_for_apt() {
   done
 }
 
-install_setup_pkgs_1() {
+update_apt_cache() {
   bigecho "Installing packages required for setup..."
   export DEBIAN_FRONTEND=noninteractive
   (
@@ -177,7 +177,7 @@ install_setup_pkgs_1() {
   ) || exiterr "'apt-get update' failed."
 }
 
-install_setup_pkgs_2() {
+install_setup_pkgs() {
   (
     set -x
     apt-get -yqq install wget dnsutils openssl \
@@ -625,8 +625,8 @@ vpnsetup() {
   check_iptables
   start_setup
   wait_for_apt
-  install_setup_pkgs_1
-  install_setup_pkgs_2
+  update_apt_cache
+  install_setup_pkgs
   detect_ip
   install_vpn_pkgs
   install_fail2ban
