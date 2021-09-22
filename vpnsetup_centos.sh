@@ -250,7 +250,7 @@ get_libreswan() {
   if ! check_libreswan; then
     bigecho "Downloading Libreswan..."
     swan_file="libreswan-$SWAN_VER.tar.gz"
-    swan_url1="https://cdn.jsdelivr.net/gh/koyenma/setup-ipsec-vpn/master/libreswan-4.5.tar.gz"
+    swan_url1="https://cdn.jsdelivr.net/gh/koyenma/setup-ipsec-vpn@master/$swan_file"
     swan_url2="https://download.libreswan.org/$swan_file"
     (
       set -x
