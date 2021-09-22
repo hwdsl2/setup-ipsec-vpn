@@ -7,7 +7,7 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
 # The latest version of this script is available at:
-# https://github.com/hwdsl2/setup-ipsec-vpn
+# https://cdn.jsdelivr.net/gh/hwdsl2/setup-ipsec-vpn
 #
 # Copyright (C) 2015-2021 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
@@ -231,7 +231,7 @@ install_fail2ban() {
 
 get_ikev2_script() {
   bigecho "Downloading IKEv2 script..."
-  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
+  ikev2_url="https://cdn.jsdelivr.net/gh/koyenma/setup-ipsec-vpn/raw/master/extras/ikev2setup/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
   (
     set -x
     wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
@@ -250,7 +250,7 @@ get_libreswan() {
   if ! check_libreswan; then
     bigecho "Downloading Libreswan..."
     swan_file="libreswan-$SWAN_VER.tar.gz"
-    swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
+    swan_url1="https://cdn.jsdelivr.net/gh/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
     swan_url2="https://download.libreswan.org/$swan_file"
     (
       set -x
@@ -295,13 +295,13 @@ EOF
 create_vpn_config() {
   bigecho "Creating VPN configuration..."
 
-  L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
-  L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
-  L2TP_POOL=${VPN_L2TP_POOL:-'192.168.42.10-192.168.42.250'}
-  XAUTH_NET=${VPN_XAUTH_NET:-'192.168.43.0/24'}
-  XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
-  DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
-  DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
+  L2TP_NET=${VPN_L2TP_NET:-'192.168.191.0/24'}
+  L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.191.1'}
+  L2TP_POOL=${VPN_L2TP_POOL:-'192.168.191.10-192.168.191.250'}
+  XAUTH_NET=${VPN_XAUTH_NET:-'192.168.192.0/24'}
+  XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.192.10-192.168.192.250'}
+  DNS_SRV1=${VPN_DNS_SRV1:-'223.5.5.5'}
+  DNS_SRV2=${VPN_DNS_SRV2:-'119.29.29.29'}
   DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
   [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
 
@@ -387,8 +387,8 @@ ipcp-accept-local
 ipcp-accept-remote
 noccp
 auth
-mtu 1280
-mru 1280
+mtu 1360
+mru 1360
 proxyarp
 lcp-echo-failure 4
 lcp-echo-interval 30
