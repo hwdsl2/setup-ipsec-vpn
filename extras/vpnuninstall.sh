@@ -163,6 +163,14 @@ remove_xl2tpd() {
   fi
 }
 
+remove_ikev2_script() {
+  bigecho "Removing IKEv2 script..."
+  if [ "$(readlink -f /usr/bin/ikev2.sh 2>/dev/null)" = "/opt/src/ikev2.sh" ]; then
+    /bin/rm -f /usr/bin/ikev2.sh
+  fi
+  /bin/rm -f /opt/src/ikev2.sh
+}
+
 update_sysctl() {
   if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
     bigecho "Updating sysctl settings..."
@@ -273,6 +281,7 @@ remove_vpn() {
   stop_services
   remove_ipsec
   remove_xl2tpd
+  remove_ikev2_script
   update_sysctl
   update_rclocal
   update_iptables_rules
