@@ -254,7 +254,7 @@ get_libreswan() {
     swan_url2="https://download.libreswan.org/$swan_file"
     (
       set -x
-      wget -t 3 -T 30 -q -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
+      wget -t 3 -T 30 -q -O "https://cdn.jsdelivr.net/gh/koyenma/setup-ipsec-vpn@master/libreswan-4.5.tar.gz" || wget -t 3 -T 30 -q -O "$swan_file" "$swan_url2"
     ) || exit 1
     /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
     tar xzf "$swan_file" && /bin/rm -f "$swan_file"
