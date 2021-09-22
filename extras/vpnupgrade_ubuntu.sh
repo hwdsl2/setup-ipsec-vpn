@@ -155,7 +155,7 @@ start_setup() {
   cd /opt/src || exit 1
 }
 
-install_pkgs_1() {
+update_apt_cache() {
   bigecho "Installing required packages..."
   export DEBIAN_FRONTEND=noninteractive
   (
@@ -164,7 +164,7 @@ install_pkgs_1() {
   ) || exiterr "'apt-get update' failed."
 }
 
-install_pkgs_2() {
+install_pkgs() {
   (
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
@@ -329,8 +329,8 @@ vpnupgrade() {
   check_libreswan
   show_setup_info
   start_setup
-  install_pkgs_1
-  install_pkgs_2
+  update_apt_cache
+  install_pkgs
   get_libreswan
   install_libreswan
   update_config
