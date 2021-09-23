@@ -211,6 +211,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
+- [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [IKEv2 only VPN](docs/advanced-usage.md#ikev2-only-vpn)

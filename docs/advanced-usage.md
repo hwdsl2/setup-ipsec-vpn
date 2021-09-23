@@ -5,6 +5,7 @@
 * [Use alternative DNS servers](#use-alternative-dns-servers)
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
+* [Port forwarding to VPN clients](#port-forwarding-to-vpn-clients)
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [IKEv2 only VPN](#ikev2-only-vpn)
@@ -111,6 +112,30 @@ iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j D
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
+```
+
+## Port forwarding to VPN clients
+
+In certain circumstances, you may want to forward port(s) on the VPN server to a connected VPN client. This can be done by adding IPTables rules on the VPN server. To persist after reboot, add these commands to `/etc/rc.local`.
+
+**Warning:** Port forwarding will expose port(s) on the VPN client to the entire Internet, which could be a **security risk**!
+
+**Note:** The internal VPN IPs assigned to VPN clients are dynamic, and firewalls on client devices may block forwarded traffic. To assign static IPs to VPN clients, refer to the previous section. To check which IP is assigned to a client, view the connection status on the VPN client.
+
+Example 1: Forward TCP port 443 on the VPN server to the IPsec/L2TP client at `192.168.42.10`.
+```
+# Get default network interface name
+ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$ifname" -o ppp+ -p tcp --dport 443 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
+```
+
+Example 2: Forward UDP port 123 on the VPN server to the IKEv2 (or IPsec/XAuth) client at `192.168.43.10`.
+```
+# Get default network interface name
+ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$ifname" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
+iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
 
 ## Split tunneling

@@ -211,6 +211,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 - [使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
 - [VPN 内网 IP 和流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
+- [转发端口到 VPN 客户端](docs/advanced-usage-zh.md#转发端口到-vpn-客户端)
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [仅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)

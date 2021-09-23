@@ -5,6 +5,7 @@
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
+* [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
@@ -111,6 +112,30 @@ iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j D
 iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
+```
+
+## 转发端口到 VPN 客户端
+
+在某些情况下，你可能想要将 VPN 服务器上的端口转发到一个已连接的 VPN 客户端。这可以通过在 VPN 服务器上添加 IPTables 规则来实现。如果要在重新启动后继续有效，你可以将这些命令添加到 `/etc/rc.local`。
+
+**警告：** 端口转发会将 VPN 客户端上的端口暴露给整个因特网，这可能会带来**安全风险**！
+
+**注：** 为 VPN 客户端分配的内网 IP 是动态的，而且客户端设备上的防火墙可能会阻止转发的流量。如果要将静态 IP 分配给 VPN 客户端，请参见上一节。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+
+示例 1：将 VPN 服务器上的 TCP 端口 443 转发到位于 `192.168.42.10` 的 IPsec/L2TP 客户端。
+```
+# 获取默认网络接口名称
+ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$ifname" -o ppp+ -p tcp --dport 443 -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
+```
+
+示例 2：将 VPN 服务器上的 UDP 端口 123 转发到位于 `192.168.43.10` 的 IKEv2（或 IPsec/XAuth）客户端。
+```
+# 获取默认网络接口名称
+ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$ifname" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
+iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
 
 ## VPN 分流
