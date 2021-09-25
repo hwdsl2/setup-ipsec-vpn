@@ -92,6 +92,12 @@ rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/optio
 rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
+Remove IKEv2 script:
+
+```bash
+rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+```
+
 ### When finished
 
 Reboot your server.

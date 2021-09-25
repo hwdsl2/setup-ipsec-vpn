@@ -92,6 +92,12 @@ rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/optio
 rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
+删除 IKEv2 脚本：
+
+```bash
+rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+```
+
 ### 完成后
 
 重启你的服务器。
