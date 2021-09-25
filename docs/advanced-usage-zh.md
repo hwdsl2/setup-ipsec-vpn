@@ -42,7 +42,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 你可以使用这些 VPN 内网 IP 进行通信。但是请注意，为 VPN 客户端分配的 IP 是动态的，而且客户端设备上的防火墙可能会阻止这些流量。
 
-对于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。展开以查看详细信息。IKEv2 模式 **不支持** 此功能。
+高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。展开以查看详细信息。
 
 <details>
 <summary>
@@ -60,7 +60,7 @@ IPsec/L2TP 模式：为 VPN 客户端分配静态 IP
    "username3"  l2tpd  "password3"  *
    ```
 
-   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.42.2`，为 VPN 用户 `username3` 分配静态 IP  `192.168.42.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
+   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.42.2`，为 VPN 用户 `username3` 分配静态 IP `192.168.42.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
    ```
    "username1"  l2tpd  "password1"  *
    "username2"  l2tpd  "password2"  192.168.42.2
@@ -91,7 +91,7 @@ IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
    username3:password3hashed:xauth-psk
    ```
 
-   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.43.2`，为 VPN 用户 `username3` 分配静态 IP  `192.168.43.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
+   假设你要为 VPN 用户 `username2` 分配静态 IP `192.168.43.2`，为 VPN 用户 `username3` 分配静态 IP `192.168.43.3`，同时保持 `username1` 不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
    ```
    username1:password1hashed:xauth-psk
    username2:password2hashed:xauth-psk:192.168.42.2
@@ -99,6 +99,47 @@ IPsec/XAuth ("Cisco IPsec") 模式：为 VPN 客户端分配静态 IP
    ```
 
    **注：** 分配的静态 IP 必须来自子网 `192.168.43.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `rightaddresspool`）。在上面的示例中，你只能分配 `192.168.43.1-192.168.43.99` 范围内的静态 IP。
+1. **（重要）** 重启 IPsec 服务：
+   ```
+   service ipsec restart
+   ```
+</details>
+
+<details>
+<summary>
+IKEv2 模式：为 VPN 客户端分配静态 IP
+</summary>
+
+下面的示例 **仅适用于** IKEv2 模式。这些命令必须用 `root` 账户运行。
+
+1. 首先为要分配静态 IP 的每个客户端创建一个新的 IKEv2 客户端证书，并且在纸上记下每个客户端的名称。参见 [添加客户端证书](ikev2-howto-zh.md#添加客户端证书)。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为比如 `rightaddresspool=192.168.43.100-192.168.43.250`。这样可以缩小自动分配的 IP 地址池，从而使更多的 IP 可以作为静态 IP 分配给客户端。
+1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为与上一步 **相同的值**。
+1. 再次编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。例如，如果文件内容是：
+   ```
+   conn ikev2-cp
+     left=%defaultroute
+     ... ...
+   ```
+
+   假设你要为 IKEv2 客户端 `client1` 分配静态 IP `192.168.43.4`，为客户端 `client2` 分配静态 IP `192.168.43.5`，同时保持其它客户端不变（从池中自动分配）。在编辑完成后，文件内容应该如下所示：
+   ```
+   conn ikev2-cp
+     left=%defaultroute
+     ... ...
+
+   conn client1
+     rightid=@client1
+     rightaddresspool=192.168.43.4-192.168.43.4
+     also=ikev2-cp
+
+   conn client2
+     rightid=@client2
+     rightaddresspool=192.168.43.5-192.168.43.5
+     also=ikev2-cp
+   ```
+
+   **注：** 为要分配静态 IP 的每个客户端添加一个新的 `conn` 小节。`rightid=` 右边的客户端名称必须添加 `@` 前缀。该客户端名称必须与你在[添加客户端证书](ikev2-howto-zh.md#添加客户端证书)时指定的名称完全一致。分配的静态 IP 必须来自子网 `192.168.43.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `rightaddresspool`）。在上面的示例中，你只能分配 `192.168.43.1-192.168.43.99` 范围内的静态 IP。
 1. **（重要）** 重启 IPsec 服务：
    ```
    service ipsec restart
@@ -116,27 +157,29 @@ iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 
 ## 转发端口到 VPN 客户端
 
-在某些情况下，你可能想要将 VPN 服务器上的端口转发到一个已连接的 VPN 客户端。这可以通过在 VPN 服务器上添加 IPTables 规则来实现。如果要在重新启动后继续有效，你可以将这些命令添加到 `/etc/rc.local`。
+在某些情况下，你可能想要将 VPN 服务器上的端口转发到一个已连接的 VPN 客户端。这可以通过在 VPN 服务器上添加 IPTables 规则来实现。
 
-**警告：** 端口转发会将 VPN 客户端上的端口暴露给整个因特网，这可能会带来**安全风险**！
+**警告：** 端口转发会将 VPN 客户端上的端口暴露给整个因特网，这可能会带来**安全风险**！**不建议**这样做，除非你的用例需要它。
 
 **注：** 为 VPN 客户端分配的内网 IP 是动态的，而且客户端设备上的防火墙可能会阻止转发的流量。如果要将静态 IP 分配给 VPN 客户端，请参见上一节。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
 
 示例 1：将 VPN 服务器上的 TCP 端口 443 转发到位于 `192.168.42.10` 的 IPsec/L2TP 客户端。
 ```
 # 获取默认网络接口名称
-ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
-iptables -I FORWARD 2 -i "$ifname" -o ppp+ -p tcp --dport 443 -j ACCEPT
+netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
 iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
 
 示例 2：将 VPN 服务器上的 UDP 端口 123 转发到位于 `192.168.43.10` 的 IKEv2（或 IPsec/XAuth）客户端。
 ```
 # 获取默认网络接口名称
-ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
-iptables -I FORWARD 2 -i "$ifname" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
+netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
 iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
+
+如果你想要这些规则在重启后仍然有效，可以将这些命令添加到 `/etc/rc.local`。要删除添加的 IPTables 规则，请再次运行这些命令，但是将 `-I FORWARD 2` 替换为 `-D FORWARD`，并且将 `-A PREROUTING` 替换为 `-D PREROUTING`。
 
 ## VPN 分流
 

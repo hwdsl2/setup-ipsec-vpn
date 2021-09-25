@@ -42,7 +42,7 @@ When connecting using [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) or [IKEv2]
 
 You may use these internal VPN IPs for communication. However, note that the IPs assigned to VPN clients are dynamic, and firewalls on client devices may block such traffic.
 
-For the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, advanced users may optionally assign static IPs to VPN clients. Expand for details. IKEv2 mode does NOT support this feature.
+Advanced users may optionally assign static IPs to VPN clients. Expand for details.
 
 <details>
 <summary>
@@ -105,6 +105,47 @@ The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands
    ```
 </details>
 
+<details>
+<summary>
+IKEv2 mode: Assign static IPs to VPN clients
+</summary>
+
+The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`.
+
+1. First, create a new IKEv2 client certificate for each client that you want to assign a static IP to, and write down the name of each IKEv2 client. Refer to [Add a client certificate](ikev2-howto.md#add-a-client-certificate).
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with e.g. `rightaddresspool=192.168.43.100-192.168.43.250`. This reduces the pool of auto-assigned IP addresses, so that more IPs are available to assign to clients as static IPs.
+1. Edit `/etc/ipsec.conf` on the VPN server. Replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as the previous step.
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server again. For example, if the file contains:
+   ```
+   conn ikev2-cp
+     left=%defaultroute
+     ... ...
+   ```
+
+   Let's assume that you want to assign static IP `192.168.43.4` to IKEv2 client `client1`, assign static IP `192.168.43.5` to client `client2`, while keeping other clients unchanged (auto-assign from the pool). After editing, the file should look like:
+   ```
+   conn ikev2-cp
+     left=%defaultroute
+     ... ...
+
+   conn client1
+     rightid=@client1
+     rightaddresspool=192.168.43.4-192.168.43.4
+     also=ikev2-cp
+
+   conn client2
+     rightid=@client2
+     rightaddresspool=192.168.43.5-192.168.43.5
+     also=ikev2-cp
+   ```
+
+   **Note:** Add a new `conn` section for each client that you want to assign a static IP to. You must add a `@` prefix to the client name for `rightid=`. The client name must exactly match the name you specified when [adding the client certificate](ikev2-howto.md#add-a-client-certificate). The assigned static IP(s) must be from the subnet `192.168.43.0/24`, and must NOT be from the pool of auto-assigned IPs (see `rightaddresspool` above). In the example above, you can only assign static IP(s) from the range `192.168.43.1-192.168.43.99`.
+1. **(Important)** Restart the IPsec service:
+   ```
+   service ipsec restart
+   ```
+</details>
+
 Client-to-client traffic is allowed by default. If you want to **disallow** client-to-client traffic, run the following commands on the VPN server. Add them to `/etc/rc.local` to persist after reboot.
 
 ```
@@ -116,27 +157,29 @@ iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 
 ## Port forwarding to VPN clients
 
-In certain circumstances, you may want to forward port(s) on the VPN server to a connected VPN client. This can be done by adding IPTables rules on the VPN server. To persist after reboot, add these commands to `/etc/rc.local`.
+In certain circumstances, you may want to forward port(s) on the VPN server to a connected VPN client. This can be done by adding IPTables rules on the VPN server.
 
-**Warning:** Port forwarding will expose port(s) on the VPN client to the entire Internet, which could be a **security risk**!
+**Warning:** Port forwarding will expose port(s) on the VPN client to the entire Internet, which could be a **security risk**! This is NOT recommended, unless your use case requires it.
 
 **Note:** The internal VPN IPs assigned to VPN clients are dynamic, and firewalls on client devices may block forwarded traffic. To assign static IPs to VPN clients, refer to the previous section. To check which IP is assigned to a client, view the connection status on the VPN client.
 
 Example 1: Forward TCP port 443 on the VPN server to the IPsec/L2TP client at `192.168.42.10`.
 ```
 # Get default network interface name
-ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
-iptables -I FORWARD 2 -i "$ifname" -o ppp+ -p tcp --dport 443 -j ACCEPT
+netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
 iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
 
 Example 2: Forward UDP port 123 on the VPN server to the IKEv2 (or IPsec/XAuth) client at `192.168.43.10`.
 ```
 # Get default network interface name
-ifname=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
-iptables -I FORWARD 2 -i "$ifname" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
+netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
 iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
+
+If you want the rules to persist after reboot, you may add these commands to `/etc/rc.local`. To remove the added IPTables rules, run the commands again, but replace `-I FORWARD 2` with `-D FORWARD`, and replace `-A PREROUTING` with `-D PREROUTING`.
 
 ## Split tunneling
 
