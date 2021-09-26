@@ -228,7 +228,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 * [Android MTU/MSS issues](#android-mtumss-issues)
 * [Android 6 and 7](#android-6-and-7)
 * [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
-* [iOS 13 and macOS 10.15/11](#ios-13-and-macos-101511)
+* [iOS 13+ and macOS 10.15/11+](#ios-13-and-macos-101511)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Debian 11/10 kernel](#debian-1110-kernel)
 * [Other errors](#other-errors)
@@ -288,7 +288,7 @@ To fix these errors, please follow these steps:
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-![Select CHAP in VPN connection properties](images/vpn-properties.png)
+For reference, see [this screenshot](images/vpn-properties.png) of the VPN connection properties dialog.
 
 ### Windows 10 connecting
 
@@ -331,12 +331,10 @@ References: [[1]](https://wiki.strongswan.org/projects/strongswan/wiki/Forwardin
 
 If your Android 6.x or 7.x device cannot connect, try these steps:
 
-1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists (see image below), enable it and reconnect the VPN. If not, try the next step.
+1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists ([see screenshot](images/vpn-profile-Android.png)), enable it and reconnect the VPN. If not, try the next step.
 1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value. i.e. Replace `sha2-truncbug=no` with `sha2-truncbug=yes`, or replace `sha2-truncbug=yes` with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
 
 **Docker users:** You may set `sha2-truncbug=yes` (default is `no`) in `/etc/ipsec.conf` by adding `VPN_SHA2_TRUNCBUG=yes` to [your env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image), then re-create the Docker container.
-
-![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### macOS send traffic over VPN
 
@@ -347,9 +345,9 @@ OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but y
 
 After trying the steps above, if your computer is still not sending traffic over the VPN, check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
 
-### iOS 13 and macOS 10.15/11
+### iOS 13+ and macOS 10.15/11+
 
-If your device running iOS 13 or above, macOS 10.15 (Catalina) or macOS 11 (Big Sur) cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
+If your device running iOS 13+, macOS 10.15 (Catalina), macOS 11 (Big Sur) or above cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
 
 In addition, users running macOS Big Sur 11.0 should update to version 11.1 or newer, to fix some issues with VPN connections. To check your macOS version and update, refer to [this article](https://www.businessinsider.com/how-to-check-mac-os-version).
 

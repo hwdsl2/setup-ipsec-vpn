@@ -229,7 +229,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 * [Android MTU/MSS 问题](#android-mtumss-问题)
 * [Android 6 和 7](#android-6-和-7)
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
-* [iOS 13 和 macOS 10.15/11](#ios-13-和-macos-101511)
+* [iOS 13+ 和 macOS 10.15/11+](#ios-13-和-macos-101511)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 11/10 内核](#debian-1110-内核)
 * [其它错误](#其它错误)
@@ -289,7 +289,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-![Select CHAP in VPN connection properties](images/vpn-properties-zh.png)
+请参见 VPN 连接属性对话框的[屏幕截图](images/vpn-properties-zh.png)。
 
 ### Windows 10 正在连接
 
@@ -332,12 +332,10 @@ echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 
 如果你的 Android 6.x 或者 7.x 设备无法连接，请尝试以下步骤：
 
-1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（看下图），请启用它并重试连接。如果不存在，请尝试下一步。
+1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（参见[屏幕截图](images/vpn-profile-Android.png)），请启用它并重试连接。如果不存在，请尝试下一步。
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug` 一行并切换它的值。也就是说，将 `sha2-truncbug=no` 替换为 `sha2-truncbug=yes`，或者将 `sha2-truncbug=yes` 替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
 
 **Docker 用户：** 如需在 `/etc/ipsec.conf` 中设置 `sha2-truncbug=yes`（默认为 `no`），你可以在[你的 env 文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#如何使用本镜像)中添加 `VPN_SHA2_TRUNCBUG=yes`，然后重新创建 Docker 容器。
-
-![Android VPN workaround](images/vpn-profile-Android.png)
 
 ### macOS 通过 VPN 发送通信
 
@@ -348,9 +346,9 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 
 如果在尝试上面步骤之后，你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
 
-### iOS 13 和 macOS 10.15/11
+### iOS 13+ 和 macOS 10.15/11+
 
-如果你的设备运行 iOS 13 或以上版本, macOS 10.15 (Catalina) 或者 macOS 11 (Big Sur)，并且无法连接到 VPN，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
+如果你的设备运行 iOS 13+, macOS 10.15 (Catalina), macOS 11 (Big Sur) 或以上版本，并且无法连接到 VPN，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
 
 另外，macOS Big Sur 11.0 用户应该更新到版本 11.1 或以上，以修复 VPN 连接的某些问题。要检查 macOS 版本并安装更新，请看[这里](https://www.businessinsider.com/how-to-check-mac-os-version)。
 
