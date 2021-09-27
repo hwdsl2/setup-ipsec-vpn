@@ -411,7 +411,7 @@ sudo ikev2.sh --exportclient [client name]
 First, read the important note above. Then click here for instructions.
 </summary>
 
-**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below. This action **cannot be undone**!
+**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below. This **cannot be undone**!
 
 To delete a client certificate:
 
@@ -797,14 +797,16 @@ If you are unable to connect multiple IKEv2 clients simultaneously from behind t
 
 ## Remove IKEv2
 
-If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#using-helper-scripts) again and select the "Remove IKEv2" option. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
+If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#using-helper-scripts) again and select the "Remove IKEv2" option. **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
 
 <details>
 <summary>
 Alternatively, you can manually remove IKEv2. Click here for instructions.
 </summary>
 
-To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, follow these steps. Commands must be run as `root`. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
+To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, follow these steps. Commands must be run as `root`.
+
+**Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
 
 1. Rename (or delete) the IKEv2 config file:
 
