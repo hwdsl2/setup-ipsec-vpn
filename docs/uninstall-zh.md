@@ -2,6 +2,9 @@
 
 *其他语言版本: [English](uninstall.md), [简体中文](uninstall-zh.md).*
 
+* [使用辅助脚本卸载 VPN](#使用辅助脚本卸载-vpn)
+* [手动卸载 VPN](#手动卸载-vpn)
+
 ## 使用辅助脚本卸载 VPN
 
 **警告：** 此脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！

@@ -2,6 +2,9 @@
 
 *Read this in other languages: [English](uninstall.md), [简体中文](uninstall-zh.md).*
 
+* [Uninstall using helper script](#uninstall-using-helper-script)
+* [Manually uninstall the VPN](#manually-uninstall-the-vpn)
+
 ## Uninstall using helper script
 
 **Warning:** This script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!

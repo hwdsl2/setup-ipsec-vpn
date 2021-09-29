@@ -66,9 +66,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 - Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
-- CentOS 8[\*\*](#centos-8-note) 或者 7
-- Rocky Linux 8
-- AlmaLinux OS 8
+- CentOS 8[\*\*](#centos-8-note) 或者 7, Rocky Linux 8 或者 AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.14
@@ -100,6 +98,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 
+<a name="ikev2-setup-note"></a>
 在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
 
 ```bash
@@ -120,14 +119,7 @@ sudo sh vpn.sh
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
-
-```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
+在安装成功之后，推荐 [配置 IKEv2](#ikev2-setup-note)。
 
 **选项 3:** 将你自己的 VPN 登录凭证定义为环境变量：
 
@@ -141,14 +133,7 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
-在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
-
-```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
+在安装成功之后，推荐 [配置 IKEv2](#ikev2-setup-note)。
 
 **注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
 
@@ -219,13 +204,16 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 
 ## 问题和反馈
 
-- 有问题需要提问？请先搜索已有的留言，在 [这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 以及 [我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread)。
-- VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 邮件列表提问，或者参考这些网站： [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
+- 有问题需要提问？请先搜索 [已有的 issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) 以及在 [这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 和 [我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread) 上已有的留言。
+- VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 邮件列表提问，或者参考这些网站：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue)。
 
 ## 卸载说明
 
 请参见 [卸载 VPN](docs/uninstall-zh.md)。
+
+- [使用辅助脚本卸载 VPN](docs/uninstall-zh.md#使用辅助脚本卸载-vpn)
+- [手动卸载 VPN](docs/uninstall-zh.md#手动卸载-vpn)
 
 ## 授权协议
 

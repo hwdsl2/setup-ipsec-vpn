@@ -66,9 +66,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 - Ubuntu 20.04 (Focal) or 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
-- CentOS 8[\*\*](#centos-8-note) or 7
-- Rocky Linux 8
-- AlmaLinux OS 8
+- CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.14
@@ -100,6 +98,7 @@ To install the VPN, please choose one of the following options:
 wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
 ```
 
+<a name="ikev2-setup-note"></a>
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
@@ -120,14 +119,7 @@ sudo sh vpn.sh
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
-After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
-
-```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
+After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-note).
 
 **Option 3:** Define your VPN credentials as environment variables:
 
@@ -141,14 +133,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
-
-```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
+After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-note).
 
 **Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
 
@@ -219,13 +204,16 @@ See [Advanced usage](docs/advanced-usage.md).
 
 ## Bugs & Questions
 
-- Got a question? Please first search other people's comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
+- Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
 - If you found a reproducible bug, open a [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) to submit a bug report.
 
 ## Uninstallation
 
 See [Uninstall the VPN](docs/uninstall.md).
+
+- [Uninstall using helper script](docs/uninstall.md#uninstall-using-helper-script)
+- [Manually uninstall the VPN](docs/uninstall.md#manually-uninstall-the-vpn)
 
 ## License
 
