@@ -246,7 +246,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 ### Android
 
 1. Securely transfer the generated `.sswan` file to your Android device.
-1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
 1. Launch the strongSwan VPN client.
 1. Tap the "more options" menu on top right, then tap **Import VPN profile**.
 1. Choose the `.sswan` file you transferred from the VPN server.   
@@ -274,7 +274,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 10 and newer:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
 1. Tap **Install certificates from storage (or SD card)**.
@@ -291,7 +291,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 4 to 9:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install [strongSwan VPN Client](https://play.google.com/store/apps/details?id=org.strongswan.android) from **Google Play**.
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.   
    **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** field.
