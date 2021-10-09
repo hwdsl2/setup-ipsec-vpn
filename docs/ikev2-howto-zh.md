@@ -246,7 +246,7 @@ To customize IKEv2 or client options, run this script without arguments.
 ### Android
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 strongSwan VPN 客户端。
 1. 单击右上角的 "更多选项" 菜单，然后单击 **导入VPN配置**。
 1. 选择你从服务器传送过来的 `.sswan` 文件。   
@@ -274,7 +274,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 10 和更新版本:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 **设置** 应用程序。
 1. 进入 安全 -> 高级 -> 加密与凭据。
 1. 单击 **从存储设备（或 SD 卡）安装证书**。
@@ -291,7 +291,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 4 to 9:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 **Google Play** 安装 [strongSwan VPN 客户端](https://play.google.com/store/apps/details?id=org.strongswan.android)。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 strongSwan VPN 客户端，然后单击 **添加VPN配置**。
 1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
    **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 字段中输入该域名。
