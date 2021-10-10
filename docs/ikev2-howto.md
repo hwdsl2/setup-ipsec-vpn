@@ -5,7 +5,7 @@
 **Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
 * [Introduction](#introduction)
-* [Using helper scripts](#using-helper-scripts)
+* [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
 * [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
@@ -27,7 +27,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
-## Using helper scripts
+## Set up IKEv2 using helper script
 
 **Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), and (optional but recommended) [updated Libreswan](../README.md#upgrade-libreswan). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
 
@@ -54,7 +54,7 @@ wget https://git.io/ikev2setup -O ~/ikev2.sh
 sudo bash ~/ikev2.sh --auto
 ```
 
-**Note:** The helper script must be run using `bash`, not `sh`.
+**Note:** The script must be run using `bash`, not `sh`.
 </details>
 <details>
 <summary>
@@ -104,7 +104,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#using-helper-scripts) again. Use option `-h` to show usage information.
+**Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
 * [Windows 7, 8.x and 10](#windows-7-8x-and-10)
 * [OS X (macOS)](#os-x-macos)
@@ -246,7 +246,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 ### Android
 
 1. Securely transfer the generated `.sswan` file to your Android device.
-1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
 1. Launch the strongSwan VPN client.
 1. Tap the "more options" menu on top right, then tap **Import VPN profile**.
 1. Choose the `.sswan` file you transferred from the VPN server.   
@@ -274,7 +274,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 10 and newer:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
 1. Tap **Install certificates from storage (or SD card)**.
@@ -291,7 +291,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 **Android 4 to 9:**
 
 1. Securely transfer the generated `.p12` file to your Android device.
-1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**its download server**](https://download.strongswan.org/Android/).
+1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server** field.   
    **Note:** If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Server** field.
@@ -380,7 +380,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### List existing clients
 
-If you want to list the names of existing IKEv2 clients, run the [helper script](#using-helper-scripts) with the `--listclients` option. Use option `-h` to show usage information.
+If you want to list the names of existing IKEv2 clients, run the [helper script](#set-up-ikev2-using-helper-script) with the `--listclients` option. Use option `-h` to show usage information.
 
 ```
 sudo ikev2.sh --listclients
@@ -388,7 +388,7 @@ sudo ikev2.sh --listclients
 
 ### Add a client certificate
 
-To generate certificates for additional IKEv2 clients, just run the [helper script](#using-helper-scripts) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+To generate certificates for additional IKEv2 clients, just run the [helper script](#set-up-ikev2-using-helper-script) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
 ```
 sudo ikev2.sh --addclient [client name]
@@ -396,7 +396,7 @@ sudo ikev2.sh --addclient [client name]
 
 ### Export configuration for an existing client
 
-By default, the [IKEv2 helper script](#using-helper-scripts) exports client configuration after running. If later you want to export configuration for an existing client, you may use:
+By default, the IKEv2 [helper script](#set-up-ikev2-using-helper-script) exports client configuration after running. If later you want to export configuration for an existing client, you may use:
 
 ```
 sudo ikev2.sh --exportclient [client name]
@@ -532,7 +532,7 @@ Alternatively, you may manually revoke a client certificate. This can be done us
 
 ## Manually set up IKEv2 on the VPN server
 
-As an alternative to using the [helper script](#using-helper-scripts), advanced users can manually set up IKEv2. Before continuing, it is recommended to [update Libreswan](../README.md#upgrade-libreswan) to the latest version.
+As an alternative to using the [helper script](#set-up-ikev2-using-helper-script), advanced users can manually set up IKEv2. Before continuing, it is recommended to [update Libreswan](../README.md#upgrade-libreswan) to the latest version.
 
 The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
 
@@ -797,7 +797,7 @@ If you are unable to connect multiple IKEv2 clients simultaneously from behind t
 
 ## Remove IKEv2
 
-If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#using-helper-scripts) again and select the "Remove IKEv2" option. **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
+If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#set-up-ikev2-using-helper-script) again and select the "Remove IKEv2" option. **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
 
 <details>
 <summary>

@@ -15,7 +15,7 @@
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以编辑以下文件：`/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` 和 `/etc/ipsec.d/ikev2.conf`（如果存在），并替换 `8.8.8.8` 和 `8.8.4.4`。然后运行 `service ipsec restart` 和 `service xl2tpd restart`。
 
-高级用户可以在运行 VPN 安装脚本和 [IKEv2 辅助脚本](ikev2-howto-zh.md#使用辅助脚本) 时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/dns/)：
+高级用户可以在运行 VPN 安装脚本和 [IKEv2 辅助脚本](ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 时定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/dns/)：
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
@@ -34,7 +34,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-另外，你也可以自定义 IKEv2 安装选项，通过在运行 [辅助脚本](ikev2-howto-zh.md#使用辅助脚本) 时去掉 `--auto` 参数来实现。
+另外，你也可以自定义 IKEv2 安装选项，通过在运行 [辅助脚本](ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 时去掉 `--auto` 参数来实现。
 
 ## VPN 内网 IP 和流量
 

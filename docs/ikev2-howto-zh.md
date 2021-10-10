@@ -5,7 +5,7 @@
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 * [导言](#导言)
-* [使用辅助脚本](#使用辅助脚本)
+* [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [管理客户端证书](#管理客户端证书)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
@@ -27,7 +27,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
-## 使用辅助脚本
+## 使用辅助脚本配置 IKEv2
 
 **重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)，并且（可选但推荐）[升级 Libreswan](../README-zh.md#升级libreswan)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
 
@@ -54,7 +54,7 @@ wget https://git.io/ikev2setup -O ~/ikev2.sh
 sudo bash ~/ikev2.sh --auto
 ```
 
-**注：** 该辅助脚本必须使用 `bash` 而不是 `sh` 运行。
+**注：** 该脚本必须使用 `bash` 而不是 `sh` 运行。
 </details>
 <details>
 <summary>
@@ -104,7 +104,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本)。使用参数 `-h` 显示使用信息。
+**注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
 
 * [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
 * [OS X (macOS)](#os-x-macos)
@@ -246,7 +246,7 @@ To customize IKEv2 or client options, run this script without arguments.
 ### Android
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
-1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 strongSwan VPN 客户端。
 1. 单击右上角的 "更多选项" 菜单，然后单击 **导入VPN配置**。
 1. 选择你从服务器传送过来的 `.sswan` 文件。   
@@ -274,7 +274,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 10 和更新版本:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 **设置** 应用程序。
 1. 进入 安全 -> 高级 -> 加密与凭据。
 1. 单击 **从存储设备（或 SD 卡）安装证书**。
@@ -291,7 +291,7 @@ To customize IKEv2 or client options, run this script without arguments.
 **Android 4 to 9:**
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 官方下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
+1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 strongSwan VPN 客户端，然后单击 **添加VPN配置**。
 1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
    **注：** 如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **服务器地址** 字段中输入该域名。
@@ -378,7 +378,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 列出已有的客户端
 
-如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
+如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
 ```
 sudo ikev2.sh --listclients
@@ -386,7 +386,7 @@ sudo ikev2.sh --listclients
 
 ### 添加客户端证书
 
-如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本配置-ikev2)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 ```
 sudo ikev2.sh --addclient [client name]
@@ -394,7 +394,7 @@ sudo ikev2.sh --addclient [client name]
 
 ### 导出已有的客户端的配置
 
-在默认情况下，[IKEv2 辅助脚本](#使用辅助脚本) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，可以运行：
+在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，可以运行：
 
 ```
 sudo ikev2.sh --exportclient [client name]
@@ -530,7 +530,7 @@ sudo ikev2.sh --exportclient [client name]
 
 ## 手动在 VPN 服务器上配置 IKEv2
 
-除了使用 [辅助脚本](#使用辅助脚本) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
+除了使用 [辅助脚本](#使用辅助脚本配置-ikev2) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
 
 下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
@@ -795,7 +795,7 @@ apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
 
 ## 移除 IKEv2
 
-如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），请重新运行 [辅助脚本](#使用辅助脚本) 并选择 "Remove IKEv2" 选项。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），请重新运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并选择 "Remove IKEv2" 选项。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
 
 <details>
 <summary>

@@ -7,7 +7,7 @@
 
 ## 使用辅助脚本卸载 VPN
 
-**警告：** 此脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
+**警告：** 此[辅助脚本](../extras/vpnuninstall.sh)将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
 
 ```bash
 wget https://git.io/vpnuninstall -O vpnunst.sh
@@ -19,6 +19,8 @@ sudo bash vpnunst.sh
 ## 手动卸载 VPN
 
 另外，你也可以手动卸载 VPN。按照以下步骤操作。这些命令需要用 `root` 账户运行，或者使用 `sudo`。
+
+**警告：** 以下步骤将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
 
 ### 步骤
 

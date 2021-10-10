@@ -15,7 +15,7 @@
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, you may replace `8.8.8.8` and `8.8.4.4` in these files: `/etc/ppp/options.xl2tpd`, `/etc/ipsec.conf` and `/etc/ipsec.d/ikev2.conf` (if exists). Then run `service ipsec restart` and `service xl2tpd restart`.
 
-Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the [IKEv2 helper script](ikev2-howto.md#using-helper-scripts). For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1/dns/):
+Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when running the VPN setup script and the [IKEv2 helper script](ikev2-howto.md#set-up-ikev2-using-helper-script). For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1/dns/):
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
@@ -34,7 +34,7 @@ For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after 
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-Alternatively, you may customize IKEv2 setup options by running the [helper script](ikev2-howto.md#using-helper-scripts) without the `--auto` parameter.
+Alternatively, you may customize IKEv2 setup options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
 
 ## Internal VPN IPs and traffic
 
