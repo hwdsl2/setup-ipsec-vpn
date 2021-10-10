@@ -153,7 +153,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   19 Sep 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   10 Oct 2021
 
 EOF
 }
@@ -171,7 +171,7 @@ Options:
   --addclient [client name]     add a new client using default options
   --exportclient [client name]  export configuration for an existing client
   --listclients                 list the names of existing clients
-  --revokeclient                revoke a client certificate
+  --revokeclient [client name]  revoke a client certificate
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
