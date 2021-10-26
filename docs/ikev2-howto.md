@@ -197,7 +197,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
 
 1. AirDrop, or
-1. Upload to your device using "File Sharing" in iTunes, then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to "Settings" to import, or
+1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to the "Settings" app to import, or
 1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
 
 When finished, check to make sure "IKEv2 VPN" is listed under Settings -> General -> Profile(s).
@@ -218,7 +218,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
-1. Upload to your device using "File Sharing" in iTunes, then open the "Files" app on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to "Settings" to import, or
+1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to the "Settings" app to import, or
 1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
 
 When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
@@ -388,11 +388,13 @@ sudo ikev2.sh --listclients
 
 ### Add a client certificate
 
-To generate certificates for additional IKEv2 clients, just run the [helper script](#set-up-ikev2-using-helper-script) again. Or you may refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
+To generate certificates for additional IKEv2 clients, just run the [helper script](#set-up-ikev2-using-helper-script) again. To customize client certificate options, run the script without arguments.
 
 ```
 sudo ikev2.sh --addclient [client name]
 ```
+
+Alternatively, you may manually add a client certificate. Refer to step 4 in [this section](#manually-set-up-ikev2-on-the-vpn-server).
 
 ### Export configuration for an existing client
 
@@ -444,7 +446,16 @@ To delete a client certificate:
 
 ### Revoke a client certificate
 
-In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script again and select the appropriate option.
+In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script again and select the appropriate option. Or you may run:
+
+```
+sudo ikev2.sh --revokeclient [client name]
+```
+
+<details>
+<summary>
+Alternatively, you may manually revoke a client certificate. Click here for instructions.
+</summary>
 
 Alternatively, you may manually revoke a client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
 
@@ -529,6 +540,7 @@ Alternatively, you may manually revoke a client certificate. This can be done us
    ```bash
    ipsec crls
    ```
+</details>
 
 ## Manually set up IKEv2 on the VPN server
 

@@ -197,7 +197,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 iTunes 的 "文件共享" 功能上传到设备，然后打开 iOS 设备上的 "文件" 应用程序，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" 应用程序中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> 描述文件中。
@@ -218,7 +218,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 iTunes 的 "文件共享" 功能上传到设备，然后打开 iOS 设备上的 "文件" 应用程序，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" 应用程序中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
@@ -264,7 +264,7 @@ To customize IKEv2 or client options, run this script without arguments.
 如果你的设备运行 Android 6.0 (Marshmallow) 或更早版本，要使用 strongSwan VPN 客户端连接，你必须更改 VPN 服务器上的以下设置：编辑服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节的末尾添加 `authby=rsa-sha1`，开头必须空两格。保存文件并运行 `service ipsec restart`。
 </details>
 
-（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** 应用程序，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
+（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** App，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
 
 <details>
 <summary>
@@ -275,7 +275,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
-1. 启动 **设置** 应用程序。
+1. 启动 **设置** App。
 1. 进入 安全 -> 高级 -> 加密与凭据。
 1. 单击 **从存储设备（或 SD 卡）安装证书**。
 1. 选择你从服务器传送过来的 `.p12` 文件，并按提示操作。   
@@ -386,11 +386,13 @@ sudo ikev2.sh --listclients
 
 ### 添加客户端证书
 
-如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本配置-ikev2)。或者你可以看 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本配置-ikev2)。要自定义客户端证书选项，可以在不添加参数的情况下运行脚本。
 
 ```
 sudo ikev2.sh --addclient [client name]
 ```
+
+另外，你也可以手动添加客户端证书。参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 ### 导出已有的客户端的配置
 
@@ -442,7 +444,16 @@ sudo ikev2.sh --exportclient [client name]
 
 ### 吊销客户端证书
 
-在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。或者你也可以运行：
+
+```
+sudo ikev2.sh --revokeclient [client name]
+```
+
+<details>
+<summary>
+另外，你也可以手动吊销客户端证书。点这里查看步骤。
+</summary>
 
 另外，你也可以手动吊销客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
 
@@ -527,6 +538,7 @@ sudo ikev2.sh --exportclient [client name]
    ```bash
    ipsec crls
    ```
+</details>
 
 ## 手动在 VPN 服务器上配置 IKEv2
 
