@@ -135,7 +135,7 @@ sh vpn.sh
 
 在安装成功之后，推荐 [配置 IKEv2](#ikev2-setup-note)。
 
-**注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl-A` 全选， `Ctrl-C` 复制，然后粘贴到你喜欢的编辑器。
+**注：** 如果无法通过 `wget` 下载，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 **`Raw`** 按钮。按快捷键 `Ctrl/Cmd + A` 全选， `Ctrl/Cmd + C` 复制，然后粘贴到你喜欢的编辑器。
 
 ## 下一步
 
@@ -155,9 +155,7 @@ sh vpn.sh
 
 *其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows 用户** 在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
-
-**Android 用户** 如果遇到连接问题，请尝试 [这些步骤](docs/clients-zh.md#android-mtumss-问题)。
+**Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。
 

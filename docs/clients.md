@@ -113,7 +113,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## Android
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode. Android 12 only supports [IKEv2](ikev2-howto.md) mode.
 
 1. Launch the **Settings** application.
 1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.

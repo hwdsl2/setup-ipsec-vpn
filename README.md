@@ -135,7 +135,7 @@ sh vpn.sh
 
 After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-note).
 
-**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl-A` to select all, `Ctrl-C` to copy, then paste into your favorite editor.
+**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl/Cmd + A` to select all, `Ctrl/Cmd + C` to copy, then paste into your favorite editor.
 
 ## Next steps
 
@@ -155,9 +155,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 *Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
-**Windows users**: A [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
-
-**Android users**: If you encounter connection issues, try [these steps](docs/clients.md#android-mtumss-issues).
+**Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
 The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use [IKEv2](docs/ikev2-howto.md) or [IPsec/XAuth](docs/clients-xauth.md) mode.
 
