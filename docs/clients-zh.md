@@ -20,10 +20,31 @@
 
 **注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
+### Windows 11
+
+1. 右键单击系统托盘中的无线/网络图标。
+1. 选择 **网络和 Internet 设置**，然后在打开的页面中单击 **VPN**。
+1. 单击 **添加 VPN** 按钮。
+1. 从 **VPN 提供商** 下拉菜单选择 **Windows (内置)**。
+1. 在 **连接名称** 字段中输入任意内容。
+1. 在 **服务器名称或地址** 字段中输入`你的 VPN 服务器 IP`。
+1. 从 **VPN 类型** 下拉菜单选择 **使用预共享密钥的 L2TP/IPsec**。
+1. 在 **预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
+1. 在 **用户名** 字段中输入`你的 VPN 用户名`。
+1. 在 **密码** 字段中输入`你的 VPN 密码`。
+1. 选中 **记住我的登录信息** 复选框。
+1. 单击 **保存** 保存 VPN 连接的详细信息。
+
+**注：** 在首次连接之前需要[修改一次注册表](#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
+
+要连接到 VPN：单击 **连接** 按钮，或者单击系统托盘中的无线/网络图标，单击 **VPN**，然后选择新的 VPN 连接并单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+
 ### Windows 10 and 8.x
 
 1. 右键单击系统托盘中的无线/网络图标。
-1. 选择 **打开网络和共享中心**。或者，如果你使用 Windows 10 版本 1709 或以上，选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击 **网络和共享中心**。
+1. 选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击 **网络和共享中心**。
 1. 单击 **设置新的连接或网络**。
 1. 选择 **连接到工作区**，然后单击 **下一步**。
 1. 单击 **使用我的Internet连接 (VPN)**。
@@ -225,7 +246,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 * [Windows 错误 628 或 766](#windows-错误-628-或-766)
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10 升级](#windows-10-升级)
-* [Windows 8/10 DNS 泄漏](#windows-810-dns-泄漏)
+* [Windows DNS 泄漏和 IPv6](#windows-dns-泄漏和-ipv6)
 * [Android MTU/MSS 问题](#android-mtumss-问题)
 * [Android 6 和 7](#android-6-和-7)
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
@@ -239,11 +260,11 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 > 错误 809：无法建立计算机与 VPN 服务器之间的网络连接，因为远程服务器未响应。这可能是因为未将计算机与远程服务器之间的某种网络设备(如防火墙、NAT、路由器等)配置为允许 VPN 连接。请与管理员或服务提供商联系以确定哪种设备可能产生此问题。
 
-**注：** 仅当你使用 IPsec/L2TP 模式连接到 VPN 时，才需要进行下面的注册表更改。对于 [IKEv2](ikev2-howto-zh.md) 和 [IPsec/XAuth](clients-xauth-zh.md) 模式，无需进行此更改。
+**注：** 仅当你使用 IPsec/L2TP 模式连接到 VPN 时，才需要进行下面的注册表更改。对于 [IKEv2](ikev2-howto-zh.md) 和 [IPsec/XAuth](clients-xauth-zh.md) 模式，**不需要** 进行此更改。
 
 要解决此错误，在首次连接之前需要[修改一次注册表](https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请下载并导入下面的 `.reg` 文件，或者打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令。**完成后必须重启计算机。**
 
-- 适用于 Windows Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
+- 适用于 Windows Vista, 7, 8.x, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
@@ -257,7 +278,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 另外，某些个别的 Windows 系统配置禁用了 IPsec 加密，此时也会导致连接失败。要重新启用它，可以运行以下命令并重启。
 
-- 适用于 Windows XP, Vista, 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
+- 适用于 Windows XP, Vista, 7, 8.x, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
@@ -303,11 +324,11 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照上面的 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
 
-### Windows 8/10 DNS 泄漏
+### Windows DNS 泄漏和 IPv6
 
-Windows 8.x 和 10 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后[清除 DNS 缓存](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-)并且重启计算机。
+Windows 8.x, 10 和 11 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后[清除 DNS 缓存](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-)并且重启计算机。
 
-另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，你可以另外尝试 [OpenVPN](https://github.com/Nyr/openvpn-install)。
+另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/Nyr/openvpn-install)。
 
 ### Android MTU/MSS 问题
 
