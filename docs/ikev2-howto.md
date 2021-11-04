@@ -19,7 +19,7 @@ Modern operating systems (such as Windows 7 and newer) support the IKEv2 standar
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
-- Windows 7, 8.x and 10
+- Windows 7, 8.x, 10 and 11
 - OS X (macOS)
 - iOS (iPhone/iPad)
 - Android 4.x and newer (using the strongSwan VPN client)
@@ -106,13 +106,13 @@ To customize IKEv2 or client options, run this script without arguments.
 
 **Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
-* [Windows 7, 8.x and 10](#windows-7-8x-and-10)
+* [Windows 7, 8.x, 10 and 11](#windows-7-8x-10-and-11)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
 
-### Windows 7, 8.x and 10
+### Windows 7, 8.x, 10 and 11
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
@@ -123,7 +123,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x and 10, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
+1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x, 10 and 11, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -134,7 +134,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    Alternatively, you can manually create the VPN connection. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config) for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
-1. (**This step is required** if you manually created the VPN connection) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
+1. (**This step is required if you manually created the VPN connection**) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
    - For Windows 7, 8.x and 10 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 

@@ -19,7 +19,7 @@
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
-- Windows 7, 8.x 和 10
+- Windows 7, 8.x, 10 和 11
 - OS X (macOS)
 - iOS (iPhone/iPad)
 - Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
@@ -106,13 +106,13 @@ To customize IKEv2 or client options, run this script without arguments.
 
 **注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
 
-* [Windows 7, 8.x 和 10](#windows-7-8x-和-10)
+* [Windows 7, 8.x, 10 和 11](#windows-7-8x-10-和-11)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
 
-### Windows 7, 8.x 和 10
+### Windows 7, 8.x, 10 和 11
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
@@ -123,7 +123,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    另外，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x 和 10，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x, 10 和 11，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -134,7 +134,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    另外，你也可以手动创建 VPN 连接。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
-1. （**此步骤为必须**，如果你手动创建了 VPN 连接）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
+1. （**此步骤为必须，如果你手动创建了 VPN 连接**）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
    - 适用于 Windows 7, 8.x 和 10 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
