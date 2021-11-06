@@ -576,7 +576,7 @@ Find this line in the output: `default via X.X.X.X ...`. Write down this gateway
 Exclude your VPN server's IP from the new default route (replace with actual value):
 
 ```bash
-route add YOUR_VPN_SERVER_IP gw X.X.X.X
+route add YOUR_VPN_SERVER_PUBLIC_IP gw X.X.X.X
 ```
 
 If your VPN client is a remote server, you must also exclude your Local PC's public IP from the new default route, to prevent your SSH session from being disconnected (replace with [actual value](https://www.google.com/search?q=my+ip)):
