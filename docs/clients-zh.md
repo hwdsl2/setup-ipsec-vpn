@@ -574,10 +574,10 @@ ip route
 
 在输出中查找以下行： `default via X.X.X.X ...`。记下这个网关 IP，并且在下面的两个命令中使用。
 
-从新的默认路由中排除你的 VPN 服务器 IP （替换为你自己的值）：
+从新的默认路由中排除你的 VPN 服务器的公有 IP（替换为你自己的值）：
 
 ```bash
-route add 你的VPN服务器IP gw X.X.X.X
+route add 你的VPN服务器的公有IP gw X.X.X.X
 ```
 
 如果你的 VPN 客户端是一个远程服务器，则必须从新的默认路由中排除你的本地电脑的公有 IP，以避免 SSH 会话被断开 （替换为[实际值](https://www.ipchicken.com)）：

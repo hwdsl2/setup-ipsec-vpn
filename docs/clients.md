@@ -573,7 +573,7 @@ ip route
 
 Find this line in the output: `default via X.X.X.X ...`. Write down this gateway IP for use in the two commands below.
 
-Exclude your VPN server's IP from the new default route (replace with actual value):
+Exclude your VPN server's public IP from the new default route (replace with actual value):
 
 ```bash
 route add YOUR_VPN_SERVER_PUBLIC_IP gw X.X.X.X
