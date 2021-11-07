@@ -153,7 +153,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   10 Oct 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   7 Nov 2021
 
 EOF
 }
@@ -383,7 +383,20 @@ get_server_address() {
 
 list_existing_clients() {
   echo "Checking for existing IKEv2 client(s)..."
-  certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' -e '\.' | tail -n +3 | cut -f1 -d ' '
+  echo
+  client_names=$(certutil -L -d sql:/etc/ipsec.d | grep -v -e '^$' -e 'IKEv2 VPN CA' -e '\.' | tail -n +3 | cut -f1 -d ' ')
+  max_len=$(printf '%s\n' "$client_names" | wc -L 2>/dev/null)
+  [[ $max_len =~ ^[0-9]+$ ]] || max_len=64
+  [ "$max_len" -gt "64" ] && max_len=64
+  [ "$max_len" -lt "16" ] && max_len=16
+  printf "%-${max_len}s  %s\n" 'Client Name' 'Certificate Status'
+  printf "%-${max_len}s  %s\n" '------------' '-------------------'
+  printf '%s\n' "$client_names" | while read -r line; do
+    printf "%-${max_len}s  " "$line"
+    client_status=$(certutil -V -u C -d sql:/etc/ipsec.d -n "$line" | grep -o -e ' valid' -e expired -e revoked | sed -e 's/^ //')
+    [ -z "$client_status" ] && client_status=unknown
+    printf '%s\n' "$client_status"
+  done
 }
 
 enter_server_address() {
