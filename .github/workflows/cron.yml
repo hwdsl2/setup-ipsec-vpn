@@ -410,13 +410,15 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
 
-          bash ikev2.sh --listclients | grep "vpnclient1"
-          bash ikev2.sh --listclients | grep "vpnclient2"
+          bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
+          bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
 
           bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
+
+          bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
 
           bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
           bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
@@ -886,13 +888,15 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
 
-          bash ikev2.sh --listclients | grep "vpnclient1"
-          bash ikev2.sh --listclients | grep "vpnclient2"
+          bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
+          bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
 
           bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
+
+          bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
 
           bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
           bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
@@ -1297,13 +1301,15 @@ jobs:
 
           bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
 
-          bash ikev2.sh --listclients | grep "vpnclient1"
-          bash ikev2.sh --listclients | grep "vpnclient2"
+          bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
+          bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
 
           bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
           y
           ANSWERS
+
+          bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
 
           bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
           bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
