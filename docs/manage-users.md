@@ -53,7 +53,11 @@ Add a new VPN user, or update an existing VPN user with a new password.
 ```bash
 # Download the script
 wget -O add_vpn_user.sh https://bit.ly/addvpnuser
+# Run the script and follow the prompts
+sudo bash add_vpn_user.sh
 ```
+
+Alternatively, you can run the script with arguments:
 
 ```bash
 # All values MUST be placed inside 'single quotes'
@@ -70,7 +74,11 @@ Delete the specified VPN user.
 ```bash
 # Download the script
 wget -O del_vpn_user.sh https://bit.ly/delvpnuser
+# Run the script and follow the prompts
+sudo bash del_vpn_user.sh
 ```
+
+Alternatively, you can run the script with arguments:
 
 ```bash
 # All values MUST be placed inside 'single quotes'

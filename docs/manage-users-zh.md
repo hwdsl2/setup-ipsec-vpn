@@ -53,7 +53,11 @@ service xl2tpd restart
 ```bash
 # 下载脚本
 wget -O add_vpn_user.sh https://bit.ly/addvpnuser
+# 运行脚本并按提示操作
+sudo bash add_vpn_user.sh
 ```
+
+另外，你也可以在添加参数的情况下运行脚本：
 
 ```bash
 # 所有变量值必须用 '单引号' 括起来
@@ -70,7 +74,11 @@ sudo bash add_vpn_user.sh '要更新的用户名' '新密码'
 ```bash
 # 下载脚本
 wget -O del_vpn_user.sh https://bit.ly/delvpnuser
+# 运行脚本并按提示操作
+sudo bash del_vpn_user.sh
 ```
+
+另外，你也可以在添加参数的情况下运行脚本：
 
 ```bash
 # 所有变量值必须用 '单引号' 括起来
