@@ -69,7 +69,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 - CentOS 8[\*\*](#centos-8-note) 或者 7, Rocky Linux 8 或者 AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
-- Alpine Linux 3.14
+- Alpine Linux 3.14 或者 3.15
 
 这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) 和 [OVH](https://www.ovhcloud.com/en/vps/)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署。
 
@@ -80,9 +80,9 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 11 或者 10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
+\* Debian 11 或者 10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 的支持将于 2021 年 12 月 31 日 [结束](https://wiki.centos.org/About/Product)。
+\*\* CentOS Linux 8 的支持[于 2021-12-31 结束](https://wiki.centos.org/About/Product)。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 

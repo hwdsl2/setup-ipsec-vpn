@@ -69,7 +69,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 - CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
-- Alpine Linux 3.14
+- Alpine Linux 3.14 or 3.15
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* Support for CentOS Linux 8 [will end](https://wiki.centos.org/About/Product) on December 31, 2021.
+\*\* CentOS Linux 8 [is only supported until 2021-12-31](https://wiki.centos.org/About/Product).
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
