@@ -82,8 +82,8 @@ EOF
     esac
     if [ "$os_type" = "alpine" ]; then
       os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-      if [ "$os_ver" != "3.14" ]; then
-        exiterr "This script only supports Alpine Linux 3.14."
+      if [ "$os_ver" != "3.14" ] && [ "$os_ver" != "3.15" ]; then
+        exiterr "This script only supports Alpine Linux 3.14/3.15."
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
@@ -153,7 +153,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   7 Nov 2021
+IKEv2 Script   Copyright (c) 2020-2021 Lin Song   29 Dec 2021
 
 EOF
 }
