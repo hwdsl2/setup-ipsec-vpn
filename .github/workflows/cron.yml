@@ -548,8 +548,6 @@ jobs:
 
           if [ "$OS_VERSION" = "centos:8s" ]; then
             echo "FROM quay.io/centos/centos:stream8" > Dockerfile
-          elif [ "$OS_VERSION" = "rockylinux:8" ]; then
-            echo "FROM rockylinux/rockylinux:8" > Dockerfile
           else
             echo "FROM $OS_VERSION" > Dockerfile
           fi
