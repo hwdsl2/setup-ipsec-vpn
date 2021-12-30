@@ -16,6 +16,14 @@ SYS_DT=$(date +%F-%T | tr ':' '_')
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 
+show_intro() {
+cat <<'EOF'
+
+Welcome! Use this script to delete a VPN user account for both
+IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
+EOF
+}
+
 del_vpn_user() {
 
 if [ "$(id -u)" != 0 ]; then
@@ -31,13 +39,28 @@ EOF
   exit 1
 fi
 
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+cat 1>&2 <<EOF
+Usage: sudo bash $0 'username_to_delete'
+You may also run this script interactively without arguments.
+EOF
+  exit 1
+fi
+
 VPN_USER=$1
 
 if [ -z "$VPN_USER" ]; then
-cat 1>&2 <<EOF
-Usage: sudo bash $0 'username_to_delete'
-EOF
-  exit 1
+  show_intro
+  echo
+  echo "List of existing VPN usernames:"
+  cut -f1 -d : /etc/ipsec.d/passwd
+  echo
+  echo "Enter the VPN username you want to delete."
+  read -rp "Username: " VPN_USER
+  if [ -z "$VPN_USER" ]; then
+    echo "Abort. No changes were made." >&2
+    exit 1
+  fi
 fi
 
 if printf '%s' "$VPN_USER" | LC_ALL=C grep -q '[^ -~]\+'; then
@@ -68,12 +91,9 @@ EOF
   exit 1
 fi
 
+[ -n "$1" ] && show_intro
+
 cat <<EOF
-
-Welcome! Use this script to delete a VPN user account for both
-IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
-
-Please double check before continuing!
 
 ================================================
 

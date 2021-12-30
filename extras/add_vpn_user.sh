@@ -16,6 +16,17 @@ SYS_DT=$(date +%F-%T | tr ':' '_')
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 
+show_intro() {
+cat <<'EOF'
+
+Welcome! Use this script to add or update a VPN user account for both
+IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
+
+If the username you specify already exists, it will be updated
+with the new password. Otherwise, a new VPN user will be added.
+EOF
+}
+
 add_vpn_user() {
 
 if [ "$(id -u)" != 0 ]; then
@@ -33,15 +44,35 @@ fi
 
 command -v openssl >/dev/null 2>&1 || exiterr "'openssl' not found. Abort."
 
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+cat 1>&2 <<EOF
+Usage: sudo bash $0 'username_to_add' 'password'
+       sudo bash $0 'username_to_update' 'new_password'
+You may also run this script interactively without arguments.
+EOF
+  exit 1
+fi
+
 VPN_USER=$1
 VPN_PASSWORD=$2
 
 if [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-cat 1>&2 <<EOF
-Usage: sudo bash $0 'username_to_add' 'password'
-       sudo bash $0 'username_to_update' 'new_password'
-EOF
-  exit 1
+  show_intro
+  echo
+  echo "List of existing VPN usernames:"
+  cut -f1 -d : /etc/ipsec.d/passwd
+  echo
+  echo "Enter the VPN username you want to add or update."
+  read -rp "Username: " VPN_USER
+  if [ -z "$VPN_USER" ]; then
+    echo "Abort. No changes were made." >&2
+    exit 1
+  fi
+  read -rp "Password: " VPN_PASSWORD
+  if [ -z "$VPN_PASSWORD" ]; then
+    echo "Abort. No changes were made." >&2
+    exit 1
+  fi
 fi
 
 if printf '%s' "$VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
@@ -54,15 +85,11 @@ case "$VPN_USER $VPN_PASSWORD" in
     ;;
 esac
 
+if [ -n "$1" ] && [ -n "$2" ]; then
+  show_intro
+fi
+
 cat <<EOF
-
-Welcome! Use this script to add or update a VPN user account for both
-IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
-
-If the username you specified already exists, it will be updated
-with the new password. Otherwise, a new VPN user will be added.
-
-Please double check before continuing!
 
 ================================================
 

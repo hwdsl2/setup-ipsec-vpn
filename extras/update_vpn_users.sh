@@ -55,6 +55,13 @@ fi
 
 command -v openssl >/dev/null 2>&1 || exiterr "'openssl' not found. Abort."
 
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+cat 1>&2 <<'EOF'
+For usage information, visit https://git.io/vpnnotes, then click on Manage VPN Users.
+EOF
+  exit 1
+fi
+
 [ -n "$YOUR_USERNAMES" ] && VPN_USERS="$YOUR_USERNAMES"
 [ -n "$YOUR_PASSWORDS" ] && VPN_PASSWORDS="$YOUR_PASSWORDS"
 
