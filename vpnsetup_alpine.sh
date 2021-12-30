@@ -71,8 +71,8 @@ check_os() {
       ;;
   esac
   os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-  if [ "$os_ver" != "3.14" ]; then
-    exiterr "This script only supports Alpine Linux 3.14."
+  if [ "$os_ver" != "3.14" ] && [ "$os_ver" != "3.15" ]; then
+    exiterr "This script only supports Alpine Linux 3.14/3.15."
   fi
 }
 
@@ -160,9 +160,15 @@ install_vpn_pkgs() {
   bigecho "Installing packages required for the VPN..."
   (
     set -x
-    apk add -U -q libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
-      bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev nss-dev \
+    apk add -U -q libcap-ng libcurl libevent linux-pam musl nspr \
+      bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
       libcap-ng-dev libevent-dev curl-dev nspr-dev uuidgen openrc xl2tpd
+  ) || exiterr2
+  (
+    set -x
+    apk add -q --no-cache \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
+    nss nss-tools nss-dev
   ) || exiterr2
 }
 
