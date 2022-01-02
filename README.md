@@ -69,7 +69,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 - CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux OS 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
-- Alpine Linux 3.14 or 3.15
+- Alpine Linux 3.15 or 3.14
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
@@ -194,11 +194,11 @@ See [Advanced usage](docs/advanced-usage.md).
 
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
+- [IKEv2 only VPN](docs/advanced-usage.md#ikev2-only-vpn)
 - [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
-- [IKEv2 only VPN](docs/advanced-usage.md#ikev2-only-vpn)
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
 
 ## Bugs & Questions

@@ -4,11 +4,11 @@
 
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
+* [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
 * [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
-* [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 * [更改 IPTables 规则](#更改-iptables-规则)
 
 ## 使用其他的 DNS 服务器
@@ -35,6 +35,21 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 另外，你也可以自定义 IKEv2 安装选项，通过在运行 [辅助脚本](ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 时去掉 `--auto` 参数来实现。
+
+## 仅限 IKEv2 的 VPN
+
+Libreswan 4.2 和更新版本支持 `ikev1-policy` 配置选项。使用此选项，高级用户可以为 VPN 服务器启用仅限 IKEv2 的模式。当启用该模式时，VPN 客户端仅能使用 IKEv2 连接到 VPN 服务器。所有的 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
+
+要设置仅限 IKEv2 的 VPN，首先按照[自述文件](../README-zh.md)中的说明安装 VPN 服务器并且配置 IKEv2。然后运行这个[辅助脚本](../extras/ikev2onlymode.sh)并按提示操作：
+
+```bash
+# 下载脚本
+wget -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
+# 运行脚本并按提示操作
+sudo bash ikev2onlymode.sh
+```
+
+另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 
 ## VPN 内网 IP 和流量
 
@@ -249,12 +264,6 @@ iptables -I FORWARD 2 -s 192.168.43.0/24 -o "$netif" -j ACCEPT
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 ```
-
-## 仅限 IKEv2 的 VPN
-
-Libreswan 4.2 和更新版本支持 `ikev1-policy` 配置选项。使用此选项，高级用户可以设置仅限 IKEv2 的 VPN，即 VPN 服务器仅接受 IKEv2 连接，而 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
-
-要设置仅限 IKEv2 的 VPN，首先按照 [自述文件](../README-zh.md) 中的说明安装 VPN 服务器并且配置 IKEv2。然后使用 `ipsec --version` 命令检查 Libreswan 版本并 [更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。下一步，编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 
 ## 更改 IPTables 规则
 
