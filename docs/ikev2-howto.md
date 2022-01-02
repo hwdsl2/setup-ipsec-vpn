@@ -40,7 +40,7 @@ sudo ikev2.sh --auto
 sudo ikev2.sh
 ```
 
-When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
+When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Advanced users can optionally enable [IKEv2-only mode](advanced-usage.md#ikev2-only-vpn).
 
 <details>
 <summary>
@@ -61,7 +61,7 @@ sudo bash ~/ikev2.sh --auto
 You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
 </summary>
 
-When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate, which is required for VPN clients to connect. Example:
+When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto

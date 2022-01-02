@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is only supported until 2021-12-31](https://wiki.centos.org/About/Product).
+\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). Use Rocky Linux, AlmaLinux OS or CentOS Stream 8.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -194,7 +194,7 @@ See [Advanced usage](docs/advanced-usage.md).
 
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
-- [IKEv2 only VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [IKEv2-only VPN](docs/advanced-usage.md#ikev2-only-vpn)
 - [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)

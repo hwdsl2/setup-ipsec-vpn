@@ -28,7 +28,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 
 对于 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
-对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 [配置 IKEv2](ikev2-howto-zh.md) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)。它将包含在生成的服务器证书中，这是 VPN 客户端连接所必需的。示例如下：
+对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 [配置 IKEv2](ikev2-howto-zh.md) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
@@ -38,9 +38,9 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 ## 仅限 IKEv2 的 VPN
 
-Libreswan 4.2 和更新版本支持 `ikev1-policy` 配置选项。使用此选项，高级用户可以为 VPN 服务器启用仅限 IKEv2 的模式。当启用该模式时，VPN 客户端仅能使用 IKEv2 连接到 VPN 服务器。所有的 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
+使用 Libreswan 4.2 或更新版本，高级用户可以为 VPN 服务器启用仅限 IKEv2 模式。当启用该模式时，VPN 客户端仅能使用 IKEv2 连接到 VPN 服务器。所有的 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
 
-要设置仅限 IKEv2 的 VPN，首先按照[自述文件](../README-zh.md)中的说明安装 VPN 服务器并且配置 IKEv2。然后运行这个[辅助脚本](../extras/ikev2onlymode.sh)并按提示操作：
+要启用仅限 IKEv2 模式，首先按照[自述文件](../README-zh.md)中的说明安装 VPN 服务器并且配置 IKEv2。然后运行[辅助脚本](../extras/ikev2onlymode.sh)并按提示操作。
 
 ```bash
 # 下载脚本
@@ -49,7 +49,15 @@ wget -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
 sudo bash ikev2onlymode.sh
 ```
 
+要禁用仅限 IKEv2 模式，再次运行辅助脚本并选择适当的选项。
+
+<details>
+<summary>
+另外，你也可以手动启用仅限 IKEv2 模式。点这里查看详情。
+</summary>
+
 另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
+</details>
 
 ## VPN 内网 IP 和流量
 

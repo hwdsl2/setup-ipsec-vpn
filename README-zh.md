@@ -82,7 +82,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 <a name="debian-10-note"></a>
 \* Debian 11 或者 10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 的支持[于 2021-12-31 结束](https://wiki.centos.org/About/Product)。
+\*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用 Rocky Linux, AlmaLinux OS 或者 CentOS Stream 8。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 

@@ -4,7 +4,7 @@
 
 * [Use alternative DNS servers](#use-alternative-dns-servers)
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
-* [IKEv2 only VPN](#ikev2-only-vpn)
+* [IKEv2-only VPN](#ikev2-only-vpn)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
 * [Port forwarding to VPN clients](#port-forwarding-to-vpn-clients)
 * [Split tunneling](#split-tunneling)
@@ -28,7 +28,7 @@ In certain circumstances, you may want VPN clients to use the specified DNS serv
 
 For [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate, which is required for VPN clients to connect. Example:
+For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, you must specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md). The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
@@ -36,11 +36,11 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 Alternatively, you may customize IKEv2 setup options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
 
-## IKEv2 only VPN
+## IKEv2-only VPN
 
-Libreswan 4.2 and newer versions support the `ikev1-policy` config option. Using this option, advanced users can enable IKEv2-only mode on the VPN server. With IKEv2-only mode enabled, VPN clients can only connect to the VPN server using IKEv2. All IKEv1 connections (including IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes) will be dropped.
+Using Libreswan 4.2 or newer, advanced users can enable IKEv2-only mode on the VPN server. With IKEv2-only mode enabled, VPN clients can only connect to the VPN server using IKEv2. All IKEv1 connections (including IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes) will be dropped.
 
-To set up an IKEv2-only VPN, first install the VPN server and set up IKEv2 using instructions in the [README](../README.md). Then run this [helper script](../extras/ikev2onlymode.sh) and follow the prompts:
+To enable IKEv2-only mode, first install the VPN server and set up IKEv2 using instructions in the [README](../README.md). Then run the [helper script](../extras/ikev2onlymode.sh) and follow the prompts.
 
 ```bash
 # Download the script
@@ -49,7 +49,15 @@ wget -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
 sudo bash ikev2onlymode.sh
 ```
 
+To disable IKEv2-only mode, run the helper script again and select the appropriate option.
+
+<details>
+<summary>
+Alternatively, you may manually enable IKEv2-only mode. Click here for details.
+</summary>
+
 Alternatively, you may manually enable IKEv2-only mode. First check Libreswan version using `ipsec --version`, and [update Libreswan](../README.md#upgrade-libreswan) if needed. Then edit `/etc/ipsec.conf` on the VPN server. Append `ikev1-policy=drop` to the end of the `config setup` section, indented by two spaces. Save the file and run `service ipsec restart`. When finished, you can run `ipsec status` to verify that only the `ikev2-cp` connection is enabled.
+</details>
 
 ## Internal VPN IPs and traffic
 
