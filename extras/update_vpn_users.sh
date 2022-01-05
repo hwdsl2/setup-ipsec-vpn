@@ -98,8 +98,6 @@ IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
 WARNING: *ALL* existing VPN users will be removed and replaced
          with the users listed below.
 
-Please double check before continuing!
-
 ==================================================
 
 Updated list of VPN users (username | password):

@@ -53,7 +53,7 @@ if [ -z "$VPN_USER" ]; then
   show_intro
   echo
   echo "List of existing VPN usernames:"
-  cut -f1 -d : /etc/ipsec.d/passwd
+  cut -f1 -d : /etc/ipsec.d/passwd | LC_ALL=C sort
   echo
   echo "Enter the VPN username you want to delete."
   read -rp "Username: " VPN_USER
