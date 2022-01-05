@@ -153,7 +153,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2021 Lin Song   29 Dec 2021
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   4 Jan 2022
 
 EOF
 }
@@ -391,7 +391,7 @@ list_existing_clients() {
   [ "$max_len" -lt "16" ] && max_len=16
   printf "%-${max_len}s  %s\n" 'Client Name' 'Certificate Status'
   printf "%-${max_len}s  %s\n" '------------' '-------------------'
-  printf '%s\n' "$client_names" | while read -r line; do
+  printf '%s\n' "$client_names" | LC_ALL=C sort | while read -r line; do
     printf "%-${max_len}s  " "$line"
     client_status=$(certutil -V -u C -d sql:/etc/ipsec.d -n "$line" | grep -o -e ' valid' -e expired -e revoked | sed -e 's/^ //')
     [ -z "$client_status" ] && client_status=unknown
@@ -643,7 +643,6 @@ confirm_setup_options() {
 cat <<EOF
 
 We are ready to set up IKEv2 now. Below are the setup options you selected.
-Please double check before continuing!
 
 ======================================
 
@@ -1309,6 +1308,7 @@ ikev2setup() {
   if [ "$list_clients" = "1" ]; then
     show_header
     list_existing_clients
+    echo
     exit 0
   fi
 
@@ -1362,6 +1362,7 @@ ikev2setup() {
       3)
         echo
         list_existing_clients
+        echo
         exit 0
         ;;
       4)
