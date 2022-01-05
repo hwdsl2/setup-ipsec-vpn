@@ -293,7 +293,7 @@ check_swan_ver() {
     swan_ver_url="https://dl.ls20.com/v1/docker/$os_type/$os_arch/swanverikev2?ver=$swan_ver&auto=$use_defaults"
   fi
   [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
 }
 
 show_update_info() {

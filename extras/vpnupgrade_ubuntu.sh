@@ -304,7 +304,7 @@ check_swan_ver() {
   swan_ver_cur=4.5
   swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
   [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ "$1" = "0" ] && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
