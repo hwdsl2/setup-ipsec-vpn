@@ -160,15 +160,9 @@ install_vpn_pkgs() {
   bigecho "Installing packages required for the VPN..."
   (
     set -x
-    apk add -U -q libcap-ng libcurl libevent linux-pam musl nspr \
-      bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
+    apk add -U -q libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
+      bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev nss-dev \
       libcap-ng-dev libevent-dev curl-dev nspr-dev uuidgen openrc xl2tpd
-  ) || exiterr2
-  (
-    set -x
-    apk add -q --no-cache \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
-    nss nss-tools nss-dev
   ) || exiterr2
 }
 

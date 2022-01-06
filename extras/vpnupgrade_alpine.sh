@@ -149,15 +149,9 @@ install_pkgs() {
   (
     set -x
     apk add -U -q bash bind-tools coreutils openssl wget iproute2 sed grep \
-    libcap-ng libcurl libevent linux-pam musl nspr \
-    bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
+    libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
+    bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev nss-dev \
     libcap-ng-dev libevent-dev curl-dev nspr-dev uuidgen openrc
-  ) || exiterr2
-  (
-    set -x
-    apk add -q --no-cache \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
-    nss nss-tools nss-dev
   ) || exiterr2
 }
 
