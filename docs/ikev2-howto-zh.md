@@ -771,13 +771,13 @@ Ubuntu 18.04 上的 NSS 问题的解决方法
 首先安装更新版本的 `libnss3` 相关的软件包：
 
 ```
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.6_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb
 apt-get -y update
-apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
- "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
- "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+apt-get -y install "./libnss3_3.49.1-1ubuntu1.6_amd64.deb" \
+ "./libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb" \
+ "./libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
 ```
 
 然后重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。

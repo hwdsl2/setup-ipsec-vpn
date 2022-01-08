@@ -773,13 +773,13 @@ Workaround for the NSS bug on Ubuntu 18.04
 First, install newer versions of `libnss3` related packages:
 
 ```
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.5_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.6_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb
+wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb
 apt-get -y update
-apt-get -y install "./libnss3_3.49.1-1ubuntu1.5_amd64.deb" \
- "./libnss3-dev_3.49.1-1ubuntu1.5_amd64.deb" \
- "./libnss3-tools_3.49.1-1ubuntu1.5_amd64.deb"
+apt-get -y install "./libnss3_3.49.1-1ubuntu1.6_amd64.deb" \
+ "./libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb" \
+ "./libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
 ```
 
 After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
