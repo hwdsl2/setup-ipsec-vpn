@@ -114,6 +114,10 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x, 10 and 11
 
+Windows 8.x, 10 and 11 users can automatically import the IKEv2 configuration. First, securely transfer the generated `.p12` file to your computer. Then download and save [this helper script](https://dl.ls20.com/scripts/ikev2_config_import.cmd) to the **same folder** as the `.p12` file. Finally, right-click on the saved script, select "Run as administrator" and follow the prompts. Windows 7 users can instead follow the steps below.
+
+Alternatively, you may follow these steps to import the IKEv2 configuration:
+
 1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
    ```console
