@@ -114,9 +114,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8.x, 10 和 11
 
-Windows 8.x，10 和 11 用户可以自动导入 IKEv2 配置。首先，将生成的 `.p12` 文件安全地传送到你的计算机。然后下载并保存 [这个辅助脚本](https://dl.ls20.com/scripts/ikev2_config_import.cmd) 到与 `.p12` 文件 **相同的文件夹**。最后，右键单击保存的脚本，选择 "以管理员身份运行" 并按提示操作。Windows 7 用户请参见以下步骤。
+Windows 8.x，10 和 11 用户可以自动导入 IKEv2 配置：
 
-或者，你也可以按照以下步骤导入 IKEv2 配置：
+1. 将生成的 `.p12` 文件安全地传送到你的计算机。
+1. 下载并保存 [这个辅助脚本](https://dl.ls20.com/scripts/ikev2_config_import.cmd) 到与 `.p12` 文件 **相同的文件夹**。
+1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
+1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
+
+或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 Windows 7, 8.x, 10 和 11。
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
