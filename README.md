@@ -171,7 +171,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.5`. Check installed version: `ipsec --version`.
+Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.6`. Check installed version: `ipsec --version`.
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh

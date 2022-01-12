@@ -171,7 +171,7 @@ sh vpn.sh
 
 ## 升级Libreswan
 
-使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.5`。查看已安装版本：`ipsec --version`。
+使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
