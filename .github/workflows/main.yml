@@ -540,7 +540,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 3.32 4.1 4.2; do
+          for ver in 4.4 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -559,10 +559,9 @@ jobs:
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          for ver in 4.3 4.4 4.5 4.6; do
-            [ "$ver" = "4.3" ] && shc=sh || shc=bash
+          for ver in 4.5 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          "$shc" vpnup.sh <<ANSWERS
+          bash vpnup.sh <<ANSWERS
           y
           ANSWERS
             restart_ipsec
@@ -1016,9 +1015,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-          for ver in 3.32 4.1 4.2; do
-            [ "$ver" = "3.32" ] && [ "$os_ver" = "11" ] && continue
+          for ver in 4.4 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -1033,10 +1030,9 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          for ver in 4.3 4.4 4.5 4.6; do
-            [ "$ver" = "4.3" ] && shc=sh || shc=bash
+          for ver in 4.5 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          "$shc" vpnup.sh <<ANSWERS
+          bash vpnup.sh <<ANSWERS
           y
           ANSWERS
             restart_ipsec
