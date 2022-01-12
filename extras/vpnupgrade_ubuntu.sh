@@ -14,7 +14,7 @@
 # know how you have improved it!
 
 # Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.5
+SWAN_VER=4.6
 
 ### DO NOT edit below this line ###
 
@@ -63,14 +63,14 @@ check_os() {
 
 check_libreswan() {
   case $SWAN_VER in
-    3.32|4.[1-5])
+    3.32|4.[1-6])
       true
       ;;
     *)
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
-       3.32, 4.1-4.4 or 4.5
+       3.32, 4.1-4.5 or 4.6
 EOF
       exit 1
       ;;
@@ -125,7 +125,7 @@ Note: This script will make the following changes to your VPN configuration:
 
 EOF
 
-  if [ "$SWAN_VER" != "4.5" ]; then
+  if [ "$SWAN_VER" != "4.6" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
@@ -301,7 +301,7 @@ EOF
 }
 
 check_swan_ver() {
-  swan_ver_cur=4.5
+  swan_ver_cur=4.6
   swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
   [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
