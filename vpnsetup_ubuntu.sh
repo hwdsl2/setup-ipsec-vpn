@@ -223,7 +223,7 @@ get_ikev2_script() {
 }
 
 check_libreswan() {
-  SWAN_VER=4.5
+  SWAN_VER=4.6
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   [ "$swan_ver_old" = "$SWAN_VER" ]
