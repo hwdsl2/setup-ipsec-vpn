@@ -94,7 +94,8 @@ Version to install: Libreswan $SWAN_VER
 Note: This script will make the following changes to your VPN configuration:
       - Fix obsolete ipsec.conf and/or ikev2.conf options
       - Optimize VPN ciphers
-      Your other VPN config files will not be modified.
+      IKEv2 helper script will be updated to the latest version. Your other
+      VPN config files will not be modified.
 
 EOF
 
@@ -186,6 +187,22 @@ restore_selinux() {
   restorecon /etc/ipsec.d/*db 2>/dev/null
   restorecon /usr/local/sbin -Rv 2>/dev/null
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+}
+
+update_ikev2_script() {
+  bigecho "Updating IKEv2 script..."
+  cd /opt/src || exit 1
+  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
+  (
+    set -x
+    wget -t 3 -T 30 -q -O ikev2.sh.new "$ikev2_url"
+  ) || /bin/rm -f ikev2.sh.new
+  if [ -s ikev2.sh.new ]; then
+    [ -s ikev2.sh ] && /bin/cp -f ikev2.sh ikev2.sh.old
+    /bin/cp -f ikev2.sh.new ikev2.sh && chmod +x ikev2.sh \
+      && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+    /bin/rm -f ikev2.sh.new
+  fi
 }
 
 update_config() {
@@ -289,6 +306,7 @@ vpnupgrade() {
   get_libreswan
   install_libreswan
   restore_selinux
+  update_ikev2_script
   update_config
   restart_ipsec
   show_setup_complete
