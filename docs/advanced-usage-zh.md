@@ -40,7 +40,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 使用 Libreswan 4.2 或更新版本，高级用户可以为 VPN 服务器启用仅限 IKEv2 模式。当启用该模式时，VPN 客户端仅能使用 IKEv2 连接到 VPN 服务器。所有的 IKEv1 连接（包括 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式）将被丢弃。
 
-要启用仅限 IKEv2 模式，首先按照[自述文件](../README-zh.md)中的说明安装 VPN 服务器并且配置 IKEv2。然后运行[辅助脚本](../extras/ikev2onlymode.sh)并按提示操作。
+要启用仅限 IKEv2 模式，首先按照 [自述文件](../README-zh.md) 中的说明安装 VPN 服务器并且配置 IKEv2。然后运行 [辅助脚本](../extras/ikev2onlymode.sh) 并按提示操作。
 
 ```bash
 # 下载脚本
@@ -56,7 +56,7 @@ sudo bash ikev2onlymode.sh
 另外，你也可以手动启用仅限 IKEv2 模式。点这里查看详情。
 </summary>
 
-另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
+另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并 [更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 </details>
 
 ## VPN 内网 IP 和流量

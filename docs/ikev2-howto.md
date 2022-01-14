@@ -118,7 +118,7 @@ Windows 8.x, 10 and 11 users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
 1. Download and save [this helper script](https://dl.ls20.com/scripts/ikev2_config_import.cmd) to the **same folder** as the `.p12` file.
-1. Right-click on the saved script, select **Properties**. Click on **Unblock** [at the bottom](https://www.thewindowsclub.com/microsoft-defender-smartscreen-prevented-an-unrecognized-app-from-starting), then click on **OK**.
+1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
 Alternatively, you may manually import IKEv2 configuration. These steps apply to Windows 7, 8.x, 10 and 11.
