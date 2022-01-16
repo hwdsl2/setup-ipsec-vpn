@@ -111,8 +111,8 @@ Version to install: Libreswan $SWAN_VER
 Note: This script will make the following changes to your VPN configuration:
       - Fix obsolete ipsec.conf and/or ikev2.conf options
       - Optimize VPN ciphers
-      IKEv2 helper script will be updated to the latest version. Your other
-      VPN config files will not be modified.
+      - Update IKEv2 helper script
+      Your other VPN config files will not be modified.
 
 EOF
 
