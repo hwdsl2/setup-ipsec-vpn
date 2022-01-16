@@ -117,7 +117,7 @@ To customize IKEv2 or client options, run this script without arguments.
 Windows 8.x, 10 and 11 users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
-1. Download and save [this helper script](https://dl.ls20.com/scripts/ikev2_config_import.cmd) to the **same folder** as the `.p12` file.
+1. Right-click [ikev2_config_import.cmd](https://dl.ls20.com/scripts/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 

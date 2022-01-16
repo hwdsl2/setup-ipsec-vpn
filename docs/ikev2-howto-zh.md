@@ -117,7 +117,7 @@ To customize IKEv2 or client options, run this script without arguments.
 Windows 8.x, 10 和 11 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
-1. 下载并保存 [这个辅助脚本](https://dl.ls20.com/scripts/ikev2_config_import.cmd) 到与 `.p12` 文件 **相同的文件夹**。
+1. 右键单击 [ikev2_config_import.cmd](https://dl.ls20.com/scripts/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
 1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
 1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
 

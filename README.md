@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
-Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2 on Ubuntu, Debian and CentOS. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
@@ -28,7 +28,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 ## Quick start
 
 First, prepare your Linux server\* with a fresh install of one of the following OS:   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Linux
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux OS, Amazon Linux 2 or Alpine Linux
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). Use Rocky Linux, AlmaLinux OS or CentOS Stream 8.
+\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may use e.g. Rocky Linux or AlmaLinux OS.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 

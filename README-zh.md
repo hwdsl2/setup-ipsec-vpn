@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 
-使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP, Cisco IPsec 和 IKEv2 协议，可用于 Ubuntu, Debian 和 CentOS 系统。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP, Cisco IPsec 和 IKEv2 协议。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
@@ -28,7 +28,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上全新安装以下系统之一：   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpine Linux
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux OS, Amazon Linux 2 或者 Alpine Linux
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -82,7 +82,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 <a name="debian-10-note"></a>
 \* Debian 11 或者 10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用 Rocky Linux, AlmaLinux OS 或者 CentOS Stream 8。
+\*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用比如 Rocky Linux 或者 AlmaLinux OS。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
