@@ -1,6 +1,6 @@
 # Guide: How to Set Up and Use IKEv2 VPN
 
-*Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md).*
+*Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
 
 **Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -102,7 +102,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## Configure IKEv2 VPN clients
 
-*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
+*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
 
 **Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
@@ -758,7 +758,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Troubleshooting
 
-*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除).*
+*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 

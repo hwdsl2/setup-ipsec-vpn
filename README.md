@@ -153,7 +153,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
+*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 

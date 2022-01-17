@@ -1,6 +1,6 @@
 # Configure IPsec/XAuth VPN Clients
 
-*Read this in other languages: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md).*
+*Read this in other languages: [English](clients-xauth.md), [简体中文](clients-xauth-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
 
 **Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/L2TP](clients.md) mode.
 

@@ -153,7 +153,7 @@ sh vpn.sh
 
 ## 重要提示
 
-*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
+*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
