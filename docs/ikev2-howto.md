@@ -1,6 +1,6 @@
 # Guide: How to Set Up and Use IKEv2 VPN
 
-*Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -19,10 +19,10 @@ Modern operating systems (such as Windows 7 and newer) support the IKEv2 standar
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
 
-- Windows 7, 8.x, 10 and 11
+- Windows 7, 8, 10 and 11
 - OS X (macOS)
 - iOS (iPhone/iPad)
-- Android 4.x and newer (using the strongSwan VPN client)
+- Android 4 and newer (using the strongSwan VPN client)
 - Linux
 
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
@@ -47,14 +47,14 @@ When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-cl
 Error: "sudo: ikev2.sh: command not found".
 </summary>
 
-This is normal if you used an older version of the VPN setup script. Please download and run the IKEv2 helper script:
+This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
 
-```
-wget https://git.io/ikev2setup -O ~/ikev2.sh
-sudo bash ~/ikev2.sh --auto
+```bash
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
-**Note:** The script must be run using `bash`, not `sh`.
+Then run the script using the instructions above.
 </details>
 <details>
 <summary>
@@ -63,20 +63,32 @@ You may optionally specify a DNS name, client name and/or custom DNS servers. Cl
 
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
 
-```
+```bash
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
 
-```
+```bash
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
 By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
 
-```
+```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
+```
+</details>
+<details>
+<summary>
+Learn how to update the IKEv2 helper script on your server.
+</summary>
+
+The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
+
+```bash
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 </details>
 <details>
@@ -102,26 +114,26 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## Configure IKEv2 VPN clients
 
-*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
-* [Windows 7, 8.x, 10 and 11](#windows-7-8x-10-and-11)
+* [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
 
-### Windows 7, 8.x, 10 and 11
+### Windows 7, 8, 10 and 11
 
-Windows 8.x, 10 and 11 users can automatically import IKEv2 configuration:
+Windows 8, 10 and 11 users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
-1. Right-click [ikev2_config_import.cmd](https://dl.ls20.com/scripts/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
+1. Right-click on [ikev2_config_import.cmd](https://dl.ls20.com/scripts/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
-Alternatively, you may manually import IKEv2 configuration. These steps apply to Windows 7, 8.x, 10 and 11.
+Alternatively, you may manually import IKEv2 configuration. These steps apply to Windows 7, 8, 10 and 11.
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
@@ -132,7 +144,7 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
 
    Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8.x, 10 and 11, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
+1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8, 10 and 11, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -145,7 +157,7 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
 
 1. (**This step is required if you manually created the VPN connection**) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
-   - For Windows 7, 8.x, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+   - For Windows 7, 8, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
      ```console
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
@@ -758,7 +770,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Troubleshooting
 
-*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 

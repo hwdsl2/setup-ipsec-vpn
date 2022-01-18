@@ -1,6 +1,6 @@
 # Deploy to Microsoft Azure
 
-*Read this in other languages: [English](README.md), [简体中文](README-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](README.md), [简体中文](README-zh.md). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 This template will create a fully working VPN server on the Microsoft Azure Cloud ([pricing details](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/)).
 

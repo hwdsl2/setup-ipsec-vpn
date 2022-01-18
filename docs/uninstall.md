@@ -1,6 +1,6 @@
 # Uninstall the VPN
 
-*Read this in other languages: [English](uninstall.md), [简体中文](uninstall-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](uninstall.md), [简体中文](uninstall-zh.md). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 * [Uninstall using helper script](#uninstall-using-helper-script)
 * [Manually uninstall the VPN](#manually-uninstall-the-vpn)

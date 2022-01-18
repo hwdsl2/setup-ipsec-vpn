@@ -1,6 +1,6 @@
 # Configure IPsec/L2TP VPN Clients
 
-*Read this in other languages: [English](clients.md), [简体中文](clients-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](clients.md), [简体中文](clients-zh.md). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -41,7 +41,7 @@ To connect to the VPN: Click the **Connect** button, or click on the wireless/ne
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
-### Windows 10 and 8.x
+### Windows 10 and 8
 
 1. Right-click on the wireless/network icon in your system tray.
 1. Select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**.
@@ -236,7 +236,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 
 ## Troubleshooting
 
-*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **See also:** [Check logs and VPN status](#check-logs-and-vpn-status), [IKEv2 troubleshooting](ikev2-howto.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
@@ -263,7 +263,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 
 To fix this error, a [one-time registry change](https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809) is required because the VPN server and/or client is behind NAT (e.g. home router). Download and import the `.reg` file below, or run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/). **You must reboot your PC when finished.**
 
-- For Windows Vista, 7, 8.x, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
+- For Windows Vista, 7, 8, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
@@ -277,7 +277,7 @@ To fix this error, a [one-time registry change](https://documentation.meraki.com
 
 Although uncommon, some Windows systems disable IPsec encryption, causing the connection to fail. To re-enable it, run the following command and reboot your PC.
 
-- For Windows XP, Vista, 7, 8.x, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
+- For Windows XP, Vista, 7, 8, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
@@ -325,7 +325,7 @@ After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-
 
 ### Windows DNS leaks and IPv6
 
-Windows 8.x, 10 and 11 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter are from the local network segment. To fix, you may either [disable smart multi-homed name resolution](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/), or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). When finished, [clear the DNS cache](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-) and reboot your PC.
+Windows 8, 10 and 11 use "smart multi-homed name resolution" by default, which may cause "DNS leaks" when using the native IPsec VPN client if your DNS servers on the Internet adapter are from the local network segment. To fix, you may either [disable smart multi-homed name resolution](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/), or configure your Internet adapter to use DNS servers outside your local network (e.g. 8.8.8.8 and 8.8.4.4). When finished, [clear the DNS cache](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-) and reboot your PC.
 
 In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to [disable IPv6](https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users) in Windows. If you need a VPN with IPv6 support, you could instead try [OpenVPN](https://github.com/Nyr/openvpn-install).
 

@@ -80,7 +80,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 11 或者 10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
+\* Debian 11/10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
 \*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用比如 Rocky Linux 或者 AlmaLinux OS。
 
@@ -139,7 +139,7 @@ sh vpn.sh
 
 ## 下一步
 
-配置你的计算机或其它设备使用 VPN 。请参见：
+配置你的计算机或其它设备使用 VPN。请参见：
 
 [**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
 
@@ -149,11 +149,11 @@ sh vpn.sh
 
 如果在连接过程中遇到错误，请参见 [故障排除](docs/clients-zh.md#故障排除)。
 
-开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
+开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
@@ -171,7 +171,7 @@ sh vpn.sh
 
 ## 升级Libreswan
 
-使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
+使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
@@ -205,6 +205,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 
 - 有问题需要提问？请先搜索 [已有的 issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) 以及在 [这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 和 [我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread) 上已有的留言。
 - VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 邮件列表提问，或者参考这些网站：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
+- 如果你有改进建议或意见，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。
 - 如果你发现了一个可重复的程序漏洞，请提交一个 [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue)。
 
 ## 卸载说明

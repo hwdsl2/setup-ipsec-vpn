@@ -80,7 +80,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 11 or 10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
+\* Debian 11/10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
 \*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may use e.g. Rocky Linux or AlmaLinux OS.
 
@@ -153,7 +153,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
@@ -171,7 +171,7 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/master/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.6`. Check installed version: `ipsec --version`.
+Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.6`. Check installed version: `ipsec --version`.
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
@@ -205,6 +205,7 @@ See [Advanced usage](docs/advanced-usage.md).
 
 - Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
+- Have a comment or suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).
 - If you found a reproducible bug, open a [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) to submit a bug report.
 
 ## Uninstallation

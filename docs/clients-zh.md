@@ -1,6 +1,6 @@
 # 配置 IPsec/L2TP VPN 客户端
 
-*其他语言版本: [English](clients.md), [简体中文](clients-zh.md)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](clients.md), [简体中文](clients-zh.md)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -41,7 +41,7 @@
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
-### Windows 10 and 8.x
+### Windows 10 and 8
 
 1. 右键单击系统托盘中的无线/网络图标。
 1. 选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击 **网络和共享中心**。
@@ -237,7 +237,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 ## 故障排除
 
-*其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **另见：** [检查日志及 VPN 状态](#检查日志及-vpn-状态)，[IKEv2 故障排除](ikev2-howto-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
@@ -264,7 +264,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 要解决此错误，在首次连接之前需要[修改一次注册表](https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Windows_Error_809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。请下载并导入下面的 `.reg` 文件，或者打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令。**完成后必须重启计算机。**
 
-- 适用于 Windows Vista, 7, 8.x, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
+- 适用于 Windows Vista, 7, 8, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Windows_Vista_7_8_10_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
@@ -278,7 +278,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 另外，某些个别的 Windows 系统配置禁用了 IPsec 加密，此时也会导致连接失败。要重新启用它，可以运行以下命令并重启。
 
-- 适用于 Windows XP, Vista, 7, 8.x, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
+- 适用于 Windows XP, Vista, 7, 8, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
 
   ```console
   REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
@@ -326,7 +326,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 ### Windows DNS 泄漏和 IPv6
 
-Windows 8.x, 10 和 11 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后[清除 DNS 缓存](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-)并且重启计算机。
+Windows 8, 10 和 11 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后[清除 DNS 缓存](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-)并且重启计算机。
 
 另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/Nyr/openvpn-install)。
 

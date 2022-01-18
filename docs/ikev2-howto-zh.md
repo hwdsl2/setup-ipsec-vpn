@@ -1,6 +1,6 @@
 # IKEv2 VPN 配置和使用指南
 
-*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -19,10 +19,10 @@
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
 
-- Windows 7, 8.x, 10 和 11
+- Windows 7, 8, 10 和 11
 - OS X (macOS)
 - iOS (iPhone/iPad)
-- Android 4.x 和更新版本（使用 strongSwan VPN 客户端）
+- Android 4 和更新版本（使用 strongSwan VPN 客户端）
 - Linux
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
@@ -47,14 +47,14 @@ sudo ikev2.sh
 错误："sudo: ikev2.sh: command not found".
 </summary>
 
-如果你使用了较早版本的 VPN 安装脚本，这是正常的。请下载并运行 IKEv2 辅助脚本：
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载 IKEv2 辅助脚本：
 
-```
-wget https://git.io/ikev2setup -O ~/ikev2.sh
-sudo bash ~/ikev2.sh --auto
+```bash
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
-**注：** 该脚本必须使用 `bash` 而不是 `sh` 运行。
+然后按照上面的说明运行脚本。
 </details>
 <details>
 <summary>
@@ -63,20 +63,32 @@ sudo bash ~/ikev2.sh --auto
 
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
 
-```
+```bash
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
 类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
 
-```
+```bash
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
 在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
 
-```
+```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
+```
+</details>
+<details>
+<summary>
+了解如何更新服务器上的 IKEv2 辅助脚本。
+</summary>
+
+IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
+
+```bash
+wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 </details>
 <details>
@@ -102,26 +114,26 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## 配置 IKEv2 VPN 客户端
 
-*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
 
-* [Windows 7, 8.x, 10 和 11](#windows-7-8x-10-和-11)
+* [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
 
-### Windows 7, 8.x, 10 和 11
+### Windows 7, 8, 10 和 11
 
-Windows 8.x, 10 和 11 用户可以自动导入 IKEv2 配置：
+Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 1. 右键单击 [ikev2_config_import.cmd](https://dl.ls20.com/scripts/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
 1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
 1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
 
-或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 Windows 7, 8.x, 10 和 11。
+或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 Windows 7, 8, 10 和 11。
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
@@ -132,7 +144,7 @@ Windows 8.x, 10 和 11 用户可以自动导入 IKEv2 配置：
 
    或者，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8.x, 10 和 11，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8, 10 和 11，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -145,7 +157,7 @@ Windows 8.x, 10 和 11 用户可以自动导入 IKEv2 配置：
 
 1. （**此步骤为必须，如果你手动创建了 VPN 连接**）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
-   - 适用于 Windows 7, 8.x, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+   - 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
      ```console
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
@@ -756,7 +768,7 @@ sudo ikev2.sh --revokeclient [client name]
 
 ## 故障排除
 
-*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。如果你有改进建议，可以在<a href="https://blog.ls20.com/vpnfeedback" target="_blank">这里</a>提交。*
+*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
