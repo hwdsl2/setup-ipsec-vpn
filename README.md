@@ -153,7 +153,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
+*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
@@ -205,7 +205,6 @@ See [Advanced usage](docs/advanced-usage.md).
 
 - Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
-- Have a comment or suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).
 - If you found a reproducible bug, open a [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) to submit a bug report.
 
 ## Uninstallation

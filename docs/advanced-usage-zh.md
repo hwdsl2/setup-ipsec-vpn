@@ -1,6 +1,6 @@
 # 高级用法
 
-*其他语言版本: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md)。如果你有改进建议，可以在 [这里](https://blog.ls20.com/vpnfeedback) 提交。*
+*其他语言版本: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md)。*
 
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
