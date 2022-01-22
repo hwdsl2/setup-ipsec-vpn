@@ -157,7 +157,7 @@ Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
 
 1. （**此步骤为必须，如果你手动创建了 VPN 连接**）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
-   - 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+   - 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/latest/download/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
      ```console
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f

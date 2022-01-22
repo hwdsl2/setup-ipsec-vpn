@@ -157,7 +157,7 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
 
 1. (**This step is required if you manually created the VPN connection**) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
-   - For Windows 7, 8, 10 and 11 ([download .reg file](https://dl.ls20.com/reg-files/v1/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+   - For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/latest/download/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
      ```console
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
