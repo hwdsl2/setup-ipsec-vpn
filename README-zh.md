@@ -43,7 +43,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 单击此处查看 VPN 脚本的示例输出（终端记录）。
 </summary>
 
-**注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据**无效**。
+**注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据 **无效**。
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
@@ -163,7 +163,7 @@ sh vpn.sh
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以 [使用其他的 DNS 服务器](docs/advanced-usage-zh.md)。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请参见 [高级用法](docs/advanced-usage-zh.md)。
 
 使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)`（或者 `linux-image-extra`）软件包并运行 `service xl2tpd restart`。
 
@@ -171,11 +171,13 @@ sh vpn.sh
 
 ## 升级Libreswan
 
-使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。目前支持的最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
+使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 ```
+
+当前支持的 Libreswan 最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
 
 **注：** `xl2tpd` 可以使用系统的软件包管理器进行更新，例如 Ubuntu/Debian 上的 `apt-get`。
 

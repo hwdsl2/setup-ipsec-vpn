@@ -163,7 +163,7 @@ To view or update VPN user accounts, see [Manage VPN users](docs/manage-users.md
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, you may [use alternative DNS servers](docs/advanced-usage.md).
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, see [Advanced usage](docs/advanced-usage.md).
 
 Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
 
@@ -171,11 +171,13 @@ The scripts will backup existing config files before making changes, with `.old-
 
 ## Upgrade Libreswan
 
-Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server. The latest supported version is `4.6`. Check installed version: `ipsec --version`.
+Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server.
 
 ```bash
 wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 ```
+
+The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
 
 **Note:** `xl2tpd` can be updated using your system's package manager, such as `apt-get` on Ubuntu/Debian.
 
