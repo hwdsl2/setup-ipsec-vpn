@@ -60,7 +60,6 @@ check_vz() {
 
 check_os() {
   os_type=$(lsb_release -si 2>/dev/null)
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
   case $os_type in
     [Aa]lpine)
@@ -133,9 +132,6 @@ check_dns() {
 
 start_setup() {
   bigecho "VPN setup in progress... Please be patient."
-  # shellcheck disable=SC2154
-  trap 'dlo=$dl;dl=$LINENO' DEBUG 2>/dev/null
-  trap 'finish $? $((dlo+1))' EXIT
   mkdir -p /opt/src
   cd /opt/src || exit 1
 }
@@ -174,18 +170,17 @@ install_fail2ban() {
   ) || exiterr2
 }
 
-get_ikev2_script() {
-  bigecho "Downloading IKEv2 script..."
-  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
-  (
-    set -x
-    wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
-  ) || /bin/rm -f ikev2.sh
-  [ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+get_swan_ver() {
+  base_url="https://github.com/hwdsl2/vpn-extras/raw/main/ver/v1"
+  swan_ver_url="$base_url/$os_type/$os_ver/swanver"
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
+  SWAN_VER=4.6
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'; then
+    SWAN_VER="$swan_ver_latest"
+  fi
 }
 
 check_libreswan() {
-  SWAN_VER=4.6
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   [ "$swan_ver_old" = "$SWAN_VER" ]
@@ -233,6 +228,16 @@ EOF
       exiterr "Libreswan $SWAN_VER failed to build."
     fi
   fi
+}
+
+get_ikev2_script() {
+  bigecho "Downloading IKEv2 script..."
+  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
+  (
+    set -x
+    wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
+  ) || /bin/rm -f ikev2.sh
+  [ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 }
 
 create_vpn_config() {
@@ -497,27 +502,6 @@ IKEv2 guide:       https://git.io/ikev2
 EOF
 }
 
-check_swan_ver() {
-  swan_ver_url="https://dl.ls20.com/v1/$os_type/$os_ver/swanver?arch=$os_arch&ver=$SWAN_VER"
-  [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
-    && [ "$1" = "0" ] && [ -n "$SWAN_VER" ] && [ "$SWAN_VER" != "$swan_ver_latest" ] \
-    && printf '%s\n%s' "$SWAN_VER" "$swan_ver_latest" | sort -C -V; then
-cat <<EOF
-Note: A newer version of Libreswan ($swan_ver_latest) is available.
-      To update, run:
-      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
-
-EOF
-  fi
-}
-
-finish() {
-  check_swan_ver "$1" "$2"
-  exit "$1"
-}
-
 vpnsetup() {
   check_root
   check_vz
@@ -530,9 +514,10 @@ vpnsetup() {
   detect_ip
   install_vpn_pkgs
   install_fail2ban
-  get_ikev2_script
+  get_swan_ver
   get_libreswan
   install_libreswan
+  get_ikev2_script
   create_vpn_config
   update_sysctl
   update_iptables
