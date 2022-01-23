@@ -32,7 +32,6 @@ check_root() {
 }
 
 check_os() {
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   if ! grep -qs "Amazon Linux release 2" /etc/system-release; then
     exiterr "This script only supports Amazon Linux 2."
   fi
@@ -122,9 +121,6 @@ EOF
 }
 
 start_setup() {
-  # shellcheck disable=SC2154
-  trap 'dlo=$dl;dl=$LINENO' DEBUG 2>/dev/null
-  trap 'finish $? $((dlo+1))' EXIT
   mkdir -p /opt/src
   cd /opt/src || exit 1
 }
@@ -273,28 +269,6 @@ IMPORTANT: You must edit /etc/ipsec.conf and replace
 
 EOF
   fi
-}
-
-check_swan_ver() {
-  swan_ver_cur=4.6
-  swan_ver_url="https://dl.ls20.com/v1/amzn/2/swanverupg?arch=$os_arch&ver1=$swan_ver_old&ver2=$SWAN_VER"
-  [ "$1" != "0" ] && swan_ver_url="$swan_ver_url&e=$2"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
-    && [ "$1" = "0" ] && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
-    && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
-cat <<EOF
-Note: A newer version of Libreswan ($swan_ver_latest) is available.
-      To update, run:
-      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
-
-EOF
-  fi
-}
-
-finish() {
-  check_swan_ver "$1" "$2"
-  exit "$1"
 }
 
 vpnupgrade() {

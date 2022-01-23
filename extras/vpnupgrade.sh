@@ -14,8 +14,9 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.6
+# (Optional) Specify which Libreswan version to install. See: https://libreswan.org
+# NOTE: If not specified, the latest supported version will be installed.
+SWAN_VER=
 
 ### DO NOT edit below this line ###
 
@@ -91,40 +92,6 @@ EOF
 }
 
 check_libreswan() {
-  if [ "$os_type" != "alpine" ]; then
-    case $SWAN_VER in
-      3.32|4.[1-6])
-        true
-        ;;
-      *)
-cat 1>&2 <<EOF
-Error: Libreswan version '$SWAN_VER' is not supported.
-       This script can install one of these versions:
-       3.32, 4.1-4.5 or 4.6
-EOF
-        exit 1
-        ;;
-    esac
-  else
-    case $SWAN_VER in
-      4.[5-6])
-        true
-        ;;
-      *)
-cat 1>&2 <<EOF
-Error: Libreswan version '$SWAN_VER' is not supported.
-       This script can install one of these versions:
-       4.5 or 4.6
-EOF
-        exit 1
-        ;;
-    esac
-  fi
-
-  if [ "$SWAN_VER" = "3.32" ] && [ "$os_ver" = "11" ]; then
-    exiterr "Libreswan 3.32 is not supported on Debian 11."
-  fi
-
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
