@@ -189,6 +189,7 @@ check_libreswan() {
 get_libreswan() {
   if ! check_libreswan; then
     bigecho "Downloading Libreswan..."
+    cd /opt/src || exit 1
     swan_file="libreswan-$SWAN_VER.tar.gz"
     swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
     swan_url2="https://download.libreswan.org/$swan_file"
@@ -234,6 +235,7 @@ EOF
 
 get_ikev2_script() {
   bigecho "Downloading IKEv2 script..."
+  cd /opt/src || exit 1
   ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
   (
     set -x
