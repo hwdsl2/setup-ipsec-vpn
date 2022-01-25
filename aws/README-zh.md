@@ -7,7 +7,7 @@
 可用的自定义参数：
 
 - Amazon EC2 实例类型
-> **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://ec2instances.info](https://ec2instances.info)。
+> **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://instances.vantage.sh/](https://instances.vantage.sh/)。
 - VPN 服务器的操作系统（Ubuntu 20.04/18.04, Debian 9, CentOS 8/7, Amazon Linux 2）
 > **注：** 在 EC2 上使用 Debian 9 映像之前，你需要先在 AWS Marketplace 上订阅：[Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3)。
 - 你的 VPN 用户名
@@ -69,7 +69,7 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 
 要为私钥文件设置适当的权限，请在该文件所在的目录下运行以下命令：
 ```bash
-sudo chmod 400 key-file.pem
+$ sudo chmod 400 key-file.pem
 ```
 
 使用 SSH 登录到 EC2 实例的示例命令：
@@ -80,4 +80,4 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 
 ## 作者
 
-版权所有 (C) 2020-2021 [S. X. Liang](https://github.com/scottpedia)
+版权所有 (C) 2020-2022 [S. X. Liang](https://github.com/scottpedia)
