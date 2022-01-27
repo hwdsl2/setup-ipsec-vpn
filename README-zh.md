@@ -28,7 +28,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上全新安装以下系统之一：   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux OS, Amazon Linux 2 或者 Alpine Linux
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpine Linux
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -66,7 +66,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 - Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
-- CentOS 8[\*\*](#centos-8-note) 或者 7, Rocky Linux 8 或者 AlmaLinux OS 8
+- CentOS 8[\*\*](#centos-8-note) 或者 7, Rocky Linux 8 或者 AlmaLinux 8
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.15 或者 3.14
@@ -82,7 +82,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 <a name="debian-10-note"></a>
 \* Debian 11/10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用比如 Rocky Linux 或者 AlmaLinux OS。
+\*\* 对 CentOS Linux 8 的支持[已经结束](https://wiki.centos.org/About/Product)。你可以使用比如 Rocky Linux 或者 AlmaLinux。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 

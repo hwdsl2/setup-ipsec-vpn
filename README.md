@@ -28,7 +28,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 ## Quick start
 
 First, prepare your Linux server\* with a fresh install of one of the following OS:   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux OS, Amazon Linux 2 or Alpine Linux
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Linux
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -66,7 +66,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 - Ubuntu 20.04 (Focal) or 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
-- CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux OS 8
+- CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.15 or 3.14
@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11/10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may use e.g. Rocky Linux or AlmaLinux OS.
+\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may use e.g. Rocky Linux or AlmaLinux.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
