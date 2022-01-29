@@ -1134,27 +1134,18 @@ EOF
 }
 
 check_swan_ver() {
-  base_url="https://github.com/hwdsl2/vpn-extras/raw/main/ver/upg"
-  if [ "$in_container" = "0" ]; then
-    swan_ver_url="$base_url/$os_type/$os_ver/swanver"
-  else
-    swan_ver_url="$base_url/docker/$os_type/$os_arch/swanver"
-  fi
+  base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
+  swan_ver_url="$base_url/upg-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
-}
-
-show_update_info() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
-    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    if [ "$in_container" = "0" ]; then
-      echo "      To update, run:"
-      echo "      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh"
-    else
-      echo "      To update this Docker image, see: https://git.io/updatedockervpn"
-    fi
-    echo
+cat <<EOF
+Note: A newer version of Libreswan ($swan_ver_latest) is available.
+      To update, run:
+      wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
+
+EOF
   fi
 }
 
@@ -1449,8 +1440,9 @@ ikev2setup() {
   fi
   print_setup_complete
   print_client_info
-  check_swan_ver
-  show_update_info
+  if [ "$in_container" = "0" ]; then
+    check_swan_ver
+  fi
 }
 
 ## Defer setup until we have the complete script
