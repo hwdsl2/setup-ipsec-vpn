@@ -1130,7 +1130,7 @@ https://git.io/ikev2clients
 EOF
 }
 
-check_swan_ver() {
+check_swan_update() {
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
@@ -1439,7 +1439,7 @@ ikev2setup() {
   print_setup_complete
   print_client_info
   if [ "$in_container" = "0" ]; then
-    check_swan_ver
+    check_swan_update
   fi
 }
 
