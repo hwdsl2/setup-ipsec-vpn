@@ -78,25 +78,6 @@ Error: This script requires Libreswan already installed.
 EOF
     exit 1
   fi
-
-  if [ "$swan_ver_old" = "$SWAN_VER" ]; then
-cat <<EOF
-You already have Libreswan version $SWAN_VER installed!
-If you continue, the same version will be re-installed.
-
-EOF
-    printf "Do you want to continue anyway? [y/N] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY])
-        echo
-        ;;
-      *)
-        echo "Abort. No changes were made."
-        exit 1
-        ;;
-    esac
-  fi
 }
 
 show_setup_info() {
@@ -120,6 +101,14 @@ cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
          Are you sure you want to install an older version?
+
+EOF
+  fi
+
+  if [ "$swan_ver_old" = "$SWAN_VER" ]; then
+cat <<EOF
+Note: You already have Libreswan version $SWAN_VER installed!
+      If you continue, the same version will be re-installed.
 
 EOF
   fi

@@ -46,7 +46,7 @@ check_libreswan() {
 cat 1>&2 <<EOF
 Error: Libreswan version '$SWAN_VER' is not supported.
        This script can install one of these versions:
-       3.32, 4.1-4.5 or 4.6
+       3.32, 4.1-4.6
 EOF
       exit 1
       ;;
@@ -60,25 +60,6 @@ Error: This script requires Libreswan already installed.
        See: https://github.com/hwdsl2/setup-ipsec-vpn
 EOF
     exit 1
-  fi
-
-  if [ "$swan_ver_old" = "$SWAN_VER" ]; then
-cat <<EOF
-You already have Libreswan version $SWAN_VER installed!
-If you continue, the same version will be re-installed.
-
-EOF
-    printf "Do you want to continue anyway? [y/N] "
-    read -r response
-    case $response in
-      [yY][eE][sS]|[yY])
-        echo
-        ;;
-      *)
-        echo "Abort. No changes were made."
-        exit 1
-        ;;
-    esac
   fi
 }
 
@@ -103,6 +84,14 @@ cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
          Are you sure you want to install an older version?
+
+EOF
+  fi
+
+  if [ "$swan_ver_old" = "$SWAN_VER" ]; then
+cat <<EOF
+Note: You already have Libreswan version $SWAN_VER installed!
+      If you continue, the same version will be re-installed.
 
 EOF
   fi
