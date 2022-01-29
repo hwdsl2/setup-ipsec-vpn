@@ -15,7 +15,7 @@
 # know how you have improved it!
 
 # (Optional) Specify which Libreswan version to install. See: https://libreswan.org
-# NOTE: If not specified, the latest supported version will be installed.
+# If not specified, the latest supported version will be installed.
 SWAN_VER=
 
 ### DO NOT edit below this line ###

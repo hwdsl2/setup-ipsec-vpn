@@ -13,8 +13,9 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# Specify which Libreswan version to install. See: https://libreswan.org
-SWAN_VER=4.6
+# (Optional) Specify which Libreswan version to install. See: https://libreswan.org
+# If not specified, the latest supported version will be installed.
+SWAN_VER=
 
 ### DO NOT edit below this line ###
 
@@ -56,26 +57,36 @@ check_os() {
 }
 
 check_libreswan() {
-  case $SWAN_VER in
-    3.32|4.[1-6])
-      true
-      ;;
-    *)
-cat 1>&2 <<EOF
-Error: Libreswan version '$SWAN_VER' is not supported.
-       This script can install one of these versions:
-       3.32, 4.1-4.6
-EOF
-      exit 1
-      ;;
-  esac
-
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.
        See: https://github.com/hwdsl2/setup-ipsec-vpn
+EOF
+    exit 1
+  fi
+}
+
+get_swan_ver() {
+  swan_ver_cur=4.6
+  base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
+  swan_ver_url="$base_url/upg-v1-$os_type-$os_ver-swanver"
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'; then
+    swan_ver_cur="$swan_ver_latest"
+  fi
+  [ -z "$SWAN_VER" ] && SWAN_VER="$swan_ver_cur"
+}
+
+check_swan_ver() {
+  if [ "$SWAN_VER" != "3.32" ] \
+    && { ! printf '%s\n%s' "4.1" "$SWAN_VER" | sort -C -V \
+    || ! printf '%s\n%s' "$SWAN_VER" "$swan_ver_cur" | sort -C -V; }; then
+cat 1>&2 <<EOF
+Error: Libreswan version '$SWAN_VER' is not supported.
+       This script can install one of these versions:
+       3.32, 4.1-$swan_ver_cur
 EOF
     exit 1
   fi
@@ -97,7 +108,7 @@ Note: This script will make the following changes to your VPN configuration:
 
 EOF
 
-  if [ "$SWAN_VER" != "4.6" ]; then
+  if [ "$SWAN_VER" != "$swan_ver_cur" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
          See https://libreswan.org/security/ for more information.
@@ -286,10 +297,8 @@ IMPORTANT: You must edit /etc/ipsec.conf and replace
            all occurrences of these two lines:
              modecfgdns1=DNS_SERVER_1
              modecfgdns2=DNS_SERVER_2
-
            with a single line like this:
              modecfgdns="DNS_SERVER_1 DNS_SERVER_2"
-
            Then run "sudo service ipsec restart".
 
 EOF
@@ -301,6 +310,8 @@ vpnupgrade() {
   check_vz
   check_os
   check_libreswan
+  get_swan_ver
+  check_swan_ver
   show_setup_info
   start_setup
   install_pkgs_1
