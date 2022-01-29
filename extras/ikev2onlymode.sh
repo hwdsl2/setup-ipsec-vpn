@@ -62,20 +62,18 @@ Error: Your must first set up IKEv2 before selecting IKEv2-only mode.
 EOF
     exit 1
   fi
-  case $swan_ver in
-    4.[2-9]|4.[1-9][0-9])
-      true
-      ;;
-    *)
+}
+
+check_swan_ver() {
+  if ! printf '%s\n%s' "4.2" "$swan_ver" | sort -C -V; then
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        IKEv2-only mode requires Libreswan 4.2 or newer.
        To update Libreswan, run:
        wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 EOF
-      exit 1
-      ;;
-  esac
+    exit 1
+  fi
 }
 
 get_ikev2_only_status() {
@@ -157,6 +155,7 @@ EOF
 ikev2onlymode() {
   check_root
   check_libreswan
+  check_swan_ver
   get_ikev2_only_status
   select_menu_option
   case $selected_option in
