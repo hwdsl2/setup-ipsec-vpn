@@ -511,7 +511,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.4 4.6; do
+          for ver in 4.4 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -986,7 +986,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.4 4.6; do
+          for ver in 4.4 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -1396,7 +1396,7 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.5 4.6; do
+          for ver in 4.5 ""; do
             ipsec whack --shutdown || true
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
