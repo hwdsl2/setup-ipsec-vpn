@@ -120,21 +120,18 @@ Error: Your must first set up the IPsec VPN server before setting up IKEv2.
 EOF
     exit 1
   fi
-  case $swan_ver in
-    3.2[35679]|3.3[12]|4.*)
-      true
-      ;;
-    *)
+}
+
+check_swan_ver() {
+  if ! printf '%s\n%s' "3.23" "$swan_ver" | sort -C -V; then
 cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
-       This script requires one of these versions:
-       3.23, 3.25-3.27, 3.29, 3.31-3.32 or 4.x
+       This script requires Libreswan 3.23 or newer.
        To update Libreswan, run:
        wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 EOF
-      exit 1
-      ;;
-  esac
+    exit 1
+  fi
 }
 
 check_utils_exist() {
@@ -1212,6 +1209,7 @@ ikev2setup() {
   check_container
   check_os
   check_libreswan
+  check_swan_ver
   check_utils_exist
 
   use_defaults=0
