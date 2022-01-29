@@ -173,6 +173,8 @@ jobs:
           systemctl start rsyslog
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
+
           sh vpnsetup.sh
 
           systemctl start xl2tpd
@@ -207,6 +209,9 @@ jobs:
           fi
 
           wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
+            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
+
           sh quickstart.sh
 
           systemctl restart xl2tpd
@@ -247,6 +252,7 @@ jobs:
           else
             wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
           fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -282,6 +288,8 @@ jobs:
           ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
           bash ikev2.sh <<ANSWERS
 
 
@@ -501,8 +509,9 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.4 ""; do
+          for ver in 4.4 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -519,6 +528,7 @@ jobs:
           else
             wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
           fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 4.5 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
@@ -650,6 +660,8 @@ jobs:
           service rsyslog start
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
+
           sh vpnsetup.sh
 
           restart_ipsec
@@ -680,6 +692,9 @@ jobs:
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
+            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
+
           sh quickstart.sh
 
           restart_ipsec
@@ -712,6 +727,7 @@ jobs:
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -746,6 +762,8 @@ jobs:
           ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
           bash ikev2.sh <<ANSWERS
 
 
@@ -966,8 +984,9 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.4 ""; do
+          for ver in 4.4 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -980,6 +999,7 @@ jobs:
           done
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 4.5 4.6; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
@@ -1045,6 +1065,8 @@ jobs:
           rsyslogd
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
+
           sh vpnsetup.sh
 
           ipsec initnss
@@ -1077,6 +1099,9 @@ jobs:
           killall xl2tpd || true
 
           wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
+            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
+
           sh quickstart.sh
 
           xl2tpd -c /etc/xl2tpd/xl2tpd.conf
@@ -1110,6 +1135,7 @@ jobs:
           killall xl2tpd || true
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-alpine
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -1146,6 +1172,8 @@ jobs:
           ls -l /opt/src/ikev2.sh
 
           wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
           bash ikev2.sh <<ANSWERS
 
 
@@ -1366,8 +1394,9 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.5 ""; do
+          for ver in 4.5 4.6; do
             ipsec whack --shutdown || true
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
@@ -1382,6 +1411,7 @@ jobs:
           done
 
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-alpine
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 4.5 4.6; do
             ipsec whack --shutdown || true
