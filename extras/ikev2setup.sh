@@ -281,7 +281,7 @@ check_server_dns_name() {
 
 check_custom_dns() {
   if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
-    || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; } then
+    || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; }; then
     exiterr "Invalid DNS server(s)."
   fi
 }
@@ -1031,7 +1031,7 @@ apply_ubuntu1804_nss_fix() {
 }
 
 restart_ipsec_service() {
-  if [ "$in_container" = "0" ] || { [ "$in_container" = "1" ] && service ipsec status >/dev/null 2>&1; } then
+  if [ "$in_container" = "0" ] || { [ "$in_container" = "1" ] && service ipsec status >/dev/null 2>&1; }; then
     bigecho2 "Restarting IPsec service..."
     mkdir -p /run/pluto
     service ipsec restart 2>/dev/null
