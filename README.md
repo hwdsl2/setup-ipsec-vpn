@@ -73,7 +73,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
-[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com/) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
+[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11/10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may use e.g. Rocky Linux or AlmaLinux.
+\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may instead use e.g. Rocky Linux or AlmaLinux.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
