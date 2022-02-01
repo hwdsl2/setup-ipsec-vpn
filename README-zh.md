@@ -66,7 +66,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 - Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
-- CentOS 7[\*\*](#centos-8-note), Rocky Linux 8 或者 AlmaLinux 8
+- CentOS 7, Rocky Linux 8 或者 AlmaLinux 8[\*\*](#centos-8-note)
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.15 或者 3.14

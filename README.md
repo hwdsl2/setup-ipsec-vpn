@@ -66,7 +66,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 - Ubuntu 20.04 (Focal) or 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
-- CentOS 7[\*\*](#centos-8-note), Rocky Linux 8 or AlmaLinux 8
+- CentOS 7, Rocky Linux 8 or AlmaLinux 8[\*\*](#centos-8-note)
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.15 or 3.14
