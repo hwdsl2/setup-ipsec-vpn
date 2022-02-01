@@ -66,14 +66,14 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 - Ubuntu 20.04 (Focal) or 18.04 (Bionic)
 - Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
-- CentOS 8[\*\*](#centos-8-note) or 7, Rocky Linux 8 or AlmaLinux 8
+- CentOS 7[\*\*](#centos-8-note), Rocky Linux 8 or AlmaLinux 8
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.15 or 3.14
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
-[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
+[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
@@ -82,7 +82,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 <a name="debian-10-note"></a>
 \* Debian 11/10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
 <a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is no longer supported](https://wiki.centos.org/About/Product). You may instead use e.g. Rocky Linux or AlmaLinux.
+\*\* CentOS Linux 8 [is no longer supported](https://www.centos.org/centos-linux-eol/). You may instead use e.g. Rocky Linux or AlmaLinux.
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
