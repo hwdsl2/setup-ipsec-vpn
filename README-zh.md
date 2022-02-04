@@ -139,15 +139,13 @@ sh vpn.sh
 
 ## 下一步
 
-1. （可选）[部署Google BBR拥塞控制算法](docs/bbr-zh.md)以提升服务器性能。
+配置你的计算机或其它设备使用 VPN。请参见：
 
-2. 配置你的计算机或其它设备使用 VPN。请参见：
+[**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
 
-    [**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
+[**配置 IPsec/L2TP VPN 客户端**](docs/clients-zh.md)
 
-    [**配置 IPsec/L2TP VPN 客户端**](docs/clients-zh.md)
-
-    [**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**](docs/clients-xauth-zh.md)
+[**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**](docs/clients-xauth-zh.md)
 
 如果在连接过程中遇到错误，请参见 [故障排除](docs/clients-zh.md#故障排除)。
 
@@ -204,6 +202,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
+- [部署Google BBR拥塞控制算法](docs/advanced-usage-zh.md#部署google-bbr拥塞控制算法)
 
 ## 问题和反馈
 
