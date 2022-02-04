@@ -88,7 +88,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Installation
 
-First, update your system with `sudo apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` and reboot. This is optional, but recommended.
+First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
