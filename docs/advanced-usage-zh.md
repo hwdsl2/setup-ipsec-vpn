@@ -10,6 +10,7 @@
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [更改 IPTables 规则](#更改-iptables-规则)
+* [部署Google BBR拥塞控制算法](#部署google-bbr拥塞控制算法)
 
 ## 使用其他的 DNS 服务器
 
@@ -278,6 +279,14 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 如果你想要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
 
 **注：** 如果使用 Rocky Linux, AlmaLinux 或者 CentOS/RHEL 8 并且在安装 VPN 时 firewalld 正在运行，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
+
+## 部署Google BBR拥塞控制算法
+
+VPN服务器搭建完成后，可以通过部署Google BBR拥塞控制算法提升性能。
+
+这通常只需要在配置文件 `/etc/sysctl.conf` 中插入设定即可完成。但是部分Linux发行版可能需要额外更新Linux Kernel。
+
+详细的部署方法，可以参考[这篇文档](bbr-zh.md)。
 
 ## 授权协议
 
