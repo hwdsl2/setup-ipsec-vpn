@@ -88,7 +88,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 ## 安装说明
 
-首先，更新你的系统：运行 `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) 或者 `yum update` 并重启。这一步是可选的，但推荐。
+首先，更新你的系统：运行 `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) 或者 `sudo yum update` 并重启。这一步是可选的，但推荐。
 
 要安装 VPN，请从以下选项中选择一个：
 
