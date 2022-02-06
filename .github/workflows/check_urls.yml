@@ -1,0 +1,107 @@
+#
+# Copyright (C) 2020-2022 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: check_urls
+
+on: workflow_call
+
+jobs:
+  check_urls:
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
+        with:
+          persist-credentials: false
+      - name: Check
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          mkdir workdir
+          cd workdir
+          set -ex
+
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yqq update
+          sudo apt-get -yqq install wget curl
+
+          wg="wget -t 3 -T 30 -nv -O"
+          gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
+          gi="https://git.io"
+
+          $wg vpnsetup.sh          "$gi/vpnsetup"
+          $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"
+          $wg vpnsetup_amzn.sh     "$gi/vpnsetup-amzn"
+          $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup-ubuntu"
+          $wg vpnsetup_alpine.sh   "$gi/vpnsetup-alpine"
+          $wg quickstart.sh        "$gi/vpnquickstart"
+          $wg ikev2setup.sh        "$gi/ikev2setup"
+          $wg vpnupgrade.sh        "$gi/vpnupgrade"
+          $wg vpnupgrade_centos.sh "$gi/vpnupgrade-centos"
+          $wg vpnupgrade_amzn.sh   "$gi/vpnupgrade-amzn"
+          $wg vpnupgrade_ubuntu.sh "$gi/vpnupgrade-ubuntu"
+          $wg vpnupgrade_alpine.sh "$gi/vpnupgrade-alpine"
+          $wg vpnuninstall.sh      "$gi/vpnuninstall"
+
+          $wg vpnsetup2.sh          "$gh/vpnsetup.sh"
+          $wg vpnsetup_centos2.sh   "$gh/vpnsetup_centos.sh"
+          $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"
+          $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"
+          $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"
+          $wg quickstart2.sh        "$gh/extras/quickstart.sh"
+          $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"
+          $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"
+          $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"
+          $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"
+          $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"
+          $wg vpnupgrade_alpine2.sh "$gh/extras/vpnupgrade_alpine.sh"
+          $wg vpnuninstall2.sh      "$gh/extras/vpnuninstall.sh"
+
+          diff vpnsetup.sh          ../vpnsetup.sh
+          diff vpnsetup_centos.sh   ../vpnsetup_centos.sh
+          diff vpnsetup_amzn.sh     ../vpnsetup_amzn.sh
+          diff vpnsetup_ubuntu.sh   ../vpnsetup_ubuntu.sh
+          diff vpnsetup_alpine.sh   ../vpnsetup_alpine.sh
+          diff quickstart.sh        ../extras/quickstart.sh
+          diff ikev2setup.sh        ../extras/ikev2setup.sh
+          diff vpnupgrade.sh        ../extras/vpnupgrade.sh
+          diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
+          diff vpnupgrade_amzn.sh   ../extras/vpnupgrade_amzn.sh
+          diff vpnupgrade_ubuntu.sh ../extras/vpnupgrade_ubuntu.sh
+          diff vpnupgrade_alpine.sh ../extras/vpnupgrade_alpine.sh
+          diff vpnuninstall.sh      ../extras/vpnuninstall.sh
+
+          diff vpnsetup2.sh          ../vpnsetup.sh
+          diff vpnsetup_centos2.sh   ../vpnsetup_centos.sh
+          diff vpnsetup_amzn2.sh     ../vpnsetup_amzn.sh
+          diff vpnsetup_ubuntu2.sh   ../vpnsetup_ubuntu.sh
+          diff vpnsetup_alpine2.sh   ../vpnsetup_alpine.sh
+          diff quickstart2.sh        ../extras/quickstart.sh
+          diff ikev2setup2.sh        ../extras/ikev2setup.sh
+          diff vpnupgrade2.sh        ../extras/vpnupgrade.sh
+          diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
+          diff vpnupgrade_amzn2.sh   ../extras/vpnupgrade_amzn.sh
+          diff vpnupgrade_ubuntu2.sh ../extras/vpnupgrade_ubuntu.sh
+          diff vpnupgrade_alpine2.sh ../extras/vpnupgrade_alpine.sh
+          diff vpnuninstall2.sh      ../extras/vpnuninstall.sh
+
+          url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
+          url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
+          deb1="libnss3_3.49.1-1ubuntu1.6_amd64.deb"
+          deb2="libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb"
+          deb3="libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
+
+          $wg 1.deb "$url1/$deb1"
+          $wg 2.deb "$url1/$deb2"
+          $wg 3.deb "$url2/$deb3"
+
+          bl="https://bit.ly"
+          curl -fsSI "$bl/addvpnuser"     | grep -q 'add_vpn_user.sh'
+          curl -fsSI "$bl/delvpnuser"     | grep -q 'del_vpn_user.sh'
+          curl -fsSI "$bl/updatevpnusers" | grep -q 'update_vpn_users.sh'
+          curl -fsSI "$bl/ikev2onlymode"  | grep -q 'ikev2onlymode.sh'

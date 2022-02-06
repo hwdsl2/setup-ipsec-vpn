@@ -1,0 +1,38 @@
+#
+# Copyright (C) 2020-2022 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: shellcheck
+
+on: workflow_call
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
+        with:
+          persist-credentials: false
+      - name: Check
+        run: |
+          if [ ! -x /usr/bin/shellcheck ]; then
+            export DEBIAN_FRONTEND=noninteractive
+            sudo apt-get -yqq update
+            sudo apt-get -yqq install shellcheck
+          fi
+
+          cd "$GITHUB_WORKSPACE"
+          pwd
+          ls -ld vpnsetup.sh
+
+          export SHELLCHECK_OPTS="-e SC1090,SC1091"
+          shellcheck --version
+          shopt -s globstar
+          ls -ld -- **/*.sh
+          shellcheck **/*.sh

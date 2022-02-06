@@ -1,0 +1,508 @@
+#
+# Copyright (C) 2020-2022 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: test_set_1
+
+on: workflow_call
+
+jobs:
+  test_set_1:
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
+    strategy:
+      matrix:
+        os_version: ["centos:8s", "centos:7", "rockylinux:8", "almalinux:8", "amazonlinux:2"]
+      fail-fast: false
+    env:
+      OS_VERSION: ${{ matrix.os_version }}
+    steps:
+      - name: Build
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+          cd "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+
+          cat > run.sh <<'EOF'
+          #!/bin/bash
+          set -eEx
+
+          log1=/var/log/secure
+          log2=/var/log/messages
+
+          trap 'catch $? $LINENO' ERR
+
+          catch() {
+            echo "Error $1 occurred on line $2."
+            cat -n -- "$0" | tail -n+"$(($2 - 3))" | head -n7
+            exit 1
+          }
+
+          restart_ipsec() {
+            if ! command -v amazon-linux-extras; then
+              systemctl restart ipsec
+            fi
+            echo "Waiting for IPsec to restart."
+            count=0
+            while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
+              [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
+
+          restart_fail2ban() {
+            rm -f /var/log/fail2ban.log
+            systemctl restart fail2ban
+            echo "Waiting for Fail2ban to restart."
+            count=0
+            while ! grep -qs -E "Jail '(sshd?|ssh-iptables)' started" /var/log/fail2ban.log; do
+              [ "$count" -ge "30" ] && { echo "Fail2ban failed to start."; exit 1; }
+              count=$((count+1))
+              printf '%s' '.'
+              sleep 0.5
+            done
+            echo
+          }
+
+          yum -y -q update
+          yum -y -q install wget rsyslog
+          systemctl start rsyslog
+
+          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
+
+          sh vpnsetup.sh
+
+          systemctl start xl2tpd
+          restart_ipsec
+          restart_fail2ban
+          cat /var/log/fail2ban.log
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          grep pluto "$log1"
+          grep xl2tpd "$log2"
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
+
+          wget -t 3 -T 30 -nv -O vpnunst.sh https://git.io/vpnuninstall
+          bash vpnunst.sh <<ANSWERS
+          y
+          ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+          if grep -qi stream /etc/redhat-release; then
+            mkdir /etc/xl2tpd
+          fi
+
+          wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
+            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
+
+          sh quickstart.sh
+
+          systemctl restart xl2tpd
+          restart_ipsec
+          restart_fail2ban
+          cat /var/log/fail2ban.log
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
+
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
+
+          bash vpnunst.sh <<ANSWERS
+          y
+          ANSWERS
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+          if grep -qi stream /etc/redhat-release; then
+            mkdir /etc/xl2tpd
+          fi
+
+          if [ "$1" != "amazon" ]; then
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+          else
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
+          fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
+
+          VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
+          VPN_USER='your_vpn_username' \
+          VPN_PASSWORD='your_vpn_password' \
+          VPN_DNS_SRV1='1.1.1.1' \
+          VPN_DNS_SRV2='1.0.0.1' \
+          bash vpnsetup.sh
+
+          systemctl restart xl2tpd
+          restart_ipsec
+
+          netstat -anpu | grep pluto
+          netstat -anpu | grep xl2tpd
+          iptables -nvL
+          iptables -nvL | grep -q 'ppp+'
+          iptables -nvL | grep -q '192\.168\.43\.0/24'
+          iptables -nvL -t nat
+          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          ipsec status
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+
+          grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
+          grep -q "your_vpn_username" /etc/ppp/chap-secrets
+          grep -q "your_vpn_password" /etc/ppp/chap-secrets
+          grep -q "your_vpn_username" /etc/ipsec.d/passwd
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+          grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+          grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+
+          ls -l /usr/bin/ikev2.sh
+          ls -l /opt/src/ikev2.sh
+
+          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
+          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
+          bash ikev2.sh <<ANSWERS
+
+
+
+
+
+          y
+          ANSWERS
+
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
+
+          restart_ipsec
+          grep pluto "$log1" | tail -n 20
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh <<ANSWERS
+          1
+          invalidclient:
+          vpnclient
+          vpnclient2
+
+          ANSWERS
+
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          rm -f /etc/ipsec.d/vpnclient2*
+          bash ikev2.sh <<ANSWERS
+          2
+          nonexistclient
+          vpnclient2
+          ANSWERS
+
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh <<ANSWERS
+          3
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          4
+          nonexistclient
+          vpnclient2
+          y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          4
+          vpnclient2
+
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          2
+          vpnclient2
+
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          100
+          6
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
+          5
+
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          5
+          y
+          ANSWERS
+
+          restart_ipsec
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp && exit 1
+          certutil -L -d sql:/etc/ipsec.d
+
+          rm -f /etc/ipsec.d/vpnclient*
+
+          VPN_DNS_SRV1=invaliddns \
+          bash ikev2.sh --auto 2>&1 | grep -i "invalid"
+
+          sed -i '/^include /d' /etc/ipsec.conf
+
+          VPN_CLIENT_NAME=vpnclient1 \
+          VPN_DNS_NAME=vpn.example.com \
+          VPN_DNS_SRV1=1.1.1.1 \
+          VPN_DNS_SRV2=1.0.0.1 \
+          bash ikev2.sh --auto
+
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          ls -ld /etc/ipsec.d/vpnclient1.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient1.sswan
+          ls -ld /etc/ipsec.d/vpnclient1.p12
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
+          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
+
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --auto --addclient invalidclient: 2>&1 | grep -i "warning"
+          bash ikev2.sh --addclient invalidclient: 2>&1 | grep -i "invalid"
+          bash ikev2.sh --addclient vpnclient1 2>&1 | grep -i "already exists"
+
+          bash ikev2.sh --addclient vpnclient2
+
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --exportclient nonexistclient 2>&1 | grep -i "does not exist"
+
+          rm -f /etc/ipsec.d/vpnclient2*
+          bash ikev2.sh --exportclient vpnclient2
+
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient2.sswan
+          ls -ld /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
+
+          bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
+          bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
+
+          bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
+          bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
+          y
+          ANSWERS
+
+          bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
+
+          bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
+          bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
+          bash ikev2.sh -h 2>&1 | grep -i "usage:"
+          bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
+
+          bash ikev2.sh --removeikev2 --exportclient vpnclient1 2>&1 | grep -i "invalid"
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+          y
+          invalidfqdn
+          vpn.example.com
+
+
+          y
+          invaliddns
+          1.1.1.1
+          invaliddns
+          1.0.0.1
+          y
+          ANSWERS
+
+          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh <<ANSWERS
+
+          invalidip
+          1.2.3.4
+          invalidclient:
+          vpnclient1
+          1000
+          12
+          y
+          1.1.1.1
+
+          y
+          ANSWERS
+
+          grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          VPN_DNS_SRV1=1.1.1.1 \
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          bash ikev2.sh --auto
+
+          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
+          restart_ipsec
+          ipsec status | grep -q ikev2-cp
+
+          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
+
+          for ver in 4.4 ""; do
+            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
+          bash vpnup.sh <<ANSWERS
+          y
+          ANSWERS
+            restart_ipsec
+            ipsec --version | grep "$ver"
+            ipsec status | grep -q l2tp-psk
+            ipsec status | grep -q xauth-psk
+            ipsec status | grep -q ikev2-cp
+          done
+
+          if [ "$1" != "amazon" ]; then
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
+          else
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
+          fi
+          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
+
+          for ver in 4.5 ""; do
+            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
+          bash vpnup.sh <<ANSWERS
+          y
+          ANSWERS
+            restart_ipsec
+            ipsec --version | grep "$ver"
+            ipsec status | grep -q l2tp-psk
+            ipsec status | grep -q xauth-psk
+            ipsec status | grep -q ikev2-cp
+          done
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
+          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp && exit 1
+          certutil -L -d sql:/etc/ipsec.d
+
+          exit 0
+          EOF
+
+          if [ "$OS_VERSION" = "centos:8s" ]; then
+            echo "FROM quay.io/centos/centos:stream8" > Dockerfile
+          else
+            echo "FROM $OS_VERSION" > Dockerfile
+          fi
+
+          cat >> Dockerfile <<'EOF'
+
+          ENV container docker
+          WORKDIR /opt/src
+
+          RUN if command -v amazon-linux-extras; then amazon-linux-extras install -y kernel-ng; fi
+
+          RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ "$i" = \
+          systemd-tmpfiles-setup.service ] || rm -f "$i"; done); \
+          rm -f /lib/systemd/system/multi-user.target.wants/*; \
+          rm -f /etc/systemd/system/*.wants/*; \
+          rm -f /lib/systemd/system/local-fs.target.wants/*; \
+          rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+          rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+          rm -f /lib/systemd/system/basic.target.wants/*; \
+          rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+          COPY ./run.sh /opt/src/run.sh
+          RUN chmod 755 /opt/src/run.sh
+
+          VOLUME [ "/sys/fs/cgroup" ]
+
+          CMD ["/sbin/init"]
+          EOF
+          cat Dockerfile
+          cat run.sh
+          docker build -t "${OS_VERSION//:}-test" .
+
+      - name: Test
+        run: |
+          docker run -d --name "${OS_VERSION//:}-test-1" -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+            --privileged "${OS_VERSION//:}-test"
+          sleep 5
+          docker exec "${OS_VERSION//:}-test-1" /opt/src/run.sh "${OS_VERSION::6}"
+
+      - name: Clear
+        if: always()
+        run: |
+          rm -rf "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+          docker rm -f "${OS_VERSION//:}-test-1" || true
+          docker rmi "${OS_VERSION//:}-test" || true
