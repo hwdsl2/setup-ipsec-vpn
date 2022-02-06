@@ -610,7 +610,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["ubuntu:20.04", "ubuntu:18.04", "debian:11", "debian:10", "debian:9"]
+        os_version: ["ubuntu:20.04", "ubuntu:18.04", "debian:11", "debian:10", "debian:9", "alpine:3.14", "alpine:3.15"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
@@ -620,10 +620,22 @@ jobs:
         run: |
           set -ex
 
+          os_type=""
+          [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
+          [ -z "$os_type" ] && exit 1
+
           log1=/var/log/auth.log
-          log2=/var/log/syslog
+          if [ "$os_type" = "alpine" ]; then
+            log2=/var/log/messages
+          else
+            log2=/var/log/syslog
+          fi
 
           restart_ipsec() {
+            if [ "$os_type" = "alpine" ]; then
+              ipsec whack --shutdown || true
+              ipsec pluto --config /etc/ipsec.conf
+            fi
             echo "Waiting for IPsec to restart."
             count=0
             while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
@@ -653,20 +665,31 @@ jobs:
           cd /opt/src
           echo "# hwdsl2" > run.sh
 
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get -yqq update
-          apt-get -yqq dist-upgrade
-          apt-get -yqq install wget rsyslog
-          service rsyslog start
+          if [ "$os_type" = "alpine" ]; then
+            apk add -U wget rsyslog
+            rsyslogd
+          else
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get -yqq update
+            apt-get -yqq dist-upgrade
+            apt-get -yqq install wget rsyslog
+            service rsyslog start
+          fi
 
           wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
 
           sh vpnsetup.sh
 
-          restart_ipsec
-          restart_fail2ban
-          cat /var/log/fail2ban.log
+          if [ "$os_type" = "alpine" ]; then
+            ipsec initnss
+            xl2tpd -c /etc/xl2tpd/xl2tpd.conf
+            restart_ipsec
+          else
+            restart_ipsec
+            restart_fail2ban
+            cat /var/log/fail2ban.log
+          fi
 
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
@@ -691,15 +714,25 @@ jobs:
           ANSWERS
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
+          if [ "$os_type" = "alpine" ]; then
+            killall pluto || true
+            killall xl2tpd || true
+          fi
+
           wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
           sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
             -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
 
           sh quickstart.sh
 
-          restart_ipsec
-          restart_fail2ban
-          cat /var/log/fail2ban.log
+          if [ "$os_type" = "alpine" ]; then
+            xl2tpd -c /etc/xl2tpd/xl2tpd.conf
+            restart_ipsec
+          else
+            restart_ipsec
+            restart_fail2ban
+            cat /var/log/fail2ban.log
+          fi
 
           netstat -anpu | grep pluto
           netstat -anpu | grep xl2tpd
@@ -726,7 +759,16 @@ jobs:
           ANSWERS
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
 
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
+          if [ "$os_type" = "alpine" ]; then
+            killall pluto || true
+            killall xl2tpd || true
+          fi
+
+          if [ "$os_type" = "alpine" ]; then
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-alpine
+          else
+            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
+          fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
@@ -736,6 +778,10 @@ jobs:
           VPN_DNS_SRV2='1.0.0.1' \
           bash vpnsetup.sh
 
+          if [ "$os_type" = "alpine" ]; then
+            ipsec initnss
+            xl2tpd -c /etc/xl2tpd/xl2tpd.conf
+          fi
           restart_ipsec
 
           netstat -anpu | grep pluto
@@ -855,7 +901,11 @@ jobs:
           VPN_DNS_SRV1=invaliddns \
           bash ikev2.sh --auto 2>&1 | grep -i "invalid"
 
-          apt-get -yqq remove uuid-runtime
+          if [ "$os_type" = "alpine" ]; then
+            apk del uuidgen
+          else
+            apt-get -yqq remove uuid-runtime
+          fi
           sed -i '/^include /d' /etc/ipsec.conf
 
           VPN_CLIENT_NAME=vpnclient1 \
@@ -986,7 +1036,11 @@ jobs:
           wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.4 ""; do
+          [ "$os_type" = "alpine" ] && ver1=4.5 || ver1=4.4
+          for ver in "$ver1" ""; do
+            if [ "$os_type" = "alpine" ]; then
+              ipsec whack --shutdown || true
+            fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
           y
@@ -998,426 +1052,19 @@ jobs:
             ipsec status | grep -q ikev2-cp
           done
 
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
+          if [ "$os_type" = "alpine" ]; then
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-alpine
+          else
+            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
+          fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 4.5 ""; do
+            if [ "$os_type" = "alpine" ]; then
+              ipsec whack --shutdown || true
+            fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
-          y
-          ANSWERS
-            restart_ipsec
-            ipsec --version | grep "$ver"
-            ipsec status | grep -q l2tp-psk
-            ipsec status | grep -q xauth-psk
-            ipsec status | grep -q ikev2-cp
-          done
-
-          bash ikev2.sh --removeikev2 <<ANSWERS
-          y
-          ANSWERS
-
-          restart_ipsec
-          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp && exit 1
-          certutil -L -d sql:/etc/ipsec.d
-
-  test_set_3:
-    needs: check_urls
-    runs-on: ubuntu-20.04
-    if: github.repository_owner == 'hwdsl2'
-    strategy:
-      matrix:
-        os_version: ["alpine:3.14", "alpine:3.15"]
-      fail-fast: false
-    container:
-      image: ${{ matrix.os_version }}
-      options: --cap-add=NET_ADMIN --device=/dev/ppp
-    steps:
-      - name: Test
-        run: |
-          set -ex
-
-          log1=/var/log/auth.log
-          log2=/var/log/messages
-
-          restart_ipsec() {
-            ipsec whack --shutdown || true
-            ipsec pluto --config /etc/ipsec.conf
-            echo "Waiting for IPsec to restart."
-            count=0
-            while ! grep -q "pluto\[$(cat /var/run/pluto/pluto.pid)\]: listening for IKE messages" "$log1"; do
-              [ "$count" -ge "30" ] && { echo "IPsec failed to start."; exit 1; }
-              count=$((count+1))
-              printf '%s' '.'
-              sleep 0.5
-            done
-            echo
-          }
-
-          mkdir -p /opt/src
-          cd /opt/src
-          echo "# hwdsl2" > run.sh
-
-          apk add -U wget rsyslog
-          rsyslogd
-
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
-          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
-
-          sh vpnsetup.sh
-
-          ipsec initnss
-          xl2tpd -c /etc/xl2tpd/xl2tpd.conf
-          restart_ipsec
-
-          netstat -anpu | grep pluto
-          netstat -anpu | grep xl2tpd
-          iptables -nvL
-          iptables -nvL | grep -q 'ppp+'
-          iptables -nvL | grep -q '192\.168\.43\.0/24'
-          iptables -nvL -t nat
-          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
-          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
-          grep pluto "$log1"
-          grep xl2tpd "$log2"
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-
-          ls -l /usr/bin/ikev2.sh
-          ls -l /opt/src/ikev2.sh
-
-          wget -t 3 -T 30 -nv -O vpnunst.sh https://git.io/vpnuninstall
-          bash vpnunst.sh <<ANSWERS
-          y
-          ANSWERS
-          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
-          killall pluto || true
-          killall xl2tpd || true
-
-          wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
-          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
-            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
-
-          sh quickstart.sh
-
-          xl2tpd -c /etc/xl2tpd/xl2tpd.conf
-          restart_ipsec
-
-          netstat -anpu | grep pluto
-          netstat -anpu | grep xl2tpd
-          iptables -nvL
-          iptables -nvL | grep -q 'ppp+'
-          iptables -nvL | grep -q '192\.168\.43\.0/24'
-          iptables -nvL -t nat
-          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
-          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp
-
-          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient.sswan
-          ls -ld /etc/ipsec.d/vpnclient.p12
-
-          ls -l /usr/bin/ikev2.sh
-          ls -l /opt/src/ikev2.sh
-
-          bash vpnunst.sh <<ANSWERS
-          y
-          ANSWERS
-          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
-          killall pluto || true
-          killall xl2tpd || true
-
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-alpine
-          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
-
-          VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
-          VPN_USER='your_vpn_username' \
-          VPN_PASSWORD='your_vpn_password' \
-          VPN_DNS_SRV1='1.1.1.1' \
-          VPN_DNS_SRV2='1.0.0.1' \
-          bash vpnsetup.sh
-
-          ipsec initnss
-          xl2tpd -c /etc/xl2tpd/xl2tpd.conf
-          restart_ipsec
-
-          netstat -anpu | grep pluto
-          netstat -anpu | grep xl2tpd
-          iptables -nvL
-          iptables -nvL | grep -q 'ppp+'
-          iptables -nvL | grep -q '192\.168\.43\.0/24'
-          iptables -nvL -t nat
-          iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
-          iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
-          ipsec status
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-
-          grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
-          grep -q "your_vpn_username" /etc/ppp/chap-secrets
-          grep -q "your_vpn_password" /etc/ppp/chap-secrets
-          grep -q "your_vpn_username" /etc/ipsec.d/passwd
-          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
-          grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
-          grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
-
-          ls -l /usr/bin/ikev2.sh
-          ls -l /opt/src/ikev2.sh
-
-          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
-          sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
-
-          bash ikev2.sh <<ANSWERS
-
-
-
-
-
-          y
-          ANSWERS
-
-          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
-          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient.sswan
-          ls -ld /etc/ipsec.d/vpnclient.p12
-
-          restart_ipsec
-          grep pluto "$log1" | tail -n 20
-          ipsec status | grep -q ikev2-cp
-
-          bash ikev2.sh <<ANSWERS
-          1
-          invalidclient:
-          vpnclient
-          vpnclient2
-
-          ANSWERS
-
-          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2.sswan
-          ls -ld /etc/ipsec.d/vpnclient2.p12
-
-          rm -f /etc/ipsec.d/vpnclient2*
-          bash ikev2.sh <<ANSWERS
-          2
-          nonexistclient
-          vpnclient2
-          ANSWERS
-
-          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2.sswan
-          ls -ld /etc/ipsec.d/vpnclient2.p12
-
-          bash ikev2.sh <<ANSWERS
-          3
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS
-          4
-          nonexistclient
-          vpnclient2
-          y
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
-          4
-          vpnclient2
-
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
-          2
-          vpnclient2
-
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS
-          100
-          6
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
-          5
-
-          ANSWERS
-
-          bash ikev2.sh <<ANSWERS
-          5
-          y
-          ANSWERS
-
-          restart_ipsec
-          ls -ld /etc/ipsec.d/ikev2.conf && exit 1
-          ipsec status | grep -q l2tp-psk
-          ipsec status | grep -q xauth-psk
-          ipsec status | grep -q ikev2-cp && exit 1
-          certutil -L -d sql:/etc/ipsec.d
-
-          rm -f /etc/ipsec.d/vpnclient*
-
-          VPN_DNS_SRV1=invaliddns \
-          bash ikev2.sh --auto 2>&1 | grep -i "invalid"
-
-          apk del uuidgen
-          sed -i '/^include /d' /etc/ipsec.conf
-
-          VPN_CLIENT_NAME=vpnclient1 \
-          VPN_DNS_NAME=vpn.example.com \
-          VPN_DNS_SRV1=1.1.1.1 \
-          VPN_DNS_SRV2=1.0.0.1 \
-          bash ikev2.sh --auto
-
-          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
-          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-          ls -ld /etc/ipsec.d/vpnclient1.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient1.sswan
-          ls -ld /etc/ipsec.d/vpnclient1.p12
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.mobileconfig
-          grep -q 'vpn.example.com' /etc/ipsec.d/vpnclient1.sswan
-
-          restart_ipsec
-          ipsec status | grep -q ikev2-cp
-
-          bash ikev2.sh --auto --addclient invalidclient: 2>&1 | grep -i "warning"
-          bash ikev2.sh --addclient invalidclient: 2>&1 | grep -i "invalid"
-          bash ikev2.sh --addclient vpnclient1 2>&1 | grep -i "already exists"
-
-          bash ikev2.sh --addclient vpnclient2
-
-          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2.sswan
-          ls -ld /etc/ipsec.d/vpnclient2.p12
-
-          bash ikev2.sh --exportclient nonexistclient 2>&1 | grep -i "does not exist"
-
-          rm -f /etc/ipsec.d/vpnclient2*
-          bash ikev2.sh --exportclient vpnclient2
-
-          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-          ls -ld /etc/ipsec.d/vpnclient2.sswan
-          ls -ld /etc/ipsec.d/vpnclient2.p12
-
-          bash ikev2.sh --addclient vpnclient2 --exportclient vpnclient2 2>&1 | grep -i "invalid"
-
-          bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
-          bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
-
-          bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
-          bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
-          y
-          ANSWERS
-
-          bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
-
-          bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
-          bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
-          bash ikev2.sh -h 2>&1 | grep -i "usage:"
-          bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
-
-          bash ikev2.sh --removeikev2 --exportclient vpnclient1 2>&1 | grep -i "invalid"
-          bash ikev2.sh --removeikev2 <<ANSWERS
-          y
-          ANSWERS
-
-          restart_ipsec
-          bash ikev2.sh <<ANSWERS
-          y
-          invalidfqdn
-          vpn.example.com
-
-
-          y
-          invaliddns
-          1.1.1.1
-          invaliddns
-          1.0.0.1
-          y
-          ANSWERS
-
-          grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
-          grep -q 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-          restart_ipsec
-          ipsec status | grep -q ikev2-cp
-
-          bash ikev2.sh --removeikev2 <<ANSWERS
-          y
-          ANSWERS
-
-          restart_ipsec
-          bash ikev2.sh <<ANSWERS
-
-          invalidip
-          1.2.3.4
-          invalidclient:
-          vpnclient1
-          1000
-          12
-          y
-          1.1.1.1
-
-          y
-          ANSWERS
-
-          grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
-          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
-          restart_ipsec
-          ipsec status | grep -q ikev2-cp
-
-          bash ikev2.sh --removeikev2 <<ANSWERS
-          y
-          ANSWERS
-
-          restart_ipsec
-          VPN_DNS_SRV1=1.1.1.1 \
-          bash ikev2.sh --auto
-
-          grep -q 'modecfgdns=1.1.1.1' /etc/ipsec.d/ikev2.conf
-          restart_ipsec
-          ipsec status | grep -q ikev2-cp
-
-          bash ikev2.sh --removeikev2 <<ANSWERS
-          y
-          ANSWERS
-
-          restart_ipsec
-          bash ikev2.sh --auto
-
-          grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
-          restart_ipsec
-          ipsec status | grep -q ikev2-cp
-
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
-          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
-
-          for ver in 4.5 ""; do
-            ipsec whack --shutdown || true
-            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          bash vpnup.sh <<ANSWERS
-          y
-          y
-          ANSWERS
-            restart_ipsec
-            ipsec --version | grep "$ver"
-            ipsec status | grep -q l2tp-psk
-            ipsec status | grep -q xauth-psk
-            ipsec status | grep -q ikev2-cp
-          done
-
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-alpine
-          sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
-
-          for ver in 4.5 ""; do
-            ipsec whack --shutdown || true
-            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
-          bash vpnup.sh <<ANSWERS
-          y
           y
           ANSWERS
             restart_ipsec
