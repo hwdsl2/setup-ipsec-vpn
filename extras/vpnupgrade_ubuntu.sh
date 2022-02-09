@@ -157,7 +157,7 @@ update_apt_cache() {
   export DEBIAN_FRONTEND=noninteractive
   (
     set -x
-    apt-get -yqq update
+    apt-get -yqq update || apt-get -yqq update
   ) || exiterr "'apt-get update' failed."
 }
 

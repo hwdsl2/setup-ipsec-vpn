@@ -686,7 +686,7 @@ install_base64_uuidgen() {
     bigecho2 "Installing required packages..."
     if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
       export DEBIAN_FRONTEND=noninteractive
-      apt-get -yqq update || exiterr "'apt-get update' failed."
+      apt-get -yqq update || apt-get -yqq update || exiterr "'apt-get update' failed."
     fi
   fi
   if ! command -v base64 >/dev/null 2>&1; then
@@ -1018,7 +1018,7 @@ apply_ubuntu1804_nss_fix() {
       if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$nss_url1/$nss_deb1" \
         && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$nss_url1/$nss_deb2" \
         && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$nss_url2/$nss_deb3"; then
-        apt-get -yqq update
+        apt-get -yqq update || apt-get -yqq update
         apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
       fi
       /bin/rm -f "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb"

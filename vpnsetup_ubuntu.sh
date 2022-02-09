@@ -169,7 +169,7 @@ update_apt_cache() {
   export DEBIAN_FRONTEND=noninteractive
   (
     set -x
-    apt-get -yqq update
+    apt-get -yqq update || apt-get -yqq update
   ) || exiterr "'apt-get update' failed."
 }
 
@@ -177,6 +177,8 @@ install_setup_pkgs() {
   (
     set -x
     apt-get -yqq install wget dnsutils openssl \
+      iptables iproute2 gawk grep sed net-tools >/dev/null \
+    || apt-get -yqq install wget dnsutils openssl \
       iptables iproute2 gawk grep sed net-tools >/dev/null
   ) || exiterr2
 }

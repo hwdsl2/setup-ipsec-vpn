@@ -143,6 +143,8 @@ install_setup_pkgs() {
   (
     set -x
     yum -y -q install wget bind-utils openssl tar \
+      iptables iproute gawk grep sed net-tools >/dev/null \
+    || yum -y -q install wget bind-utils openssl tar \
       iptables iproute gawk grep sed net-tools >/dev/null
   ) || exiterr2
 }
