@@ -157,7 +157,7 @@ update_apt_cache() {
   export DEBIAN_FRONTEND=noninteractive
   (
     set -x
-    apt-get -yqq update
+    apt-get -yqq update || apt-get -yqq update
   ) || exiterr "'apt-get update' failed."
 }
 
@@ -188,6 +188,7 @@ get_libreswan() {
 install_libreswan() {
   bigecho "Compiling and installing Libreswan, please wait..."
   cd "libreswan-$SWAN_VER" || exit 1
+  service ipsec stop >/dev/null 2>&1
   [ "$SWAN_VER" = "4.1" ] && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
@@ -219,6 +220,7 @@ EOF
   cd /opt/src || exit 1
   /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
   if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+    service ipsec start >/dev/null 2>&1
     exiterr "Libreswan $SWAN_VER failed to build."
   fi
 }

@@ -108,16 +108,16 @@ install_pkgs() {
       export DEBIAN_FRONTEND=noninteractive
       (
         set -x
-        apt-get -yqq update
+        apt-get -yqq update || apt-get -yqq update
       ) || exiterr "'apt-get update' failed."
       (
         set -x
-        apt-get -yqq install wget >/dev/null
+        apt-get -yqq install wget >/dev/null || apt-get -yqq install wget >/dev/null
       ) || exiterr "'apt-get install wget' failed."
     elif [ "$os_type" != "alpine" ]; then
       (
         set -x
-        yum -y -q install wget >/dev/null
+        yum -y -q install wget >/dev/null || yum -y -q install wget >/dev/null
       ) || exiterr "'yum install wget' failed."
     fi
   fi

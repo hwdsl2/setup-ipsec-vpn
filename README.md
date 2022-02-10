@@ -88,7 +88,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Installation
 
-First, update your system with `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) or `yum update` and reboot. This is optional, but recommended.
+First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `sudo yum update` and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
@@ -202,6 +202,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
+- [Deploy Google BBR congestion control algorithm](docs/advanced-usage.md#deploy-google-bbr-congestion-control-algorithm)
 
 ## Bugs & Questions
 

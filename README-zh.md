@@ -88,7 +88,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 
 ## 安装说明
 
-首先，更新你的系统：运行 `apt-get update && apt-get dist-upgrade` (Ubuntu/Debian) 或者 `yum update` 并重启。这一步是可选的，但推荐。
+首先，更新你的系统：运行 `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) 或者 `sudo yum update` 并重启。这一步是可选的，但推荐。
 
 要安装 VPN，请从以下选项中选择一个：
 
@@ -202,7 +202,7 @@ wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
-- [部署Google BBR拥塞控制算法](docs/advanced-usage-zh.md#部署google-bbr拥塞控制算法)
+- [部署 Google BBR 拥塞控制算法](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制算法)
 
 ## 问题和反馈
 
