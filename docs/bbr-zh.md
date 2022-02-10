@@ -18,7 +18,7 @@ Google BBR已经被内置于Linux内核4.9及更高版本中，但是需要手�
 
 Amazon Linux 2提供过经过验证的新版Linux内核，并可以通过启用预置的Extras库安装。
 
-1. 启用 `kernel-ng` Extras 库
+1. 从Extras库安装 `kernel-ng`
    ```bash
    sudo amazon-linux-extras install kernel-ng
    ```

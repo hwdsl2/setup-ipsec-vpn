@@ -16,9 +16,9 @@ Generally speaking, the kernel versions of Ubuntu 18.04+, Debian 10+, CentOS 8+ 
 
 ### Amazon Linux 2
 
-Amazon Linux 2 provides newer versions of the verified Linux kernel, which can be installed by enabling the "Extras" repository.
+Amazon Linux 2 provides newer versions of the verified Linux kernel, which can be installed from the Extras repository.
 
-1. Enable the `kernel-ng` Extras repository
+1. Install `kernel-ng` from the Extras repository
    ```bash
    sudo amazon-linux-extras install kernel-ng
    ```
