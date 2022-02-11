@@ -23,6 +23,9 @@ jobs:
       image: ${{ matrix.os_version }}
       options: --cap-add=NET_ADMIN --device=/dev/ppp
     steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
+        with:
+          persist-credentials: false
       - name: Test
         run: |
           set -ex
@@ -70,6 +73,7 @@ jobs:
 
           mkdir -p /opt/src
           cd /opt/src
+          ls -ld "$GITHUB_WORKSPACE/vpnsetup.sh"
           echo "# hwdsl2" > run.sh
 
           if [ "$os_type" = "alpine" ]; then
@@ -83,7 +87,7 @@ jobs:
             service rsyslog start
           fi
 
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          cp -f "$GITHUB_WORKSPACE"/vpnsetup.sh .
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
 
           sh vpnsetup.sh
@@ -115,7 +119,7 @@ jobs:
           ls -l /usr/bin/ikev2.sh
           ls -l /opt/src/ikev2.sh
 
-          wget -t 3 -T 30 -nv -O vpnunst.sh https://git.io/vpnuninstall
+          cp -f "$GITHUB_WORKSPACE"/extras/vpnuninstall.sh ./vpnunst.sh
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
@@ -126,7 +130,7 @@ jobs:
             killall xl2tpd || true
           fi
 
-          wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          cp -f "$GITHUB_WORKSPACE"/extras/quickstart.sh .
           sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
             -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
 
@@ -172,9 +176,9 @@ jobs:
           fi
 
           if [ "$os_type" = "alpine" ]; then
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-alpine
+            cp -f "$GITHUB_WORKSPACE"/vpnsetup_alpine.sh ./vpnsetup.sh
           else
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-ubuntu
+            cp -f "$GITHUB_WORKSPACE"/vpnsetup_ubuntu.sh ./vpnsetup.sh
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
@@ -214,7 +218,7 @@ jobs:
           ls -l /usr/bin/ikev2.sh
           ls -l /opt/src/ikev2.sh
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup
+          cp -f "$GITHUB_WORKSPACE"/extras/ikev2setup.sh ./ikev2.sh
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
 
           bash ikev2.sh <<ANSWERS
@@ -440,7 +444,7 @@ jobs:
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
           [ "$os_type" = "alpine" ] && ver1=4.5 || ver1=4.4
@@ -460,9 +464,9 @@ jobs:
           done
 
           if [ "$os_type" = "alpine" ]; then
-            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-alpine
+            cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade_alpine.sh ./vpnup.sh
           else
-            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-ubuntu
+            cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade_ubuntu.sh ./vpnup.sh
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
