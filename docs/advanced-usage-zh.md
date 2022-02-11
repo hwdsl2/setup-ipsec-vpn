@@ -45,7 +45,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 ```bash
 # 下载脚本
-wget -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
+wget -qO ikev2onlymode.sh https://bit.ly/ikev2onlymode
 # 运行脚本并按提示操作
 sudo bash ikev2onlymode.sh
 ```

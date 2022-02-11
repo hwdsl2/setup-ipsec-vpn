@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Li
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
-wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 ```
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
@@ -95,7 +95,7 @@ To install the VPN, please choose one of the following options:
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 <a name="ikev2-setup-note"></a>
@@ -111,7 +111,7 @@ sudo ikev2.sh
 **Option 2:** Edit the script and provide your own VPN credentials:
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -126,7 +126,7 @@ After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -O vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
@@ -174,7 +174,7 @@ The scripts will backup existing config files before making changes, with `.old-
 Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server.
 
 ```bash
-wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
+wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.

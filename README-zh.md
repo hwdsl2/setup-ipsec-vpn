@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpin
 使用以下命令快速搭建 IPsec VPN 服务器：
 
 ```bash
-wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 ```
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
@@ -95,7 +95,7 @@ wget https://git.io/vpnquickstart -O vpn.sh && sudo sh vpn.sh
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）：
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 <a name="ikev2-setup-note"></a>
@@ -111,7 +111,7 @@ sudo ikev2.sh
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证：
 
 ```bash
-wget https://git.io/vpnsetup -O vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -126,7 +126,7 @@ sudo sh vpn.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -O vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
@@ -174,7 +174,7 @@ sh vpn.sh
 使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。
 
 ```bash
-wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
+wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
 当前支持的 Libreswan 最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
