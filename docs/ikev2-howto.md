@@ -126,8 +126,6 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 and 11
 
-**Note:** If there is no password for client config files in the output of the IKEv2 helper script, press Enter to continue when prompted for the password, or if manually importing the `.p12` file, leave the password field blank.
-
 Windows 8, 10 and 11 users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
@@ -143,6 +141,8 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
    # Import .p12 file (replace with your own value)
    certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
+
+   **Note:** If there is no password for client config files in the output of the IKEv2 helper script, press Enter to continue, or if manually importing the `.p12` file, leave the password field blank.
 
    Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 

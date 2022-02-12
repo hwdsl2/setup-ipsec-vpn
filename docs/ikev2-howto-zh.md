@@ -126,8 +126,6 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 和 11
 
-**注：** 如果 IKEv2 辅助脚本的输出中没有包含客户端配置文件的密码，请在提示输入密码时按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
-
 Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
@@ -143,6 +141,8 @@ Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
    # 导入 .p12 文件（换成你自己的值）
    certutil -f -importpfx ".p12文件的位置和名称" NoExport
    ```
+
+   **注：** 如果 IKEv2 辅助脚本的输出中没有包含客户端配置文件的密码，请按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
 
    或者，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
