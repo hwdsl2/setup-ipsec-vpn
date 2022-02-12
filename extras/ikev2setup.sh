@@ -677,20 +677,28 @@ create_client_cert() {
 }
 
 create_p12_password() {
-  config_file="/etc/ipsec.d/.vpnconfig"
-  p12_password=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
-  if [ -z "$p12_password" ]; then
-    p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
-    [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
-    mkdir -p /etc/ipsec.d
-    printf '%s\n' "IKEV2_CONFIG_PASSWORD='$p12_password'" >> "$config_file"
-    chmod 600 "$config_file"
+  p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
+  [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
+}
+
+get_p12_password() {
+  if [ "$use_config_password" = "0" ]; then
+    create_p12_password
+  else
+    config_file="/etc/ipsec.d/.vpnconfig"
+    p12_password=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+    if [ -z "$p12_password" ]; then
+      create_p12_password
+      mkdir -p /etc/ipsec.d
+      printf '%s\n' "IKEV2_CONFIG_PASSWORD='$p12_password'" >> "$config_file"
+      chmod 600 "$config_file"
+    fi
   fi
 }
 
 export_p12_file() {
   bigecho2 "Creating client configuration..."
-  create_p12_password
+  get_p12_password
   p12_file="$export_dir$client_name.p12"
   p12_file_enc="$export_dir$client_name.enc.p12"
   pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file_enc" >/dev/null || exit 1
