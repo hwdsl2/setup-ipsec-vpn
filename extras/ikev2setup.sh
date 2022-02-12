@@ -651,10 +651,8 @@ create_client_cert() {
 
 create_p12_password() {
   config_file="/etc/ipsec.d/.vpnconfig"
-  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file"; then
-    . "$config_file"
-    p12_password="$IKEV2_CONFIG_PASSWORD"
-  else
+  p12_password=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+  if [ -z "$p12_password" ]; then
     p12_password=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 18)
     [ -z "$p12_password" ] && exiterr "Could not generate a random password for .p12 file."
     mkdir -p /etc/ipsec.d
