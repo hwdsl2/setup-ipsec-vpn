@@ -116,7 +116,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
+**Note:** If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -125,6 +125,8 @@ To customize IKEv2 or client options, run this script without arguments.
 * [Linux](#linux)
 
 ### Windows 7, 8, 10 and 11
+
+**Note:** If there is no password for client config files in the output of the IKEv2 helper script, press Enter to continue when prompted for the password, or if manually importing the `.p12` file, leave the password field blank.
 
 Windows 8, 10 and 11 users can automatically import IKEv2 configuration:
 
@@ -356,8 +358,9 @@ Next, securely transfer the generated `.p12` file from the VPN server to your Li
 ```bash
 # Example: Extract CA certificate, client certificate and private key.
 #          You may delete the .p12 file when finished.
-# Note: You will need to enter the import password, which can be found
-#       in the output of the IKEv2 helper script.
+# Note: You may need to enter the import password, which can be found
+#       in the output of the IKEv2 helper script. If the output does not
+#       contain an import password, press Enter to continue.
 openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
 openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
 openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
@@ -774,37 +777,9 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
-* [Incorrect password when trying to import](#incorrect-password-when-trying-to-import)
 * [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [Other known issues](#other-known-issues)
-
-### Incorrect password when trying to import
-
-If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
-
-Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258). As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
-<details>
-<summary>
-Workaround for the NSS bug on Ubuntu 18.04
-</summary>
-
-**Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture.
-
-First, install newer versions of `libnss3` related packages:
-
-```
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb
-apt-get -y update
-apt-get -y install "./libnss3_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
-```
-
-After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
-</details>
 
 ### IKEv2 disconnects after one hour
 

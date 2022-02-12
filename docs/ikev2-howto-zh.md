@@ -116,7 +116,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
-**注：** 客户端配置文件的密码可以在 IKEv2 辅助脚本的输出中找到。如果你想要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
+**注：** 如果要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
 
 * [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
@@ -125,6 +125,8 @@ To customize IKEv2 or client options, run this script without arguments.
 * [Linux](#linux)
 
 ### Windows 7, 8, 10 和 11
+
+**注：** 如果 IKEv2 辅助脚本的输出中没有包含客户端配置文件的密码，请在提示输入密码时按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
 
 Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
 
@@ -355,7 +357,8 @@ sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 
 ```bash
 # 示例：提取 CA 证书，客户端证书和私钥。在完成后可以删除 .p12 文件。
-# 注：你将需要输入 import password，它可以在 IKEv2 辅助脚本的输出中找到。
+# 注：你可能需要输入 import password，它可以在 IKEv2 辅助脚本的输出中找到。
+# 如果在脚本的输出中没有 import password，请按回车键继续。
 openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
 openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
 openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
@@ -772,37 +775,9 @@ sudo ikev2.sh --revokeclient [client name]
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
-* [在导入时提示密码不正确](#在导入时提示密码不正确)
 * [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
 * [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
 * [其它已知问题](#其它已知问题)
-
-### 在导入时提示密码不正确
-
-如果你忘记了客户端配置文件的密码，可以重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
-
-Ubuntu 18.04 用户在尝试将生成的 `.p12` 文件导入到 Windows 时可能会遇到错误 "输入的密码不正确"。这是由 `NSS` 中的一个问题导致的。更多信息请看 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258)。在 2021-01-21 已更新 IKEv2 辅助脚本以自动应用以下解决方法。
-<details>
-<summary>
-Ubuntu 18.04 上的 NSS 问题的解决方法
-</summary>
-
-**注：** 该解决方法仅适用于运行在 `x86_64` 架构下的 Ubuntu 18.04 系统。
-
-首先安装更新版本的 `libnss3` 相关的软件包：
-
-```
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb
-apt-get -y update
-apt-get -y install "./libnss3_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
-```
-
-然后重新 [导出 IKEv2 客户端的配置](#导出已有的客户端的配置)。
-</details>
 
 ### IKEv2 在一小时后断开连接
 
