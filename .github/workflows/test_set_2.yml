@@ -227,7 +227,8 @@ jobs:
 
 
 
-          y
+
+
           ANSWERS
 
           grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
@@ -245,6 +246,7 @@ jobs:
           vpnclient
           vpnclient2
 
+
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -256,6 +258,7 @@ jobs:
           2
           nonexistclient
           vpnclient2
+
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -390,6 +393,7 @@ jobs:
           invaliddns
           1.0.0.1
           y
+
           ANSWERS
 
           grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
@@ -413,7 +417,8 @@ jobs:
           y
           1.1.1.1
 
-          y
+
+
           ANSWERS
 
           grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
@@ -454,7 +459,7 @@ jobs:
             fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
-          y
+
           ANSWERS
             restart_ipsec
             ipsec --version | grep "$ver"
@@ -476,7 +481,7 @@ jobs:
             fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
-          y
+
           ANSWERS
             restart_ipsec
             ipsec --version | grep "$ver"
