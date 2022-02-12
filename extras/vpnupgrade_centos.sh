@@ -125,10 +125,10 @@ Note: You already have Libreswan version $SWAN_VER installed!
 EOF
   fi
 
-  printf "Do you want to continue? [y/N] "
+  printf "Do you want to continue? [Y/n] "
   read -r response
   case $response in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS]|[yY]|'')
       echo
       ;;
     *)
