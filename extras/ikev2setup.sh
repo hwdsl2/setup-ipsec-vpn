@@ -286,7 +286,6 @@ check_custom_dns() {
 show_welcome() {
 cat <<'EOF'
 Welcome! Use this script to set up IKEv2 on your IPsec VPN server.
-
 I need to ask you a few questions before starting setup.
 You can use the default options and just press enter if you are OK with them.
 
@@ -315,7 +314,7 @@ show_add_client() {
 }
 
 show_export_client() {
-  bigecho "Exporting existing IKEv2 client '$client_name'."
+  bigecho "Exporting IKEv2 client '$client_name', using default options."
 }
 
 get_export_dir() {
@@ -565,7 +564,7 @@ The MOBIKE IKEv2 extension allows VPN clients to change network attachment point
 e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP.
 
 EOF
-    printf "Do you want to enable MOBIKE support? [Y/n] "
+    printf "Enable MOBIKE support? [Y/n] "
     read -r response
     case $response in
       [yY][eE][sS]|[yY]|'')
@@ -576,6 +575,25 @@ EOF
         ;;
     esac
   fi
+}
+
+select_config_password() {
+cat <<'EOF'
+
+IKEv2 client config files contain the client certificate, private key and CA certificate.
+This script can optionally generate a random password to protect these files.
+
+EOF
+  printf "Protect client config files using a password? [y/N] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY])
+      use_config_password=1
+      ;;
+    *)
+      use_config_password=0
+      ;;
+  esac
 }
 
 select_menu_option() {
@@ -634,7 +652,16 @@ DNS server(s): $dns_servers
 ======================================
 
 EOF
-  confirm_or_abort "Do you want to continue? [y/N] "
+  printf "Do you want to continue? [Y/n] "
+  read -r response
+  case $response in
+    [yY][eE][sS]|[yY]|'')
+      echo
+      ;;
+    *)
+      abort_and_exit
+      ;;
+  esac
 }
 
 create_client_cert() {
@@ -672,11 +699,19 @@ export_p12_file() {
     openssl pkcs12 -in "$p12_file_enc" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
     openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file_enc" \
       -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
-      -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
+    if [ "$use_config_password" = "1" ]; then
+      /bin/cp -f "$p12_file_enc" "$p12_file"
+    else
+      openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+        -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
+    fi
     /bin/rm -f "$pem_file"
   else
-    pk12util -W "" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
+    if [ "$use_config_password" = "1" ]; then
+      /bin/cp -f "$p12_file_enc" "$p12_file"
+    else
+      pk12util -W "" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
+    fi
   fi
   if [ "$export_to_home_dir" = "1" ]; then
     chown "$SUDO_USER:$SUDO_USER" "$p12_file"
@@ -818,8 +853,14 @@ cat > "$mc_file" <<EOF
       <string>IKEv2</string>
     </dict>
     <dict>
+EOF
+  if [ "$use_config_password" = "0" ]; then
+cat >> "$mc_file" <<EOF
       <key>Password</key>
       <string>$p12_password</string>
+EOF
+  fi
+cat >> "$mc_file" <<EOF
       <key>PayloadCertificateFileName</key>
       <string>$client_name</string>
       <key>PayloadContent</key>
@@ -1123,6 +1164,14 @@ $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
 EOF
+  if [ "$use_config_password" = "1" ]; then
+cat <<EOF
+
+*IMPORTANT* Password for client config files:
+$p12_password
+Write this down, you'll need it for import!
+EOF
+  fi
 cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
@@ -1216,6 +1265,7 @@ ikev2setup() {
   check_utils_exist
 
   use_defaults=0
+  use_config_password=0
   add_client=0
   export_client=0
   list_clients=0
@@ -1324,6 +1374,7 @@ ikev2setup() {
       1)
         enter_client_name
         enter_client_cert_validity
+        select_config_password
         echo
         create_client_cert
         export_client_config
@@ -1333,6 +1384,7 @@ ikev2setup() {
         ;;
       2)
         enter_client_name_for export
+        select_config_password
         echo
         export_client_config
         print_client_exported
@@ -1387,6 +1439,7 @@ ikev2setup() {
     enter_custom_dns
     check_mobike_support
     select_mobike
+    select_config_password
     confirm_setup_options
   else
     check_server_dns_name
