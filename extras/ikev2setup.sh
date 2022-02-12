@@ -150,7 +150,7 @@ check_container() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   22 Jan 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   12 Feb 2022
 
 EOF
 }
@@ -665,13 +665,18 @@ export_p12_file() {
   bigecho2 "Creating client configuration..."
   create_p12_password
   p12_file="$export_dir$client_name.p12"
-  pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
+  p12_file_enc="$export_dir$client_name.enc.p12"
+  pk12util -W "$p12_password" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file_enc" >/dev/null || exit 1
   if [ "$os_type" = "alpine" ] || { [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "11" ]; }; then
     pem_file="$export_dir$client_name.temp.pem"
-    openssl pkcs12 -in "$p12_file" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+    openssl pkcs12 -in "$p12_file_enc" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file_enc" \
       -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+      -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
     /bin/rm -f "$pem_file"
+  else
+    pk12util -W "" -d sql:/etc/ipsec.d -n "$client_name" -o "$p12_file" >/dev/null || exit 1
   fi
   if [ "$export_to_home_dir" = "1" ]; then
     chown "$SUDO_USER:$SUDO_USER" "$p12_file"
@@ -712,7 +717,9 @@ install_uuidgen() {
 
 create_mobileconfig() {
   [ -z "$server_addr" ] && get_server_address
-  p12_base64=$(base64 -w 52 "$export_dir$client_name.p12")
+  p12_file_enc="$export_dir$client_name.enc.p12"
+  p12_base64=$(base64 -w 52 "$p12_file_enc")
+  /bin/rm -f "$p12_file_enc"
   [ -z "$p12_base64" ] && exiterr "Could not encode .p12 file."
   ca_base64=$(certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a | grep -v CERTIFICATE)
   [ -z "$ca_base64" ] && exiterr "Could not encode IKEv2 VPN CA certificate."
@@ -811,6 +818,8 @@ cat > "$mc_file" <<EOF
       <string>IKEv2</string>
     </dict>
     <dict>
+      <key>Password</key>
+      <string>$p12_password</string>
       <key>PayloadCertificateFileName</key>
       <string>$client_name</string>
       <key>PayloadContent</key>
@@ -1113,10 +1122,6 @@ cat <<EOF
 $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
-
-*IMPORTANT* Password for client config files:
-$p12_password
-Write this down, you'll need it for import!
 EOF
 cat <<'EOF'
 
