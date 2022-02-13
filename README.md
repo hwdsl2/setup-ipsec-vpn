@@ -21,8 +21,8 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 - [Upgrade Libreswan](#upgrade-libreswan)
 - [Manage VPN users](#manage-vpn-users)
 - [Advanced usage](#advanced-usage)
-- [Bugs & Questions](#bugs--questions)
 - [Uninstallation](#uninstallation)
+- [Feedback & Questions](#feedback--questions)
 - [License](#license)
 
 ## Quick start
@@ -40,7 +40,17 @@ Your VPN login details will be randomly generated, and displayed on the screen w
 
 <details>
 <summary>
-Click here to see the VPN script in action (terminal recording).
+Alternative one-liner using curl instead of wget.
+</summary>
+
+```bash
+curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
+```
+</details>
+
+<details>
+<summary>
+Click to see the VPN script in action (terminal recording).
 </summary>
 
 **Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
@@ -92,13 +102,15 @@ First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade
 
 To install the VPN, please choose one of the following options:
 
-**Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished):
+<details open>
+<summary>
+Option 1: Have the script generate random VPN credentials for you (will be displayed when finished).
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
-<a name="ikev2-setup-note"></a>
 After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
 ```bash
@@ -107,8 +119,12 @@ sudo ikev2.sh --auto
 # Alternatively, you may customize IKEv2 options
 sudo ikev2.sh
 ```
+</details>
 
-**Option 2:** Edit the script and provide your own VPN credentials:
+<details>
+<summary>
+Option 2: Edit the script and provide your own VPN credentials.
+</summary>
 
 ```bash
 wget https://git.io/vpnsetup -qO vpn.sh
@@ -119,9 +135,20 @@ sudo sh vpn.sh
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
-After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-note).
+After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
-**Option 3:** Define your VPN credentials as environment variables:
+```bash
+# Set up IKEv2 using default options
+sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
+```
+</details>
+
+<details>
+<summary>
+Option 3: Define your VPN credentials as environment variables.
+</summary>
 
 ```bash
 # All values MUST be placed inside 'single quotes'
@@ -133,9 +160,30 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-After successful installation, it is recommended to [set up IKEv2](#ikev2-setup-note).
+After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
 
-**Note:** If unable to download via `wget`, you may also open [vpnsetup.sh](vpnsetup.sh), then click the **`Raw`** button on the right. Press `Ctrl/Cmd + A` to select all, `Ctrl/Cmd + C` to copy, then paste into your favorite editor.
+```bash
+# Set up IKEv2 using default options
+sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
+```
+</details>
+
+<details>
+<summary>
+Click here if you are unable to download using wget.
+</summary>
+
+You may also use curl to download. For example:
+
+```bash
+curl -fsSL https://git.io/vpnsetup -o vpn.sh
+sudo sh vpn.sh
+```
+
+Alternatively, you may open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+</details>
 
 ## Next steps
 
@@ -204,18 +252,19 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
 - [Deploy Google BBR congestion control algorithm](docs/advanced-usage.md#deploy-google-bbr-congestion-control-algorithm)
 
-## Bugs & Questions
-
-- Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
-- Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
-- If you found a reproducible bug, open a [GitHub Issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) to submit a bug report.
-
 ## Uninstallation
 
 See [Uninstall the VPN](docs/uninstall.md).
 
 - [Uninstall using helper script](docs/uninstall.md#uninstall-using-helper-script)
 - [Manually uninstall the VPN](docs/uninstall.md#manually-uninstall-the-vpn)
+
+## Feedback & Questions
+
+- Have an improvement suggestion for documentation or VPN scripts? Open an [Enhancement request](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose). [Pull requests](https://github.com/hwdsl2/setup-ipsec-vpn/pulls) are also welcome.
+- If you found a reproducible bug, please file a [Bug report](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
+- Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
+- Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
 
 ## License
 
