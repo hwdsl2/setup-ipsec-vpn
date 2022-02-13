@@ -708,7 +708,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
-   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients, you must generate a unique certificate for each.
 
    Generate client certificate:
 
@@ -794,9 +794,9 @@ Save the file and run `service ipsec restart`. As of 2021-01-20, the IKEv2 helpe
 
 ### Unable to connect multiple IKEv2 clients
 
-To connect multiple IKEv2 clients simultaneously, you must [generate a unique certificate](#add-a-client-certificate) for each.
+To connect multiple IKEv2 clients, you must [generate a unique certificate](#add-a-client-certificate) for each.
 
-If you are unable to connect multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
+If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
 
 ### Other known issues
 

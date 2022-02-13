@@ -40,7 +40,7 @@ wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-或者，你也可以使用 curl 下载并运行脚本。
+或者，你也可以使用 curl 下载。
 </summary>
 
 ```bash
@@ -50,7 +50,7 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-单击查看 VPN 脚本的示例输出（终端记录）。
+查看 VPN 脚本的示例输出（终端记录）。
 </summary>
 
 **注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据 **无效**。
@@ -74,8 +74,8 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以下操作系统之一：
 
-- Ubuntu 20.04 (Focal) 或者 18.04 (Bionic)
-- Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) 或者 9 (Stretch)
+- Ubuntu 20.04 或者 18.04
+- Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
 - CentOS 7, Rocky Linux 8 或者 AlmaLinux 8[\*\*](#centos-8-note)
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
@@ -90,9 +90,9 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
-\* Debian 11/10 用户需要[使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
+\* Debian 11/10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* 对 CentOS Linux 8 的支持[已经结束](https://www.centos.org/centos-linux-eol/)。你可以另外使用比如 Rocky Linux 或者 AlmaLinux。
+\*\* 对 CentOS Linux 8 的支持 [已经结束](https://www.centos.org/centos-linux-eol/)。你可以另外使用比如 Rocky Linux 或者 AlmaLinux。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
@@ -175,14 +175,14 @@ sudo ikev2.sh
 如果无法通过 wget 下载，点这里查看解决方案。
 </summary>
 
-你也可以使用 curl 下载。例如：
+你也可以使用 `curl` 下载。例如：
 
 ```bash
 curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，你也可以打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+或者，打开 [vpnsetup.sh](vpnsetup.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 下一步
@@ -205,7 +205,7 @@ sudo sh vpn.sh
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要连接在同一个 NAT（比如家用路由器）后面的多个设备，你必须使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。
 
 要查看或更改 VPN 用户账户，请参见 [管理 VPN 用户](docs/manage-users-zh.md)。该文档包含辅助脚本，以方便管理 VPN 用户。
 
@@ -262,7 +262,7 @@ wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 ## 问题和反馈
 
 - 如果你对文档或 VPN 脚本有改进建议，请提交一个 [改进建议](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)，或者欢迎提交 [Pull request](https://github.com/hwdsl2/setup-ipsec-vpn/pulls)。
-- 如果你发现了一个可重复的程序漏洞，请提交一个 [错误报告](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)。
+- 如果你发现了一个可重复的程序漏洞，请为 [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) 或者 [VPN 脚本](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose) 提交一个错误报告。
 - 有问题需要提问？请先搜索 [已有的 issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) 以及在 [这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 和 [我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread) 上已有的留言。
 - VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 邮件列表提问，或者参考这些网站：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
 

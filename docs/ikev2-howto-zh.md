@@ -706,7 +706,7 @@ sudo ikev2.sh --revokeclient [client name]
 
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书。
 
-   **注：** 你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。如需同时连接多个客户端，则必须为每个客户端生成唯一的证书。
+   **注：** 你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。如需连接多个客户端，则必须为每个客户端生成唯一的证书。
 
    生成客户端证书：
 
@@ -792,9 +792,9 @@ sudo ikev2.sh --revokeclient [client name]
 
 ### 无法同时连接多个 IKEv2 客户端
 
-如果要同时连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
+如果要连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
 
-如果你无法同时连接同一个 NAT （比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
+如果你无法连接同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
 
 ### 其它已知问题
 

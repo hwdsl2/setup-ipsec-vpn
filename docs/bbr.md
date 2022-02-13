@@ -107,7 +107,7 @@ In this section, we will start Google BBR by modifying the configuration file.
    # tcp_bbr  16384  0
    ```
 
-## Author
+## Document author
 
 Copyright (C) 2022 [Leo Liu](https://github.com/optimusleobear)   
 Translated by [Lin Song](https://github.com/hwdsl2)

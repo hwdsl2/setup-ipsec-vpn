@@ -40,7 +40,7 @@ Your VPN login details will be randomly generated, and displayed on the screen w
 
 <details>
 <summary>
-Alternative one-liner using curl instead of wget.
+Alternative one-liner using curl.
 </summary>
 
 ```bash
@@ -50,7 +50,7 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-Click to see the VPN script in action (terminal recording).
+See the VPN script in action (terminal recording).
 </summary>
 
 **Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
@@ -74,8 +74,8 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 A dedicated server or virtual private server (VPS), freshly installed with one of the following OS:
 
-- Ubuntu 20.04 (Focal) or 18.04 (Bionic)
-- Debian 11 (Bullseye)[\*](#debian-10-note), 10 (Buster)[\*](#debian-10-note) or 9 (Stretch)
+- Ubuntu 20.04 or 18.04
+- Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) or 9
 - CentOS 7, Rocky Linux 8 or AlmaLinux 8[\*\*](#centos-8-note)
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
@@ -175,14 +175,14 @@ sudo ikev2.sh
 Click here if you are unable to download using wget.
 </summary>
 
-You may also use curl to download. For example:
+You may also use `curl` to download. For example:
 
 ```bash
 curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternatively, you may open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps
@@ -205,7 +205,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use [IKEv2](docs/ikev2-howto.md) or [IPsec/XAuth](docs/clients-xauth.md) mode.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices from behind the same NAT (e.g. home router), you must use [IKEv2](docs/ikev2-howto.md) or [IPsec/XAuth](docs/clients-xauth.md) mode.
 
 To view or update VPN user accounts, see [Manage VPN users](docs/manage-users.md). Helper scripts are included for convenience.
 
@@ -262,7 +262,7 @@ See [Uninstall the VPN](docs/uninstall.md).
 ## Feedback & Questions
 
 - Have an improvement suggestion for documentation or VPN scripts? Open an [Enhancement request](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose). [Pull requests](https://github.com/hwdsl2/setup-ipsec-vpn/pulls) are also welcome.
-- If you found a reproducible bug, please file a [Bug report](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
+- If you found a reproducible bug, open a bug report for the [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) or for the [VPN scripts](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
 - Got a question? Please first search [existing issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) and comments [in this Gist](https://gist.github.com/hwdsl2/9030462#comments) and [on my blog](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Ask VPN related questions on the [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) or [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) mailing list, or read these wikis: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
 
