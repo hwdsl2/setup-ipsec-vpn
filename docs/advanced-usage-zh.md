@@ -29,7 +29,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 
 对于 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式，你可以在不需要额外配置的情况下使用一个域名（比如 `vpn.example.com`）而不是 IP 地址连接到 VPN 服务器。另外，一般来说，在服务器的 IP 更改后，比如在恢复一个映像到具有不同 IP 的新服务器后，VPN 会继续正常工作，虽然可能需要重启服务器。
 
-对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，则必须在 [配置 IKEv2](ikev2-howto-zh.md) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
+对于 [IKEv2](ikev2-howto-zh.md) 模式，如果你想要 VPN 在服务器的 IP 更改后继续正常工作，参见 [这一小节](ikev2-howto-zh.md#更改-ikev2-服务器地址)。或者，你也可以在 [配置 IKEv2](ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 时指定一个域名作为 VPN 服务器的地址。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
@@ -45,7 +45,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 
 ```bash
 # 下载脚本
-wget -qO ikev2onlymode.sh https://bit.ly/ikev2onlymode
+wget -nv -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
 # 运行脚本并按提示操作
 sudo bash ikev2onlymode.sh
 ```

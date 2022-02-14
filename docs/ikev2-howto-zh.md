@@ -10,6 +10,7 @@
 * [管理客户端证书](#管理客户端证书)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [故障排除](#故障排除)
+* [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [移除 IKEv2](#移除-ikev2)
 * [参考链接](#参考链接)
 
@@ -50,7 +51,7 @@ sudo ikev2.sh
 如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载 IKEv2 辅助脚本：
 
 ```bash
-wget https://git.io/ikev2setup -qO /opt/src/ikev2.sh
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -87,13 +88,20 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
 
 ```bash
-wget https://git.io/ikev2setup -qO /opt/src/ikev2.sh
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 </details>
 <details>
 <summary>
-单击此处查看 IKEv2 脚本的使用信息。
+了解如何在配置 IKEv2 之后更改服务器地址。
+</summary>
+
+在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。参见 [这一小节](#更改-ikev2-服务器地址)。
+</details>
+<details>
+<summary>
+查看 IKEv2 脚本的使用信息。
 </summary>
 
 ```
@@ -800,6 +808,19 @@ sudo ikev2.sh --revokeclient [client name]
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
+
+## 更改 IKEv2 服务器地址
+
+在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要更改服务器地址，运行这个 [辅助脚本](../extras/ikev2changeaddr.sh) 并按提示操作。
+
+```bash
+# 下载脚本
+wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+# 运行脚本并按照提示操作
+sudo bash ikev2changeaddr.sh
+```
+
+**重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
 
 ## 移除 IKEv2
 

@@ -10,6 +10,7 @@
 * [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Troubleshooting](#troubleshooting)
+* [Change IKEv2 server address](#change-ikev2-server-address)
 * [Remove IKEv2](#remove-ikev2)
 * [References](#references)
 
@@ -50,7 +51,7 @@ Error: "sudo: ikev2.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
 
 ```bash
-wget https://git.io/ikev2setup -qO /opt/src/ikev2.sh
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -87,13 +88,20 @@ Learn how to update the IKEv2 helper script on your server.
 The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
 
 ```bash
-wget https://git.io/ikev2setup -qO /opt/src/ikev2.sh
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 </details>
 <details>
 <summary>
-Click here to view usage information for the IKEv2 script.
+Learn how to change server address after IKEv2 setup.
+</summary>
+
+In certain circumstances, you may need to change the IKEv2 server address after setup. Learn more in [this section](#change-ikev2-server-address).
+</details>
+<details>
+<summary>
+View usage information for the IKEv2 script.
 </summary>
 
 ```
@@ -802,6 +810,19 @@ If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
+
+## Change IKEv2 server address
+
+In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. To change the server address, run this [helper script](../extras/ikev2changeaddr.sh) and follow the prompts.
+
+```bash
+# Download the script
+wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+# Run the script and follow the prompts
+sudo bash ikev2changeaddr.sh
+```
+
+**Important:** After running this script, you must manually update the server address on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).
 
 ## Remove IKEv2
 

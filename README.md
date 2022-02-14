@@ -127,7 +127,7 @@ Option 2: Edit the script and provide your own VPN credentials.
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -153,7 +153,7 @@ Option 3: Define your VPN credentials as environment variables.
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -qO vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \

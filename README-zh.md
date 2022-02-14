@@ -127,7 +127,7 @@ sudo ikev2.sh
 </summary>
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -153,7 +153,7 @@ sudo ikev2.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -qO vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
