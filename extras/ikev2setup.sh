@@ -577,23 +577,35 @@ EOF
   fi
 }
 
+check_config_password() {
+  config_file="/etc/ipsec.d/.vpnconfig"
+  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file"; then
+    use_config_password=1
+  else
+    use_config_password=0
+  fi
+}
+
 select_config_password() {
+  if [ "$use_config_password" = "0" ]; then
 cat <<'EOF'
 
 IKEv2 client config files contain the client certificate, private key and CA certificate.
 This script can optionally generate a random password to protect these files.
+Future client config files will also be protected using the same password.
 
 EOF
-  printf "Protect client config files using a password? [y/N] "
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      use_config_password=1
-      ;;
-    *)
-      use_config_password=0
-      ;;
-  esac
+    printf "Protect client config files using a password? [y/N] "
+    read -r response
+    case $response in
+      [yY][eE][sS]|[yY])
+        use_config_password=1
+        ;;
+      *)
+        use_config_password=0
+        ;;
+    esac
+  fi
 }
 
 select_menu_option() {
@@ -1273,7 +1285,6 @@ ikev2setup() {
   check_utils_exist
 
   use_defaults=0
-  use_config_password=0
   add_client=0
   export_client=0
   list_clients=0
@@ -1321,6 +1332,7 @@ ikev2setup() {
   done
 
   check_arguments
+  check_config_password
   get_export_dir
 
   if [ "$add_client" = "1" ]; then
