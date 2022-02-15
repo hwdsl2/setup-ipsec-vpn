@@ -10,6 +10,7 @@
 * [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Troubleshooting](#troubleshooting)
+* [Update IKEv2 helper script](#update-ikev2-helper-script)
 * [Change IKEv2 server address](#change-ikev2-server-address)
 * [Remove IKEv2](#remove-ikev2)
 * [References](#references)
@@ -59,7 +60,7 @@ Then run the script using the instructions above.
 </details>
 <details>
 <summary>
-You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
+You may optionally specify a DNS name, client name and/or custom DNS servers.
 </summary>
 
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
@@ -79,25 +80,6 @@ By default, IKEv2 clients are set to use [Google Public DNS](https://developers.
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
-</details>
-<details>
-<summary>
-Learn how to update the IKEv2 helper script on your server.
-</summary>
-
-The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
-
-```bash
-wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
-</details>
-<details>
-<summary>
-Learn how to change server address after IKEv2 setup.
-</summary>
-
-In certain circumstances, you may need to change the IKEv2 server address after setup. Learn more in [this section](#change-ikev2-server-address).
 </details>
 <details>
 <summary>
@@ -445,7 +427,7 @@ sudo ikev2.sh --exportclient [client name]
 First, read the important note above. Then click here for instructions.
 </summary>
 
-**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below. This **cannot be undone**!
+**Warning:** The client certificate and private key will be **permanently deleted**. This **cannot be undone**!
 
 To delete a client certificate:
 
@@ -579,6 +561,11 @@ Alternatively, you may manually revoke a client certificate. This can be done us
 As an alternative to using the [helper script](#set-up-ikev2-using-helper-script), advanced users can manually set up IKEv2. Before continuing, it is recommended to [update Libreswan](../README.md#upgrade-libreswan) to the latest version.
 
 The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
+
+<details>
+<summary>
+View example steps for manually configuring IKEv2 with Libreswan.
+</summary>
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
@@ -778,6 +765,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    ```
 
 Before continuing, you **must** restart the IPsec service. The IKEv2 setup on the VPN server is now complete. Follow instructions to [configure VPN clients](#configure-ikev2-vpn-clients).
+</details>
 
 ## Troubleshooting
 
@@ -785,9 +773,25 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
+* [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
+* [Policy match error](#policy-match-error)
 * [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [Other known issues](#other-known-issues)
+
+### IKE authentication credentials are unacceptable
+
+If you encounter this error, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. For example, you cannot use a DNS name to connect if it was not specified when setting up IKEv2. To change the IKEv2 server address, read [this section](#change-ikev2-server-address).
+
+### Policy match error
+
+To fix this error, you'll need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
+
+- For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+```
 
 ### IKEv2 disconnects after one hour
 
@@ -810,6 +814,15 @@ If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
+
+## Update IKEv2 helper script
+
+The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
+
+```bash
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
 
 ## Change IKEv2 server address
 

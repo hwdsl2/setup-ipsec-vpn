@@ -10,6 +10,7 @@
 * [管理客户端证书](#管理客户端证书)
 * [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [故障排除](#故障排除)
+* [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [移除 IKEv2](#移除-ikev2)
 * [参考链接](#参考链接)
@@ -59,7 +60,7 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 </details>
 <details>
 <summary>
-你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。点这里查看详情。
+你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
 </summary>
 
 在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
@@ -79,25 +80,6 @@ sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
-</details>
-<details>
-<summary>
-了解如何更新服务器上的 IKEv2 辅助脚本。
-</summary>
-
-IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
-
-```bash
-wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
-</details>
-<details>
-<summary>
-了解如何在配置 IKEv2 之后更改服务器地址。
-</summary>
-
-在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。参见 [这一小节](#更改-ikev2-服务器地址)。
 </details>
 <details>
 <summary>
@@ -443,7 +425,7 @@ sudo ikev2.sh --exportclient [client name]
 首先，请阅读上面的重要说明。然后点这里查看详情。
 </summary>
 
-**重要：** 请先阅读上面的重要说明。如果你仍然想要删除证书，参见下面的步骤。此操作**不可撤销**！
+**警告：** 这将**永久删除**客户端证书和私钥。此操作**不可撤销**！
 
 如果要删除一个客户端证书：
 
@@ -577,6 +559,11 @@ sudo ikev2.sh --revokeclient [client name]
 除了使用 [辅助脚本](#使用辅助脚本配置-ikev2) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
 
 下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
+
+<details>
+<summary>
+查看手动在 Libreswan 上配置 IKEv2 的示例步骤。
+</summary>
 
 1. 获取 VPN 服务器的公共 IP 地址，将它保存到变量并检查。
 
@@ -776,6 +763,7 @@ sudo ikev2.sh --revokeclient [client name]
    ```
 
 在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。下一步：[配置 VPN 客户端](#配置-ikev2-vpn-客户端)。
+</details>
 
 ## 故障排除
 
@@ -783,9 +771,25 @@ sudo ikev2.sh --revokeclient [client name]
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
+* [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
+* [参数错误 policy match error](#参数错误-policy-match-error)
 * [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
 * [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
 * [其它已知问题](#其它已知问题)
+
+### IKE 身份验证凭证不可接受
+
+如果遇到此错误，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
+
+### 参数错误 policy match error
+
+要解决此错误，你需要为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。
+
+- 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+```
 
 ### IKEv2 在一小时后断开连接
 
@@ -808,6 +812,15 @@ sudo ikev2.sh --revokeclient [client name]
 
 1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
+
+## 更新 IKEv2 辅助脚本
+
+IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
+
+```bash
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
 
 ## 更改 IKEv2 服务器地址
 
