@@ -216,6 +216,7 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient.p12
 
           restart_ipsec
           grep pluto "$log1" | tail -n 20
@@ -233,6 +234,7 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
@@ -245,6 +247,7 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
           3
@@ -357,6 +360,8 @@ jobs:
           ANSWERS
 
           restart_ipsec
+          rm -f /etc/ipsec.d/vpnclient*
+
           bash ikev2.sh <<ANSWERS
           y
           invalidfqdn
@@ -377,10 +382,21 @@ jobs:
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
+          config_file="/etc/ipsec.d/.vpnconfig"
+          p12_pw=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient.p12
+
+          bash ikev2.sh --addclient vpnclient2
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --exportclient vpnclient2
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient2.p12
+
           bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
+          grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" && exit 1
           restart_ipsec
           bash ikev2.sh <<ANSWERS
 
@@ -421,6 +437,7 @@ jobs:
           restart_ipsec
           bash ikev2.sh --auto
 
+          grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" && exit 1
           grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           restart_ipsec
           ipsec status | grep -q ikev2-cp
