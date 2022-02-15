@@ -22,10 +22,18 @@ jobs:
     env:
       OS_VERSION: ${{ matrix.os_version }}
     steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
+        with:
+          persist-credentials: false
       - name: Build
         run: |
           mkdir -p "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
           cd "$GITHUB_WORKSPACE/testing/${OS_VERSION//:}"
+
+          mkdir -p scripts/extras
+          ls -ld "$GITHUB_WORKSPACE/vpnsetup.sh"
+          cp -f "$GITHUB_WORKSPACE"/*.sh scripts/
+          cp -f "$GITHUB_WORKSPACE"/extras/*.sh scripts/extras/
 
           cat > run.sh <<'EOF'
           #!/bin/bash
@@ -71,11 +79,12 @@ jobs:
             echo
           }
 
+          cd /opt/src
           yum -y -q update
           yum -y -q install wget rsyslog
           systemctl start rsyslog
 
-          wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup
+          cp -f /opt/src/scripts/vpnsetup.sh .
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' vpnsetup.sh
 
           sh vpnsetup.sh
@@ -102,7 +111,7 @@ jobs:
           ls -l /usr/bin/ikev2.sh
           ls -l /opt/src/ikev2.sh
 
-          wget -t 3 -T 30 -nv -O vpnunst.sh https://git.io/vpnuninstall
+          cp -f /opt/src/scripts/extras/vpnuninstall.sh ./vpnunst.sh
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
@@ -111,7 +120,7 @@ jobs:
             mkdir /etc/xl2tpd
           fi
 
-          wget -t 3 -T 30 -nv -O quickstart.sh https://git.io/vpnquickstart
+          cp -f /opt/src/scripts/extras/quickstart.sh .
           sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
             -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' quickstart.sh
 
@@ -151,9 +160,9 @@ jobs:
           fi
 
           if [ "$1" != "amazon" ]; then
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-centos
+            cp -f /opt/src/scripts/vpnsetup_centos.sh ./vpnsetup.sh
           else
-            wget -t 3 -T 30 -nv -O vpnsetup.sh https://git.io/vpnsetup-amzn
+            cp -f /opt/src/scripts/vpnsetup_amzn.sh ./vpnsetup.sh
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
 
@@ -190,7 +199,7 @@ jobs:
           ls -l /usr/bin/ikev2.sh
           ls -l /opt/src/ikev2.sh
 
-          wget -t 3 -T 30 -nv -O ikev2.sh https://git.io/ikev2setup # hwdsl2
+          cp -f /opt/src/scripts/extras/ikev2setup.sh ./ikev2.sh # hwdsl2
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
 
           bash ikev2.sh <<ANSWERS
@@ -199,13 +208,15 @@ jobs:
 
 
 
-          y
+
+
           ANSWERS
 
           grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           ls -ld /etc/ipsec.d/vpnclient.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient.sswan
           ls -ld /etc/ipsec.d/vpnclient.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient.p12
 
           restart_ipsec
           grep pluto "$log1" | tail -n 20
@@ -217,22 +228,26 @@ jobs:
           vpnclient
           vpnclient2
 
+
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient2.p12
 
           rm -f /etc/ipsec.d/vpnclient2*
           bash ikev2.sh <<ANSWERS
           2
           nonexistclient
           vpnclient2
+
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
           ls -ld /etc/ipsec.d/vpnclient2.sswan
           ls -ld /etc/ipsec.d/vpnclient2.p12
+          pk12util -W "" -l /etc/ipsec.d/vpnclient2.p12
 
           bash ikev2.sh <<ANSWERS
           3
@@ -345,6 +360,8 @@ jobs:
           ANSWERS
 
           restart_ipsec
+          rm -f /etc/ipsec.d/vpnclient*
+
           bash ikev2.sh <<ANSWERS
           y
           invalidfqdn
@@ -357,6 +374,7 @@ jobs:
           invaliddns
           1.0.0.1
           y
+
           ANSWERS
 
           grep -q 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
@@ -364,10 +382,21 @@ jobs:
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
+          config_file="/etc/ipsec.d/.vpnconfig"
+          p12_pw=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient.p12
+
+          bash ikev2.sh --addclient vpnclient2
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient2.p12
+
+          bash ikev2.sh --exportclient vpnclient2
+          pk12util -W "$p12_pw" -l /etc/ipsec.d/vpnclient2.p12
+
           bash ikev2.sh --removeikev2 <<ANSWERS
           y
           ANSWERS
 
+          grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" && exit 1
           restart_ipsec
           bash ikev2.sh <<ANSWERS
 
@@ -380,7 +409,8 @@ jobs:
           y
           1.1.1.1
 
-          y
+
+
           ANSWERS
 
           grep -q 'leftid=1.2.3.4' /etc/ipsec.d/ikev2.conf
@@ -407,17 +437,18 @@ jobs:
           restart_ipsec
           bash ikev2.sh --auto
 
+          grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$config_file" && exit 1
           grep -q 'modecfgdns="8.8.8.8 8.8.4.4"' /etc/ipsec.d/ikev2.conf
           restart_ipsec
           ipsec status | grep -q ikev2-cp
 
-          wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade
+          cp -f /opt/src/scripts/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
           for ver in 4.4 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
-          y
+
           ANSWERS
             restart_ipsec
             ipsec --version | grep "$ver"
@@ -427,16 +458,16 @@ jobs:
           done
 
           if [ "$1" != "amazon" ]; then
-            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-centos
+            cp -f /opt/src/scripts/extras/vpnupgrade_centos.sh ./vpnup.sh
           else
-            wget -t 3 -T 30 -nv -O vpnup.sh https://git.io/vpnupgrade-amzn
+            cp -f /opt/src/scripts/extras/vpnupgrade_amzn.sh ./vpnup.sh
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 4.5 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
-          y
+
           ANSWERS
             restart_ipsec
             ipsec --version | grep "$ver"
@@ -482,6 +513,7 @@ jobs:
           rm -f /lib/systemd/system/basic.target.wants/*; \
           rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+          COPY scripts/ /opt/src/scripts/
           COPY ./run.sh /opt/src/run.sh
           RUN chmod 755 /opt/src/run.sh
 

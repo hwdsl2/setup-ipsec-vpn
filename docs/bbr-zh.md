@@ -107,6 +107,6 @@ Amazon Linux 2提供过经过验证的新版Linux内核，并可以通过启用�
    # tcp_bbr  16384  0
    ```
 
-## 作者
+## 文档作者
 
 版权所有 (C) 2022 [Leo Liu](https://github.com/optimusleobear)

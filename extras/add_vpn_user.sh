@@ -107,10 +107,10 @@ Setup VPN clients: https://git.io/vpnclients
 
 EOF
 
-printf "Do you want to continue? [y/N] "
+printf "Do you want to continue? [Y/n] "
 read -r response
 case $response in
-  [yY][eE][sS]|[yY])
+  [yY][eE][sS]|[yY]|'')
     echo
     echo "Adding or updating VPN user..."
     echo

@@ -10,6 +10,8 @@
 * [Manage client certificates](#manage-client-certificates)
 * [Manually set up IKEv2 on the VPN server](#manually-set-up-ikev2-on-the-vpn-server)
 * [Troubleshooting](#troubleshooting)
+* [Update IKEv2 helper script](#update-ikev2-helper-script)
+* [Change IKEv2 server address](#change-ikev2-server-address)
 * [Remove IKEv2](#remove-ikev2)
 * [References](#references)
 
@@ -50,7 +52,7 @@ Error: "sudo: ikev2.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
 
 ```bash
-wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -58,7 +60,7 @@ Then run the script using the instructions above.
 </details>
 <details>
 <summary>
-You may optionally specify a DNS name, client name and/or custom DNS servers. Click here for details.
+You may optionally specify a DNS name, client name and/or custom DNS servers.
 </summary>
 
 When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
@@ -81,19 +83,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 </details>
 <details>
 <summary>
-Learn how to update the IKEv2 helper script on your server.
-</summary>
-
-The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
-
-```bash
-wget https://git.io/ikev2setup -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
-</details>
-<details>
-<summary>
-Click here to view usage information for the IKEv2 script.
+View usage information for the IKEv2 script.
 </summary>
 
 ```
@@ -116,7 +106,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** The password for client configuration files can be found in the output of the IKEv2 helper script. If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
+**Note:** If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -141,6 +131,8 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
    # Import .p12 file (replace with your own value)
    certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
+
+   **Note:** If there is no password for client config files in the output of the IKEv2 helper script, press Enter to continue, or if manually importing the `.p12` file, leave the password field blank.
 
    Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
@@ -356,8 +348,9 @@ Next, securely transfer the generated `.p12` file from the VPN server to your Li
 ```bash
 # Example: Extract CA certificate, client certificate and private key.
 #          You may delete the .p12 file when finished.
-# Note: You will need to enter the import password, which can be found
-#       in the output of the IKEv2 helper script.
+# Note: You may need to enter the import password, which can be found
+#       in the output of the IKEv2 helper script. If the output does not
+#       contain an import password, press Enter to continue.
 openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
 openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
 openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
@@ -434,7 +427,7 @@ sudo ikev2.sh --exportclient [client name]
 First, read the important note above. Then click here for instructions.
 </summary>
 
-**Important:** Please first read the important note above. If you still want to delete a certificate, refer to the steps below. This **cannot be undone**!
+**Warning:** The client certificate and private key will be **permanently deleted**. This **cannot be undone**!
 
 To delete a client certificate:
 
@@ -568,6 +561,11 @@ Alternatively, you may manually revoke a client certificate. This can be done us
 As an alternative to using the [helper script](#set-up-ikev2-using-helper-script), advanced users can manually set up IKEv2. Before continuing, it is recommended to [update Libreswan](../README.md#upgrade-libreswan) to the latest version.
 
 The following example shows how to manually configure IKEv2 with Libreswan. Commands below must be run as `root`.
+
+<details>
+<summary>
+View example steps for manually configuring IKEv2 with Libreswan.
+</summary>
 
 1. Find the VPN server's public IP, save it to a variable and check.
 
@@ -705,7 +703,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
-   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients simultaneously, you must generate a unique certificate for each.
+   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients, you must generate a unique certificate for each.
 
    Generate client certificate:
 
@@ -767,6 +765,7 @@ The following example shows how to manually configure IKEv2 with Libreswan. Comm
    ```
 
 Before continuing, you **must** restart the IPsec service. The IKEv2 setup on the VPN server is now complete. Follow instructions to [configure VPN clients](#configure-ikev2-vpn-clients).
+</details>
 
 ## Troubleshooting
 
@@ -774,37 +773,25 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
-* [Incorrect password when trying to import](#incorrect-password-when-trying-to-import)
+* [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
+* [Policy match error](#policy-match-error)
 * [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [Other known issues](#other-known-issues)
 
-### Incorrect password when trying to import
+### IKE authentication credentials are unacceptable
 
-If you forgot the password for client config files, you may [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
+If you encounter this error, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. For example, you cannot use a DNS name to connect if it was not specified when setting up IKEv2. To change the IKEv2 server address, read [this section](#change-ikev2-server-address).
 
-Ubuntu 18.04 users may encounter the error "The password you entered is incorrect" when trying to import the generated `.p12` file into Windows. This is due to a bug in `NSS`. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/issues/414#issuecomment-460495258). As of 2021-01-21, the IKEv2 helper script was updated to automatically apply the workaround below.
-<details>
-<summary>
-Workaround for the NSS bug on Ubuntu 18.04
-</summary>
+### Policy match error
 
-**Note:** This workaround should only be used on Ubuntu 18.04 systems running on the `x86_64` architecture.
+To fix this error, you'll need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
 
-First, install newer versions of `libnss3` related packages:
+- For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
 ```
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/main/n/nss/libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb
-wget https://mirrors.kernel.org/ubuntu/pool/universe/n/nss/libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb
-apt-get -y update
-apt-get -y install "./libnss3_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-dev_3.49.1-1ubuntu1.6_amd64.deb" \
- "./libnss3-tools_3.49.1-1ubuntu1.6_amd64.deb"
-```
-
-After that, [export configuration for the IKEv2 client](#export-configuration-for-an-existing-client) again.
-</details>
 
 ### IKEv2 disconnects after one hour
 
@@ -819,14 +806,36 @@ Save the file and run `service ipsec restart`. As of 2021-01-20, the IKEv2 helpe
 
 ### Unable to connect multiple IKEv2 clients
 
-To connect multiple IKEv2 clients simultaneously, you must [generate a unique certificate](#add-a-client-certificate) for each.
+To connect multiple IKEv2 clients, you must [generate a unique certificate](#add-a-client-certificate) for each.
 
-If you are unable to connect multiple IKEv2 clients simultaneously from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
+If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
 
 ### Other known issues
 
 1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
+
+## Update IKEv2 helper script
+
+The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
+
+```bash
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
+
+## Change IKEv2 server address
+
+In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. To change the server address, run this [helper script](../extras/ikev2changeaddr.sh) and follow the prompts.
+
+```bash
+# Download the script
+wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+# Run the script and follow the prompts
+sudo bash ikev2changeaddr.sh
+```
+
+**Important:** After running this script, you must manually update the server address on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).
 
 ## Remove IKEv2
 

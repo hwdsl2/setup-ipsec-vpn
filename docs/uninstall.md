@@ -10,7 +10,7 @@
 **Warning:** This [helper script](../extras/vpnuninstall.sh) will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
 
 ```bash
-wget https://git.io/vpnuninstall -O vpnunst.sh
+wget https://git.io/vpnuninstall -nv -O vpnunst.sh
 sudo bash vpnunst.sh
 ```
 

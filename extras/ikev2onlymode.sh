@@ -26,11 +26,11 @@ abort_and_exit() {
   exit 1
 }
 
-confirm_or_abort() {
+continue_or_abort() {
   printf '%s' "$1"
   read -r response
   case $response in
-    [yY][eE][sS]|[yY])
+    [yY][eE][sS]|[yY]|'')
       echo
       ;;
     *)
@@ -70,7 +70,7 @@ cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        IKEv2-only mode requires Libreswan 4.2 or newer.
        To update Libreswan, run:
-       wget https://git.io/vpnupgrade -O vpnup.sh && sudo sh vpnup.sh
+       wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 EOF
     exit 1
   fi
@@ -95,7 +95,7 @@ Note: This option will disable IKEv2-only mode on this VPN server. With IKEv2-on
       IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes) in addition to IKEv2.
 
 EOF
-  confirm_or_abort "Do you want to continue? [y/N] "
+  continue_or_abort "Do you want to continue? [Y/n] "
 }
 
 confirm_enable_ikev2_only() {
@@ -107,7 +107,7 @@ Note: This option will enable IKEv2-only mode on this VPN server. With IKEv2-onl
       modes) will be dropped.
 
 EOF
-  confirm_or_abort "Do you want to continue? [y/N] "
+  continue_or_abort "Do you want to continue? [Y/n] "
 }
 
 toggle_ikev2_only() {

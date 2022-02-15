@@ -105,10 +105,10 @@ Username: $VPN_USER
 
 EOF
 
-printf "Do you want to continue? [y/N] "
+printf "Do you want to continue? [Y/n] "
 read -r response
 case $response in
-  [yY][eE][sS]|[yY])
+  [yY][eE][sS]|[yY]|'')
     echo
     echo "Deleting VPN user..."
     echo
