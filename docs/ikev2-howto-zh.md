@@ -80,6 +80,12 @@ sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
+
+默认情况下，导入 IKEv2 客户端配置文件时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。示例如下：
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
+```
 </details>
 <details>
 <summary>
@@ -116,14 +122,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 和 11
 
-Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
+**Windows 8, 10 和 11** 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 1. 右键单击 [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
 1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
 1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
 
-或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 Windows 7, 8, 10 和 11。
+或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 **Windows 7, 8, 10 和 11**。
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
@@ -132,11 +138,13 @@ Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
    certutil -f -importpfx ".p12文件的位置和名称" NoExport
    ```
 
-   **注：** 如果 IKEv2 辅助脚本的输出中没有包含客户端配置文件的密码，请按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
+   **注：** 如果客户端配置文件没有密码，请按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
 
-   或者，你也可以手动导入 `.p12` 文件。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，你必须确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
+   或者，你也可以 [手动导入 .p12 文件](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs)。在导入证书后，确保将客户端证书放在 "个人 -> 证书" 目录中，并且将 CA 证书放在 "受信任的根证书颁发机构 -> 证书" 目录中。
 
-1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。对于 Windows 8, 10 和 11，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。Windows 7 不支持这些命令，你可以手动创建 VPN 连接（见下面）。
+1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
+
+   对于 **Windows 8, 10 和 11**，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -145,9 +153,9 @@ Windows 8, 10 和 11 用户可以自动导入 IKEv2 配置：
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   或者，你也可以手动创建 VPN 连接。详细步骤请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
+   **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。你输入的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
 
-1. （**此步骤为必须，如果你手动创建了 VPN 连接**）为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
+1. **此步骤为必须，如果你手动创建了 VPN 连接。** 为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
    - 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
