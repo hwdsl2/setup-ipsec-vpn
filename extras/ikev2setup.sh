@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   15 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   16 Feb 2022
 
 EOF
 }
@@ -595,11 +595,17 @@ EOF
 }
 
 check_config_password() {
-  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONFIG_FILE"; then
-    use_config_password=1
-  else
-    use_config_password=0
-  fi
+  use_config_password=0
+  case $VPN_PROTECT_CONFIG in
+    [yY][eE][sS])
+      use_config_password=1
+      ;;
+    *)
+      if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONFIG_FILE"; then
+        use_config_password=1
+      fi
+      ;;
+  esac
 }
 
 select_config_password() {
@@ -1204,6 +1210,12 @@ cat <<EOF
 *IMPORTANT* Password for client config files:
 $p12_password
 Write this down, you'll need it for import!
+EOF
+  else
+cat <<'EOF'
+
+Note: No password is required when importing
+client config files.
 EOF
   fi
 cat <<'EOF'
