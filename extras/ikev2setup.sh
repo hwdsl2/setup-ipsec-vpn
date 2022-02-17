@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   15 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   16 Feb 2022
 
 EOF
 }
@@ -595,11 +595,17 @@ EOF
 }
 
 check_config_password() {
-  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONFIG_FILE"; then
-    use_config_password=1
-  else
-    use_config_password=0
-  fi
+  use_config_password=0
+  case $VPN_PROTECT_CONFIG in
+    [yY][eE][sS])
+      use_config_password=1
+      ;;
+    *)
+      if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONF_FILE"; then
+        use_config_password=1
+      fi
+      ;;
+  esac
 }
 
 select_config_password() {
@@ -713,13 +719,13 @@ get_p12_password() {
   if [ "$use_config_password" = "0" ]; then
     create_p12_password
   else
-    p12_password=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$CONFIG_FILE" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+    p12_password=$(grep -s '^IKEV2_CONFIG_PASSWORD=.\+' "$CONF_FILE" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
     if [ -z "$p12_password" ]; then
       create_p12_password
-      if [ -n "$CONFIG_FILE" ] && [ -n "$CONFIG_DIR" ]; then
-        mkdir -p "$CONFIG_DIR"
-        printf '%s\n' "IKEV2_CONFIG_PASSWORD='$p12_password'" >> "$CONFIG_FILE"
-        chmod 600 "$CONFIG_FILE"
+      if [ -n "$CONF_FILE" ] && [ -n "$CONF_DIR" ]; then
+        mkdir -p "$CONF_DIR"
+        printf '%s\n' "IKEV2_CONFIG_PASSWORD='$p12_password'" >> "$CONF_FILE"
+        chmod 600 "$CONF_FILE"
       fi
     fi
   fi
@@ -1205,6 +1211,12 @@ cat <<EOF
 $p12_password
 Write this down, you'll need it for import!
 EOF
+  else
+cat <<'EOF'
+
+Note: No password is required when importing
+client config files.
+EOF
   fi
 cat <<'EOF'
 
@@ -1279,8 +1291,8 @@ delete_certificates() {
   crlutil -D -d "$CERT_DB" -n "$CA_NAME" 2>/dev/null
   certutil -F -d "$CERT_DB" -n "$CA_NAME"
   certutil -D -d "$CERT_DB" -n "$CA_NAME" 2>/dev/null
-  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONFIG_FILE"; then
-    sed -i '/IKEV2_CONFIG_PASSWORD=/d' "$CONFIG_FILE"
+  if grep -qs '^IKEV2_CONFIG_PASSWORD=.\+' "$CONF_FILE"; then
+    sed -i '/IKEV2_CONFIG_PASSWORD=/d' "$CONF_FILE"
   fi
 }
 
@@ -1346,8 +1358,8 @@ ikev2setup() {
 
   CA_NAME="IKEv2 VPN CA"
   CERT_DB="sql:/etc/ipsec.d"
-  CONFIG_DIR="/etc/ipsec.d"
-  CONFIG_FILE="/etc/ipsec.d/.vpnconfig"
+  CONF_DIR="/etc/ipsec.d"
+  CONF_FILE="/etc/ipsec.d/.vpnconfig"
   IKEV2_CONF="/etc/ipsec.d/ikev2.conf"
   IPSEC_CONF="/etc/ipsec.conf"
 

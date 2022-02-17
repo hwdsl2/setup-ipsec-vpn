@@ -80,6 +80,12 @@ By default, IKEv2 clients are set to use [Google Public DNS](https://developers.
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
+
+By default, no password is required when importing IKEv2 client config files. You may optionally choose to protect client config files using a random password. Example:
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
+```
 </details>
 <details>
 <summary>
@@ -116,14 +122,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 and 11
 
-Windows 8, 10 and 11 users can automatically import IKEv2 configuration:
+**Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
 1. Right-click on [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
-Alternatively, you may manually import IKEv2 configuration. These steps apply to Windows 7, 8, 10 and 11.
+Alternatively, you may manually import IKEv2 configuration. These steps apply to **Windows 7, 8, 10 and 11**.
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
@@ -132,11 +138,13 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
    certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
 
-   **Note:** If there is no password for client config files in the output of the IKEv2 helper script, press Enter to continue, or if manually importing the `.p12` file, leave the password field blank.
+   **Note:** If there is no password for client config files, press Enter to continue, or if manually importing the `.p12` file, leave the password field blank.
 
-   Alternatively, you can manually import the `.p12` file. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs) for instructions. Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+   Alternatively, you can [manually import the .p12 file](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs). Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
-1. On the Windows computer, add a new IKEv2 VPN connection. For Windows 8, 10 and 11, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance. Windows 7 does not support these commands, you may manually create the VPN connection (see below).
+1. On the Windows computer, add a new IKEv2 VPN connection.
+
+   For **Windows 8, 10 and 11**, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -145,9 +153,9 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   Alternatively, you can manually create the VPN connection. Click [here](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config) for instructions. If you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
+   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config). The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
-1. (**This step is required if you manually created the VPN connection**) Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
+1. **This step is required if you manually created the VPN connection.** Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
    - For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
