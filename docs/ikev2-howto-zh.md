@@ -81,7 +81,7 @@ sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-默认情况下，导入 IKEv2 客户端配置文件时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。示例如下：
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。示例如下：
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto

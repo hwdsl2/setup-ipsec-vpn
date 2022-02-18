@@ -81,7 +81,7 @@ By default, IKEv2 clients are set to use [Google Public DNS](https://developers.
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-By default, no password is required when importing IKEv2 client config files. You may optionally choose to protect client config files using a random password. Example:
+By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password. Example:
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
