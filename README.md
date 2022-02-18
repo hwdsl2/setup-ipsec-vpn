@@ -121,7 +121,7 @@ sudo ikev2.sh
 ```
 </details>
 
-<details>
+<details open>
 <summary>
 Option 2: Edit the script and provide your own VPN credentials.
 </summary>

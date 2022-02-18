@@ -121,7 +121,7 @@ sudo ikev2.sh
 ```
 </details>
 
-<details>
+<details open>
 <summary>
 选项 2: 编辑脚本并提供你自己的 VPN 登录凭证。
 </summary>
