@@ -14,6 +14,7 @@
 # know how you have improved it!
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SYS_DT=$(date +%F-%T | tr ':' '_')
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
 bigecho() { echo "## $1"; }
@@ -266,7 +267,8 @@ update_ikev2_conf() {
     echo >> /etc/ipsec.conf
     echo 'include /etc/ipsec.d/*.conf' >> /etc/ipsec.conf
   fi
-  sed -i -e "/^[[:space:]]\+leftcert=/d" \
+  sed -i".old-$SYS_DT" \
+      -e "/^[[:space:]]\+leftcert=/d" \
       -e "/^[[:space:]]\+leftid=/d" /etc/ipsec.d/ikev2.conf
   if [ "$use_dns_name" = "1" ]; then
     sed -i "/conn ikev2-cp/a \  leftid=@$server_addr" /etc/ipsec.d/ikev2.conf

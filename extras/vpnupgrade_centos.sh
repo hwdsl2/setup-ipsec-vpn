@@ -20,6 +20,7 @@ SWAN_VER=
 ### DO NOT edit below this line ###
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SYS_DT=$(date +%F-%T | tr ':' '_')
 [ -n "$VPN_UPDATE_SWAN_VER" ] && SWAN_VER="$VPN_UPDATE_SWAN_VER"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
@@ -233,7 +234,7 @@ update_ikev2_script() {
     wget -t 3 -T 30 -q -O ikev2.sh.new "$ikev2_url"
   ) || /bin/rm -f ikev2.sh.new
   if [ -s ikev2.sh.new ]; then
-    [ -s ikev2.sh ] && /bin/cp -f ikev2.sh ikev2.sh.old
+    [ -s ikev2.sh ] && /bin/cp -f ikev2.sh "ikev2.sh.old-$SYS_DT"
     /bin/cp -f ikev2.sh.new ikev2.sh && chmod +x ikev2.sh \
       && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
     /bin/rm -f ikev2.sh.new
@@ -252,7 +253,7 @@ update_config() {
   [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
   [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=3
 
-  sed -i".old-$(date +%F-%T)" \
+  sed -i".old-$SYS_DT" \
       -e "s/^[[:space:]]\+auth=/  phase2=/" \
       -e "s/^[[:space:]]\+forceencaps=/  encapsulation=/" \
       -e "s/^[[:space:]]\+ike-frag=/  fragmentation=/" \
@@ -272,7 +273,7 @@ update_config() {
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
 
   if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
-    sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
+    sed -i".old-$SYS_DT" 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
   fi
 }
 
