@@ -18,7 +18,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 
 ## Windows
 
-**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。无需安装额外的软件。
+> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。无需安装额外的软件。
 
 1. 下载并安装免费的 [Shrew Soft VPN 客户端](https://www.shrew.net/download/vpn)。在安装时请选择 **Standard Edition**。   
    **注：** 该 VPN 客户端 **不支持** Windows 10/11。
@@ -42,7 +42,7 @@ VPN 连接成功后，你会在 VPN Connect 状态窗口中看到 **tunnel enabl
 
 ## OS X
 
-**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
+> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -66,7 +66,7 @@ VPN 连接成功后，你会在 VPN Connect 状态窗口中看到 **tunnel enabl
 
 ## Android
 
-**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。Android 12 仅支持 [IKEv2](ikev2-howto-zh.md) 模式。
+> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。Android 12 仅支持 [IKEv2](ikev2-howto-zh.md) 模式。
 
 1. 启动 **设置** 应用程序。
 1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
@@ -90,7 +90,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](
 
 ## iOS
 
-**注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
+> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -109,6 +109,8 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](
 如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#故障排除)。
 
 ## Linux
+
+> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
 ### Fedora 和 CentOS
 
