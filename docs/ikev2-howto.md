@@ -31,7 +31,7 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 ## Set up IKEv2 using helper script
 
-**Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), and (optional but recommended) [updated Libreswan](../README.md#upgrade-libreswan). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
+**Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
 
 Use this [helper script](../extras/ikev2setup.sh) to automatically set up IKEv2 on the VPN server:
 
@@ -112,7 +112,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** If you want to add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use option `-h` to show usage information.
+**Note:** To add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use `-h` to show usage information. IKEv2 client config files can be safely deleted after import.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -129,9 +129,11 @@ To customize IKEv2 or client options, run this script without arguments.
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
-Alternatively, you may manually import IKEv2 configuration. These steps apply to **Windows 7, 8, 10 and 11**.
+Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
-1. Securely transfer the generated `.p12` file to your computer, then import it into the "Computer account" certificate store. To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
+1. Securely transfer the generated `.p12` file to your computer, then import it into the certificate store.
+
+   To import the `.p12` file, run the following from an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/):
 
    ```console
    # Import .p12 file (replace with your own value)
@@ -153,9 +155,13 @@ Alternatively, you may manually import IKEv2 configuration. These steps apply to
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config). The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name (instead of its IP address) during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
+   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
 
-1. **This step is required if you manually created the VPN connection.** Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
+   **Note:** The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
+
+1. **This step is required if you manually created the VPN connection.**
+
+   Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
 
    - For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 

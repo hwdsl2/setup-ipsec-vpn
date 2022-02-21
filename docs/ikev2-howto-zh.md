@@ -31,7 +31,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ## 使用辅助脚本配置 IKEv2
 
-**重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)，并且（可选但推荐）[升级 Libreswan](../README-zh.md#升级libreswan)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
+**重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
 
 使用这个 [辅助脚本](../extras/ikev2setup.sh) 来自动地在 VPN 服务器上配置 IKEv2：
 
@@ -112,7 +112,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
-**注：** 如果要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用参数 `-h` 显示使用信息。
+**注：** 如果要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
 
 * [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
@@ -129,13 +129,15 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
 1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
 
-或者，你也可以手动导入 IKEv2 配置。这些步骤适用于 **Windows 7, 8, 10 和 11**。
+或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
 
-1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到 "计算机账户" 证书存储。要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
+1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到证书存储。
+
+   要导入 `.p12` 文件，打开 [提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html) 并运行以下命令：
 
    ```console
    # 导入 .p12 文件（换成你自己的值）
-   certutil -f -importpfx ".p12文件的位置和名称" NoExport
+   certutil -f -importpfx "\path\to\your\file.p12" NoExport
    ```
 
    **注：** 如果客户端配置文件没有密码，请按回车键继续，或者在手动导入 `.p12` 文件时保持密码字段空白。
@@ -153,9 +155,13 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。你输入的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果你在配置 IKEv2 时指定了服务器的域名（而不是 IP 地址），则必须在 **Internet地址** 字段中输入该域名。
+   **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
 
-1. **此步骤为必须，如果你手动创建了 VPN 连接。** 为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
+   **注：** 你输入的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。例如，如果你在配置 IKEv2 时指定了服务器的域名，则必须在 **Internet地址** 字段中输入该域名。
+
+1. **此步骤为必须，如果你手动创建了 VPN 连接。**
+
+   为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。更多信息请看 [这里](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048)。
 
    - 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
