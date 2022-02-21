@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   18 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   21 Feb 2022
 
 EOF
 }
@@ -329,7 +329,7 @@ show_add_client() {
 }
 
 show_export_client() {
-  bigecho "Exporting IKEv2 client '$client_name', using default options."
+  bigecho "Exporting IKEv2 client '$client_name'."
 }
 
 get_export_dir() {
@@ -603,9 +603,8 @@ select_config_password() {
   if [ "$use_config_password" = "0" ]; then
 cat <<'EOF'
 
-IKEv2 client config contains the client certificate, private key and CA certificate.
+IKEv2 client config files contain the client certificate, private key and CA certificate.
 This script can optionally generate a random password to protect these files.
-Future client config files will also be protected using this password.
 
 EOF
     printf "Protect client config files using a password? [y/N] "
@@ -1418,7 +1417,6 @@ ikev2setup() {
       1)
         enter_client_name
         enter_client_validity
-        select_config_password
         echo
         create_client_cert
         export_client_config
@@ -1428,7 +1426,6 @@ ikev2setup() {
         ;;
       2)
         enter_client_name_for export
-        select_config_password
         echo
         export_client_config
         print_client_exported
