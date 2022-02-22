@@ -229,12 +229,11 @@ First, securely transfer the generated `.mobileconfig` file to your iOS device, 
 1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to the "Settings" app to import, or
 1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
 
-When finished, check to make sure "IKEv2 VPN" is listed under Settings -> General -> Profile(s).
+When finished, check to make sure "IKEv2 VPN" is listed under Settings -> General -> VPN & Device Management or Profile(s).
 
 To connect to the VPN:
 
-1. Go to Settings -> General -> VPN.
-1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
+1. Go to Settings -> VPN. Select the VPN connection with `Your VPN Server IP` (or DNS name).
 1. Slide the **VPN** switch ON.
 
 (Optional feature) You can choose to enable [VPN On Demand](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules). This is an "always-on" feature that can automatically connect to the VPN while on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
@@ -250,9 +249,9 @@ First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your
 1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to the "Settings" app to import, or
 1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
 
-When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> Profiles.
+When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> VPN & Device Management or Profile(s).
 
-1. Go to Settings -> General -> VPN.
+1. Go to Settings -> General -> VPN & Device Management -> VPN.
 1. Tap **Add VPN Configuration...**.
 1. Tap **Type**. Select **IKEv2** and go back.
 1. Tap **Description** and enter anything you like.

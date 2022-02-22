@@ -229,12 +229,11 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
-在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> 描述文件中。
+在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
 
 要连接到 VPN：
 
-1. 进入设置 -> 通用 -> VPN。
-1. 选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
+1. 进入设置 -> VPN。选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
 1. 启用 **VPN** 连接。
 
 （可选功能）你可以选择启用 [VPN On Demand（按需连接）](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules) ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
@@ -250,9 +249,9 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
-在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> 描述文件中。
+在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
 
-1. 进入设置 -> 通用 -> VPN。
+1. 进入设置 -> 通用 -> VPN 与设备管理 -> VPN。
 1. 单击 **添加VPN配置...**。
 1. 单击 **类型** 。选择 **IKEv2** 并返回。
 1. 在 **描述** 字段中输入任意内容。
