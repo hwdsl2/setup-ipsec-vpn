@@ -129,6 +129,8 @@ To customize IKEv2 or client options, run this script without arguments.
 1. 右键单击保存的脚本，选择 **属性**。单击对话框下方的 **解除锁定**，然后单击 **确定**。
 1. 右键单击保存的脚本，选择 **以管理员身份运行** 并按提示操作。
 
+如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+
 或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到证书存储。
@@ -785,11 +787,29 @@ sudo ikev2.sh --revokeclient [client name]
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
+* [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
 * [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
 * [参数错误 policy match error](#参数错误-policy-match-error)
 * [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
 * [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
 * [其它已知问题](#其它已知问题)
+
+### 连接 IKEv2 后不能打开网站
+
+如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
+
+1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500，然后重新连接 IKEv2 客户端：
+
+   ```bash
+   # 将 ens4 替换为你的服务器上的网络接口名称
+   sudo ifconfig ens4 mtu 1500
+   ```
+
+   此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
+
+1. 如果更改 MTU 无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 小节中的解决方案。
+
+1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
 
 ### IKE 身份验证凭证不可接受
 

@@ -129,6 +129,8 @@ To customize IKEv2 or client options, run this script without arguments.
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
 Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the certificate store.
@@ -787,11 +789,29 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
+* [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
 * [Policy match error](#policy-match-error)
 * [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [Other known issues](#other-known-issues)
+
+### Cannot open websites after connecting to IKEv2
+
+If your VPN client device cannot open websites after successfully connecting to IKEv2, try the following fixes:
+
+1. Some cloud providers, such as [Google Cloud](https://cloud.google.com), [set a lower MTU by default](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations). This could cause network issues with IKEv2 VPN clients. To fix, try setting the MTU to 1500 on the VPN server, then re-connect the IKEv2 client:
+
+   ```bash
+   # Replace ens4 with the network interface name on your server
+   sudo ifconfig ens4 mtu 1500
+   ```
+
+   This setting **does not** persist after a reboot. To change the MTU size permanently, refer to relevant articles on the web.
+
+1. If changing the MTU does not fix the issue, try the fix from section [Android MTU/MSS issues](clients.md#android-mtumss-issues).
+
+1. Under certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
 
 ### IKE authentication credentials are unacceptable
 
@@ -799,7 +819,7 @@ If you encounter this error, make sure that the VPN server address specified on 
 
 ### Policy match error
 
-To fix this error, you'll need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
+To fix this error, you will need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
 
 - For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
