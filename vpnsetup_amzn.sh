@@ -530,10 +530,10 @@ vpnsetup() {
   install_vpn_pkgs_1
   install_vpn_pkgs_2
   install_fail2ban
+  get_ikev2_script
   get_swan_ver
   get_libreswan
   install_libreswan
-  get_ikev2_script
   create_vpn_config
   create_f2b_config
   update_sysctl
