@@ -797,7 +797,7 @@ sudo ikev2.sh --revokeclient [client name]
 
 如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
 
-1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500，然后重新连接 IKEv2 客户端：
+1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500：
 
    ```bash
    # 将 ens4 替换为你的服务器上的网络接口名称

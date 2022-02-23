@@ -799,7 +799,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 If your VPN client device cannot open websites after successfully connecting to IKEv2, try the following fixes:
 
-1. Some cloud providers, such as [Google Cloud](https://cloud.google.com), [set a lower MTU by default](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations). This could cause network issues with IKEv2 VPN clients. To fix, try setting the MTU to 1500 on the VPN server, then re-connect the IKEv2 client:
+1. Some cloud providers, such as [Google Cloud](https://cloud.google.com), [set a lower MTU by default](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations). This could cause network issues with IKEv2 VPN clients. To fix, try setting the MTU to 1500 on the VPN server:
 
    ```bash
    # Replace ens4 with the network interface name on your server
