@@ -491,6 +491,21 @@ update_iptables() {
   fi
 }
 
+apply_gcp_mtu_fix() {
+  if dmidecode -s system-product-name 2>/dev/null | grep -q "Google Compute Engine" \
+    && ifconfig 2>/dev/null | grep "$NET_IFACE" | head -n 1 | grep -q "mtu 1460"; then
+    bigecho "Applying fix for MTU size..."
+    ifconfig "$NET_IFACE" mtu 1500
+    dh_file="/etc/dhcp/dhclient.conf"
+    if grep -qs "send host-name" "$dh_file" \
+      && ! grep -qs "interface-mtu 1500" "$dh_file"; then
+      sed -i".old-$SYS_DT" \
+        "/send host-name/a \interface \"$NET_IFACE\" {\ndefault interface-mtu 1500;\nsupersede interface-mtu 1500;\n}" \
+        "$dh_file"
+    fi
+  fi
+}
+
 enable_on_boot() {
   bigecho "Enabling services on boot..."
   IPT_PST=/etc/init.d/iptables-persistent
@@ -625,6 +640,7 @@ vpnsetup() {
   create_vpn_config
   update_sysctl
   update_iptables
+  apply_gcp_mtu_fix
   enable_on_boot
   start_services
   show_vpn_info
