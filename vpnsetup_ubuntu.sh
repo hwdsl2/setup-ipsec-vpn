@@ -492,8 +492,8 @@ update_iptables() {
 }
 
 apply_gcp_mtu_fix() {
-  if dmidecode -s system-product-name 2>/dev/null | grep -q "Google Compute Engine" \
-    && ifconfig 2>/dev/null | grep "$NET_IFACE" | head -n 1 | grep -q "mtu 1460"; then
+  if dmidecode -s system-product-name 2>/dev/null | grep -qi 'Google Compute Engine' \
+    && ifconfig 2>/dev/null | grep "$NET_IFACE" | head -n 1 | grep -qi 'mtu 1460'; then
     bigecho "Applying fix for MTU size..."
     ifconfig "$NET_IFACE" mtu 1500
     dh_file="/etc/dhcp/dhclient.conf"
