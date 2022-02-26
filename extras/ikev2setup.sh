@@ -1032,6 +1032,7 @@ ANSWERS
 
 add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
+  XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' "$IPSEC_CONF"; then
     echo >> "$IPSEC_CONF"
     echo 'include /etc/ipsec.d/*.conf' >> "$IPSEC_CONF"
@@ -1046,7 +1047,7 @@ conn ikev2-cp
   leftrsasigkey=%cert
   right=%any
   rightid=%fromcert
-  rightaddresspool=192.168.43.10-192.168.43.250
+  rightaddresspool=$XAUTH_POOL
   rightca=%same
   rightrsasigkey=%cert
   narrowing=yes
