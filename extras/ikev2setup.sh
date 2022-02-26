@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   21 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   26 Feb 2022
 
 EOF
 }
@@ -1030,6 +1030,21 @@ ANSWERS
   fi
 }
 
+create_config_readme() {
+  readme_file="$export_dir$client_name-README.txt"
+  if [ "$in_container" = "0" ] && [ "$use_config_password" = "0" ] \
+    && [ "$use_defaults" = "1" ] && [ ! -t 1 ] && [ ! -f "$readme_file" ]; then
+cat > "$readme_file" <<'EOF'
+These IKEv2 client config files were created during IPsec VPN setup.
+To configure IKEv2 VPN clients, see: https://git.io/ikev2clients
+EOF
+    if [ "$export_to_home_dir" = "1" ]; then
+      chown "$SUDO_USER:$SUDO_USER" "$readme_file"
+    fi
+    chmod 600 "$readme_file"
+  fi
+}
+
 add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
   XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
@@ -1500,6 +1515,7 @@ ikev2setup() {
   create_ca_server_certs
   create_client_cert
   export_client_config
+  create_config_readme
   add_ikev2_connection
   if [ "$os_type" = "alpine" ]; then
     ipsec auto --add ikev2-cp >/dev/null
