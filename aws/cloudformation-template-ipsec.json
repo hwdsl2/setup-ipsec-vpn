@@ -387,7 +387,7 @@
                                     "Ref": "VpnPassword"
                                 },
                                 "'\n",
-                                "wget -t 3 -T 30 -nv -O vpn.sh https://git.io/vpnsetup\n",
+                                "wget -t 3 -T 30 -nv -O vpn.sh https://git.io/vpnstart\n",
                                 "sh vpn.sh\n",
                                 "cfn-signal -e 0 ",
                                 " --stack ",
