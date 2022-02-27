@@ -14,9 +14,6 @@
             "CentOS7": {
                 "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
             },
-            "CentOS8": {
-                "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
-            },
             "AmazonLinux2": {
                 "HelperInstallationCommands": "export PATH=\"$PATH:/opt/aws/bin\"\n"
             }
@@ -651,7 +648,6 @@
                                 "           'Ubuntu2004': 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',",
                                 "           'Debian9': 'debian-stretch-hvm-x86_64-gp2-*',",
                                 "           'CentOS7': 'CentOS 7.9.2009 x86_64',",
-                                "           'CentOS8': 'CentOS 8.3.2011 x86_64',",
                                 "           'AmazonLinux2': 'amzn2-ami-hvm-*.*-x86_64-gp2',",
                                 "       }[distribution]",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '379101102735', '125523088429', 'amazon'])",
@@ -805,7 +801,6 @@
                 "Ubuntu1804",
                 "Debian9",
                 "CentOS7",
-                "CentOS8",
                 "AmazonLinux2"
             ]
         },
