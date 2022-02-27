@@ -8,10 +8,10 @@
 * [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [管理客户端证书](#管理客户端证书)
-* [手动在 VPN 服务器上配置 IKEv2](#手动在-vpn-服务器上配置-ikev2)
 * [故障排除](#故障排除)
-* [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
+* [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
+* [手动配置 IKEv2](#手动配置-ikev2)
 * [移除 IKEv2](#移除-ikev2)
 * [参考链接](#参考链接)
 
@@ -41,6 +41,8 @@ sudo ikev2.sh --auto
 # 或者你也可以自定义 IKEv2 选项
 sudo ikev2.sh
 ```
+
+**注：** 如果 IKEv2 已经配置完成，但是你想要自定义 IKEv2 选项，首先 [移除 IKEv2](#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 
 在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。高级用户可以启用 [仅限 IKEv2 模式](advanced-usage-zh.md#仅限-ikev2-的-vpn)。这是可选的。
 
@@ -86,6 +88,13 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
 ```
+</details>
+<details>
+<summary>
+了解如何更改 IKEv2 服务器地址。
+</summary>
+
+在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要了解更多信息，参见 [这一小节](#更改-ikev2-服务器地址)。
 </details>
 <details>
 <summary>
@@ -421,7 +430,7 @@ sudo ikev2.sh --listclients
 sudo ikev2.sh --addclient [client name]
 ```
 
-另外，你也可以手动添加客户端证书。参见 [这一小节](#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+另外，你也可以手动添加客户端证书。参见 [这一小节](#手动配置-ikev2) 的第 4 步。
 
 ### 导出已有的客户端的配置
 
@@ -569,9 +578,99 @@ sudo ikev2.sh --revokeclient [client name]
    ```
 </details>
 
-## 手动在 VPN 服务器上配置 IKEv2
+## 故障排除
 
-除了使用 [辅助脚本](#使用辅助脚本配置-ikev2) 之外，高级用户也可以手动配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
+*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。*
+
+**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
+
+* [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
+* [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
+* [参数错误 policy match error](#参数错误-policy-match-error)
+* [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
+* [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
+* [其它已知问题](#其它已知问题)
+
+### 连接 IKEv2 后不能打开网站
+
+如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
+
+1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500：
+
+   ```bash
+   # 将 ens4 替换为你的服务器上的网络接口名称
+   sudo ifconfig ens4 mtu 1500
+   ```
+
+   此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
+
+1. 如果更改 MTU 无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 小节中的解决方案。
+
+1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
+
+### IKE 身份验证凭证不可接受
+
+如果遇到此错误，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
+
+### 参数错误 policy match error
+
+要解决此错误，你需要为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。
+
+- 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+```
+
+### IKEv2 在一小时后断开连接
+
+如果 IKEv2 连接在一小时（60 分钟）后自动断开，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果不存在，编辑 `/etc/ipsec.conf`）。在 `conn ikev2-cp` 一节的末尾添加以下行，开头必须空两格：
+
+```
+  ikelifetime=24h
+  salifetime=24h
+```
+
+保存修改并运行 `service ipsec restart`。该解决方案已在 2021-01-20 添加到辅助脚本。
+
+### 无法同时连接多个 IKEv2 客户端
+
+如果要连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
+
+如果你无法连接同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
+
+### 其它已知问题
+
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
+
+## 更改 IKEv2 服务器地址
+
+在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。请注意，你在 VPN 客户端指定的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**，否则客户端可能无法连接。
+
+要更改服务器地址，运行这个 [辅助脚本](../extras/ikev2changeaddr.sh) 并按提示操作。
+
+```bash
+# 下载脚本
+wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+# 运行脚本并按照提示操作
+sudo bash ikev2changeaddr.sh
+```
+
+**重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
+
+## 更新 IKEv2 辅助脚本
+
+IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
+
+```bash
+wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
+
+## 手动配置 IKEv2
+
+除了使用 [辅助脚本](#使用辅助脚本配置-ikev2) 之外，高级用户也可以手动在 VPN 服务器上配置 IKEv2。在继续之前，推荐 [升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
 
 下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 
@@ -779,94 +878,6 @@ sudo ikev2.sh --revokeclient [client name]
 
 在继续之前，你**必须**重启 IPsec 服务。VPN 服务器上的 IKEv2 配置到此已完成。下一步：[配置 VPN 客户端](#配置-ikev2-vpn-客户端)。
 </details>
-
-## 故障排除
-
-*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。*
-
-**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
-
-* [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
-* [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
-* [参数错误 policy match error](#参数错误-policy-match-error)
-* [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
-* [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
-* [其它已知问题](#其它已知问题)
-
-### 连接 IKEv2 后不能打开网站
-
-如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
-
-1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500：
-
-   ```bash
-   # 将 ens4 替换为你的服务器上的网络接口名称
-   sudo ifconfig ens4 mtu 1500
-   ```
-
-   此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
-
-1. 如果更改 MTU 无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 小节中的解决方案。
-
-1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
-
-### IKE 身份验证凭证不可接受
-
-如果遇到此错误，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
-
-### 参数错误 policy match error
-
-要解决此错误，你需要为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。
-
-- 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
-
-```console
-REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
-```
-
-### IKEv2 在一小时后断开连接
-
-如果 IKEv2 连接在一小时（60 分钟）后自动断开，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果不存在，编辑 `/etc/ipsec.conf`）。在 `conn ikev2-cp` 一节的末尾添加以下行，开头必须空两格：
-
-```
-  ikelifetime=24h
-  salifetime=24h
-```
-
-保存修改并运行 `service ipsec restart`。该解决方案已在 2021-01-20 添加到辅助脚本。
-
-### 无法同时连接多个 IKEv2 客户端
-
-如果要连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
-
-如果你无法连接同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
-
-### 其它已知问题
-
-1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
-
-## 更新 IKEv2 辅助脚本
-
-IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
-
-```bash
-wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
-
-## 更改 IKEv2 服务器地址
-
-在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要更改服务器地址，运行这个 [辅助脚本](../extras/ikev2changeaddr.sh) 并按提示操作。
-
-```bash
-# 下载脚本
-wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
-# 运行脚本并按照提示操作
-sudo bash ikev2changeaddr.sh
-```
-
-**重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
 
 ## 移除 IKEv2
 
