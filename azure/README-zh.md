@@ -20,6 +20,8 @@
 
 在完成部署之后，Azure 会有提示。下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
+**注：** IKEv2 模式的客户端配置文件可以在你的 VPN 服务器的 `/root` 目录中找到。在使用 SSH 连接到服务器时，请使用你在部署模板中指定的用户名和密码。
+
 ## 作者
 
 版权所有 (C) 2016 [Daniel Falkner](https://github.com/derdanu)   
