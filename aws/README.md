@@ -7,8 +7,8 @@ This template will create a fully-working IPsec VPN server on Amazon Elastic Com
 Available customization parameters:
 
 - Amazon EC2 instance type
-> **Note**: It is possible that not all instance type options offered by this template are available in a specific AWS region. For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).
-- OS for your VPN server (Ubuntu 20.04/18.04, Debian 9, CentOS 8/7, Amazon Linux 2)
+> **Note:** It is possible that not all instance type options offered by this template are available in a specific AWS region. For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).
+- OS for your VPN server (Ubuntu 20.04/18.04, Debian 9, CentOS 7, Amazon Linux 2)
 > **Note:** Before using the Debian 9 image on EC2, you need to first subscribe at the AWS Marketplace: [Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3).
 - Your VPN username
 - Your VPN password
@@ -36,7 +36,9 @@ Click the icon below to start:
 
 You may choose an AWS region using the selector to the right of your account information on the navigation bar. After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
 
-> **Note**: If you delete a CloudFormation stack deployed using this template, the key pair that was added during deployment won't be automatically cleaned up. To manage your key pairs, go to EC2 console -> Key Pairs.
+> **Note:** Client configuration files for IKEv2 mode can be found in the `/root` folder of your VPN server. To connect to the VPN server using SSH, refer to the FAQs section below.
+
+> **Note:** If you delete a CloudFormation stack deployed using this template, the key pair that was added during deployment won't be automatically cleaned up. To manage your key pairs, go to EC2 console -> Key Pairs.
 
 ## FAQs
 
@@ -56,7 +58,7 @@ List of default usernames:
 | --- | --- |
 | Ubuntu (`Ubuntu *.04`) |  `ubuntu` |
 | Debian (`Debian 9`) | `admin` |
-| CentOS (`CenOS 7/8`) | `centos` |
+| CentOS (`CenOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
 This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.

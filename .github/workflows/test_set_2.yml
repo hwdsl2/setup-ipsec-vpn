@@ -247,7 +247,6 @@ jobs:
           vpnclient
           vpnclient2
 
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
@@ -260,7 +259,6 @@ jobs:
           2
           nonexistclient
           vpnclient2
-
           ANSWERS
 
           ls -ld /etc/ipsec.d/vpnclient2.mobileconfig

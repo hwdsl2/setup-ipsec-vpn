@@ -83,7 +83,7 @@ A dedicated server or virtual private server (VPS), freshly installed with one o
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can deploy rapidly using [CloudFormation](aws/README.md) or [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
-[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
+[![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
@@ -102,32 +102,16 @@ First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade
 
 To install the VPN, please choose one of the following options:
 
-<details open>
-<summary>
-Option 1: Have the script generate random VPN credentials for you (will be displayed when finished).
-</summary>
+**Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished).
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 ```
 
-After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
+**Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
-</details>
-
-<details>
-<summary>
-Option 2: Edit the script and provide your own VPN credentials.
-</summary>
-
-```bash
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://git.io/vpnstart -nv -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -135,40 +119,17 @@ sudo sh vpn.sh
 
 **Note:** A secure IPsec PSK should consist of at least 20 random characters.
 
-After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
-
-```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
-</details>
-
-<details>
-<summary>
-Option 3: Define your VPN credentials as environment variables.
-</summary>
+**Option 3:** Define your VPN credentials as environment variables.
 
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://git.io/vpnstart -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
-
-After successful installation, it is recommended to [set up IKEv2](docs/ikev2-howto.md):
-
-```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
-</details>
 
 <details>
 <summary>
@@ -178,11 +139,11 @@ Click here if you are unable to download using wget.
 You may also use `curl` to download. For example:
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh
+curl -fsSL https://git.io/vpnstart -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+Alternatively, open [quickstart.sh](extras/quickstart.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps

@@ -83,7 +83,7 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) 和 [OVH](https://www.ovhcloud.com/en/vps/)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署。
 
-[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239)
+[![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
 [**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
@@ -102,32 +102,16 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 要安装 VPN，请从以下选项中选择一个：
 
-<details open>
-<summary>
-选项 1: 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）。
-</summary>
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）。
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 ```
 
-在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
+**选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
-</details>
-
-<details>
-<summary>
-选项 2: 编辑脚本并提供你自己的 VPN 登录凭证。
-</summary>
-
-```bash
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://git.io/vpnstart -nv -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -135,40 +119,17 @@ sudo sh vpn.sh
 
 **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
-
-```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
-</details>
-
-<details>
-<summary>
-选项 3: 将你自己的 VPN 登录凭证定义为环境变量。
-</summary>
+**选项 3:** 将你自己的 VPN 登录凭证定义为环境变量。
 
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://git.io/vpnstart -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
-
-在安装成功之后，推荐 [配置 IKEv2](docs/ikev2-howto-zh.md)：
-
-```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
-</details>
 
 <details>
 <summary>
@@ -178,11 +139,11 @@ sudo ikev2.sh
 你也可以使用 `curl` 下载。例如：
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh
+curl -fsSL https://git.io/vpnstart -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，打开 [vpnsetup.sh](vpnsetup.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+或者，打开 [quickstart.sh](extras/quickstart.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 下一步

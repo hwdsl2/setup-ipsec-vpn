@@ -516,10 +516,10 @@ vpnsetup() {
   detect_ip
   install_vpn_pkgs
   install_fail2ban
+  get_ikev2_script
   get_swan_ver
   get_libreswan
   install_libreswan
-  get_ikev2_script
   create_vpn_config
   update_sysctl
   update_iptables

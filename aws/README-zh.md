@@ -8,7 +8,7 @@
 
 - Amazon EC2 实例类型
 > **注：** 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://instances.vantage.sh/](https://instances.vantage.sh/)。
-- VPN 服务器的操作系统（Ubuntu 20.04/18.04, Debian 9, CentOS 8/7, Amazon Linux 2）
+- VPN 服务器的操作系统（Ubuntu 20.04/18.04, Debian 9, CentOS 7, Amazon Linux 2）
 > **注：** 在 EC2 上使用 Debian 9 映像之前，你需要先在 AWS Marketplace 上订阅：[Debian 9](https://aws.amazon.com/marketplace/pp/B073HW9SP3)。
 - 你的 VPN 用户名
 - 你的 VPN 密码
@@ -36,7 +36,9 @@
 
 要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
-> **注**：如果你删除使用此模板部署的 CloudFormation 堆栈，在部署期间添加的密钥对将不会自动被清理。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
+> **注：** IKEv2 模式的客户端配置文件可以在你的 VPN 服务器的 `/root` 目录中找到。要使用 SSH 连接到服务器，请参见下面的 "常见问题" 小节。
+
+> **注：** 如果你删除使用此模板部署的 CloudFormation 堆栈，在部署期间添加的密钥对将不会自动被清理。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
 
 ## 常见问题
 
@@ -56,7 +58,7 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 | --- | --- |
 | Ubuntu (`Ubuntu *.04`) |  `ubuntu` |
 | Debian (`Debian 9`) | `admin` |
-| CentOS (`CenOS 7/8`) | `centos` |
+| CentOS (`CenOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
 此模板在部署期间为你生成一个密钥对，并且在成功创建堆栈后，其中的私钥将在 **Outputs** 选项卡下以文本形式提供。

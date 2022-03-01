@@ -11,6 +11,7 @@
 # know how you have improved it!
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SYS_DT=$(date +%F-%T | tr ':' '_')
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
 bigecho() { echo "## $1"; }
@@ -114,11 +115,11 @@ toggle_ikev2_only() {
   if [ "$ikev2_only_status" = "ENABLED" ]; then
     confirm_disable_ikev2_only
     bigecho "Disabling IKEv2-only mode..."
-    sed -i "/ikev1-policy=/d" /etc/ipsec.conf
+    sed -i".old-$SYS_DT" "/ikev1-policy=/d" /etc/ipsec.conf
   elif [ "$ikev2_only_status" = "DISABLED" ]; then
     confirm_enable_ikev2_only
     bigecho "Enabling IKEv2-only mode..."
-    sed -i "/ikev1-policy=/d" /etc/ipsec.conf
+    sed -i".old-$SYS_DT" "/ikev1-policy=/d" /etc/ipsec.conf
     sed -i "/config setup/a \  ikev1-policy=drop" /etc/ipsec.conf
   fi
 }

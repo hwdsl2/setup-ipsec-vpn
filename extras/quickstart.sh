@@ -17,9 +17,36 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
+# =====================================================
+
+# Define your own values for these variables
+# - IPsec pre-shared key, VPN username and password
+# - All values MUST be placed inside 'single quotes'
+# - DO NOT use these special characters within values: \ " '
+
+YOUR_IPSEC_PSK=''
+YOUR_USERNAME=''
+YOUR_PASSWORD=''
+
+# Important notes:   https://git.io/vpnnotes
+# Setup VPN clients: https://git.io/vpnclients
+# IKEv2 guide:       https://git.io/ikev2
+
+# =====================================================
+
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
+
+check_ip() {
+  IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
+
+check_dns_name() {
+  FQDN_REGEX='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
+}
 
 check_root() {
   if [ "$(id -u)" != 0 ]; then
@@ -124,6 +151,53 @@ check_iface() {
   fi
 }
 
+check_creds() {
+  [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
+  [ -n "$YOUR_USERNAME" ] && VPN_USER="$YOUR_USERNAME"
+  [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
+
+  if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+    return 0
+  fi
+
+  if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+    exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
+  fi
+
+  if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
+    exiterr "VPN credentials must not contain non-ASCII characters."
+  fi
+
+  case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
+    *[\\\"\']*)
+      exiterr "VPN credentials must not contain these special characters: \\ \" '"
+      ;;
+  esac
+}
+
+check_dns() {
+  if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
+    || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; }; then
+    exiterr "The DNS server specified is invalid."
+  fi
+}
+
+check_server_dns() {
+  if [ -n "$VPN_DNS_NAME" ] && ! check_dns_name "$VPN_DNS_NAME"; then
+      exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  fi
+}
+
+check_client_name() {
+  if [ -n "$VPN_CLIENT_NAME" ]; then
+    name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
+    if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+    fi
+  fi
+}
+
 check_iptables() {
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
     if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
@@ -192,9 +266,18 @@ run_setup() {
   if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
     if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url" \
       || curl -fsL "$setup_url" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
-      if /bin/bash "$tmpdir/vpn.sh"; then
+      if VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" VPN_PASSWORD="$VPN_PASSWORD" \
+        VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \
+        VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
+        VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+        VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+        /bin/bash "$tmpdir/vpn.sh"; then
         if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
           sleep 1
+          VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$VPN_PUBLIC_IP" \
+          VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+          VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+          VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
           /bin/bash /opt/src/ikev2.sh --auto || status=1
         fi
       else
@@ -217,6 +300,10 @@ quickstart() {
   check_lxc
   check_os
   check_iface
+  check_creds
+  check_dns
+  check_server_dns
+  check_client_name
   check_iptables
   install_pkgs
   get_setup_url

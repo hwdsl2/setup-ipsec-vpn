@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   16 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   26 Feb 2022
 
 EOF
 }
@@ -308,8 +308,7 @@ set_dns_servers() {
 
 show_welcome() {
 cat <<'EOF'
-Welcome! Use this script to set up IKEv2 on your IPsec VPN server.
-
+Welcome! Use this script to set up IKEv2 on your VPN server.
 I need to ask you a few questions before starting setup.
 You can use the default options and just press enter if you are OK with them.
 
@@ -317,20 +316,12 @@ EOF
 }
 
 show_start_setup() {
-  if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
-    bigecho "Starting IKEv2 setup in auto mode."
-    printf '%s' "## Using custom option(s): "
-    [ -n "$VPN_DNS_NAME" ] && printf '%s' "VPN_DNS_NAME "
-    [ -n "$VPN_CLIENT_NAME" ] && printf '%s' "VPN_CLIENT_NAME "
-    if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
-      printf '%s' "VPN_DNS_SRV1 VPN_DNS_SRV2"
-    elif [ -n "$VPN_DNS_SRV1" ]; then
-      printf '%s' "VPN_DNS_SRV1"
-    fi
-    echo
-  else
-    bigecho "Starting IKEv2 setup in auto mode, using default options."
+  op_text=default
+  if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] \
+    || [ -n "$VPN_DNS_SRV1" ] || [ -n "$VPN_PROTECT_CONFIG" ]; then
+    op_text=custom
   fi
+  bigecho "Starting IKEv2 setup in auto mode, using $op_text options."
 }
 
 show_add_client() {
@@ -338,7 +329,7 @@ show_add_client() {
 }
 
 show_export_client() {
-  bigecho "Exporting IKEv2 client '$client_name', using default options."
+  bigecho "Exporting IKEv2 client '$client_name'."
 }
 
 get_export_dir() {
@@ -517,10 +508,10 @@ enter_custom_dns() {
       echo "Invalid DNS server."
       read -rp "Enter primary DNS server: " dns_server_1
     done
-    read -rp "Enter secondary DNS server (enter to skip): " dns_server_2
+    read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
     until [ -z "$dns_server_2" ] || check_ip "$dns_server_2"; do
       echo "Invalid DNS server."
-      read -rp "Enter secondary DNS server (enter to skip): " dns_server_2
+      read -rp "Enter secondary DNS server (Enter to skip): " dns_server_2
     done
     if [ -n "$dns_server_2" ]; then
       dns_servers="$dns_server_1 $dns_server_2"
@@ -614,7 +605,6 @@ cat <<'EOF'
 
 IKEv2 client config files contain the client certificate, private key and CA certificate.
 This script can optionally generate a random password to protect these files.
-Future client config files will also be protected using this password.
 
 EOF
     printf "Protect client config files using a password? [y/N] "
@@ -679,6 +669,11 @@ EOF
     fi
   else
     echo "MOBIKE support: Not available"
+  fi
+  if [ "$use_config_password" = "1" ]; then
+    echo "Protect client config: Yes"
+  else
+    echo "Protect client config: No"
   fi
 cat <<EOF
 DNS server(s): $dns_servers
@@ -1035,8 +1030,24 @@ ANSWERS
   fi
 }
 
+create_config_readme() {
+  readme_file="$export_dir$client_name-README.txt"
+  if [ "$in_container" = "0" ] && [ "$use_config_password" = "0" ] \
+    && [ "$use_defaults" = "1" ] && [ ! -t 1 ] && [ ! -f "$readme_file" ]; then
+cat > "$readme_file" <<'EOF'
+These IKEv2 client config files were created during IPsec VPN setup.
+To configure IKEv2 VPN clients, see: https://git.io/ikev2clients
+EOF
+    if [ "$export_to_home_dir" = "1" ]; then
+      chown "$SUDO_USER:$SUDO_USER" "$readme_file"
+    fi
+    chmod 600 "$readme_file"
+  fi
+}
+
 add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
+  XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' "$IPSEC_CONF"; then
     echo >> "$IPSEC_CONF"
     echo 'include /etc/ipsec.d/*.conf' >> "$IPSEC_CONF"
@@ -1051,7 +1062,7 @@ conn ikev2-cp
   leftrsasigkey=%cert
   right=%any
   rightid=%fromcert
-  rightaddresspool=192.168.43.10-192.168.43.250
+  rightaddresspool=$XAUTH_POOL
   rightca=%same
   rightrsasigkey=%cert
   narrowing=yes
@@ -1173,12 +1184,8 @@ print_client_revoked() {
 }
 
 print_setup_complete() {
-  if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] || [ -n "$VPN_DNS_SRV1" ]; then
-    printf '\e[2K\r'
-  else
-    printf '\e[2K\e[1A\e[2K\r'
-    [ "$use_defaults" = "1" ] && printf '\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\r'
-  fi
+  printf '\e[2K\e[1A\e[2K\r'
+  [ "$use_defaults" = "1" ] && printf '\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\r'
 cat <<EOF
 ================================================
 
@@ -1215,7 +1222,7 @@ EOF
 cat <<'EOF'
 
 Note: No password is required when importing
-client config files.
+client configuration.
 EOF
   fi
 cat <<'EOF'
@@ -1426,7 +1433,6 @@ ikev2setup() {
       1)
         enter_client_name
         enter_client_validity
-        select_config_password
         echo
         create_client_cert
         export_client_config
@@ -1436,7 +1442,6 @@ ikev2setup() {
         ;;
       2)
         enter_client_name_for export
-        select_config_password
         echo
         export_client_config
         print_client_exported
@@ -1510,6 +1515,7 @@ ikev2setup() {
   create_ca_server_certs
   create_client_cert
   export_client_config
+  create_config_readme
   add_ikev2_connection
   if [ "$os_type" = "alpine" ]; then
     ipsec auto --add ikev2-cp >/dev/null

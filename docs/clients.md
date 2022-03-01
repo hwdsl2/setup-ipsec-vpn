@@ -18,7 +18,7 @@ After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn
 
 ## Windows
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
+> :information_source: You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Windows 11
 
@@ -109,7 +109,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## OS X
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -134,7 +134,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## Android
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode. Android 12 only supports [IKEv2](ikev2-howto.md) mode.
+> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode. Android 12 only supports [IKEv2](ikev2-howto.md) mode.
 
 1. Launch the **Settings** application.
 1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
@@ -159,7 +159,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## iOS
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -198,11 +198,11 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## Linux
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
+> :information_source: You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Ubuntu Linux
 
-Ubuntu 18.04 (and newer) users can install the [network-manager-l2tp-gnome](https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome) package using `apt`, then configure the IPsec/L2TP VPN client using the GUI. Ubuntu 16.04 users may need to add the `nm-l2tp` PPA, read more [here](https://medium.com/@hkdb/ubuntu-16-04-connecting-to-l2tp-over-ipsec-via-network-manager-204b5d475721).
+Ubuntu 18.04 (and newer) users can install the [network-manager-l2tp-gnome](https://packages.ubuntu.com/search?keywords=network-manager-l2tp-gnome) package using `apt`, then configure the IPsec/L2TP VPN client using the GUI.
 
 1. Go to Settings -> Network -> VPN. Click the **+** button.
 1. Select **Layer 2 Tunneling Protocol (L2TP)**.
@@ -222,9 +222,9 @@ Ubuntu 18.04 (and newer) users can install the [network-manager-l2tp-gnome](http
 1. Click **OK**, then click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
-Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+If you get an error when trying to connect, try [this fix](https://github.com/nm-l2tp/NetworkManager-l2tp/blob/2926ea0239fe970ff08cb8a7863f8cb519ece032/README.md#unable-to-establish-l2tp-connection-without-udp-source-port-1701).
 
-If you get an error when trying to connect, try [this fix](https://github.com/nm-l2tp/NetworkManager-l2tp/blob/master/README.md#issue-with-not-stopping-system-xl2tpd-service).
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 ### Fedora and CentOS
 
