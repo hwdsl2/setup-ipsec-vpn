@@ -26,6 +26,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - iOS (iPhone/iPad)
 - Android 4 和更新版本（使用 strongSwan VPN 客户端）
 - Linux
+- Mikrotik RouterOS
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
@@ -128,6 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
+* [Mikrotik RouterOS](#routeros)
 
 ### Windows 7, 8, 10 和 11
 
@@ -405,6 +407,36 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+
+### RouterOS
+
+**注：** 这些步骤由 [@Unix-User](https://github.com/Unix-User) 提供。
+
+1. 将生成的 `.p12` 文件安全地传送到你的计算机。
+1. 在 WinBox 中，转到 System > certificates > import.
+1. 将 `.p12` 证书文件导入两次（是的，导入同一个文件两次）。
+1. 在 terminal 中运行以下命令：
+   ```bash
+   /ip ipsec mode-config
+   add name=ike2-rw responder=no
+   /ip ipsec policy group
+   add name=ike2-rw
+   /ip ipsec profile
+   add name=ike2-rw
+   /ip ipsec peer
+   add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   /ip ipsec proposal
+   add name=ike2-rw pfs-group=none
+   /ip ipsec identity
+   add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+       peer=ike2-rw-client policy-template-group=ike2-rw
+   /ip ipsec policy
+   add group=ike2-rw proposal=ike2-rw template=yes
+   ```
+
+> 已在以下系统测试   
+> mar/02/2022 12:52:57 by RouterOS 6.48   
+> RouterBOARD 941-2nD
 
 ## 管理客户端证书
 

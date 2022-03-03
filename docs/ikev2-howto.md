@@ -129,7 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
-* [RouterOS Mikrotik](#routeros)
+* [Mikrotik RouterOS](#routeros)
 
 ### Windows 7, 8, 10 and 11
 
@@ -410,34 +410,35 @@ Once successfully connected, you can verify that your traffic is being routed pr
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
-
 ### RouterOS
 
-In winbox, System > certificates > import.
-Import the .p12 certificate file twice(yes import the same file two times!!!)
-Run these in terminal:
-```bash
-/ip ipsec mode-config
-add name=ike2-rw responder=no
-/ip ipsec policy group
-add name=ike2-rw
-/ip ipsec profile
-add name=ike2-rw
-/ip ipsec peer
-add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
-/ip ipsec proposal
-add name=ike2-rw pfs-group=none
-/ip ipsec identity
-add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
-    peer=ike2-rw-client policy-template-group=ike2-rw
-/ip ipsec policy
-add group=ike2-rw proposal=ike2-rw template=yes
-```
+**Note:** These steps were contributed by [@Unix-User](https://github.com/Unix-User).
 
+1. Securely transfer the generated `.p12` file to your computer.
+1. In WinBox, go to System > certificates > import.
+1. Import the `.p12` certificate file twice (yes, import the same file two times!).
+1. Run these in terminal:
+   ```bash
+   /ip ipsec mode-config
+   add name=ike2-rw responder=no
+   /ip ipsec policy group
+   add name=ike2-rw
+   /ip ipsec profile
+   add name=ike2-rw
+   /ip ipsec peer
+   add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   /ip ipsec proposal
+   add name=ike2-rw pfs-group=none
+   /ip ipsec identity
+   add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+       peer=ike2-rw-client policy-template-group=ike2-rw
+   /ip ipsec policy
+   add group=ike2-rw proposal=ike2-rw template=yes
+   ```
 
-tested on
-mar/02/2022 12:52:57 by RouterOS 6.48
-RouterBOARD 941-2nD
+> tested on   
+> mar/02/2022 12:52:57 by RouterOS 6.48   
+> RouterBOARD 941-2nD
 
 ## Manage client certificates
 
