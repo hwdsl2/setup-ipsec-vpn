@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   26 Feb 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   3 Mar 2022
 
 EOF
 }
@@ -204,7 +204,9 @@ check_cert_status() {
 
 check_arguments() {
   if [ "$use_defaults" = "1" ] && check_ikev2_exists; then
-    echo "Warning: Ignoring parameter '--auto'. Use '-h' for usage information." >&2
+    echo "Error: Invalid parameter '--auto'. IKEv2 is already set up on this server." >&2
+    echo "       To manage VPN clients, re-run this script without '--auto'." >&2
+    exit 1
   fi
   if [ "$((add_client + export_client + list_clients + revoke_client))" -gt 1 ]; then
     show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient', '--listclients' or '--revokeclient'."
