@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Li
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
@@ -44,7 +44,7 @@ Alternative one-liner using curl.
 </summary>
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -105,13 +105,13 @@ To install the VPN, please choose one of the following options:
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished).
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -124,7 +124,7 @@ sudo sh vpn.sh
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
@@ -139,11 +139,11 @@ Click here if you are unable to download using wget.
 You may also use `curl` to download. For example:
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternatively, open [quickstart.sh](extras/quickstart.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps

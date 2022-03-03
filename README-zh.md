@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpin
 使用以下命令快速搭建 IPsec VPN 服务器：
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
@@ -44,7 +44,7 @@ wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 </summary>
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -105,13 +105,13 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）。
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -124,7 +124,7 @@ sudo sh vpn.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
@@ -139,11 +139,11 @@ sh vpn.sh
 你也可以使用 `curl` 下载。例如：
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，打开 [quickstart.sh](extras/quickstart.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+或者，打开 [vpnsetup.sh](vpnsetup.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 下一步
