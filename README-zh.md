@@ -133,13 +133,6 @@ sh vpn.sh
 
 <details>
 <summary>
-高级用户可以自定义 IKEv2 选项。
-</summary>
-
-如果你想要自定义 [IKEv2 模式](docs/ikev2-howto-zh.md) 的选项，首先选择上面的选项之一安装 VPN，但是将 `git.io/vpnstart` 替换为 `git.io/vpnsetup`。这样会安装 VPN 但是不配置 IKEv2。在完成后，运行 `sudo ikev2.sh` 配置 IKEv2。
-</details>
-<details>
-<summary>
 如果无法通过 wget 下载，点这里查看解决方案。
 </summary>
 
