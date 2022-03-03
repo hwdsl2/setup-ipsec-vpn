@@ -1,6 +1,6 @@
 # IPsec VPN Server Auto Setup Scripts
 
-[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=3600)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400&logo=github)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400&logo=docker)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400&logo=docker)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/setup-ipsec-vpn/vpn%20test.svg?cacheSeconds=1800)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/setup-ipsec-vpn.svg?cacheSeconds=86400&logo=github)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400&logo=docker)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400&logo=docker)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
 
@@ -98,7 +98,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Installation
 
-First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `sudo yum update` and reboot. This is optional, but recommended.
+First, update your server with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `sudo yum update` and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
@@ -131,6 +131,35 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
+<details>
+<summary>
+Advanced users can customize IKEv2 options.
+</summary>
+
+Advanced users can optionally specify a DNS name to be used as the VPN server address for IKEv2 mode. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
+
+```bash
+sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
+```
+
+Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+
+```bash
+sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
+```
+
+By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. Advanced users may optionally specify custom DNS server(s) for all VPN modes. Example:
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+```
+
+By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password. Example:
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
+```
+</details>
 <details>
 <summary>
 Click here if you are unable to download using wget.
