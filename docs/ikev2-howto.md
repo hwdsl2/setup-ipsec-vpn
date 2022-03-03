@@ -26,6 +26,7 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 - iOS (iPhone/iPad)
 - Android 4 and newer (using the strongSwan VPN client)
 - Linux
+- Mikrotik RouterOS
 
 After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
 
@@ -128,6 +129,7 @@ To customize IKEv2 or client options, run this script without arguments.
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
+* [RouterOS Mikrotik](#routeros)
 
 ### Windows 7, 8, 10 and 11
 
@@ -407,6 +409,35 @@ You can then set up and enable the VPN connection:
 Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
+
+### RouterOS
+
+In winbox, System > certificates > import.
+Import the .p12 certificate file twice(yes import the same file two times!!!)
+Run these in terminal:
+```bash
+/ip ipsec mode-config
+add name=ike2-rw responder=no
+/ip ipsec policy group
+add name=ike2-rw
+/ip ipsec profile
+add name=ike2-rw
+/ip ipsec peer
+add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+/ip ipsec proposal
+add name=ike2-rw pfs-group=none
+/ip ipsec identity
+add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+    peer=ike2-rw-client policy-template-group=ike2-rw
+/ip ipsec policy
+add group=ike2-rw proposal=ike2-rw template=yes
+```
+
+
+tested on
+mar/02/2022 12:52:57 by RouterOS 6.48
+RouterBOARD 941-2nD
 
 ## Manage client certificates
 
