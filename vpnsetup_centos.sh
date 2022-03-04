@@ -48,6 +48,11 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+check_dns_name() {
+  FQDN_REGEX='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
+}
+
 check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo bash $0'"
@@ -129,6 +134,22 @@ check_dns() {
   if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
     || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; }; then
     exiterr "The DNS server specified is invalid."
+  fi
+}
+
+check_server_dns() {
+  if [ -n "$VPN_DNS_NAME" ] && ! check_dns_name "$VPN_DNS_NAME"; then
+      exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  fi
+}
+
+check_client_name() {
+  if [ -n "$VPN_CLIENT_NAME" ]; then
+    name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
+    if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+    fi
   fi
 }
 
@@ -630,6 +651,18 @@ IKEv2 guide:       https://git.io/ikev2
 EOF
 }
 
+set_up_ikev2() {
+  status=0
+  if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
+    sleep 1
+    VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+    VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+    VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+    /bin/bash /opt/src/ikev2.sh --auto || status=1
+  fi
+}
+
 vpnsetup() {
   check_root
   check_vz
@@ -637,6 +670,8 @@ vpnsetup() {
   check_iface
   check_creds
   check_dns
+  check_server_dns
+  check_client_name
   start_setup
   install_setup_pkgs
   detect_ip
@@ -657,9 +692,10 @@ vpnsetup() {
   enable_on_boot
   start_services
   show_vpn_info
+  set_up_ikev2
 }
 
 ## Defer setup until we have the complete script
 vpnsetup "$@"
 
-exit 0
+exit "$status"
