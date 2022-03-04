@@ -91,7 +91,7 @@ jobs:
           cp -f "$GITHUB_WORKSPACE"/extras/quickstart.sh .
           cp -f "$GITHUB_WORKSPACE"/extras/vpnuninstall.sh ./vpnunst.sh
           sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
-            -e '/sleep 1/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' \
+            -e '/curl /a sed -i \x27/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh\x27 "$tmpdir/vpn.sh"' \
             vpnsetup.sh quickstart.sh
 
           for vpnsc in vpnsetup.sh quickstart.sh; do
@@ -144,7 +144,9 @@ jobs:
           else
             cp -f "$GITHUB_WORKSPACE"/vpnsetup_ubuntu.sh ./vpnsetup.sh
           fi
-          sed -i '/swan_ver_latest=/s/^/#/' vpnsetup.sh
+          sed -i -e '/swan_ver_latest=/s/^/#/' \
+            -e '/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' \
+            vpnsetup.sh
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -154,7 +156,6 @@ jobs:
           bash vpnsetup.sh
 
           if [ "$os_type" = "alpine" ]; then
-            ipsec initnss
             xl2tpd -c /etc/xl2tpd/xl2tpd.conf
           fi
           restart_ipsec
@@ -170,6 +171,7 @@ jobs:
           ipsec status
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
 
           grep -q "your_ipsec_pre_shared_key" /etc/ipsec.secrets
           grep -q "your_vpn_username" /etc/ppp/chap-secrets
@@ -179,11 +181,24 @@ jobs:
           grep -q 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
           grep -q 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
 
+          ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+          ls -ld /etc/ipsec.d/vpnclient.sswan
+          ls -ld /etc/ipsec.d/vpnclient.p12
+
           ls -l /usr/bin/ikev2.sh
           ls -l /opt/src/ikev2.sh
 
+          rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+          rm -f /etc/ipsec.d/vpnclient*
+
           cp -f "$GITHUB_WORKSPACE"/extras/ikev2setup.sh ./ikev2.sh
           sed -i '/swan_ver_latest=/s/^/#/' ikev2.sh
+
+          bash ikev2.sh --removeikev2 <<ANSWERS
+          y
+          ANSWERS
+
+          restart_ipsec
 
           bash ikev2.sh <<ANSWERS
 
