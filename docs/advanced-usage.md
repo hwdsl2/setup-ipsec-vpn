@@ -20,7 +20,6 @@ Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when runn
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
 In certain circumstances, you may want VPN clients to use the specified DNS server(s) only for resolving internal domain name(s), and use their locally configured DNS servers to resolve all other domain names. This can be configured using the `modecfgdomains` option, e.g. `modecfgdomains="internal.example.com, home"`. Add this option to section `conn ikev2-cp` in `/etc/ipsec.d/ikev2.conf` for IKEv2, and to section `conn xauth-psk` in `/etc/ipsec.conf` for IPsec/XAuth ("Cisco IPsec"). Then run `service ipsec restart`. IPsec/L2TP mode does not support this option.

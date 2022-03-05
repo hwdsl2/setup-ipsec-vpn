@@ -638,9 +638,9 @@ If your VPN client device cannot open websites after successfully connecting to 
 
    This setting **does not** persist after a reboot. To change the MTU size permanently, refer to relevant articles on the web.
 
-1. If changing the MTU does not fix the issue, try the fix from section [Android MTU/MSS issues](clients.md#android-mtumss-issues).
+1. If changing the MTU size does not fix the issue, try the fix in [Android MTU/MSS issues](clients.md#android-mtumss-issues).
 
-1. Under certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
+1. In certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
 
 ### IKE authentication credentials are unacceptable
 
