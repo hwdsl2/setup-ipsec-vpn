@@ -133,28 +133,28 @@ sh vpn.sh
 
 <details>
 <summary>
-高级用户可以自定义 IKEv2 选项。
+高级用户可以自定义 IKEv2 选项。这是可选的。
 </summary>
 
-高级用户可以指定一个域名作为 IKEv2 模式下的 VPN 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
+高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
 ```
 
-类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
+类似地，你可以指定第一个 IKEv2 客户端的名称。如果未指定，则使用默认值 `vpnclient`。
 
 ```bash
 sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
 ```
 
-在 VPN 已连接时，客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。高级用户可以为所有的 VPN 模式指定另外的 DNS 服务器。这是可选的。示例如下：
+在 VPN 已连接时，客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。你可以为所有的 VPN 模式指定另外的 DNS 服务器。示例如下：
 
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 ```
 
-默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。示例如下：
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。示例如下：
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh

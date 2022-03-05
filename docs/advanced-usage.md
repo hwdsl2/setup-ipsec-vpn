@@ -28,13 +28,13 @@ In certain circumstances, you may want VPN clients to use the specified DNS serv
 
 For [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, read [this section](ikev2-howto.md#change-ikev2-server-address). Alternatively, you may specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md#set-up-ikev2-using-helper-script). The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
+For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, read [this section](ikev2-howto.md#change-ikev2-server-address). Alternatively, you may specify a DNS name for the IKEv2 server address when [setting up IKEv2](ikev2-howto.md#set-up-ikev2-using-helper-script). The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-Alternatively, you may customize IKEv2 setup options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
+Alternatively, you may customize IKEv2 options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
 
 ## IKEv2-only VPN
 

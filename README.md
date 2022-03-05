@@ -133,28 +133,28 @@ sh vpn.sh
 
 <details>
 <summary>
-Advanced users can customize IKEv2 options.
+Advanced users can optionally customize IKEv2 options.
 </summary>
 
-Advanced users can optionally specify a DNS name to be used as the VPN server address for IKEv2 mode. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
+Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
 ```
 
-Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+Similarly, you may specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
 
 ```bash
 sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
 ```
 
-By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. Advanced users may optionally specify custom DNS server(s) for all VPN modes. Example:
+By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for all VPN modes. Example:
 
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 ```
 
-By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password. Example:
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password. Example:
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh

@@ -66,25 +66,25 @@ Then run the script using the instructions above.
 You may optionally specify a DNS name, client name and/or custom DNS servers.
 </summary>
 
-When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
+When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-Similarly, you may optionally specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+Similarly, you may specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
 
 ```bash
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
-By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. When running IKEv2 setup in auto mode, you may optionally specify custom DNS server(s). Example:
+By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for IKEv2. Example:
 
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password. Example:
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password. Example:
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
@@ -920,6 +920,8 @@ If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clien
 ```bash
 sudo ikev2.sh --removeikev2
 ```
+
+After removing IKEv2, if you want to set it up again, refer to [this section](#set-up-ikev2-using-helper-script).
 
 <details>
 <summary>
