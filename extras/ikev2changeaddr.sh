@@ -218,8 +218,9 @@ New server address:     $server_addr
 
 *IMPORTANT*
 After running this script, you must manually update the server address
-on any existing IKEv2 client devices. For iOS clients, you'll need to
-export and re-import client configuration using the IKEv2 helper script.
+(and remote ID, if applicable) on any existing IKEv2 client devices.
+For iOS clients, you'll need to export and re-import client configuration
+using the IKEv2 helper script.
 
 EOF
   printf "Do you want to continue? [Y/n] "
