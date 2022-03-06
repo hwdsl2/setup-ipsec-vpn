@@ -426,7 +426,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
    /ip ipsec profile
    add name=ike2-rw
    /ip ipsec peer
-   add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
    /ip ipsec proposal
    add name=ike2-rw pfs-group=none
    /ip ipsec identity
@@ -435,6 +435,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
    /ip ipsec policy
    add group=ike2-rw proposal=ike2-rw template=yes
    ```
+1. Verify in your certificates panel. You will see 2 files, the one that is marked KT is the key. See [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623) for more details.
 
 > tested on   
 > mar/02/2022 12:52:57 by RouterOS 6.48   

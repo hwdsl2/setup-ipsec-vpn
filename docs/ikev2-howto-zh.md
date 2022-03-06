@@ -424,7 +424,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    /ip ipsec profile
    add name=ike2-rw
    /ip ipsec peer
-   add address=YOUR_SERVER_ADDRESS_OR_DNS exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
    /ip ipsec proposal
    add name=ike2-rw pfs-group=none
    /ip ipsec identity
@@ -433,6 +433,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    /ip ipsec policy
    add group=ike2-rw proposal=ike2-rw template=yes
    ```
+1. 检查你的 certificates panel。你应该看到 2 个文件，其中标注 KT 的是密钥。具体请参见 [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623)。
 
 > 已在以下系统测试   
 > mar/02/2022 12:52:57 by RouterOS 6.48   
