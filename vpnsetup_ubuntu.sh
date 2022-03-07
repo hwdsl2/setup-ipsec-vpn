@@ -652,6 +652,16 @@ set_up_ikev2() {
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
     /bin/bash /opt/src/ikev2.sh --auto || status=1
+  elif [ -s /opt/src/ikev2.sh ]; then
+cat <<'EOF'
+================================================
+
+IKEv2 is already set up on this server.
+To manage IKEv2 clients, run: sudo ikev2.sh
+
+================================================
+
+EOF
   fi
 }
 
