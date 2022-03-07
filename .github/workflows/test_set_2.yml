@@ -77,7 +77,7 @@ jobs:
           echo "# hwdsl2" > run.sh
 
           if [ "$os_type" = "alpine" ]; then
-            apk add -U wget rsyslog
+            apk add -U wget rsyslog sed
             rsyslogd
           else
             export DEBIAN_FRONTEND=noninteractive
