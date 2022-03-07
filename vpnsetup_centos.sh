@@ -261,6 +261,10 @@ get_swan_ver() {
 check_libreswan() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
+  if [ -n "$swan_ver_old" ] && [ "$(find /usr/local/sbin/ipsec -mmin -10080)" ]; then
+    return 0
+  fi
+  get_swan_ver
   [ "$swan_ver_old" = "$SWAN_VER" ]
 }
 
@@ -278,7 +282,7 @@ get_libreswan() {
     /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
     tar xzf "$swan_file" && /bin/rm -f "$swan_file"
   else
-    bigecho "Libreswan $SWAN_VER is already installed, skipping..."
+    bigecho "Libreswan $swan_ver_old is already installed, skipping..."
   fi
 }
 
@@ -681,7 +685,6 @@ vpnsetup() {
   install_vpn_pkgs_3
   install_fail2ban
   get_ikev2_script
-  get_swan_ver
   get_libreswan
   install_libreswan
   create_vpn_config
