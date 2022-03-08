@@ -148,6 +148,8 @@ jobs:
             -e '/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' \
             vpnsetup.sh
 
+          bash vpnsetup.sh
+
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
           VPN_PASSWORD='your_vpn_password' \
