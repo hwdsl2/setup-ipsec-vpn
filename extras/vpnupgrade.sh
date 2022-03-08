@@ -93,7 +93,7 @@ EOF
 
 check_libreswan() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-  if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+  if ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.
        See: https://github.com/hwdsl2/setup-ipsec-vpn

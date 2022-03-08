@@ -101,7 +101,7 @@ EOF
 check_libreswan() {
   ipsec_ver=$(ipsec --version 2>/dev/null)
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
-    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+    || ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up the IPsec VPN server before setting up IKEv2.
        See: https://github.com/hwdsl2/setup-ipsec-vpn

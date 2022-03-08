@@ -49,7 +49,7 @@ check_libreswan() {
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf \
     || ! grep -qs "config setup" /etc/ipsec.conf \
-    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+    || ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up the IPsec VPN server before selecting IKEv2-only mode.
        See: https://github.com/hwdsl2/setup-ipsec-vpn

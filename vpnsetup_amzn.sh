@@ -202,11 +202,14 @@ get_swan_ver() {
 }
 
 check_libreswan() {
+  ipsec_bin="/usr/local/sbin/ipsec"
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
-  if [ -n "$swan_ver_old" ] && [ "$(find /usr/local/sbin/ipsec -mmin -10080)" ]; then
+  if [ -n "$swan_ver_old" ] && printf '%s' "$ipsec_ver" | grep -qi 'libreswan' \
+    && [ "$(find "$ipsec_bin" -mmin -10080)" ]; then
     return 0
   fi
+  [ -s "$ipsec_bin" ] && touch "$ipsec_bin"
   get_swan_ver
   [ "$swan_ver_old" = "$SWAN_VER" ]
 }

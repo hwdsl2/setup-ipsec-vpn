@@ -71,7 +71,7 @@ EOF
 check_libreswan() {
   ipsec_ver=$(ipsec --version 2>/dev/null)
   if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf \
-    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+    || ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
     exiterr "Cannot remove IPsec VPN because it has not been set up on this server."
   fi
 }
