@@ -122,7 +122,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** To add or export IKEv2 client(s), just run the [helper script](#set-up-ikev2-using-helper-script) again. Use `-h` to show usage information. IKEv2 client config files can be safely deleted after import.
+**Note:** To add or export IKEv2 client(s), run `sudo ikev2.sh`. Use `-h` to show usage information. IKEv2 client config files can be safely deleted after import.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -237,7 +237,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
 
 1. AirDrop, or
-1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to the "Settings" app to import, or
+1. Upload to your device (any App folder) using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" App on your iOS device, move the uploaded file to the "On My iPhone" folder. After that, tap the file and go to the "Settings" App to import, or
 1. Host the file on a secure website of yours, then download and import it in Mobile Safari.
 
 When finished, check to make sure "IKEv2 VPN" is listed under Settings -> General -> VPN & Device Management or Profile(s).
@@ -257,7 +257,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
-1. Upload to your device using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" app on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to the "Settings" app to import, or
+1. Upload to your device (any App folder) using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" App on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to the "Settings" App to import, or
 1. Host the files on a secure website of yours, then download and import them in Mobile Safari.
 
 When finished, check to make sure both the new client certificate and `IKEv2 VPN CA` are listed under Settings -> General -> VPN & Device Management or Profile(s).

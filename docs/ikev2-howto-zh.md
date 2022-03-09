@@ -122,7 +122,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
-**注：** 如果要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
+**注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
 
 * [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
@@ -237,7 +237,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备（任何 App 目录），然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
@@ -257,7 +257,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备（任何 App 目录），然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
