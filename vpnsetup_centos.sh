@@ -78,6 +78,9 @@ check_os() {
     grep -qi stream "$rh_file" && os_ver=8s
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
+    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
+      exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
   else
     exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
   fi

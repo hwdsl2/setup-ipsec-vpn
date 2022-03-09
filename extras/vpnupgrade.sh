@@ -49,6 +49,9 @@ check_os() {
     grep -qi stream "$rh_file" && os_ver=8s
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
+    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
+      exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
