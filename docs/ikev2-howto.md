@@ -419,8 +419,10 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 1. Import the `.p12` certificate file twice (yes, import the same file two times!).
 1. Run these in terminal:
    ```bash
+   /ip firewall address-list
+   add address=THESE_ADDRESS_GO_TRHOUGHT_VPN list=local
    /ip ipsec mode-config
-   add name=ike2-rw responder=no
+   add name=ike2-rw responder=no src-address-list=local
    /ip ipsec policy group
    add name=ike2-rw
    /ip ipsec profile
