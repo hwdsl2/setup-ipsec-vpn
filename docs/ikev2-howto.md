@@ -415,9 +415,17 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 **Note:** These steps were contributed by [@Unix-User](https://github.com/Unix-User).
 
 1. Securely transfer the generated `.p12` file to your computer.
+
+![getcertificate](https://user-images.githubusercontent.com/38821945/158036447-a0d60a1b-27dc-4cf8-b3af-85787a08f1c9.gif)
+
 1. In WinBox, go to System > certificates > import.
 1. Import the `.p12` certificate file twice (yes, import the same file two times!).
-1. Run these in terminal:
+
+![importcertificate](https://user-images.githubusercontent.com/38821945/158036615-b842a5bb-5c08-427d-9130-7359c584c0b1.gif)
+
+1. Run these in terminal, replace THESE_ADDRESS_GO_TRHOUGHT_VPN with the addresses
+that will browse through the VPN, assuming your network is in that range that you can use
+192.168.0.0/24 for the entire network, or 192.168.0.10 for just one client, and so on
    ```bash
    /ip firewall address-list
    add address=THESE_ADDRESS_GO_TRHOUGHT_VPN list=local
