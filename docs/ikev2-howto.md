@@ -418,14 +418,17 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ![getcertificate](https://user-images.githubusercontent.com/38821945/158036447-a0d60a1b-27dc-4cf8-b3af-85787a08f1c9.gif)
 
-1. In WinBox, go to System > certificates > import.
-1. Import the `.p12` certificate file twice (yes, import the same file two times!).
+2. In WinBox, go to System > certificates > import.
+2.1. Import the `.p12` certificate file twice (yes, import the same file two times!).
 
 ![importcertificate](https://user-images.githubusercontent.com/38821945/158036615-b842a5bb-5c08-427d-9130-7359c584c0b1.gif)
 
-1. Run these in terminal, replace THESE_ADDRESS_GO_TRHOUGHT_VPN with the addresses
-that will browse through the VPN, assuming your network is in that range that you can use
-192.168.0.0/24 for the entire network, or 192.168.0.10 for just one client, and so on
+3. Run these in terminal, replace YOUR_VPN_SERVER_IP_OR_DNS_NAME with your server ip/dns,
+IMPORTED_CERTIFICATE is the certificate that you get on step 2 something like certificate.p12_0
+(the one flagged with KT - Priv. Key Trusted - if not flagged as KT, import certificate again)
+and THESE_ADDRESS_GO_TRHOUGHT_VPN with the addresses that will browse through the VPN,
+assuming your network is in that range that you can use 192.168.0.0/24 for the entire network,
+or 192.168.0.10 for just one client, and so on
    ```bash
    /ip firewall address-list
    add address=THESE_ADDRESS_GO_TRHOUGHT_VPN list=local
@@ -440,7 +443,7 @@ that will browse through the VPN, assuming your network is in that range that yo
    /ip ipsec proposal
    add name=ike2-rw pfs-group=none
    /ip ipsec identity
-   add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+   add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE.p12_1 generate-policy=port-strict mode-config=ike2-rw \
        peer=ike2-rw-client policy-template-group=ike2-rw
    /ip ipsec policy
    add group=ike2-rw proposal=ike2-rw template=yes
