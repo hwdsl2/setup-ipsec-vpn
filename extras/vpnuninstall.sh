@@ -23,6 +23,11 @@ exiterr()  { echo "Error: $1" >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 bigecho() { echo "## $1"; }
 
+check_cidr() {
+  CIDR_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2][0-9]|[0-9]))$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$CIDR_REGEX"
+}
+
 check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo bash $0'"
@@ -196,6 +201,21 @@ update_rclocal() {
   fi
 }
 
+get_vpn_subnets() {
+  L2TP_NET=192.168.42.0/24
+  XAUTH_NET=192.168.43.0/24
+  if [ -s /etc/ipsec.conf ]; then
+    if ! grep -q "$L2TP_NET" /etc/ipsec.conf \
+      || ! grep -q "$XAUTH_NET" /etc/ipsec.conf; then
+      vipr=$(grep "virtual-private=" /etc/ipsec.conf)
+      l2tpnet=$(printf '%s' "$vipr" | cut -f2 -d '!' | sed 's/,%v4://')
+      xauthnet=$(printf '%s' "$vipr" | cut -f3 -d '!')
+      check_cidr "$l2tpnet" && L2TP_NET="$l2tpnet"
+      check_cidr "$xauthnet" && XAUTH_NET="$xauthnet"
+    fi
+  fi
+}
+
 update_iptables_rules() {
   use_nft=0
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ] \
@@ -221,6 +241,7 @@ update_iptables_rules() {
   if [ "$ipt_flag" = "1" ]; then
     if [ "$use_nft" = "0" ]; then
       bigecho "Updating IPTables rules..."
+      get_vpn_subnets
       iptables-save > "$IPT_FILE.old-$SYS_DT"
       $ipi -p udp --dport 1701 -m policy --dir in --pol none -j DROP
       $ipi -m conntrack --ctstate INVALID -j DROP
@@ -232,12 +253,12 @@ update_iptables_rules() {
       $ipf -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate "$res" -j ACCEPT
       $ipf -i ppp+ -o "$NET_IFACE" -j ACCEPT
       $ipf -i ppp+ -o ppp+ -j ACCEPT
-      $ipf -i "$NET_IFACE" -d 192.168.43.0/24 -m conntrack --ctstate "$res" -j ACCEPT
-      $ipf -s 192.168.43.0/24 -o "$NET_IFACE" -j ACCEPT
-      $ipf -s 192.168.43.0/24 -o ppp+ -j ACCEPT
+      $ipf -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
+      $ipf -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
+      $ipf -s "$XAUTH_NET" -o ppp+ -j ACCEPT
       iptables -D FORWARD -j DROP
-      $ipp -s 192.168.43.0/24 -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
-      $ipp -s 192.168.42.0/24 -o "$NET_IFACE" -j MASQUERADE
+      $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+      $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
       iptables-save > "$IPT_FILE"
 
       if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
