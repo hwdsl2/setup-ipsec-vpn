@@ -414,16 +414,28 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 
+   <details>
+   <summary>
+   单击查看屏幕录影。
+   </summary>
+
    ![routeros get certificate](images/routeros-get-cert.gif)
+   </details>
 
 2. 在 WinBox 中，转到 System > certificates > import. 将 `.p12` 证书文件导入两次（是的，导入同一个文件两次）。检查你的 certificates panel。你应该看到 2 个文件，其中标注 KT 的是密钥。
 
+   <details>
+   <summary>
+   单击查看屏幕录影。
+   </summary>
+
    ![routeros import certificate](images/routeros-import-cert.gif)
+   </details>
 
 3. 在 terminal 中运行以下命令。将以下内容替换为你自己的值。
 `YOUR_VPN_SERVER_IP_OR_DNS_NAME` 是你的 VPN 服务器 IP 或域名。
 `IMPORTED_CERTIFICATE` 是上面第 2 步中的证书名称，例如 `vpnclient.p12_0`
-（标记为 KT 的那一行 - Priv. Key Trusted - 如果未标记为 KT，请再次导入证书）。
+（标记为 KT 的行 - Priv. Key Trusted - 如果未标记为 KT，请再次导入证书）。
 `THESE_ADDRESSES_GO_THROUGH_VPN` 是你想要通过 VPN 浏览因特网的本地网络地址。
 假设 RouterOS 后面的本地网络是 `192.168.0.0/24`，你可以使用 `192.168.0.0/24`
 来指定整个网络，或者使用 `192.168.0.10` 来指定仅用于一个设备，依此类推。

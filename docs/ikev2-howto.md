@@ -416,11 +416,23 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 1. Securely transfer the generated `.p12` file to your computer.
 
+   <details>
+   <summary>
+   Click to see screencast.
+   </summary>
+
    ![routeros get certificate](images/routeros-get-cert.gif)
+   </details>
 
 2. In WinBox, go to System > certificates > import. Import the `.p12` certificate file twice (yes, import the same file two times!). Verify in your certificates panel. You will see 2 files, the one that is marked KT is the key.
 
+   <details>
+   <summary>
+   Click to see screencast.
+   </summary>
+
    ![routeros import certificate](images/routeros-import-cert.gif)
+   </details>
 
 3. Run these commands in terminal. Replace the following with your own values.
 `YOUR_VPN_SERVER_IP_OR_DNS_NAME` is your VPN server IP or DNS name.
