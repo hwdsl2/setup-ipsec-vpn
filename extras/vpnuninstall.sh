@@ -168,12 +168,13 @@ remove_xl2tpd() {
   fi
 }
 
-remove_ikev2_script() {
-  bigecho "Removing IKEv2 script..."
-  if [ "$(readlink -f /usr/bin/ikev2.sh 2>/dev/null)" = "/opt/src/ikev2.sh" ]; then
-    /bin/rm -f /usr/bin/ikev2.sh
-  fi
-  /bin/rm -f /opt/src/ikev2.sh
+remove_helper_scripts() {
+  bigecho "Removing helper scripts..."
+  for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
+    if [ "$(readlink -f "/usr/bin/$sc" 2>/dev/null)" = "/opt/src/$sc" ]; then
+      /bin/rm -f "/usr/bin/$sc" "/opt/src/$sc"
+    fi
+  done
 }
 
 update_sysctl() {
@@ -302,7 +303,7 @@ remove_vpn() {
   stop_services
   remove_ipsec
   remove_xl2tpd
-  remove_ikev2_script
+  remove_helper_scripts
   update_sysctl
   update_rclocal
   update_iptables_rules
