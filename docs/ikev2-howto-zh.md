@@ -413,12 +413,26 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 **注：** 这些步骤由 [@Unix-User](https://github.com/Unix-User) 提供。
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
-1. 在 WinBox 中，转到 System > certificates > import.
-1. 将 `.p12` 证书文件导入两次（是的，导入同一个文件两次）。
-1. 在 terminal 中运行以下命令：
+
+   ![routeros get certificate](images/routeros-get-cert.gif)
+
+2. 在 WinBox 中，转到 System > certificates > import. 将 `.p12` 证书文件导入两次（是的，导入同一个文件两次）。检查你的 certificates panel。你应该看到 2 个文件，其中标注 KT 的是密钥。
+
+   ![routeros import certificate](images/routeros-import-cert.gif)
+
+3. 在 terminal 中运行以下命令。将以下内容替换为你自己的值。
+`YOUR_VPN_SERVER_IP_OR_DNS_NAME` 是你的 VPN 服务器 IP 或域名。
+`IMPORTED_CERTIFICATE` 是上面第 2 步中的证书名称，例如 `vpnclient.p12_0`
+（标记为 KT 的那一行 - Priv. Key Trusted - 如果未标记为 KT，请再次导入证书）。
+`THESE_ADDRESSES_GO_THROUGH_VPN` 是你想要通过 VPN 浏览因特网的本地网络地址。
+假设 RouterOS 后面的本地网络是 `192.168.0.0/24`，你可以使用 `192.168.0.0/24`
+来指定整个网络，或者使用 `192.168.0.10` 来指定仅用于一个设备，依此类推。
+
    ```bash
+   /ip firewall address-list
+   add address=THESE_ADDRESSES_GO_THROUGH_VPN list=local
    /ip ipsec mode-config
-   add name=ike2-rw responder=no
+   add name=ike2-rw responder=no src-address-list=local
    /ip ipsec policy group
    add name=ike2-rw
    /ip ipsec profile
@@ -428,12 +442,12 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    /ip ipsec proposal
    add name=ike2-rw pfs-group=none
    /ip ipsec identity
-   add auth-method=digital-signature certificate=certificate.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+   add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE generate-policy=port-strict mode-config=ike2-rw \
        peer=ike2-rw-client policy-template-group=ike2-rw
    /ip ipsec policy
    add group=ike2-rw proposal=ike2-rw template=yes
    ```
-1. 检查你的 certificates panel。你应该看到 2 个文件，其中标注 KT 的是密钥。具体请参见 [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623)。
+4. 更多信息请参见 [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623)。
 
 > 已在以下系统测试   
 > mar/02/2022 12:52:57 by RouterOS 6.48   

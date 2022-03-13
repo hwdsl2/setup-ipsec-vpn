@@ -416,22 +416,23 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 1. Securely transfer the generated `.p12` file to your computer.
 
-![getcertificate](https://user-images.githubusercontent.com/38821945/158036447-a0d60a1b-27dc-4cf8-b3af-85787a08f1c9.gif)
+   ![routeros get certificate](images/routeros-get-cert.gif)
 
-2. In WinBox, go to System > certificates > import.
-2.1. Import the `.p12` certificate file twice (yes, import the same file two times!).
+2. In WinBox, go to System > certificates > import. Import the `.p12` certificate file twice (yes, import the same file two times!). Verify in your certificates panel. You will see 2 files, the one that is marked KT is the key.
 
-![importcertificate](https://user-images.githubusercontent.com/38821945/158036615-b842a5bb-5c08-427d-9130-7359c584c0b1.gif)
+   ![routeros import certificate](images/routeros-import-cert.gif)
 
-3. Run these in terminal, replace YOUR_VPN_SERVER_IP_OR_DNS_NAME with your server ip/dns,
-IMPORTED_CERTIFICATE is the certificate that you get on step 2 something like certificate.p12_0
-(the one flagged with KT - Priv. Key Trusted - if not flagged as KT, import certificate again)
-and THESE_ADDRESS_GO_TRHOUGHT_VPN with the addresses that will browse through the VPN,
-assuming your network is in that range that you can use 192.168.0.0/24 for the entire network,
-or 192.168.0.10 for just one client, and so on
+3. Run these commands in terminal. Replace the following with your own values.
+`YOUR_VPN_SERVER_IP_OR_DNS_NAME` is your VPN server IP or DNS name.
+`IMPORTED_CERTIFICATE` is the name of the certificate from step 2 above, e.g. `vpnclient.p12_0`
+(the one flagged with KT - Priv. Key Trusted - if not flagged as KT, import certificate again).
+`THESE_ADDRESSES_GO_THROUGH_VPN` are the local network addresses that you want to browse through the VPN.
+Assuming that your local network behind RouterOS is `192.168.0.0/24`, you can use `192.168.0.0/24`
+for the entire network, or use `192.168.0.10` for just one device, and so on.
+
    ```bash
    /ip firewall address-list
-   add address=THESE_ADDRESS_GO_TRHOUGHT_VPN list=local
+   add address=THESE_ADDRESSES_GO_THROUGH_VPN list=local
    /ip ipsec mode-config
    add name=ike2-rw responder=no src-address-list=local
    /ip ipsec policy group
@@ -443,12 +444,12 @@ or 192.168.0.10 for just one client, and so on
    /ip ipsec proposal
    add name=ike2-rw pfs-group=none
    /ip ipsec identity
-   add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE.p12_1 generate-policy=port-strict mode-config=ike2-rw \
+   add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE generate-policy=port-strict mode-config=ike2-rw \
        peer=ike2-rw-client policy-template-group=ike2-rw
    /ip ipsec policy
    add group=ike2-rw proposal=ike2-rw template=yes
    ```
-1. Verify in your certificates panel. You will see 2 files, the one that is marked KT is the key. See [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623) for more details.
+4. For more information, see [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623).
 
 > tested on   
 > mar/02/2022 12:52:57 by RouterOS 6.48   
