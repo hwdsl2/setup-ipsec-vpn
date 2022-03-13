@@ -251,6 +251,25 @@ install_fail2ban() {
   ) || exiterr2
 }
 
+get_helper_scripts() {
+  bigecho "Downloading helper scripts..."
+  base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
+  ikev2_url="$base_url/ikev2setup.sh"
+  add_url="$base_url/add_vpn_user.sh"
+  del_url="$base_url/del_vpn_user.sh"
+  cd /opt/src || exit 1
+  for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
+    [ "$sc" = "ikev2.sh" ] && dl_url="$ikev2_url"
+    [ "$sc" = "addvpnuser.sh" ] && dl_url="$add_url"
+    [ "$sc" = "delvpnuser.sh" ] && dl_url="$del_url"
+    (
+      set -x
+      wget -t 3 -T 30 -q -O "$sc" "$dl_url"
+    ) || /bin/rm -f "$sc"
+    [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
+  done
+}
+
 get_swan_ver() {
   SWAN_VER=4.6
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
@@ -321,17 +340,6 @@ EOF
       exiterr "Libreswan $SWAN_VER failed to build."
     fi
   fi
-}
-
-get_ikev2_script() {
-  bigecho "Downloading IKEv2 script..."
-  cd /opt/src || exit 1
-  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
-  (
-    set -x
-    wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
-  ) || /bin/rm -f ikev2.sh
-  [ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 }
 
 create_vpn_config() {
@@ -702,7 +710,7 @@ vpnsetup() {
   install_vpn_pkgs_2
   install_vpn_pkgs_3
   install_fail2ban
-  get_ikev2_script
+  get_helper_scripts
   get_libreswan
   install_libreswan
   create_vpn_config
