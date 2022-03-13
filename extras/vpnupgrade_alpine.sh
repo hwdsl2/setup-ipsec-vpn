@@ -170,6 +170,7 @@ get_libreswan() {
 install_libreswan() {
   bigecho "Compiling and installing Libreswan, please wait..."
   cd "libreswan-$SWAN_VER" || exit 1
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   service ipsec stop >/dev/null 2>&1
   sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h
 cat > Makefile.inc.local <<'EOF'
@@ -255,6 +256,7 @@ update_config() {
 restart_ipsec() {
   bigecho "Restarting IPsec service..."
   mkdir -p /run/pluto
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   service ipsec restart >/dev/null 2>&1
 }
 

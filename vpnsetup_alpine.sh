@@ -475,25 +475,10 @@ exit 0
 EOF
   chmod +x /etc/network/if-pre-up.d/iptablesload
 
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   for svc in fail2ban ipsec xl2tpd; do
-    rc-update add "$svc" >/dev/null
+    rc-update add "$svc" default >/dev/null
   done
-
-  if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
-    if [ -f /etc/rc.local ]; then
-      conf_bk "/etc/rc.local"
-    else
-      echo '#!/bin/sh' > /etc/rc.local
-    fi
-cat >> /etc/rc.local <<'EOF'
-
-# Added by hwdsl2 VPN script
-(sleep 15
-service ipsec restart
-service xl2tpd restart
-echo 1 > /proc/sys/net/ipv4/ip_forward)&
-EOF
-  fi
 }
 
 start_services() {
