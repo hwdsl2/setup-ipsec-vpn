@@ -221,7 +221,7 @@ The latest supported Libreswan version is `4.6`. Check installed version: `ipsec
 
 ## Manage VPN users
 
-See [Manage VPN users](docs/manage-users.md).
+See [Manage VPN users](docs/manage-users.md). 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
 
 - [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
 - [View VPN users](docs/manage-users.md#view-vpn-users)
@@ -230,7 +230,7 @@ See [Manage VPN users](docs/manage-users.md).
 
 ## Advanced usage
 
-See [Advanced usage](docs/advanced-usage.md).
+See [Advanced usage](docs/advanced-usage.md). 请参见 [高级用法](docs/advanced-usage-zh.md)。
 
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
@@ -244,7 +244,7 @@ See [Advanced usage](docs/advanced-usage.md).
 
 ## Uninstallation
 
-See [Uninstall the VPN](docs/uninstall.md).
+See [Uninstall the VPN](docs/uninstall.md). 请参见 [卸载 VPN](docs/uninstall-zh.md)。
 
 - [Uninstall using helper script](docs/uninstall.md#uninstall-using-helper-script)
 - [Manually uninstall the VPN](docs/uninstall.md#manually-uninstall-the-vpn)
