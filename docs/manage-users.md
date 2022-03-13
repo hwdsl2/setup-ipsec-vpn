@@ -42,57 +42,86 @@ For IPsec/XAuth ("Cisco IPsec"), VPN users are specified in `/etc/ipsec.d/passwd
 
 ## Manage VPN users using helper scripts
 
-You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](../extras/add_vpn_user.sh), [del_vpn_user.sh](../extras/del_vpn_user.sh) and [update_vpn_users.sh](../extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). Replace command parameters below with your own values. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
+You may use helper scripts to [add](../extras/add_vpn_user.sh), [delete](../extras/del_vpn_user.sh) or [update all](../extras/update_vpn_users.sh) VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, please instead see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
-**Note:** VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
+**Note:** Replace command arguments below with your own values. VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 
 ### Add or edit a VPN user
 
 Add a new VPN user, or update an existing VPN user with a new password.
 
+Run the script and follow the prompts:
+
 ```bash
-# Download the script
-wget -nv -O add_vpn_user.sh https://bit.ly/addvpnuser
-# Run the script and follow the prompts
-sudo bash add_vpn_user.sh
+sudo addvpnuser.sh
 ```
+
+<details>
+<summary>
+Error: "sudo: addvpnuser.sh: command not found".
+</summary>
+
+This is normal if you used an older version of the VPN setup script. First, download the helper script:
+
+```bash
+wget -nv -O /opt/src/addvpnuser.sh https://bit.ly/addvpnuser
+chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
+```
+
+Then run the script using the instructions.
+</details>
 
 Alternatively, you can run the script with arguments:
 
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-sudo bash add_vpn_user.sh 'username_to_add' 'password'
+sudo addvpnuser.sh 'username_to_add' 'password'
 # OR
-sudo bash add_vpn_user.sh 'username_to_update' 'new_password'
+sudo addvpnuser.sh 'username_to_update' 'new_password'
 ```
 
 ### Delete a VPN user
 
 Delete the specified VPN user.
 
+Run the script and follow the prompts:
+
 ```bash
-# Download the script
-wget -nv -O del_vpn_user.sh https://bit.ly/delvpnuser
-# Run the script and follow the prompts
-sudo bash del_vpn_user.sh
+sudo delvpnuser.sh
 ```
+
+<details>
+<summary>
+Error: "sudo: delvpnuser.sh: command not found".
+</summary>
+
+This is normal if you used an older version of the VPN setup script. First, download the helper script:
+
+```bash
+wget -nv -O /opt/src/delvpnuser.sh https://bit.ly/delvpnuser
+chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
+```
+
+Then run the script using the instructions.
+</details>
 
 Alternatively, you can run the script with arguments:
 
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-sudo bash del_vpn_user.sh 'username_to_delete'
+sudo delvpnuser.sh 'username_to_delete'
 ```
 
 ### Update all VPN users
 
 Remove all existing VPN users and replace with the list of users you specify.
 
+First, download the script:
+
 ```bash
-# Download the script
-wget -nv -O update_vpn_users.sh https://bit.ly/updatevpnusers
+wget -nv -O updatevpnusers.sh https://bit.ly/updatevpnusers
 ```
 
 To use this script, choose one of the following options:
@@ -102,9 +131,9 @@ To use this script, choose one of the following options:
 **Option 1:** Edit the script and enter VPN user details:
 
 ```bash
-nano -w update_vpn_users.sh
+nano -w updatevpnusers.sh
 [Replace with your own values: YOUR_USERNAMES and YOUR_PASSWORDS]
-sudo bash update_vpn_users.sh
+sudo bash updatevpnusers.sh
 ```
 
 **Option 2:** Define VPN user details as environment variables:
@@ -116,7 +145,7 @@ sudo bash update_vpn_users.sh
 sudo \
 VPN_USERS='username1 username2 ...' \
 VPN_PASSWORDS='password1 password2 ...' \
-bash update_vpn_users.sh
+bash updatevpnusers.sh
 ```
 
 ## Manually manage VPN users
