@@ -244,7 +244,7 @@ See [Advanced usage](docs/advanced-usage.md). 请参见 [高级用法](docs/adva
 
 ## Uninstallation
 
-See [Uninstall the VPN](docs/uninstall.md). 请参见 [卸载 VPN](docs/uninstall-zh.md)。
+See [Uninstall the VPN](docs/uninstall.md).
 
 - [Uninstall using helper script](docs/uninstall.md#uninstall-using-helper-script)
 - [Manually uninstall the VPN](docs/uninstall.md#manually-uninstall-the-vpn)
