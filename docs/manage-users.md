@@ -4,43 +4,14 @@
 
 By default, a single user account for VPN login is created. If you wish to view or manage users for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, read this document. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
-* [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
-* [View VPN users](#view-vpn-users)
 * [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
+* [View VPN users](#view-vpn-users)
+* [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
 * [Manually manage VPN users](#manually-manage-vpn-users)
 
-## View or update the IPsec PSK
-
-The IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. All VPN users will share the same IPsec PSK. The format of this file is:
-
-```bash
-%any  %any  : PSK "your_ipsec_pre_shared_key"
-```
-
-To change to a new PSK, just edit this file. DO NOT use these special characters within values: `\ " '`
-
-You must restart services when finished:
-
-```bash
-service ipsec restart
-service xl2tpd restart
-```
-
-## View VPN users
-
-By default, the VPN setup scripts will create the same VPN user for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
-
-For IPsec/L2TP, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:
-
-```bash
-"username1"  l2tpd  "password1"  *
-"username2"  l2tpd  "password2"  *
-... ...
-```
-
-For IPsec/XAuth ("Cisco IPsec"), VPN users are specified in `/etc/ipsec.d/passwd`. Passwords in this file are salted and hashed. See [Manually manage VPN users](#manually-manage-vpn-users) for more details.
-
 ## Manage VPN users using helper scripts
+
+*Read this in other languages: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [简体中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户).*
 
 You may use helper scripts to [add](../extras/add_vpn_user.sh), [delete](../extras/del_vpn_user.sh) or [update all](../extras/update_vpn_users.sh) VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, please instead see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
@@ -146,6 +117,37 @@ sudo \
 VPN_USERS='username1 username2 ...' \
 VPN_PASSWORDS='password1 password2 ...' \
 bash updatevpnusers.sh
+```
+
+## View VPN users
+
+By default, the VPN setup scripts will create the same VPN user for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
+
+For IPsec/L2TP, VPN users are specified in `/etc/ppp/chap-secrets`. The format of this file is:
+
+```bash
+"username1"  l2tpd  "password1"  *
+"username2"  l2tpd  "password2"  *
+... ...
+```
+
+For IPsec/XAuth ("Cisco IPsec"), VPN users are specified in `/etc/ipsec.d/passwd`. Passwords in this file are salted and hashed. See [Manually manage VPN users](#manually-manage-vpn-users) for more details.
+
+## View or update the IPsec PSK
+
+The IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. All VPN users will share the same IPsec PSK. The format of this file is:
+
+```bash
+%any  %any  : PSK "your_ipsec_pre_shared_key"
+```
+
+To change to a new PSK, just edit this file. DO NOT use these special characters within values: `\ " '`
+
+You must restart services when finished:
+
+```bash
+service ipsec restart
+service xl2tpd restart
 ```
 
 ## Manually manage VPN users

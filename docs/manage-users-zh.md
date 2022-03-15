@@ -4,43 +4,14 @@
 
 在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
-* [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
-* [查看 VPN 用户](#查看-vpn-用户)
 * [使用辅助脚本管理 VPN 用户](#使用辅助脚本管理-vpn-用户)
+* [查看 VPN 用户](#查看-vpn-用户)
+* [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
 * [手动管理 VPN 用户](#手动管理-vpn-用户)
 
-## 查看或更改 IPsec PSK
-
-IPsec PSK（预共享密钥）保存在文件 `/etc/ipsec.secrets`。所有的 VPN 用户将共享同一个 IPsec PSK。该文件的格式如下：
-
-```bash
-%any  %any  : PSK "你的IPsec预共享密钥"
-```
-
-如果要更换一个新的 PSK，可以编辑此文件。**不要**在值中使用这些字符：`\ " '`
-
-完成后必须重启服务：
-
-```bash
-service ipsec restart
-service xl2tpd restart
-```
-
-## 查看 VPN 用户
-
-在默认情况下，VPN 安装脚本将为 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式创建相同的用户。
-
-对于 IPsec/L2TP，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
-
-```bash
-"用户名1"  l2tpd  "密码1"  *
-"用户名2"  l2tpd  "密码2"  *
-... ...
-```
-
-对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
-
 ## 使用辅助脚本管理 VPN 用户
+
+*其他语言版本: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [简体中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户)。*
 
 你可以使用辅助脚本 [添加](../extras/add_vpn_user.sh), [删除](../extras/del_vpn_user.sh) 或者 [更新所有的](../extras/update_vpn_users.sh) VPN 用户。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。对于 IKEv2 模式，请另外参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
@@ -146,6 +117,37 @@ sudo \
 VPN_USERS='用户名1 用户名2 ...' \
 VPN_PASSWORDS='密码1 密码2 ...' \
 bash updatevpnusers.sh
+```
+
+## 查看 VPN 用户
+
+在默认情况下，VPN 安装脚本将为 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式创建相同的用户。
+
+对于 IPsec/L2TP，VPN 用户信息保存在文件 `/etc/ppp/chap-secrets`。该文件的格式如下：
+
+```bash
+"用户名1"  l2tpd  "密码1"  *
+"用户名2"  l2tpd  "密码2"  *
+... ...
+```
+
+对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
+
+## 查看或更改 IPsec PSK
+
+IPsec PSK（预共享密钥）保存在文件 `/etc/ipsec.secrets`。所有的 VPN 用户将共享同一个 IPsec PSK。该文件的格式如下：
+
+```bash
+%any  %any  : PSK "你的IPsec预共享密钥"
+```
+
+如果要更换一个新的 PSK，可以编辑此文件。**不要**在值中使用这些字符：`\ " '`
+
+完成后必须重启服务：
+
+```bash
+service ipsec restart
+service xl2tpd restart
 ```
 
 ## 手动管理 VPN 用户

@@ -223,9 +223,9 @@ wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 
 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
 
-- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
-- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
 - [使用辅助脚本管理 VPN 用户](docs/manage-users-zh.md#使用辅助脚本管理-vpn-用户)
+- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
+- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
 - [手动管理 VPN 用户](docs/manage-users-zh.md#手动管理-vpn-用户)
 
 ## 高级用法
@@ -240,7 +240,7 @@ wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
-- [部署 Google BBR 拥塞控制算法](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制算法)
+- [部署 Google BBR 拥塞控制](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制)
 
 ## 卸载说明
 

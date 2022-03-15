@@ -10,7 +10,7 @@
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Modify IPTables rules](#modify-iptables-rules)
-* [Deploy Google BBR congestion control algorithm](#deploy-google-bbr-congestion-control-algorithm)
+* [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
 ## Use alternative DNS servers
 
@@ -280,7 +280,7 @@ If you want to modify the IPTables rules after install, edit `/etc/iptables.rule
 
 **Note:** If using Rocky Linux, AlmaLinux or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
 
-## Deploy Google BBR congestion control algorithm
+## Deploy Google BBR congestion control
 
 After the VPN server is set up, the performance can be improved by deploying the Google BBR congestion control algorithm.
 

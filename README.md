@@ -221,16 +221,16 @@ The latest supported Libreswan version is `4.6`. Check installed version: `ipsec
 
 ## Manage VPN users
 
-See [Manage VPN users](docs/manage-users.md). 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
+See [Manage VPN users](docs/manage-users.md).
 
-- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
-- [View VPN users](docs/manage-users.md#view-vpn-users)
 - [Manage VPN users using helper scripts](docs/manage-users.md#manage-vpn-users-using-helper-scripts)
+- [View VPN users](docs/manage-users.md#view-vpn-users)
+- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
 - [Manually manage VPN users](docs/manage-users.md#manually-manage-vpn-users)
 
 ## Advanced usage
 
-See [Advanced usage](docs/advanced-usage.md). 请参见 [高级用法](docs/advanced-usage-zh.md)。
+See [Advanced usage](docs/advanced-usage.md).
 
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
@@ -240,11 +240,11 @@ See [Advanced usage](docs/advanced-usage.md). 请参见 [高级用法](docs/adva
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
-- [Deploy Google BBR congestion control algorithm](docs/advanced-usage.md#deploy-google-bbr-congestion-control-algorithm)
+- [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 
 ## Uninstallation
 
-See [Uninstall the VPN](docs/uninstall.md). 请参见 [卸载 VPN](docs/uninstall-zh.md)。
+See [Uninstall the VPN](docs/uninstall.md).
 
 - [Uninstall using helper script](docs/uninstall.md#uninstall-using-helper-script)
 - [Manually uninstall the VPN](docs/uninstall.md#manually-uninstall-the-vpn)
