@@ -280,7 +280,7 @@ Although uncommon, some Windows systems disable IPsec encryption, causing the co
 - For Windows XP, Vista, 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Fix_VPN_Error_809_Allow_IPsec_Reboot_Required.reg))
 
   ```console
-  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIpSec /t REG_DWORD /d 0x0 /f
+  REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v ProhibitIPSec /t REG_DWORD /d 0x0 /f
   ```
 
 ### Windows error 789 or 691
