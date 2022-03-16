@@ -84,6 +84,9 @@ check_os() {
     grep -qi stream "$rh_file" && os_ver=8s
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
+    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
+      exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
@@ -266,23 +269,14 @@ run_setup() {
   if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
     if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url" \
       || curl -fsL "$setup_url" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
-      if VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" VPN_PASSWORD="$VPN_PASSWORD" \
-        VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \
-        VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
-        VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
-        VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-        /bin/bash "$tmpdir/vpn.sh"; then
-        if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-          sleep 1
-          VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$VPN_PUBLIC_IP" \
-          VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
-          VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-          VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
-          /bin/bash /opt/src/ikev2.sh --auto || status=1
-        fi
-      else
-        status=1
-      fi
+      VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" VPN_PASSWORD="$VPN_PASSWORD" \
+      VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \
+      VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
+      VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+      VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+      VPN_DNS_NAME="$VPN_DNS_NAME" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
+      VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+      /bin/bash "$tmpdir/vpn.sh" || status=1
     else
       status=1
       echo "Error: Could not download VPN setup script." >&2

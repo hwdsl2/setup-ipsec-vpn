@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 or Alpine Li
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 Your VPN login details will be randomly generated, and displayed on the screen when finished.
@@ -44,7 +44,7 @@ Alternative one-liner using curl.
 </summary>
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -98,20 +98,20 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Installation
 
-First, update your system with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `sudo yum update` and reboot. This is optional, but recommended.
+First, update your server with `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) or `sudo yum update` and reboot. This is optional, but recommended.
 
 To install the VPN, please choose one of the following options:
 
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished).
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -124,7 +124,7 @@ sudo sh vpn.sh
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
@@ -133,17 +133,46 @@ sh vpn.sh
 
 <details>
 <summary>
+Advanced users can optionally customize IKEv2 options.
+</summary>
+
+Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
+
+```bash
+sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
+```
+
+Similarly, you may specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+
+```bash
+sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
+```
+
+By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for all VPN modes. Example:
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+```
+
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password. Example:
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
+```
+</details>
+<details>
+<summary>
 Click here if you are unable to download using wget.
 </summary>
 
 You may also use `curl` to download. For example:
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternatively, open [quickstart.sh](extras/quickstart.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps
@@ -194,9 +223,9 @@ The latest supported Libreswan version is `4.6`. Check installed version: `ipsec
 
 See [Manage VPN users](docs/manage-users.md).
 
-- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
-- [View VPN users](docs/manage-users.md#view-vpn-users)
 - [Manage VPN users using helper scripts](docs/manage-users.md#manage-vpn-users-using-helper-scripts)
+- [View VPN users](docs/manage-users.md#view-vpn-users)
+- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
 - [Manually manage VPN users](docs/manage-users.md#manually-manage-vpn-users)
 
 ## Advanced usage
@@ -211,7 +240,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
-- [Deploy Google BBR congestion control algorithm](docs/advanced-usage.md#deploy-google-bbr-congestion-control-algorithm)
+- [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 
 ## Uninstallation
 

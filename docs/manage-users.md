@@ -4,26 +4,119 @@
 
 By default, a single user account for VPN login is created. If you wish to view or manage users for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, read this document. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
-* [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
-* [View VPN users](#view-vpn-users)
 * [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
+* [View VPN users](#view-vpn-users)
+* [View or update the IPsec PSK](#view-or-update-the-ipsec-psk)
 * [Manually manage VPN users](#manually-manage-vpn-users)
 
-## View or update the IPsec PSK
+## Manage VPN users using helper scripts
 
-The IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. All VPN users will share the same IPsec PSK. The format of this file is:
+*Read this in other languages: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [简体中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户).*
+
+You may use helper scripts to [add](../extras/add_vpn_user.sh), [delete](../extras/del_vpn_user.sh) or [update all](../extras/update_vpn_users.sh) VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, please instead see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
+
+**Note:** Replace command arguments below with your own values. VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
+
+### Add or edit a VPN user
+
+Add a new VPN user, or update an existing VPN user with a new password.
+
+Run the script and follow the prompts:
 
 ```bash
-%any  %any  : PSK "your_ipsec_pre_shared_key"
+sudo addvpnuser.sh
 ```
 
-To change to a new PSK, just edit this file. DO NOT use these special characters within values: `\ " '`
+<details>
+<summary>
+Error: "sudo: addvpnuser.sh: command not found".
+</summary>
 
-You must restart services when finished:
+This is normal if you used an older version of the VPN setup script. First, download the helper script:
 
 ```bash
-service ipsec restart
-service xl2tpd restart
+wget -nv -O /opt/src/addvpnuser.sh https://bit.ly/addvpnuser
+chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
+```
+
+Then run the script using the instructions.
+</details>
+
+Alternatively, you can run the script with arguments:
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
+sudo addvpnuser.sh 'username_to_add' 'password'
+# OR
+sudo addvpnuser.sh 'username_to_update' 'new_password'
+```
+
+### Delete a VPN user
+
+Delete the specified VPN user.
+
+Run the script and follow the prompts:
+
+```bash
+sudo delvpnuser.sh
+```
+
+<details>
+<summary>
+Error: "sudo: delvpnuser.sh: command not found".
+</summary>
+
+This is normal if you used an older version of the VPN setup script. First, download the helper script:
+
+```bash
+wget -nv -O /opt/src/delvpnuser.sh https://bit.ly/delvpnuser
+chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
+```
+
+Then run the script using the instructions.
+</details>
+
+Alternatively, you can run the script with arguments:
+
+```bash
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
+sudo delvpnuser.sh 'username_to_delete'
+```
+
+### Update all VPN users
+
+Remove all existing VPN users and replace with the list of users you specify.
+
+First, download the script:
+
+```bash
+wget -nv -O updatevpnusers.sh https://bit.ly/updatevpnusers
+```
+
+To use this script, choose one of the following options:
+
+**Important:** This script will remove **ALL** existing VPN users and replace them with the list of users you specify. Therefore, you must include any existing user(s) you want to keep in the variables below.
+
+**Option 1:** Edit the script and enter VPN user details:
+
+```bash
+nano -w updatevpnusers.sh
+[Replace with your own values: YOUR_USERNAMES and YOUR_PASSWORDS]
+sudo bash updatevpnusers.sh
+```
+
+**Option 2:** Define VPN user details as environment variables:
+
+```bash
+# List of VPN usernames and passwords, separated by spaces
+# All values MUST be placed inside 'single quotes'
+# DO NOT use these special characters within values: \ " '
+sudo \
+VPN_USERS='username1 username2 ...' \
+VPN_PASSWORDS='password1 password2 ...' \
+bash updatevpnusers.sh
 ```
 
 ## View VPN users
@@ -40,83 +133,21 @@ For IPsec/L2TP, VPN users are specified in `/etc/ppp/chap-secrets`. The format o
 
 For IPsec/XAuth ("Cisco IPsec"), VPN users are specified in `/etc/ipsec.d/passwd`. Passwords in this file are salted and hashed. See [Manually manage VPN users](#manually-manage-vpn-users) for more details.
 
-## Manage VPN users using helper scripts
+## View or update the IPsec PSK
 
-You may use these scripts to more easily manage VPN users: [add_vpn_user.sh](../extras/add_vpn_user.sh), [del_vpn_user.sh](../extras/del_vpn_user.sh) and [update_vpn_users.sh](../extras/update_vpn_users.sh). They will update users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"). Replace command parameters below with your own values. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
-
-**Note:** VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
-
-### Add or edit a VPN user
-
-Add a new VPN user, or update an existing VPN user with a new password.
+The IPsec PSK (pre-shared key) is stored in `/etc/ipsec.secrets`. All VPN users will share the same IPsec PSK. The format of this file is:
 
 ```bash
-# Download the script
-wget -nv -O add_vpn_user.sh https://bit.ly/addvpnuser
-# Run the script and follow the prompts
-sudo bash add_vpn_user.sh
+%any  %any  : PSK "your_ipsec_pre_shared_key"
 ```
 
-Alternatively, you can run the script with arguments:
+To change to a new PSK, just edit this file. DO NOT use these special characters within values: `\ " '`
+
+You must restart services when finished:
 
 ```bash
-# All values MUST be placed inside 'single quotes'
-# DO NOT use these special characters within values: \ " '
-sudo bash add_vpn_user.sh 'username_to_add' 'password'
-# OR
-sudo bash add_vpn_user.sh 'username_to_update' 'new_password'
-```
-
-### Delete a VPN user
-
-Delete the specified VPN user.
-
-```bash
-# Download the script
-wget -nv -O del_vpn_user.sh https://bit.ly/delvpnuser
-# Run the script and follow the prompts
-sudo bash del_vpn_user.sh
-```
-
-Alternatively, you can run the script with arguments:
-
-```bash
-# All values MUST be placed inside 'single quotes'
-# DO NOT use these special characters within values: \ " '
-sudo bash del_vpn_user.sh 'username_to_delete'
-```
-
-### Update all VPN users
-
-Remove all existing VPN users and replace with the list of users you specify.
-
-```bash
-# Download the script
-wget -nv -O update_vpn_users.sh https://bit.ly/updatevpnusers
-```
-
-To use this script, choose one of the following options:
-
-**Important:** This script will remove **ALL** existing VPN users and replace them with the list of users you specify. Therefore, you must include any existing user(s) you want to keep in the variables below.
-
-**Option 1:** Edit the script and enter VPN user details:
-
-```bash
-nano -w update_vpn_users.sh
-[Replace with your own values: YOUR_USERNAMES and YOUR_PASSWORDS]
-sudo bash update_vpn_users.sh
-```
-
-**Option 2:** Define VPN user details as environment variables:
-
-```bash
-# List of VPN usernames and passwords, separated by spaces
-# All values MUST be placed inside 'single quotes'
-# DO NOT use these special characters within values: \ " '
-sudo \
-VPN_USERS='username1 username2 ...' \
-VPN_PASSWORDS='password1 password2 ...' \
-bash update_vpn_users.sh
+service ipsec restart
+service xl2tpd restart
 ```
 
 ## Manually manage VPN users

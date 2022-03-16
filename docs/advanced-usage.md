@@ -10,7 +10,7 @@
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Modify IPTables rules](#modify-iptables-rules)
-* [Deploy Google BBR congestion control algorithm](#deploy-google-bbr-congestion-control-algorithm)
+* [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
 ## Use alternative DNS servers
 
@@ -20,7 +20,6 @@ Advanced users can define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` when runn
 
 ```
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
 In certain circumstances, you may want VPN clients to use the specified DNS server(s) only for resolving internal domain name(s), and use their locally configured DNS servers to resolve all other domain names. This can be configured using the `modecfgdomains` option, e.g. `modecfgdomains="internal.example.com, home"`. Add this option to section `conn ikev2-cp` in `/etc/ipsec.d/ikev2.conf` for IKEv2, and to section `conn xauth-psk` in `/etc/ipsec.conf` for IPsec/XAuth ("Cisco IPsec"). Then run `service ipsec restart`. IPsec/L2TP mode does not support this option.
@@ -29,13 +28,13 @@ In certain circumstances, you may want VPN clients to use the specified DNS serv
 
 For [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, you may use a DNS name (e.g. `vpn.example.com`) instead of an IP address to connect to the VPN server, without additional configuration. In addition, the VPN should generally continue to work after server IP changes, such as after restoring a snapshot to a new server with a different IP, although a reboot may be required.
 
-For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, read [this section](ikev2-howto.md#change-ikev2-server-address). Alternatively, you may specify a DNS name to be used as the VPN server's address when [setting up IKEv2](ikev2-howto.md#set-up-ikev2-using-helper-script). The DNS name must be a fully qualified domain name (FQDN). It will be included in the generated server certificate. Example:
+For [IKEv2](ikev2-howto.md) mode, if you want the VPN to continue to work after server IP changes, read [this section](ikev2-howto.md#change-ikev2-server-address). Alternatively, you may specify a DNS name for the IKEv2 server address when [setting up IKEv2](ikev2-howto.md#set-up-ikev2-using-helper-script). The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-Alternatively, you may customize IKEv2 setup options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
+Alternatively, you may customize IKEv2 options by running the [helper script](ikev2-howto.md#set-up-ikev2-using-helper-script) without the `--auto` parameter.
 
 ## IKEv2-only VPN
 
@@ -281,7 +280,7 @@ If you want to modify the IPTables rules after install, edit `/etc/iptables.rule
 
 **Note:** If using Rocky Linux, AlmaLinux or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
 
-## Deploy Google BBR congestion control algorithm
+## Deploy Google BBR congestion control
 
 After the VPN server is set up, the performance can be improved by deploying the Google BBR congestion control algorithm.
 

@@ -33,7 +33,7 @@ Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpin
 使用以下命令快速搭建 IPsec VPN 服务器：
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
@@ -44,7 +44,7 @@ wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
 </summary>
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 ```
 </details>
 
@@ -98,20 +98,20 @@ curl -fsSL https://git.io/vpnstart -o vpn.sh && sudo sh vpn.sh
 
 ## 安装说明
 
-首先，更新你的系统：运行 `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) 或者 `sudo yum update` 并重启。这一步是可选的，但推荐。
+首先，更新你的服务器：运行 `sudo apt-get update && sudo apt-get dist-upgrade` (Ubuntu/Debian) 或者 `sudo yum update` 并重启。这一步是可选的，但推荐。
 
 要安装 VPN，请从以下选项中选择一个：
 
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）。
 
 ```bash
-wget https://git.io/vpnstart -qO vpn.sh && sudo sh vpn.sh
+wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -124,7 +124,7 @@ sudo sh vpn.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnstart -nv -O vpn.sh
+wget https://git.io/vpnsetup -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
@@ -133,17 +133,46 @@ sh vpn.sh
 
 <details>
 <summary>
+高级用户可以自定义 IKEv2 选项。这是可选的。
+</summary>
+
+高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+
+```bash
+sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
+```
+
+类似地，你可以指定第一个 IKEv2 客户端的名称。如果未指定，则使用默认值 `vpnclient`。
+
+```bash
+sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
+```
+
+在 VPN 已连接时，客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。你可以为所有的 VPN 模式指定另外的 DNS 服务器。示例如下：
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+```
+
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。示例如下：
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
+```
+</details>
+<details>
+<summary>
 如果无法通过 wget 下载，点这里查看解决方案。
 </summary>
 
 你也可以使用 `curl` 下载。例如：
 
 ```bash
-curl -fsSL https://git.io/vpnstart -o vpn.sh
+curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，打开 [quickstart.sh](extras/quickstart.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+或者，打开 [vpnsetup.sh](vpnsetup.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 下一步
@@ -194,9 +223,9 @@ wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 
 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
 
-- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
-- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
 - [使用辅助脚本管理 VPN 用户](docs/manage-users-zh.md#使用辅助脚本管理-vpn-用户)
+- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
+- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
 - [手动管理 VPN 用户](docs/manage-users-zh.md#手动管理-vpn-用户)
 
 ## 高级用法
@@ -211,7 +240,7 @@ wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
-- [部署 Google BBR 拥塞控制算法](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制算法)
+- [部署 Google BBR 拥塞控制](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制)
 
 ## 卸载说明
 

@@ -48,6 +48,11 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+check_dns_name() {
+  FQDN_REGEX='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
+}
+
 check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo bash $0'"
@@ -73,6 +78,9 @@ check_os() {
     grep -qi stream "$rh_file" && os_ver=8s
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
+    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
+      exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
   else
     exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
   fi
@@ -129,6 +137,22 @@ check_dns() {
   if { [ -n "$VPN_DNS_SRV1" ] && ! check_ip "$VPN_DNS_SRV1"; } \
     || { [ -n "$VPN_DNS_SRV2" ] && ! check_ip "$VPN_DNS_SRV2"; }; then
     exiterr "The DNS server specified is invalid."
+  fi
+}
+
+check_server_dns() {
+  if [ -n "$VPN_DNS_NAME" ] && ! check_dns_name "$VPN_DNS_NAME"; then
+      exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  fi
+}
+
+check_client_name() {
+  if [ -n "$VPN_CLIENT_NAME" ]; then
+    name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
+    if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+    fi
   fi
 }
 
@@ -227,6 +251,25 @@ install_fail2ban() {
   ) || exiterr2
 }
 
+get_helper_scripts() {
+  bigecho "Downloading helper scripts..."
+  base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
+  ikev2_url="$base_url/ikev2setup.sh"
+  add_url="$base_url/add_vpn_user.sh"
+  del_url="$base_url/del_vpn_user.sh"
+  cd /opt/src || exit 1
+  for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
+    [ "$sc" = "ikev2.sh" ] && dl_url="$ikev2_url"
+    [ "$sc" = "addvpnuser.sh" ] && dl_url="$add_url"
+    [ "$sc" = "delvpnuser.sh" ] && dl_url="$del_url"
+    (
+      set -x
+      wget -t 3 -T 30 -q -O "$sc" "$dl_url"
+    ) || /bin/rm -f "$sc"
+    [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
+  done
+}
+
 get_swan_ver() {
   SWAN_VER=4.6
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
@@ -240,6 +283,15 @@ get_swan_ver() {
 check_libreswan() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
+  ipsec_bin="/usr/local/sbin/ipsec"
+  if [ -n "$swan_ver_old" ] && printf '%s' "$ipsec_ver" | grep -qi 'libreswan' \
+    && [ "$(find "$ipsec_bin" -mmin -10080)" ]; then
+    return 0
+  fi
+  get_swan_ver
+  if [ -s "$ipsec_bin" ] && [ "$swan_ver_old" = "$SWAN_VER" ]; then
+    touch "$ipsec_bin"
+  fi
   [ "$swan_ver_old" = "$SWAN_VER" ]
 }
 
@@ -257,7 +309,7 @@ get_libreswan() {
     /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
     tar xzf "$swan_file" && /bin/rm -f "$swan_file"
   else
-    bigecho "Libreswan $SWAN_VER is already installed, skipping..."
+    bigecho "Libreswan $swan_ver_old is already installed, skipping..."
   fi
 }
 
@@ -288,17 +340,6 @@ EOF
       exiterr "Libreswan $SWAN_VER failed to build."
     fi
   fi
-}
-
-get_ikev2_script() {
-  bigecho "Downloading IKEv2 script..."
-  cd /opt/src || exit 1
-  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
-  (
-    set -x
-    wget -t 3 -T 30 -q -O ikev2.sh "$ikev2_url"
-  ) || /bin/rm -f ikev2.sh
-  [ -s ikev2.sh ] && chmod +x ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 }
 
 create_vpn_config() {
@@ -630,6 +671,28 @@ IKEv2 guide:       https://git.io/ikev2
 EOF
 }
 
+set_up_ikev2() {
+  status=0
+  if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
+    sleep 1
+    VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+    VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+    VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+    /bin/bash /opt/src/ikev2.sh --auto || status=1
+  elif [ -s /opt/src/ikev2.sh ]; then
+cat <<'EOF'
+================================================
+
+IKEv2 is already set up on this server.
+To manage IKEv2 clients, run: sudo ikev2.sh
+
+================================================
+
+EOF
+  fi
+}
+
 vpnsetup() {
   check_root
   check_vz
@@ -637,6 +700,8 @@ vpnsetup() {
   check_iface
   check_creds
   check_dns
+  check_server_dns
+  check_client_name
   start_setup
   install_setup_pkgs
   detect_ip
@@ -645,8 +710,7 @@ vpnsetup() {
   install_vpn_pkgs_2
   install_vpn_pkgs_3
   install_fail2ban
-  get_ikev2_script
-  get_swan_ver
+  get_helper_scripts
   get_libreswan
   install_libreswan
   create_vpn_config
@@ -657,9 +721,10 @@ vpnsetup() {
   enable_on_boot
   start_services
   show_vpn_info
+  set_up_ikev2
 }
 
 ## Defer setup until we have the complete script
 vpnsetup "$@"
 
-exit 0
+exit "$status"

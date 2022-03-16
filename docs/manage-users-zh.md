@@ -4,26 +4,119 @@
 
 在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
-* [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
-* [查看 VPN 用户](#查看-vpn-用户)
 * [使用辅助脚本管理 VPN 用户](#使用辅助脚本管理-vpn-用户)
+* [查看 VPN 用户](#查看-vpn-用户)
+* [查看或更改 IPsec PSK](#查看或更改-ipsec-psk)
 * [手动管理 VPN 用户](#手动管理-vpn-用户)
 
-## 查看或更改 IPsec PSK
+## 使用辅助脚本管理 VPN 用户
 
-IPsec PSK（预共享密钥）保存在文件 `/etc/ipsec.secrets`。所有的 VPN 用户将共享同一个 IPsec PSK。该文件的格式如下：
+*其他语言版本: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [简体中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户)。*
+
+你可以使用辅助脚本 [添加](../extras/add_vpn_user.sh), [删除](../extras/del_vpn_user.sh) 或者 [更新所有的](../extras/update_vpn_users.sh) VPN 用户。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。对于 IKEv2 模式，请另外参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
+
+**注：** 将下面的命令的参数换成你自己的值。VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
+
+### 添加或更改一个 VPN 用户
+
+添加一个新 VPN 用户，或者为一个已有的 VPN 用户更改密码。
+
+运行脚本并按提示操作：
 
 ```bash
-%any  %any  : PSK "你的IPsec预共享密钥"
+sudo addvpnuser.sh
 ```
 
-如果要更换一个新的 PSK，可以编辑此文件。**不要**在值中使用这些字符：`\ " '`
+<details>
+<summary>
+错误："sudo: addvpnuser.sh: command not found".
+</summary>
 
-完成后必须重启服务：
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载辅助脚本：
 
 ```bash
-service ipsec restart
-service xl2tpd restart
+wget -nv -O /opt/src/addvpnuser.sh https://bit.ly/addvpnuser
+chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
+```
+
+然后按照说明运行脚本。
+</details>
+
+另外，你也可以在添加参数的情况下运行脚本：
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+sudo addvpnuser.sh '要添加的用户名' '密码'
+# 或者
+sudo addvpnuser.sh '要更新的用户名' '新密码'
+```
+
+### 删除一个 VPN 用户
+
+删除指定的 VPN 用户。
+
+运行脚本并按提示操作：
+
+```bash
+sudo delvpnuser.sh
+```
+
+<details>
+<summary>
+错误："sudo: delvpnuser.sh: command not found".
+</summary>
+
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载辅助脚本：
+
+```bash
+wget -nv -O /opt/src/delvpnuser.sh https://bit.ly/delvpnuser
+chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
+```
+
+然后按照说明运行脚本。
+</details>
+
+另外，你也可以在添加参数的情况下运行脚本：
+
+```bash
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+sudo delvpnuser.sh '要删除的用户名'
+```
+
+### 更新所有的 VPN 用户
+
+移除所有的 VPN 用户并替换为你指定的列表中的用户。
+
+首先下载脚本：
+
+```bash
+wget -nv -O updatevpnusers.sh https://bit.ly/updatevpnusers
+```
+
+要使用这个脚本，从以下选项中选择一个：
+
+**重要：** 这个脚本会将你当前**所有的** VPN 用户移除并替换为你指定的列表中的用户。如果你需要保留已有的 VPN 用户，则必须将它们包含在下面的变量中。
+
+**选项 1:** 编辑脚本并输入 VPN 用户信息：
+
+```bash
+nano -w updatevpnusers.sh
+[替换为你自己的值： YOUR_USERNAMES 和 YOUR_PASSWORDS]
+sudo bash updatevpnusers.sh
+```
+
+**选项 2:** 将 VPN 用户信息定义为环境变量：
+
+```bash
+# VPN用户名和密码列表，用空格分隔
+# 所有变量值必须用 '单引号' 括起来
+# *不要* 在值中使用这些字符：  \ " '
+sudo \
+VPN_USERS='用户名1 用户名2 ...' \
+VPN_PASSWORDS='密码1 密码2 ...' \
+bash updatevpnusers.sh
 ```
 
 ## 查看 VPN 用户
@@ -40,83 +133,21 @@ service xl2tpd restart
 
 对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
 
-## 使用辅助脚本管理 VPN 用户
+## 查看或更改 IPsec PSK
 
-你可以使用这些脚本来更方便地管理 VPN 用户：[add_vpn_user.sh](../extras/add_vpn_user.sh), [del_vpn_user.sh](../extras/del_vpn_user.sh) 和 [update_vpn_users.sh](../extras/update_vpn_users.sh)。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。将下面的命令的参数换成你自己的值。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
-
-**注：** VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
-
-### 添加或更改一个 VPN 用户
-
-添加一个新 VPN 用户，或者为一个已有的 VPN 用户更改密码。
+IPsec PSK（预共享密钥）保存在文件 `/etc/ipsec.secrets`。所有的 VPN 用户将共享同一个 IPsec PSK。该文件的格式如下：
 
 ```bash
-# 下载脚本
-wget -nv -O add_vpn_user.sh https://bit.ly/addvpnuser
-# 运行脚本并按提示操作
-sudo bash add_vpn_user.sh
+%any  %any  : PSK "你的IPsec预共享密钥"
 ```
 
-另外，你也可以在添加参数的情况下运行脚本：
+如果要更换一个新的 PSK，可以编辑此文件。**不要**在值中使用这些字符：`\ " '`
+
+完成后必须重启服务：
 
 ```bash
-# 所有变量值必须用 '单引号' 括起来
-# *不要* 在值中使用这些字符：  \ " '
-sudo bash add_vpn_user.sh '要添加的用户名' '密码'
-# 或者
-sudo bash add_vpn_user.sh '要更新的用户名' '新密码'
-```
-
-### 删除一个 VPN 用户
-
-删除指定的 VPN 用户。
-
-```bash
-# 下载脚本
-wget -nv -O del_vpn_user.sh https://bit.ly/delvpnuser
-# 运行脚本并按提示操作
-sudo bash del_vpn_user.sh
-```
-
-另外，你也可以在添加参数的情况下运行脚本：
-
-```bash
-# 所有变量值必须用 '单引号' 括起来
-# *不要* 在值中使用这些字符：  \ " '
-sudo bash del_vpn_user.sh '要删除的用户名'
-```
-
-### 更新所有的 VPN 用户
-
-移除所有的 VPN 用户并替换为你指定的列表中的用户。
-
-```bash
-# 下载脚本
-wget -nv -O update_vpn_users.sh https://bit.ly/updatevpnusers
-```
-
-要使用这个脚本，从以下选项中选择一个：
-
-**重要：** 这个脚本会将你当前**所有的** VPN 用户移除并替换为你指定的列表中的用户。如果你需要保留已有的 VPN 用户，则必须将它们包含在下面的变量中。
-
-**选项 1:** 编辑脚本并输入 VPN 用户信息：
-
-```bash
-nano -w update_vpn_users.sh
-[替换为你自己的值： YOUR_USERNAMES 和 YOUR_PASSWORDS]
-sudo bash update_vpn_users.sh
-```
-
-**选项 2:** 将 VPN 用户信息定义为环境变量：
-
-```bash
-# VPN用户名和密码列表，用空格分隔
-# 所有变量值必须用 '单引号' 括起来
-# *不要* 在值中使用这些字符：  \ " '
-sudo \
-VPN_USERS='用户名1 用户名2 ...' \
-VPN_PASSWORDS='密码1 密码2 ...' \
-bash update_vpn_users.sh
+service ipsec restart
+service xl2tpd restart
 ```
 
 ## 手动管理 VPN 用户

@@ -43,6 +43,11 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+check_dns_name() {
+  FQDN_REGEX='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
+}
+
 check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo sh $0'"
@@ -79,6 +84,9 @@ check_os() {
     grep -qi stream "$rh_file" && os_ver=8s
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
+    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
+      exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
@@ -177,6 +185,22 @@ check_dns() {
   fi
 }
 
+check_server_dns() {
+  if [ -n "$VPN_DNS_NAME" ] && ! check_dns_name "$VPN_DNS_NAME"; then
+      exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+  fi
+}
+
+check_client_name() {
+  if [ -n "$VPN_CLIENT_NAME" ]; then
+    name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
+    if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
+    fi
+  fi
+}
+
 check_iptables() {
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
     if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
@@ -250,6 +274,8 @@ run_setup() {
       VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
       VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+      VPN_DNS_NAME="$VPN_DNS_NAME" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
+      VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
       /bin/bash "$tmpdir/vpn.sh" || status=1
     else
       status=1
@@ -270,6 +296,8 @@ vpnsetup() {
   check_iface
   check_creds
   check_dns
+  check_server_dns
+  check_client_name
   check_iptables
   install_pkgs
   get_setup_url

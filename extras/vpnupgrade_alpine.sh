@@ -59,7 +59,7 @@ check_os() {
 check_libreswan() {
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
-  if ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+  if ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
 cat 1>&2 <<'EOF'
 Error: This script requires Libreswan already installed.
        See: https://github.com/hwdsl2/setup-ipsec-vpn
@@ -170,6 +170,7 @@ get_libreswan() {
 install_libreswan() {
   bigecho "Compiling and installing Libreswan, please wait..."
   cd "libreswan-$SWAN_VER" || exit 1
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   service ipsec stop >/dev/null 2>&1
   sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h
 cat > Makefile.inc.local <<'EOF'
@@ -255,6 +256,7 @@ update_config() {
 restart_ipsec() {
   bigecho "Restarting IPsec service..."
   mkdir -p /run/pluto
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   service ipsec restart >/dev/null 2>&1
 }
 

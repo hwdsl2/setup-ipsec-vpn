@@ -26,6 +26,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 - iOS (iPhone/iPad)
 - Android 4 和更新版本（使用 strongSwan VPN 客户端）
 - Linux
+- Mikrotik RouterOS
 
 在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
 
@@ -65,25 +66,25 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
 </summary>
 
-在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)，它将被包含在生成的服务器证书中。示例如下：
+在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 ```
 
-类似地，你可以指定第一个 IKEv2 客户端的名称。这是可选的。如果未指定，则使用默认值 `vpnclient`。
+类似地，你可以指定第一个 IKEv2 客户端的名称。如果未指定，则使用默认值 `vpnclient`。
 
 ```bash
 sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 ```
 
-在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。在使用自动模式安装 IKEv2 时，你可以指定另外的 DNS 服务器。这是可选的。示例如下：
+在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。你可以为 IKEv2 指定另外的 DNS 服务器。示例如下：
 
 ```bash
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。示例如下：
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。示例如下：
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
@@ -121,13 +122,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
-**注：** 如果要添加或者导出 IKEv2 客户端，只需重新运行[辅助脚本](#使用辅助脚本配置-ikev2)。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
+**注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
 
 * [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
 * [Linux](#linux)
+* [Mikrotik RouterOS](#routeros)
 
 ### Windows 7, 8, 10 和 11
 
@@ -235,7 +237,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备（任何 App 目录），然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后单击它并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保 "IKEv2 VPN" 显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
@@ -255,7 +257,7 @@ To customize IKEv2 or client options, run this script without arguments.
 首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
-1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备，然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
+1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备（任何 App 目录），然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
 1. 将文件放在一个你的安全的托管网站上，然后在 Mobile Safari 中下载并导入它们。
 
 在完成之后，检查并确保新的客户端证书和 `IKEv2 VPN CA` 都显示在设置 -> 通用 -> VPN 与设备管理（或者描述文件）中。
@@ -406,6 +408,63 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
+### RouterOS
+
+**注：** 这些步骤由 [@Unix-User](https://github.com/Unix-User) 提供。
+
+1. 将生成的 `.p12` 文件安全地传送到你的计算机。
+
+   <details>
+   <summary>
+   单击查看屏幕录影。
+   </summary>
+
+   ![routeros get certificate](images/routeros-get-cert.gif)
+   </details>
+
+2. 在 WinBox 中，转到 System > certificates > import. 将 `.p12` 证书文件导入两次（是的，导入同一个文件两次）。检查你的 certificates panel。你应该看到 2 个文件，其中标注 KT 的是密钥。
+
+   <details>
+   <summary>
+   单击查看屏幕录影。
+   </summary>
+
+   ![routeros import certificate](images/routeros-import-cert.gif)
+   </details>
+
+3. 在 terminal 中运行以下命令。将以下内容替换为你自己的值。
+`YOUR_VPN_SERVER_IP_OR_DNS_NAME` 是你的 VPN 服务器 IP 或域名。
+`IMPORTED_CERTIFICATE` 是上面第 2 步中的证书名称，例如 `vpnclient.p12_0`
+（标记为 KT 的行 - Priv. Key Trusted - 如果未标记为 KT，请再次导入证书）。
+`THESE_ADDRESSES_GO_THROUGH_VPN` 是你想要通过 VPN 浏览因特网的本地网络地址。
+假设 RouterOS 后面的本地网络是 `192.168.0.0/24`，你可以使用 `192.168.0.0/24`
+来指定整个网络，或者使用 `192.168.0.10` 来指定仅用于一个设备，依此类推。
+
+   ```bash
+   /ip firewall address-list
+   add address=THESE_ADDRESSES_GO_THROUGH_VPN list=local
+   /ip ipsec mode-config
+   add name=ike2-rw responder=no src-address-list=local
+   /ip ipsec policy group
+   add name=ike2-rw
+   /ip ipsec profile
+   add name=ike2-rw
+   /ip ipsec peer
+   add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   /ip ipsec proposal
+   add name=ike2-rw pfs-group=none
+   /ip ipsec identity
+   add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE generate-policy=port-strict mode-config=ike2-rw \
+       peer=ike2-rw-client policy-template-group=ike2-rw
+   /ip ipsec policy
+   add group=ike2-rw proposal=ike2-rw template=yes
+   ```
+4. 更多信息请参见 [#1112](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1112#issuecomment-1059628623)。
+
+> 已在以下系统测试   
+> mar/02/2022 12:52:57 by RouterOS 6.48   
+> RouterBOARD 941-2nD
+
 ## 管理客户端证书
 
 * [列出已有的客户端](#列出已有的客户端)
@@ -418,7 +477,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
-```
+```bash
 sudo ikev2.sh --listclients
 ```
 
@@ -426,7 +485,7 @@ sudo ikev2.sh --listclients
 
 如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本配置-ikev2)。要自定义客户端证书选项，可以在不添加参数的情况下运行脚本。
 
-```
+```bash
 sudo ikev2.sh --addclient [client name]
 ```
 
@@ -436,7 +495,7 @@ sudo ikev2.sh --addclient [client name]
 
 在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，可以运行：
 
-```
+```bash
 sudo ikev2.sh --exportclient [client name]
 ```
 
@@ -484,7 +543,7 @@ sudo ikev2.sh --exportclient [client name]
 
 在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。或者你也可以运行：
 
-```
+```bash
 sudo ikev2.sh --revokeclient [client name]
 ```
 
@@ -604,7 +663,7 @@ sudo ikev2.sh --revokeclient [client name]
 
    此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
 
-1. 如果更改 MTU 无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 小节中的解决方案。
+1. 如果更改 MTU 大小无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
 
 1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
 
@@ -881,7 +940,13 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 
 ## 移除 IKEv2
 
-如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），请重新运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并选择 "Remove IKEv2" 选项。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），请重新运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并选择适当的选项。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+
+```bash
+sudo ikev2.sh --removeikev2
+```
+
+在移除 IKEv2 之后，如果你想要重新配置 IKEv2，参见 [这一小节](#使用辅助脚本配置-ikev2)。
 
 <details>
 <summary>

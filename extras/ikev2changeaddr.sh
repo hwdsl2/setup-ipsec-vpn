@@ -90,7 +90,7 @@ EOF
 check_libreswan() {
   ipsec_ver=$(ipsec --version 2>/dev/null)
   if ( ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf && ! grep -qs "hwdsl2" /opt/src/run.sh ) \
-    || ! printf '%s' "$ipsec_ver" | grep -q "Libreswan"; then
+    || ! printf '%s' "$ipsec_ver" | grep -qi 'libreswan'; then
 cat 1>&2 <<'EOF'
 Error: This script can only be used with an IPsec server created using:
        https://github.com/hwdsl2/setup-ipsec-vpn
@@ -218,8 +218,9 @@ New server address:     $server_addr
 
 *IMPORTANT*
 After running this script, you must manually update the server address
-on any existing IKEv2 client devices. For iOS clients, you'll need to
-export and re-import client configuration using the IKEv2 helper script.
+(and remote ID, if applicable) on any existing IKEv2 client devices.
+For iOS clients, you'll need to export and re-import client configuration
+using the IKEv2 helper script.
 
 EOF
   printf "Do you want to continue? [Y/n] "
