@@ -4,7 +4,7 @@ Link to license summary: https://creativecommons.org/licenses/by-sa/3.0/
 Copyright (C) 2014-2022 [Lin Song](https://github.com/hwdsl2)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
-See the [aws/](aws/) and [azure/](azure/) subfolders for their respective authors.
+See the [azure/](azure/) subfolder for its authors.
 
 The following four files (only) are licensed under the GPL:   
 [clients.md](docs/clients.md), [clients-zh.md](docs/clients-zh.md), [clients-xauth.md](docs/clients-xauth.md) and [clients-xauth-zh.md](docs/clients-xauth-zh.md)

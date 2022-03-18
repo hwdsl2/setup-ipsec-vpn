@@ -81,9 +81,9 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 - Amazon Linux 2
 - Alpine Linux 3.15 或者 3.14
 
-这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) 和 [OVH](https://www.ovhcloud.com/en/vps/)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户可以使用 [CloudFormation](aws/README-zh.md) 或者 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署。
+这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) 和 [OVH](https://www.ovhcloud.com/en/vps/)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户也可以使用 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 部署。
 
-[![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) [![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) [![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) [![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
+[![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
 [**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
