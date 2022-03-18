@@ -133,9 +133,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 和 11
 
-#### **自动导入配置**
+#### 自动导入配置
 
-**<u>Windows 8, 10 和 11</u>** 用户可以自动导入 IKEv2 配置：
+<ins>**Windows 8, 10 和 11**</ins> 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 1. 右键单击 [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
@@ -144,9 +144,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
-#### **手动导入配置**
+#### 手动导入配置
 
-或者，**<u>Windows 7, 8, 10 和 11</u>** 用户可以手动导入 IKEv2 配置：
+或者，<ins>**Windows 7, 8, 10 和 11**</ins> 用户可以手动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到证书存储。
 
@@ -163,7 +163,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
 
-   对于 **Windows 8, 10 和 11**，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
+   对于 <ins>**Windows 8, 10 和 11**</ins>，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -172,7 +172,7 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
+   <ins>**Windows 7**</ins> 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
 
    **注：** 你输入的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。例如，如果你在配置 IKEv2 时指定了服务器的域名，则必须在 **Internet地址** 字段中输入该域名。
 
@@ -190,28 +190,33 @@ To customize IKEv2 or client options, run this script without arguments.
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
-#### **在Windows中删除VPN连接**
+#### 删除 IKEv2 VPN 连接
 
-当前，在 **<u>Windows 8, 10 和 11</u>** 中删除VPN链接需要通过手动的方式进行。通过以下的步骤，可以删除先前添加的VPN连接，并将电脑恢复到配置VPN之前的设置。
+<details>
+<summary>
+了解如何删除 IKEv2 VPN 连接。单击查看详情。
+</summary>
 
-1. 在系统设置 - 网络 - VPN中删除已经添加的VPN连接。
+通过以下的步骤，可以删除添加的 VPN 连接，并将计算机恢复到导入 IKEv2 配置之前的状态（可选）。
 
-1. （可选）删除在Windows中添加的证书。
+1. 在系统设置 - 网络 - VPN 中删除添加的 VPN 连接。Windows 7 用户可以在网络和共享中心 - 更改适配器设置中删除 VPN 连接。
 
-   1. 按Win+R或在开始菜单中搜索 `mmc` 打开 *Microsoft Management Console*。
+1. （可选）删除 IKEv2 证书。
 
-   1. 在 `File - Add/Remove Snap-In` 的窗口中，选择 `Certificates` 并在弹出的窗口中选择 `Computer account -> Local Computer`。点击 `Finish -> OK` 以保存设置。
+   1. 按 Win+R 或在开始菜单中搜索 `mmc` 打开 *Microsoft Management Console*。
 
-   1. 在 `Certificates - Personal - Certificates` 中删除配置IKEv2连接时添加的证书。如果是按照前文的说明进行配置，这里应是颁给 `vpnclient`，由 `IKEv2 VPN CA` 颁发的证书。
+   1. 在 `File - Add/Remove Snap-In` 的窗口中，选择添加 `Certificates` 并在弹出的窗口中选择 `Computer account -> Local Computer`。点击 `Finish -> OK` 以保存设置。
 
-   1. 在 `Certificates - Trusted Root Certification Authorities - Certificates` 中删除配置IKEv2连接时添加的证书。如果是按照前文的说明进行配置，这里应是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，`Certificates - Personal - Certificates` 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
+   1. 在 `Certificates - Personal - Certificates` 中删除 IKEv2 客户端证书。该证书的名称与你指定的 IKEv2 客户端名称一致，默认为 `vpnclient`，该证书由 `IKEv2 VPN CA` 颁发。
 
-1. （可选，仅限手动创建了VPN连接的用户）还原注册表配置。注意，在编辑注册表前，应始终备份。
+   1. 在 `Certificates - Trusted Root Certification Authorities - Certificates` 中删除 IKEv2 VPN CA 证书。该证书是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，`Certificates - Personal - Certificates` 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
 
-   1. 按Win+R或在开始菜单中搜索 `regedit` 打开 *Registry Editor*。
+1. （可选，适用于手动创建了 VPN 连接的用户）还原注册表配置。注意，在编辑注册表前应备份。
 
-   1. 在 `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Rasman\Parameters` 中删除名为 `NegotiateDH2048_AES256` 的项目。
+   1. 按 Win+R 或在开始菜单中搜索 `regedit` 打开 *Registry Editor*。
 
+   1. 在 `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Rasman\Parameters` 中删除名为 `NegotiateDH2048_AES256` 的项目，如果它存在。
+</details>
 
 ### OS X (macOS)
 

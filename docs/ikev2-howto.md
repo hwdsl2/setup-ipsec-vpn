@@ -133,7 +133,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ### Windows 7, 8, 10 and 11
 
-**Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
+#### Auto-import configuration
+
+<ins>**Windows 8, 10 and 11**</ins> users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
 1. Right-click on [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
@@ -142,7 +144,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
-Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
+#### Manually import configuration
+
+Alternatively, <ins>**Windows 7, 8, 10 and 11**</ins> users can manually import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the certificate store.
 
@@ -159,7 +163,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
 1. On the Windows computer, add a new IKEv2 VPN connection.
 
-   For **Windows 8, 10 and 11**, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
+   For <ins>**Windows 8, 10 and 11**</ins>, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -168,7 +172,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
+   <ins>**Windows 7**</ins> does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
 
    **Note:** The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
@@ -185,6 +189,34 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
+#### Remove the IKEv2 VPN connection
+
+<details>
+<summary>
+Learn how to remove the IKEv2 VPN connection. Click for details.
+</summary>
+
+Using the following steps, you can remove the VPN connection and optionally restore the computer to the status before IKEv2 configuration import.
+
+1. Remove the added VPN connection in Windows Settings - Network - VPN. Windows 7 users can remove the VPN connection in Network and Sharing Center - Change adapter settings.
+
+1. (Optional) Remove IKEv2 certificates.
+
+   1. Press Win+R, or search for `mmc` in the Start Menu. Open *Microsoft Management Console*.
+
+   1. Open `File - Add/Remove Snap-In`. Select to add `Certificates` and in the window that opens, select `Computer account -> Local Computer`. Click on `Finish -> OK` to save the settings.
+
+   1. Go to `Certificates - Personal - Certificates` and delete the IKEv2 client certificate. The name of the certificate is the same as the IKEv2 client name you specified (default: `vpnclient`). The certificate was issued by `IKEv2 VPN CA`.
+
+   1. Go to `Certificates - Trusted Root Certification Authorities - Certificates` and delete the IKEv2 VPN CA certificate. The certificate was issued to `IKEv2 VPN CA` by `IKEv2 VPN CA`. Before deleting, make sure that there are no other certificate(s) issued by `IKEv2 VPN CA` in `Certificates - Personal - Certificates`.
+
+1. (Optional. For users who manually created the VPN connection) Restore registry settings. Note that you should backup the registry before editing.
+
+   1. Press Win+R, or search for `regedit` in the Start Menu. Open *Registry Editor*.
+
+   1. Go to `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Rasman\Parameters` and delete the item with name `NegotiateDH2048_AES256`, if it exists.
+</details>
 
 ### OS X (macOS)
 
