@@ -238,16 +238,16 @@ get_helper_scripts() {
   add_url="$base_url/add_vpn_user.sh"
   del_url="$base_url/del_vpn_user.sh"
   cd /opt/src || exit 1
+  printf '%s' "+ "
   for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
     [ "$sc" = "ikev2.sh" ] && dl_url="$ikev2_url"
     [ "$sc" = "addvpnuser.sh" ] && dl_url="$add_url"
     [ "$sc" = "delvpnuser.sh" ] && dl_url="$del_url"
-    (
-      set -x
-      wget -t 3 -T 30 -q -O "$sc" "$dl_url"
-    ) || /bin/rm -f "$sc"
+    printf '%s' "$sc "
+    wget -t 3 -T 30 -q -O "$sc" "$dl_url" || /bin/rm -f "$sc"
     [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
   done
+  echo
 }
 
 get_swan_ver() {

@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   3 Mar 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   19 Mar 2022
 
 EOF
 }
@@ -311,6 +311,7 @@ set_dns_servers() {
 show_welcome() {
 cat <<'EOF'
 Welcome! Use this script to set up IKEv2 on your VPN server.
+
 I need to ask you a few questions before starting setup.
 You can use the default options and just press enter if you are OK with them.
 
@@ -1220,17 +1221,13 @@ cat <<EOF
 $p12_password
 Write this down, you'll need it for import!
 EOF
-  else
-cat <<'EOF'
-
-Note: No password is required when importing
-client configuration.
-EOF
   fi
 cat <<'EOF'
 
 Next steps: Configure IKEv2 VPN clients. See:
 https://git.io/ikev2clients
+
+Send feedback: https://bit.ly/vpn-feedback
 
 ================================================
 
