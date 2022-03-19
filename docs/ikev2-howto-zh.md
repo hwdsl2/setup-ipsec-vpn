@@ -122,7 +122,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
-**注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。IKEv2 客户端配置文件可以在导入后安全删除。
+**注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。客户端配置文件可以在导入后安全删除。
 
 * [Windows 7, 8, 10 和 11](#windows-7-8-10-和-11)
 * [OS X (macOS)](#os-x-macos)
@@ -135,7 +135,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 #### 自动导入配置
 
-<ins>**Windows 8, 10 和 11**</ins> 用户可以自动导入 IKEv2 配置：
+**Windows 8, 10 和 11** 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 1. 右键单击 [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
@@ -146,7 +146,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 #### 手动导入配置
 
-或者，<ins>**Windows 7, 8, 10 和 11**</ins> 用户可以手动导入 IKEv2 配置：
+或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到证书存储。
 
@@ -163,7 +163,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
 
-   对于 <ins>**Windows 8, 10 和 11**</ins>，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
+   对于 **Windows 8, 10 和 11**，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -172,7 +172,7 @@ To customize IKEv2 or client options, run this script without arguments.
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   <ins>**Windows 7**</ins> 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
+   **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
 
    **注：** 你输入的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。例如，如果你在配置 IKEv2 时指定了服务器的域名，则必须在 **Internet地址** 字段中输入该域名。
 
@@ -190,11 +190,9 @@ To customize IKEv2 or client options, run this script without arguments.
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
-#### 删除 IKEv2 VPN 连接
-
 <details>
 <summary>
-了解如何删除 IKEv2 VPN 连接。单击查看详情。
+删除 IKEv2 VPN 连接
 </summary>
 
 通过以下的步骤，可以删除添加的 VPN 连接，并将计算机恢复到导入 IKEv2 配置之前的状态（可选）。
@@ -264,6 +262,14 @@ To customize IKEv2 or client options, run this script without arguments.
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
+<details>
+<summary>
+删除 IKEv2 VPN 连接
+</summary>
+
+要删除 IKEv2 VPN 连接，打开系统偏好设置 -> 描述文件并移除你添加的 IKEv2 VPN 描述文件。
+</details>
+
 ### iOS
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
@@ -313,6 +319,14 @@ To customize IKEv2 or client options, run this script without arguments.
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+
+<details>
+<summary>
+删除 IKEv2 VPN 连接
+</summary>
+
+要删除 IKEv2 VPN 连接，打开设置 -> 通用 -> VPN 与设备管理（或者描述文件）并移除你添加的 IKEv2 VPN 描述文件。
+</details>
 
 ### Android
 

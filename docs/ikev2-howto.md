@@ -122,7 +122,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** To add or export IKEv2 client(s), run `sudo ikev2.sh`. Use `-h` to show usage. IKEv2 client config files can be safely deleted after import.
+**Note:** To add or export IKEv2 clients, run `sudo ikev2.sh`. Use `-h` to show usage. Client config files can be safely deleted after import.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -135,7 +135,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 #### Auto-import configuration
 
-<ins>**Windows 8, 10 and 11**</ins> users can automatically import IKEv2 configuration:
+**Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
 1. Right-click on [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
@@ -146,7 +146,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 #### Manually import configuration
 
-Alternatively, <ins>**Windows 7, 8, 10 and 11**</ins> users can manually import IKEv2 configuration:
+Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the certificate store.
 
@@ -163,7 +163,7 @@ Alternatively, <ins>**Windows 7, 8, 10 and 11**</ins> users can manually import 
 
 1. On the Windows computer, add a new IKEv2 VPN connection.
 
-   For <ins>**Windows 8, 10 and 11**</ins>, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
+   For **Windows 8, 10 and 11**, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -172,7 +172,7 @@ Alternatively, <ins>**Windows 7, 8, 10 and 11**</ins> users can manually import 
    powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
    ```
 
-   <ins>**Windows 7**</ins> does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
+   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
 
    **Note:** The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
@@ -190,11 +190,9 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
-#### Remove the IKEv2 VPN connection
-
 <details>
 <summary>
-Learn how to remove the IKEv2 VPN connection. Click for details.
+Remove the IKEv2 VPN connection
 </summary>
 
 Using the following steps, you can remove the VPN connection and optionally restore the computer to the status before IKEv2 configuration import.
@@ -264,6 +262,14 @@ Once successfully connected, you can verify that your traffic is being routed pr
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
+<details>
+<summary>
+Remove the IKEv2 VPN connection
+</summary>
+
+To remove the IKEv2 VPN connection, open System Preferences -> Profiles and remove the IKEv2 VPN profile you added.
+</details>
+
 ### iOS
 
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
@@ -313,6 +319,14 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
+<details>
+<summary>
+Remove the IKEv2 VPN connection
+</summary>
+
+To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Management or Profile(s) and remove the IKEv2 VPN profile you added.
+</details>
 
 ### Android
 
