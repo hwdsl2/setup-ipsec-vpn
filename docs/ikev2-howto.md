@@ -122,7 +122,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 *Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
-**Note:** To add or export IKEv2 client(s), run `sudo ikev2.sh`. Use `-h` to show usage information. IKEv2 client config files can be safely deleted after import.
+**Note:** To add or export IKEv2 client(s), run `sudo ikev2.sh`. Use `-h` to show usage. IKEv2 client config files can be safely deleted after import.
 
 * [Windows 7, 8, 10 and 11](#windows-7-8-10-and-11)
 * [OS X (macOS)](#os-x-macos)
@@ -509,7 +509,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 
 ### List existing clients
 
-If you want to list the names of existing IKEv2 clients, run the [helper script](#set-up-ikev2-using-helper-script) with the `--listclients` option. Use option `-h` to show usage information.
+To list the names of existing IKEv2 clients, run the helper script with the `--listclients` option. Use option `-h` to show usage.
 
 ```bash
 sudo ikev2.sh --listclients
@@ -517,7 +517,7 @@ sudo ikev2.sh --listclients
 
 ### Add a client certificate
 
-To generate certificates for additional IKEv2 clients, just run the [helper script](#set-up-ikev2-using-helper-script) again. To customize client certificate options, run the script without arguments.
+To add certificates for additional IKEv2 clients, run the helper script with the `--addclient` option. To customize client options, run the script without arguments.
 
 ```bash
 sudo ikev2.sh --addclient [client name]
@@ -527,7 +527,7 @@ Alternatively, you may manually add a client certificate. Refer to step 4 in [th
 
 ### Export configuration for an existing client
 
-By default, the IKEv2 [helper script](#set-up-ikev2-using-helper-script) exports client configuration after running. If later you want to export configuration for an existing client, you may use:
+By default, the IKEv2 helper script exports client configuration after running. If later you want to export an existing client, you may use:
 
 ```bash
 sudo ikev2.sh --exportclient [client name]
@@ -575,7 +575,7 @@ To delete a client certificate:
 
 ### Revoke a client certificate
 
-In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script again and select the appropriate option. Or you may run:
+In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script.
 
 ```bash
 sudo ikev2.sh --revokeclient [client name]
@@ -974,7 +974,7 @@ Before continuing, you **must** restart the IPsec service. The IKEv2 setup on th
 
 ## Remove IKEv2
 
-If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the [helper script](#set-up-ikev2-using-helper-script) again and select the appropriate option. **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
+If you want to remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes (if installed), run the helper script. **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
 
 ```bash
 sudo ikev2.sh --removeikev2

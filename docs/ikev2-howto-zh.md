@@ -507,7 +507,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 列出已有的客户端
 
-如果要列出已有的 IKEv2 客户端的名称，运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
+要列出已有的 IKEv2 客户端的名称，运行辅助脚本并添加 `--listclients` 选项。使用参数 `-h` 显示使用信息。
 
 ```bash
 sudo ikev2.sh --listclients
@@ -515,7 +515,7 @@ sudo ikev2.sh --listclients
 
 ### 添加客户端证书
 
-如果要为更多的 IKEv2 客户端生成证书，只需重新运行 [辅助脚本](#使用辅助脚本配置-ikev2)。要自定义客户端证书选项，可以在不添加参数的情况下运行脚本。
+要为更多的 IKEv2 客户端添加证书，运行辅助脚本并添加 `--addclient` 选项。要自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```bash
 sudo ikev2.sh --addclient [client name]
@@ -525,7 +525,7 @@ sudo ikev2.sh --addclient [client name]
 
 ### 导出已有的客户端的配置
 
-在默认情况下，IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 在运行后会导出客户端配置。如果之后你想要为一个已有的客户端导出配置，可以运行：
+在默认情况下，IKEv2 辅助脚本在运行后会导出客户端配置。如果之后你想要导出一个已有的客户端，可以运行：
 
 ```bash
 sudo ikev2.sh --exportclient [client name]
@@ -573,7 +573,7 @@ sudo ikev2.sh --exportclient [client name]
 
 ### 吊销客户端证书
 
-在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，重新运行辅助脚本并选择适当的选项。或者你也可以运行：
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，可以运行辅助脚本。
 
 ```bash
 sudo ikev2.sh --revokeclient [client name]
@@ -972,7 +972,7 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 
 ## 移除 IKEv2
 
-如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），请重新运行 [辅助脚本](#使用辅助脚本配置-ikev2) 并选择适当的选项。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+如果你想要从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式（如果已安装），可以运行辅助脚本。**警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
 
 ```bash
 sudo ikev2.sh --removeikev2
