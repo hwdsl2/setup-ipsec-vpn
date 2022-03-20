@@ -150,7 +150,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   19 Mar 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   20 Mar 2022
 
 EOF
 }
@@ -383,7 +383,7 @@ list_existing_clients() {
 }
 
 enter_server_address() {
-  echo "Do you want IKEv2 VPN clients to connect to this server using a DNS name,"
+  echo "Do you want IKEv2 clients to connect to this server using a DNS name,"
   printf "e.g. vpn.example.com, instead of its IP address? [y/N] "
   read -r response
   case $response in
@@ -418,7 +418,7 @@ enter_server_address() {
 
 enter_client_name() {
   echo
-  echo "Provide a name for the IKEv2 VPN client."
+  echo "Provide a name for the IKEv2 client."
   echo "Use one word only, no special characters except '-' and '_'."
   if [ "$1" = "with_defaults" ]; then
     read -rp "Client name: [vpnclient] " client_name
@@ -1039,7 +1039,7 @@ create_config_readme() {
     && [ "$use_defaults" = "1" ] && [ ! -t 1 ] && [ ! -f "$readme_file" ]; then
 cat > "$readme_file" <<'EOF'
 These IKEv2 client config files were created during IPsec VPN setup.
-To configure IKEv2 VPN clients, see: https://git.io/ikev2clients
+To configure IKEv2 clients, see: https://git.io/ikev2clients
 EOF
     if [ "$export_to_home_dir" = "1" ]; then
       chown "$SUDO_USER:$SUDO_USER" "$readme_file"
@@ -1164,7 +1164,7 @@ cat <<EOF
 
 ================================================
 
-New IKEv2 VPN client "$client_name" added!
+New IKEv2 client "$client_name" added!
 
 EOF
   print_server_client_info
@@ -1176,7 +1176,7 @@ cat <<EOF
 
 ================================================
 
-IKEv2 VPN client "$client_name" exported!
+IKEv2 client "$client_name" exported!
 
 EOF
   print_server_client_info
@@ -1224,10 +1224,9 @@ EOF
   fi
 cat <<'EOF'
 
-Next steps: Configure IKEv2 VPN clients. See:
-https://git.io/ikev2clients
-
-Send feedback: https://bit.ly/vpn-feedback
+Next steps: Configure IKEv2 clients. See:
+  https://git.io/ikev2clients
+Feedback: bit.ly/vpn-feedback
 
 ================================================
 
