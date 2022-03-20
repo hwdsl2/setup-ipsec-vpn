@@ -752,15 +752,17 @@ export_p12_file() {
     pem_file="$export_dir$client_name.temp.pem"
     openssl pkcs12 -in "$p12_file_enc" -passin "pass:$p12_password" -cacerts -nokeys -out "$ca_crt" || exit 1
     openssl pkcs12 -in "$p12_file_enc" -passin "pass:$p12_password" -clcerts -nokeys -out "$client_crt" || exit 1
-    openssl pkcs12 -in "$p12_file_enc" -passin "pass:$p12_password" -passout "pass:$p12_password" -nocerts -out "$client_key" || exit 1
+    openssl pkcs12 -in "$p12_file_enc" -passin "pass:$p12_password" -passout "pass:$p12_password" \
+      -nocerts -out "$client_key" || exit 1
     cat "$client_key" "$client_crt" "$ca_crt" > "$pem_file"
+    /bin/rm -f "$client_key" "$client_crt" "$ca_crt"
     openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file_enc" \
       -legacy -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
     if [ "$use_config_password" = "0" ]; then
       openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
         -legacy -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
     fi
-    /bin/rm -f "$ca_crt" "$client_crt" "$client_key" "$pem_file"
+    /bin/rm -f "$pem_file"
   elif [ "$use_config_password" = "0" ]; then
     pk12util -W "" -d "$CERT_DB" -n "$client_name" -o "$p12_file" >/dev/null || exit 1
   fi
