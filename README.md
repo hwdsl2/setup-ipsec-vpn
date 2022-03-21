@@ -27,8 +27,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 ## Quick start
 
-First, prepare your Linux server\* with a fresh install of one of the following OS:   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux or Amazon Linux 2
+First, prepare your Linux server\* with a fresh install of Ubuntu, Debian or CentOS.
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -59,7 +58,7 @@ See the VPN script in action (terminal recording).
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other installation options and client setup, read the sections below.
 
-\* A dedicated server or virtual private server (VPS). OpenVZ VPS is not supported.
+\* A cloud server, virtual private server (VPS) or dedicated server. OpenVZ VPS is not supported.
 
 ## Features
 
@@ -72,7 +71,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Requirements
 
-A dedicated server or virtual private server (VPS), freshly installed with one of the following OS:
+A cloud server, virtual private server (VPS) or dedicated server, freshly installed with one of the following OS:
 
 - Ubuntu 20.04 or 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) or 9

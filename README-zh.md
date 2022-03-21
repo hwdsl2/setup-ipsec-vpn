@@ -27,8 +27,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器\* 上全新安装以下系统之一：   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux 或者 Amazon Linux 2
+首先，在你的 Linux 服务器\* 上全新安装 Ubuntu, Debian 或者 CentOS。
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -59,7 +58,7 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它安装选项以及客户端配置，请继续阅读以下部分。
 
-\* 一个专用服务器或者虚拟专用服务器 (VPS)。OpenVZ VPS 不受支持。
+\* 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器。OpenVZ VPS 不受支持。
 
 ## 功能特性
 
@@ -72,7 +71,7 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 
 ## 系统要求
 
-一个专用服务器或者虚拟专用服务器 (VPS)，全新安装以下操作系统之一：
+一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，全新安装以下操作系统之一：
 
 - Ubuntu 20.04 或者 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
