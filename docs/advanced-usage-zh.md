@@ -277,7 +277,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 
 如果你想要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
 
-**注：** 如果使用 Rocky Linux, AlmaLinux 或者 CentOS/RHEL 8 并且在安装 VPN 时 firewalld 正在运行，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
+**注：** 如果使用 Rocky Linux, AlmaLinux, Oracle Linux 8 或者 CentOS/RHEL 8 并且在安装 VPN 时 firewalld 正在运行，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
 
 ## 部署 Google BBR 拥塞控制
 

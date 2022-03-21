@@ -278,7 +278,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 
 If you want to modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
 
-**Note:** If using Rocky Linux, AlmaLinux or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
+**Note:** If using Rocky Linux, AlmaLinux, Oracle Linux 8 or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
 
 ## Deploy Google BBR congestion control
 

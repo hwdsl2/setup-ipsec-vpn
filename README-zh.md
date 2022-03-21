@@ -28,7 +28,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上全新安装以下系统之一：   
-Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 或者 Alpine Linux
+Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux 或者 Amazon Linux 2
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -76,7 +76,9 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 
 - Ubuntu 20.04 或者 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
-- CentOS 7, Rocky Linux 8 或者 AlmaLinux 8[\*\*](#centos-8-note)
+- CentOS 7 或者 CentOS Stream 8[\*\*](#centos-8-note)
+- Rocky Linux 8 或者 AlmaLinux 8
+- Oracle Linux 8 或者 7
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.15 或者 3.14
@@ -85,14 +87,14 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 
 [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
-[**&raquo; 我想建立并使用自己的 VPN ，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
+[**&raquo; 我想建立并使用自己的 VPN，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 <a name="debian-10-note"></a>
 \* Debian 11/10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
 <a name="centos-8-note"></a>
-\*\* 对 CentOS Linux 8 的支持 [已经结束](https://www.centos.org/centos-linux-eol/)。你可以另外使用比如 Rocky Linux 或者 AlmaLinux。
+\*\* 对 CentOS Linux 8 的支持 [已经结束](https://www.centos.org/centos-linux-eol/)。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
