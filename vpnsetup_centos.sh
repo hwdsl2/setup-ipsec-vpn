@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Script for automatic setup of an IPsec VPN server on CentOS/RHEL,
-# Rocky Linux and AlmaLinux
+# Script for automatic setup of an IPsec VPN server on CentOS/RHEL, Rocky Linux,
+# AlmaLinux and Oracle Linux
 # Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -71,6 +71,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -82,7 +83,11 @@ check_os() {
       exiterr "CentOS Linux 8 is EOL and not supported."
     fi
   else
-    exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
+cat 1>&2 <<'EOF'
+Error: This script only supports one of the following OS:
+       CentOS/RHEL, Rocky Linux, AlmaLinux or Oracle Linux
+EOF
+    exit 1
   fi
 }
 
@@ -197,8 +202,14 @@ install_vpn_pkgs_1() {
   rp2="$erp=*server-*optional*"
   rp3="$erp=*releases-optional*"
   rp4="$erp=[Pp]ower[Tt]ools"
+  if [ "$os_type" = "ol" ] && [ "$os_ver" = "8" ]; then
+    rp1="$erp=ol8_developer_EPEL"
+    rp4="$erp=ol8_codeready_builder"
+  fi
+  if [ "$os_type" = "ol" ] && [ "$os_ver" = "7" ]; then
+    rp3="$erp=ol7_optional_latest"
+  fi
   [ "$os_type" = "rhel" ] && rp4="$erp=codeready-builder-for-rhel-8-*"
-
   (
     set -x
     yum -y -q install nss-devel nspr-devel pkgconfig pam-devel \

@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Script to uninstall IPsec VPN on Ubuntu, Debian, CentOS/RHEL,
-# Rocky Linux, AlmaLinux, Amazon Linux 2 and Alpine Linux
+# Script to uninstall IPsec VPN
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -40,6 +39,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file" || grep -qs "release 8" "$rh_file"; then
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
@@ -64,8 +64,8 @@ check_os() {
       *)
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
-       Ubuntu, Debian, CentOS/RHEL 7/8, Rocky Linux, AlmaLinux,
-       Amazon Linux 2 or Alpine Linux
+       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
+       Oracle Linux, Amazon Linux 2 or Alpine Linux
 EOF
         exit 1
         ;;

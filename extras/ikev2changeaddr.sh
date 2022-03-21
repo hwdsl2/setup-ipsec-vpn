@@ -41,6 +41,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -70,8 +71,8 @@ check_os() {
       *)
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
-       Ubuntu, Debian, CentOS/RHEL 7/8, Rocky Linux, AlmaLinux,
-       Amazon Linux 2 or Alpine Linux
+       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
+       Oracle Linux, Amazon Linux 2 or Alpine Linux
 EOF
         exit 1
         ;;

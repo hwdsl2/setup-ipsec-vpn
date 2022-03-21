@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to update Libreswan on CentOS/RHEL, Rocky Linux and AlmaLinux
+# Script to update Libreswan on CentOS/RHEL, Rocky Linux, AlmaLinux and Oracle Linux
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -45,6 +45,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -56,7 +57,11 @@ check_os() {
       exiterr "CentOS Linux 8 is EOL and not supported."
     fi
   else
-    exiterr "This script only supports CentOS/RHEL 7/8, Rocky Linux and AlmaLinux."
+cat 1>&2 <<'EOF'
+Error: This script only supports one of the following OS:
+       CentOS/RHEL, Rocky Linux, AlmaLinux or Oracle Linux
+EOF
+    exit 1
   fi
 }
 
@@ -162,6 +167,12 @@ install_pkgs_2() {
   rp1="$erp=*server-*optional*"
   rp2="$erp=*releases-optional*"
   rp3="$erp=[Pp]ower[Tt]ools"
+  if [ "$os_type" = "ol" ] && [ "$os_ver" = "8" ]; then
+    rp3="$erp=ol8_codeready_builder"
+  fi
+  if [ "$os_type" = "ol" ] && [ "$os_ver" = "7" ]; then
+    rp2="$erp=ol7_optional_latest"
+  fi
   [ "$os_type" = "rhel" ] && rp3="$erp=codeready-builder-for-rhel-8-*"
   if [ "$os_ver" = "7" ]; then
     (

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script to update Libreswan on Ubuntu, Debian, CentOS/RHEL, Rocky Linux,
-# AlmaLinux, Amazon Linux 2 and Alpine Linux
+# AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -42,6 +42,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -74,8 +75,8 @@ check_os() {
       *)
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
-       Ubuntu, Debian, CentOS/RHEL 7/8, Rocky Linux, AlmaLinux,
-       Amazon Linux 2 or Alpine Linux
+       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
+       Oracle Linux, Amazon Linux 2 or Alpine Linux
 EOF
         exit 1
         ;;
@@ -135,7 +136,8 @@ install_pkgs() {
 get_setup_url() {
   base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
   sh_file="vpnupgrade_ubuntu.sh"
-  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
+  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] \
+    || [ "$os_type" = "alma" ] || [ "$os_type" = "ol" ]; then
     sh_file="vpnupgrade_centos.sh"
   elif [ "$os_type" = "amzn" ]; then
     sh_file="vpnupgrade_amzn.sh"

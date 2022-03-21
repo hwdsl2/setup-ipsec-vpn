@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# Quick start script to set up an IPsec VPN server on Ubuntu, Debian,
-# CentOS/RHEL, Rocky Linux, AlmaLinux, Amazon Linux 2 and Alpine Linux
+# Quick start script to set up an IPsec VPN server on Ubuntu, Debian, CentOS/RHEL,
+# Rocky Linux, AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
 # Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
@@ -77,6 +77,7 @@ check_os() {
   if grep -qs "Red Hat" "$rh_file"; then
     os_type=rhel
   fi
+  [ -f /etc/oracle-release ] && os_type=ol
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -109,8 +110,8 @@ check_os() {
       *)
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
-       Ubuntu, Debian, CentOS/RHEL 7/8, Rocky Linux, AlmaLinux,
-       Amazon Linux 2 or Alpine Linux
+       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
+       Oracle Linux, Amazon Linux 2 or Alpine Linux
 EOF
         exit 1
         ;;
@@ -254,7 +255,8 @@ install_pkgs() {
 get_setup_url() {
   base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
   sh_file="vpnsetup_ubuntu.sh"
-  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] || [ "$os_type" = "alma" ]; then
+  if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] \
+    || [ "$os_type" = "alma" ] || [ "$os_type" = "ol" ]; then
     sh_file="vpnsetup_centos.sh"
   elif [ "$os_type" = "amzn" ]; then
     sh_file="vpnsetup_amzn.sh"
