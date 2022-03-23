@@ -1,6 +1,6 @@
 # Configure IPsec/L2TP VPN Clients
 
-*Read this in other languages: [English](clients.md), [简体中文](clients-zh.md).*
+*Read this in other languages: [English](clients.md), [简体中文](clients-zh.md). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
 
 **Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -236,7 +236,7 @@ First check [here](https://github.com/nm-l2tp/NetworkManager-l2tp/wiki/Prebuilt-
 
 ## Troubleshooting
 
-*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除).*
+*Read this in other languages: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
 
 **See also:** [Check logs and VPN status](#check-logs-and-vpn-status), [IKEv2 troubleshooting](ikev2-howto.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 

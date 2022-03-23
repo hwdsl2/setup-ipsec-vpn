@@ -1,6 +1,6 @@
 # 配置 IPsec/L2TP VPN 客户端
 
-*其他语言版本: [English](clients.md), [简体中文](clients-zh.md)。*
+*其他语言版本: [English](clients.md), [简体中文](clients-zh.md)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
 
 **注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -237,7 +237,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 ## 故障排除
 
-*其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除)。*
+*其他语言版本: [English](clients.md#troubleshooting), [简体中文](clients-zh.md#故障排除)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
 
 **另见：** [检查日志及 VPN 状态](#检查日志及-vpn-状态)，[IKEv2 故障排除](ikev2-howto-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
