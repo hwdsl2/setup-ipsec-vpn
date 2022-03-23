@@ -155,7 +155,7 @@ sudo VPN_CLIENT_NAME='your_client_name' sh vpn.sh
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 ```
 
-默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。示例如下：
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh

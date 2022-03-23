@@ -84,7 +84,7 @@ By default, IKEv2 clients are set to use [Google Public DNS](https://developers.
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password. Example:
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
@@ -597,10 +597,10 @@ sudo ikev2.sh --revokeclient [client name]
 
 <details>
 <summary>
-Alternatively, you may manually revoke a client certificate. Click here for instructions.
+Alternatively, you can manually revoke a client certificate.
 </summary>
 
-Alternatively, you may manually revoke a client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
+Alternatively, you can manually revoke a client certificate. This can be done using `crlutil`. See example steps below, commands must be run as `root`.
 
 1. Check the database, and identify the nickname of the client certificate you want to revoke.
 
@@ -998,7 +998,7 @@ After removing IKEv2, if you want to set it up again, refer to [this section](#s
 
 <details>
 <summary>
-Alternatively, you can manually remove IKEv2. Click here for instructions.
+Alternatively, you can manually remove IKEv2.
 </summary>
 
 To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes, follow these steps. Commands must be run as `root`.

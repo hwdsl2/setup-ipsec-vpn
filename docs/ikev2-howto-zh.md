@@ -84,7 +84,7 @@ sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
 sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```
 
-默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。示例如下：
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。
 
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
@@ -595,7 +595,7 @@ sudo ikev2.sh --revokeclient [client name]
 
 <details>
 <summary>
-另外，你也可以手动吊销客户端证书。点这里查看步骤。
+另外，你也可以手动吊销客户端证书。
 </summary>
 
 另外，你也可以手动吊销客户端证书。这可以通过 `crlutil` 实现。下面举例说明，这些命令必须用 `root` 账户运行。
@@ -996,7 +996,7 @@ sudo ikev2.sh --removeikev2
 
 <details>
 <summary>
-另外，你也可以手动移除 IKEv2。点这里查看步骤。
+另外，你也可以手动移除 IKEv2。
 </summary>
 
 要手动从 VPN 服务器移除 IKEv2，但是保留 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式，按照以下步骤操作。这些命令必须用 `root` 账户运行。
