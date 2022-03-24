@@ -20,7 +20,7 @@ Press this button to start:
 
 When the deployment finishes, Azure displays a notification. Next steps: [Configure VPN Clients](../README.md#next-steps).
 
-**Note:** Client configuration files for IKEv2 mode can be found in the `/root` folder of your VPN server. When connecting to the server using SSH, use the username and password you specified in the deployment template.
+**Note:** When connecting to the server using SSH, use the username and password you specified in the deployment template. To add or export IKEv2 clients, run `sudo ikev2.sh`.
 
 ## Authors
 
