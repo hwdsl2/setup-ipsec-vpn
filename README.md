@@ -76,13 +76,13 @@ A cloud server, virtual private server (VPS) or dedicated server, freshly instal
 - Ubuntu 20.04 or 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) or 9
 - CentOS 7 or CentOS Stream 8[\*\*](#centos-8-note)
-- Rocky Linux 8 or AlmaLinux 8
+- Rocky Linux or AlmaLinux 8
 - Oracle Linux 8 or 7
 - Red Hat Enterprise Linux (RHEL) 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.15 or 3.14
 
-This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) and [OVH](https://www.ovhcloud.com/en/vps/). [Amazon EC2](https://aws.amazon.com/ec2/) users can also deploy using [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
+This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) and [Microsoft Azure](https://azure.microsoft.com). Public cloud users can also deploy rapidly using [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
 [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 

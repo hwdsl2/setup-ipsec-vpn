@@ -76,13 +76,13 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 - Ubuntu 20.04 或者 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
 - CentOS 7 或者 CentOS Stream 8[\*\*](#centos-8-note)
-- Rocky Linux 8 或者 AlmaLinux 8
+- Rocky Linux 或者 AlmaLinux 8
 - Oracle Linux 8 或者 7
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.15 或者 3.14
 
-这也包括各种公共云服务中的 Linux 虚拟机，比如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [Microsoft Azure](https://azure.microsoft.com) 和 [OVH](https://www.ovhcloud.com/en/vps/)。[Amazon EC2](https://aws.amazon.com/ec2/) 用户也可以使用 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 部署。
+这也包括各种公共云服务中的 Linux 虚拟机，例如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) 和 [Microsoft Azure](https://azure.microsoft.com)。公共云用户也可以使用 [用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup) 快速部署。
 
 [![Deploy to DigitalOcean](docs/images/do-install-button.png)](http://dovpn.carlfriess.com) &nbsp;[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
