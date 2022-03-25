@@ -1,6 +1,6 @@
 # IKEv2 VPN 配置和使用指南
 
-*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。*
+*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
 
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
