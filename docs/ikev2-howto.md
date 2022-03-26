@@ -192,7 +192,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 <details>
 <summary>
-Remove the IKEv2 VPN connection
+Remove the IKEv2 VPN connection.
 </summary>
 
 Using the following steps, you can remove the VPN connection and optionally restore the computer to the status before IKEv2 configuration import.
@@ -264,7 +264,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 <details>
 <summary>
-Remove the IKEv2 VPN connection
+Remove the IKEv2 VPN connection.
 </summary>
 
 To remove the IKEv2 VPN connection, open System Preferences -> Profiles and remove the IKEv2 VPN profile you added.
@@ -322,7 +322,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 <details>
 <summary>
-Remove the IKEv2 VPN connection
+Remove the IKEv2 VPN connection.
 </summary>
 
 To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Management or Profile(s) and remove the IKEv2 VPN profile you added.

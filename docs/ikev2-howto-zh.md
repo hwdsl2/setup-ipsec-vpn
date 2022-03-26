@@ -192,7 +192,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 <details>
 <summary>
-删除 IKEv2 VPN 连接
+删除 IKEv2 VPN 连接。
 </summary>
 
 通过以下的步骤，可以删除添加的 VPN 连接，并将计算机恢复到导入 IKEv2 配置之前的状态（可选）。
@@ -264,7 +264,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 <details>
 <summary>
-删除 IKEv2 VPN 连接
+删除 IKEv2 VPN 连接。
 </summary>
 
 要删除 IKEv2 VPN 连接，打开系统偏好设置 -> 描述文件并移除你添加的 IKEv2 VPN 描述文件。
@@ -322,7 +322,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 <details>
 <summary>
-删除 IKEv2 VPN 连接
+删除 IKEv2 VPN 连接。
 </summary>
 
 要删除 IKEv2 VPN 连接，打开设置 -> 通用 -> VPN 与设备管理（或者描述文件）并移除你添加的 IKEv2 VPN 描述文件。
