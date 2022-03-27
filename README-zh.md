@@ -35,7 +35,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
-你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示在屏幕上。
+你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
 
 <details>
 <summary>
@@ -56,7 +56,7 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
-另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它安装选项以及客户端配置，请继续阅读以下部分。
+另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它选项以及客户端配置，请继续阅读以下部分。
 
 \* 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器。OpenVZ VPS 不受支持。
 
@@ -103,7 +103,7 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 
 要安装 VPN，请从以下选项中选择一个：
 
-**选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会在屏幕上显示）。
+**选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会显示）。
 
 ```bash
 wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh

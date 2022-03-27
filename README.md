@@ -35,7 +35,7 @@ Use this one-liner to set up an IPsec VPN server:
 wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 ```
 
-Your VPN login details will be randomly generated, and displayed on the screen when finished.
+Your VPN login details will be randomly generated, and displayed when finished.
 
 <details>
 <summary>
@@ -56,7 +56,7 @@ See the VPN script in action (terminal recording).
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
-A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other installation options and client setup, read the sections below.
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
 
 \* A cloud server, virtual private server (VPS) or dedicated server. OpenVZ VPS is not supported.
 
