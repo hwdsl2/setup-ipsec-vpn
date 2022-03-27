@@ -52,7 +52,7 @@ jobs:
 
           restart_ipsec() {
             if grep -qs 'release 8' /etc/oracle-release; then
-              return 0
+              sleep 3
             fi
             if ! command -v amazon-linux-extras; then
               systemctl restart ipsec
