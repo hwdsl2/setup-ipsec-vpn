@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   20 Mar 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   6 Apr 2022
 
 EOF
 }
@@ -381,6 +381,12 @@ list_existing_clients() {
     [ -z "$client_status" ] && client_status=unknown
     printf '%s\n' "$client_status"
   done
+  client_count=$(printf '%s\n' "$client_names" | wc -l 2>/dev/null)
+  if [ "$client_count" = "1" ]; then
+    printf '\n%s\n' "Total: 1 client"
+  elif [ -n "$client_count" ]; then
+    printf '\n%s\n' "Total: $client_count clients"
+  fi
 }
 
 enter_server_address() {
@@ -1245,7 +1251,7 @@ cat <<'EOF'
 
 Next steps: Configure IKEv2 clients. See:
   https://git.io/ikev2clients
-Feedback: bit.ly/vpn-feedback
+Feedback: https://bit.ly/vpn-feedback
 
 ================================================
 
