@@ -251,6 +251,10 @@ jobs:
           3
           ANSWERS
 
+          bash ikev2.sh <<ANSWERS | grep -i "2 clients"
+          3
+          ANSWERS
+
           bash ikev2.sh <<ANSWERS
           4
           nonexistclient
@@ -262,6 +266,16 @@ jobs:
           4
           vpnclient2
 
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS
+          5
+          vpnclient2
+          y
+          ANSWERS
+
+          bash ikev2.sh <<ANSWERS | grep -i "1 client"
+          3
           ANSWERS
 
           bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
@@ -343,6 +357,7 @@ jobs:
 
           bash ikev2.sh --listclients | grep "vpnclient1 \+valid"
           bash ikev2.sh --listclients | grep "vpnclient2 \+valid"
+          bash ikev2.sh --listclients | grep "2 clients"
 
           bash ikev2.sh --revokeclient nonexistclient 2>&1 | grep -i "does not exist"
           bash ikev2.sh --revokeclient vpnclient2 <<ANSWERS
@@ -353,6 +368,13 @@ jobs:
 
           bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
           bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
+
+          bash ikev2.sh --deleteclient nonexistclient 2>&1 | grep -i "does not exist"
+          bash ikev2.sh --deleteclient vpnclient2 <<ANSWERS
+          y
+          ANSWERS
+          bash ikev2.sh --listclients | grep "1 client"
+
           bash ikev2.sh -h 2>&1 | grep -i "usage:"
           bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
 
