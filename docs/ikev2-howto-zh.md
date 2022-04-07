@@ -111,6 +111,7 @@ Options:
   --exportclient [client name]  export configuration for an existing client
   --listclients                 list the names of existing clients
   --revokeclient [client name]  revoke a client certificate
+  --deleteclient [client name]  delete a client certificate
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -557,6 +558,12 @@ sudo ikev2.sh --exportclient [client name]
 **警告：** 这将**永久删除**客户端证书和私钥。此操作**不可撤销**！
 
 如果要删除一个客户端证书：
+
+```bash
+sudo ikev2.sh --deleteclient [client name]
+```
+
+或者，你也可以手动删除一个客户端证书：
 
 1. 列出 IPsec 证书数据库中的证书：
 
