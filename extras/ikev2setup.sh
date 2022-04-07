@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   6 Apr 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   7 Apr 2022
 
 EOF
 }
@@ -170,6 +170,7 @@ Options:
   --exportclient [client name]  export configuration for an existing client
   --listclients                 list the names of existing clients
   --revokeclient [client name]  revoke a client certificate
+  --deleteclient [client name]  delete a client certificate
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
@@ -209,11 +210,11 @@ check_arguments() {
     echo "       To manage VPN clients, re-run this script without '--auto'." >&2
     exit 1
   fi
-  if [ "$((add_client + export_client + list_clients + revoke_client))" -gt 1 ]; then
-    show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient', '--listclients' or '--revokeclient'."
+  if [ "$((add_client + export_client + list_clients + revoke_client + delete_client))" -gt 1 ]; then
+    show_usage "Invalid parameters. Specify only one of '--addclient', '--exportclient', '--listclients', '--revokeclient' or '--deleteclient'."
   fi
   if [ "$remove_ikev2" = "1" ]; then
-    if [ "$((add_client + export_client + list_clients + revoke_client + use_defaults))" -gt 0 ]; then
+    if [ "$((add_client + export_client + list_clients + revoke_client + delete_client + use_defaults))" -gt 0 ]; then
       show_usage "Invalid parameters. '--removeikev2' cannot be specified with other parameters."
     fi
   fi
@@ -222,6 +223,7 @@ check_arguments() {
     [ "$export_client" = "1" ] && exiterr "You must first set up IKEv2 before exporting a client."
     [ "$list_clients" = "1" ] && exiterr "You must first set up IKEv2 before listing clients."
     [ "$revoke_client" = "1" ] && exiterr "You must first set up IKEv2 before revoking a client certificate."
+    [ "$delete_client" = "1" ] && exiterr "You must first set up IKEv2 before deleting a client certificate."
     [ "$remove_ikev2" = "1" ] && exiterr "Cannot remove IKEv2 because it has not been set up on this server."
   fi
   if [ "$add_client" = "1" ]; then
@@ -231,14 +233,14 @@ check_arguments() {
       exiterr "Invalid client name. Client '$client_name' already exists."
     fi
   fi
-  if [ "$export_client" = "1" ] || [ "$revoke_client" = "1" ]; then
+  if [ "$export_client" = "1" ] || [ "$revoke_client" = "1" ] || [ "$delete_client" = "1" ]; then
     get_server_address
     if [ -z "$client_name" ] || ! check_client_name "$client_name" \
       || [ "$client_name" = "$CA_NAME" ] || [ "$client_name" = "$server_addr" ] \
       || ! check_cert_exists "$client_name"; then
       exiterr "Invalid client name, or client does not exist."
     fi
-    if ! check_cert_status "$client_name"; then
+    if [ "$delete_client" = "0" ] && ! check_cert_status "$client_name"; then
       printf '%s' "Error: Certificate '$client_name' " >&2
       if printf '%s' "$cert_status" | grep -q "revoked"; then
         if [ "$revoke_client" = "1" ]; then
@@ -375,13 +377,16 @@ list_existing_clients() {
   [ "$max_len" -lt "16" ] && max_len=16
   printf "%-${max_len}s  %s\n" 'Client Name' 'Certificate Status'
   printf "%-${max_len}s  %s\n" '------------' '-------------------'
-  printf '%s\n' "$client_names" | LC_ALL=C sort | while read -r line; do
-    printf "%-${max_len}s  " "$line"
-    client_status=$(certutil -V -u C -d "$CERT_DB" -n "$line" | grep -o -e ' valid' -e expired -e revoked | sed -e 's/^ //')
-    [ -z "$client_status" ] && client_status=unknown
-    printf '%s\n' "$client_status"
-  done
+  if [ -n "$client_names" ]; then
+    printf '%s\n' "$client_names" | LC_ALL=C sort | while read -r line; do
+      printf "%-${max_len}s  " "$line"
+      client_status=$(certutil -V -u C -d "$CERT_DB" -n "$line" | grep -o -e ' valid' -e expired -e revoked | sed -e 's/^ //')
+      [ -z "$client_status" ] && client_status=unknown
+      printf '%s\n' "$client_status"
+    done
+  fi
   client_count=$(printf '%s\n' "$client_names" | wc -l 2>/dev/null)
+  [ -z "$client_names" ] && client_count=0
   if [ "$client_count" = "1" ]; then
     printf '\n%s\n' "Total: 1 client"
   elif [ -n "$client_count" ]; then
@@ -453,6 +458,11 @@ enter_client_name() {
 enter_client_name_for() {
   echo
   list_existing_clients
+  if [ "$client_count" = "0" ]; then
+    echo
+    echo "No IKEv2 clients in the IPsec database. Nothing to $1." >&2
+    exit 1
+  fi
   get_server_address
   echo
   read -rp "Enter the name of the IKEv2 client to $1: " client_name
@@ -464,6 +474,7 @@ enter_client_name_for() {
     || [ "$client_name" = "$server_addr" ] || ! check_cert_exists "$client_name"; then
       echo "Invalid client name, or client does not exist."
     else
+      [ "$1" = "delete" ] && break
       printf '%s' "Error: Certificate '$client_name' "
       if printf '%s' "$cert_status" | grep -q "revoked"; then
         if [ "$1" = "revoke" ]; then
@@ -639,11 +650,12 @@ Select an option:
   2) Export configuration for an existing client
   3) List existing clients
   4) Revoke a client certificate
-  5) Remove IKEv2
-  6) Exit
+  5) Delete a client certificate
+  6) Remove IKEv2
+  7) Exit
 EOF
   read -rp "Option: " selected_option
-  until [[ "$selected_option" =~ ^[1-6]$ ]]; do
+  until [[ "$selected_option" =~ ^[1-7]$ ]]; do
     printf '%s\n' "$selected_option: invalid selection."
     read -rp "Option: " selected_option
   done
@@ -1183,6 +1195,11 @@ reload_crls() {
   ipsec crls
 }
 
+delete_client_cert() {
+  certutil -F -d "$CERT_DB" -n "$client_name"
+  certutil -D -d "$CERT_DB" -n "$client_name" 2>/dev/null
+}
+
 print_client_added() {
 cat <<EOF
 
@@ -1209,6 +1226,10 @@ EOF
 
 print_client_revoked() {
   echo "Certificate '$client_name' revoked!"
+}
+
+print_client_deleted() {
+  echo "Certificate '$client_name' deleted!"
 }
 
 print_setup_complete() {
@@ -1295,6 +1316,17 @@ EOF
   confirm_or_abort "Are you sure you want to revoke '$client_name'? [y/N] "
 }
 
+confirm_delete_cert() {
+cat <<EOF
+WARNING: Deleting a client certificate from the IPsec database *WILL NOT* prevent
+         VPN client(s) from connecting using that certificate! For this use case,
+         you *MUST* revoke the client certificate instead of deleting it.
+         This *cannot* be undone!
+
+EOF
+  confirm_or_abort "Are you sure you want to delete '$client_name'? [y/N] "
+}
+
 confirm_remove_ikev2() {
 cat <<'EOF'
 WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/L2TP
@@ -1344,6 +1376,7 @@ ikev2setup() {
   export_client=0
   list_clients=0
   revoke_client=0
+  delete_client=0
   remove_ikev2=0
   while [ "$#" -gt 0 ]; do
     case $1 in
@@ -1369,6 +1402,12 @@ ikev2setup() {
         ;;
       --revokeclient)
         revoke_client=1
+        client_name="$2"
+        shift
+        shift
+        ;;
+      --deleteclient)
+        delete_client=1
         client_name="$2"
         shift
         shift
@@ -1434,6 +1473,14 @@ ikev2setup() {
     exit 0
   fi
 
+  if [ "$delete_client" = "1" ]; then
+    show_header
+    confirm_delete_cert
+    delete_client_cert
+    print_client_deleted
+    exit 0
+  fi
+
   if [ "$remove_ikev2" = "1" ]; then
     check_ipsec_conf
     show_header
@@ -1488,6 +1535,14 @@ ikev2setup() {
         exit 0
         ;;
       5)
+        enter_client_name_for delete
+        echo
+        confirm_delete_cert
+        delete_client_cert
+        print_client_deleted
+        exit 0
+        ;;
+      6)
         check_ipsec_conf
         echo
         confirm_remove_ikev2
