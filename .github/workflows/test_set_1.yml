@@ -266,16 +266,16 @@ jobs:
 
           bash ikev2.sh <<ANSWERS
           100
-          6
+          7
           ANSWERS
 
           bash ikev2.sh <<ANSWERS 2>&1 | grep -i "abort"
-          5
+          6
 
           ANSWERS
 
           bash ikev2.sh <<ANSWERS
-          5
+          6
           y
           ANSWERS
 
