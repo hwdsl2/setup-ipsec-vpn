@@ -1,6 +1,6 @@
 # IKEv2 VPN 配置和使用指南
 
-*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
+*其他语言版本: [English](ikev2-howto.md), [简体中文](ikev2-howto-zh.md)。*
 
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -121,7 +121,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## 配置 IKEv2 VPN 客户端
 
-*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
+*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [简体中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
 **注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。客户端配置文件可以在导入后安全删除。
 
@@ -692,7 +692,7 @@ sudo ikev2.sh --revokeclient [client name]
 
 ## 故障排除
 
-*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
+*其他语言版本: [English](ikev2-howto.md#troubleshooting), [简体中文](ikev2-howto-zh.md#故障排除)。*
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 

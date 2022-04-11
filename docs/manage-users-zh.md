@@ -1,6 +1,6 @@
 # 管理 VPN 用户
 
-*其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md)。如果你有意见或建议，请[发送反馈](https://bit.ly/vpn-feedback)。*
+*其他语言版本: [English](manage-users.md), [简体中文](manage-users-zh.md)。*
 
 在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
