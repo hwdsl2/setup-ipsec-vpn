@@ -126,12 +126,15 @@ jobs:
             ls -ld /etc/ipsec.d/vpnclient.p12
 
             ls -l /usr/bin/ikev2.sh
+            ls -l /usr/bin/addvpnuser.sh
+            ls -l /usr/bin/delvpnuser.sh
             ls -l /opt/src/ikev2.sh
+            ls -l /opt/src/addvpnuser.sh
+            ls -l /opt/src/delvpnuser.sh
 
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
-            rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
             rm -f /etc/ipsec.d/vpnclient*
             if [ "$os_type" = "alpine" ]; then
               killall pluto || true
@@ -188,7 +191,11 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient.p12
 
           ls -l /usr/bin/ikev2.sh
+          ls -l /usr/bin/addvpnuser.sh
+          ls -l /usr/bin/delvpnuser.sh
           ls -l /opt/src/ikev2.sh
+          ls -l /opt/src/addvpnuser.sh
+          ls -l /opt/src/delvpnuser.sh
 
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           rm -f /etc/ipsec.d/vpnclient*

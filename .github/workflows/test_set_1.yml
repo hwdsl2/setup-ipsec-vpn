@@ -122,12 +122,15 @@ jobs:
             ls -ld /etc/ipsec.d/vpnclient.p12
 
             ls -l /usr/bin/ikev2.sh
+            ls -l /usr/bin/addvpnuser.sh
+            ls -l /usr/bin/delvpnuser.sh
             ls -l /opt/src/ikev2.sh
+            ls -l /opt/src/addvpnuser.sh
+            ls -l /opt/src/delvpnuser.sh
 
           bash vpnunst.sh <<ANSWERS
           y
           ANSWERS
-            rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
             rm -f /etc/ipsec.d/vpnclient*
             if grep -qi stream /etc/redhat-release \
               || grep -qs 'release 8' /etc/oracle-release; then
@@ -182,7 +185,11 @@ jobs:
           ls -ld /etc/ipsec.d/vpnclient.p12
 
           ls -l /usr/bin/ikev2.sh
+          ls -l /usr/bin/addvpnuser.sh
+          ls -l /usr/bin/delvpnuser.sh
           ls -l /opt/src/ikev2.sh
+          ls -l /opt/src/addvpnuser.sh
+          ls -l /opt/src/delvpnuser.sh
 
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           rm -f /etc/ipsec.d/vpnclient*
