@@ -134,7 +134,8 @@ install_pkgs() {
 }
 
 get_setup_url() {
-  base_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
+  base_url1="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
+  base_url2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
   sh_file="vpnupgrade_ubuntu.sh"
   if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] \
     || [ "$os_type" = "alma" ] || [ "$os_type" = "ol" ]; then
@@ -144,14 +145,16 @@ get_setup_url() {
   elif [ "$os_type" = "alpine" ]; then
     sh_file="vpnupgrade_alpine.sh"
   fi
-  setup_url="$base_url/$sh_file"
+  setup_url1="$base_url1/$sh_file"
+  setup_url2="$base_url2/$sh_file"
 }
 
 run_setup() {
   status=0
   if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
-    if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url" \
-      || curl -fsL "$setup_url" -o "$tmpdir/vpnup.sh" 2>/dev/null ); then
+    if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url1" \
+      || wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url2" \
+      || curl -fsL "$setup_url1" -o "$tmpdir/vpnup.sh" 2>/dev/null ); then
       VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/bash "$tmpdir/vpnup.sh" || status=1
     else
       status=1
