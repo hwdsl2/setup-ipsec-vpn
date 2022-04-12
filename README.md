@@ -39,14 +39,21 @@ Your VPN login details will be randomly generated, and displayed when finished.
 
 <details>
 <summary>
-Alternative one-liner using curl.
+Alternative one-liners.
 </summary>
+
+You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
 ```
-</details>
 
+Alternative setup URL:
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
+```
+</details>
 <details>
 <summary>
 See the VPN script in action (terminal recording).
@@ -173,6 +180,13 @@ curl -fsSL https://git.io/vpnsetup -o vpn.sh
 sudo sh vpn.sh
 ```
 
+Alternative setup URL:
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
+sudo sh vpn.sh
+```
+
 Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
@@ -213,6 +227,16 @@ Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](htt
 ```bash
 wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
 ```
+
+<details>
+<summary>
+Alternative one-liner.
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
+```
+</details>
 
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
 
