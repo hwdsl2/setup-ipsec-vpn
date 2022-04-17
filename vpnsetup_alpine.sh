@@ -498,13 +498,24 @@ start_services() {
   bigecho "Starting services..."
   sysctl -e -q -p
 
-  chmod +x /etc/rc.local
   chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
   mkdir -p /run/pluto
   service fail2ban restart >/dev/null 2>&1
   service ipsec restart >/dev/null 2>&1
   service xl2tpd restart >/dev/null 2>&1
+
+  mkdir -p /etc/crontabs
+  cron_cmd="rc-service -c ipsec zap start"
+if ! grep -qs "$cron_cmd" /etc/crontabs/root; then
+cat >> /etc/crontabs/root <<EOF
+* * * * * $cron_cmd
+* * * * * sleep 15; $cron_cmd
+* * * * * sleep 30; $cron_cmd
+* * * * * sleep 45; $cron_cmd
+EOF
+  touch /etc/crontabs/cron.update
+fi
 }
 
 show_vpn_info() {
