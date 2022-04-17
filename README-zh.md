@@ -80,7 +80,7 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 
 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，全新安装以下操作系统之一：
 
-- Ubuntu 20.04 或者 18.04
+- Ubuntu 22.04, 20.04 或者 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
 - CentOS 7 或者 CentOS Stream 8[\*\*](#centos-8-note)
 - Rocky Linux 或者 AlmaLinux 8
