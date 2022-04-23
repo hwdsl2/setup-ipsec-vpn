@@ -115,22 +115,18 @@ check_creds() {
   [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
   [ -n "$YOUR_USERNAME" ] && VPN_USER="$YOUR_USERNAME"
   [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
-
   if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     bigecho "VPN credentials not set by user. Generating random PSK and password..."
     VPN_IPSEC_PSK=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 20)
     VPN_USER=vpnuser
     VPN_PASSWORD=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 16)
   fi
-
   if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
     exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
   fi
-
   if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
     exiterr "VPN credentials must not contain non-ASCII characters."
   fi
-
   case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     *[\\\"\']*)
       exiterr "VPN credentials must not contain these special characters: \\ \" '"
@@ -352,7 +348,6 @@ EOF
       set -x
       make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
     )
-
     cd /opt/src || exit 1
     /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
     if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
