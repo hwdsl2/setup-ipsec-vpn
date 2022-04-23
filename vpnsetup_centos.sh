@@ -290,29 +290,32 @@ get_swan_ver() {
   SWAN_VER=4.6
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" 2>/dev/null | head -n 1)
+  [ -z "$swan_ver_latest" ] && swan_ver_latest=$(curl -fsL "$swan_ver_url" 2>/dev/null | head -n 1)
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'; then
     SWAN_VER="$swan_ver_latest"
   fi
 }
 
 check_libreswan() {
+  check_result=0
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   ipsec_bin="/usr/local/sbin/ipsec"
   if [ -n "$swan_ver_old" ] && printf '%s' "$ipsec_ver" | grep -qi 'libreswan' \
     && [ "$(find "$ipsec_bin" -mmin -10080)" ]; then
+    check_result=1
     return 0
   fi
   get_swan_ver
   if [ -s "$ipsec_bin" ] && [ "$swan_ver_old" = "$SWAN_VER" ]; then
     touch "$ipsec_bin"
   fi
-  [ "$swan_ver_old" = "$SWAN_VER" ]
+  [ "$swan_ver_old" = "$SWAN_VER" ] && check_result=1
 }
 
 get_libreswan() {
-  if ! check_libreswan; then
+  if [ "$check_result" = "0" ]; then
     bigecho "Downloading Libreswan..."
     cd /opt/src || exit 1
     swan_file="libreswan-$SWAN_VER.tar.gz"
@@ -330,7 +333,7 @@ get_libreswan() {
 }
 
 install_libreswan() {
-  if ! check_libreswan; then
+  if [ "$check_result" = "0" ]; then
     bigecho "Compiling and installing Libreswan, please wait..."
     cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
@@ -718,6 +721,7 @@ vpnsetup() {
   check_dns
   check_server_dns
   check_client_name
+  check_libreswan
   start_setup
   install_setup_pkgs
   detect_ip
