@@ -7,7 +7,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-name: vpn test cron
+name: build cron
 
 on:
   schedule:
