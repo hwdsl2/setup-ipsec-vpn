@@ -106,7 +106,6 @@ Note: This script will make the following changes to your VPN configuration:
       Your other VPN config files will not be modified.
 
 EOF
-
   if [ "$SWAN_VER" != "$swan_ver_cur" ]; then
 cat <<'EOF'
 WARNING: Older versions of Libreswan could contain known security vulnerabilities.
@@ -115,7 +114,6 @@ WARNING: Older versions of Libreswan could contain known security vulnerabilitie
 
 EOF
   fi
-
   if [ "$swan_ver_old" = "$SWAN_VER" ]; then
 cat <<EOF
 Note: You already have Libreswan version $SWAN_VER installed!
@@ -123,7 +121,6 @@ Note: You already have Libreswan version $SWAN_VER installed!
 
 EOF
   fi
-
   printf "Do you want to continue? [Y/n] "
   read -r response
   case $response in
@@ -186,7 +183,6 @@ EOF
     set -x
     make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
   )
-
   cd /opt/src || exit 1
   /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
   if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
@@ -215,20 +211,17 @@ update_config() {
   bigecho "Updating VPN configuration..."
   IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
   PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
-
   if uname -m | grep -qi '^arm'; then
     if ! modprobe -q sha512; then
       PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2"
     fi
   fi
-
   dns_state=0
   DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
   DNS_SRV2=$(grep "modecfgdns2=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
   [ -n "$DNS_SRV1" ] && dns_state=2
   [ -n "$DNS_SRV1" ] && [ -n "$DNS_SRV2" ] && dns_state=1
   [ "$(grep -c "modecfgdns1=" /etc/ipsec.conf)" -gt "1" ] && dns_state=3
-
   sed -i".old-$SYS_DT" \
       -e "s/^[[:space:]]\+auth=/  phase2=/" \
       -e "s/^[[:space:]]\+forceencaps=/  encapsulation=/" \
@@ -237,17 +230,14 @@ update_config() {
       -e "s/^[[:space:]]\+sha2-truncbug=yes/  sha2-truncbug=no/" \
       -e "s/^[[:space:]]\+ike=.\+/$IKE_NEW/" \
       -e "s/^[[:space:]]\+phase2alg=.\+/$PHASE2_NEW/" /etc/ipsec.conf
-
   if [ "$dns_state" = "1" ]; then
     sed -i -e "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=\"$DNS_SRV1 $DNS_SRV2\"/" \
         -e "/modecfgdns2=/d" /etc/ipsec.conf
   elif [ "$dns_state" = "2" ]; then
     sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
   fi
-
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
-
   if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
     sed -i".old-$SYS_DT" 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
   fi
@@ -270,7 +260,6 @@ Libreswan $SWAN_VER has been successfully installed!
 ================================================
 
 EOF
-
   if [ "$dns_state" = "3" ]; then
 cat <<'EOF'
 IMPORTANT: You must edit /etc/ipsec.conf and replace

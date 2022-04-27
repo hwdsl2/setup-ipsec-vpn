@@ -2,7 +2,6 @@
 #
 # Script for automatic setup of an IPsec VPN server on Ubuntu, Debian, CentOS/RHEL,
 # Rocky Linux, AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
-# Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -159,19 +158,15 @@ check_creds() {
   [ -n "$YOUR_IPSEC_PSK" ] && VPN_IPSEC_PSK="$YOUR_IPSEC_PSK"
   [ -n "$YOUR_USERNAME" ] && VPN_USER="$YOUR_USERNAME"
   [ -n "$YOUR_PASSWORD" ] && VPN_PASSWORD="$YOUR_PASSWORD"
-
   if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     return 0
   fi
-
   if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
     exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
   fi
-
   if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
     exiterr "VPN credentials must not contain non-ASCII characters."
   fi
-
   case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
     *[\\\"\']*)
       exiterr "VPN credentials must not contain these special characters: \\ \" '"
@@ -196,7 +191,7 @@ check_client_name() {
   if [ -n "$VPN_CLIENT_NAME" ]; then
     name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
     if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      || case $VPN_CLIENT_NAME in -*) true ;; *) false ;; esac; then
       exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
     fi
   fi

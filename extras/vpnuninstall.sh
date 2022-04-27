@@ -234,7 +234,6 @@ update_iptables_rules() {
   if grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
     ipt_flag=1
   fi
-
   ipi='iptables -D INPUT'
   ipf='iptables -D FORWARD'
   ipp='iptables -t nat -D POSTROUTING'
@@ -261,7 +260,6 @@ update_iptables_rules() {
       $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
       $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
       iptables-save > "$IPT_FILE"
-
       if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
         if [ -f "$IPT_FILE2" ]; then
           conf_bk "$IPT_FILE2"

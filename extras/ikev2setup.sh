@@ -151,14 +151,14 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   7 Apr 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   27 Apr 2022
 
 EOF
 }
 
 show_usage() {
   if [ -n "$1" ]; then
-    echo "Error: $1" >&2;
+    echo "Error: $1" >&2
   fi
   show_header
 cat 1>&2 <<EOF
@@ -186,7 +186,7 @@ check_ikev2_exists() {
 
 check_client_name() {
   ! { [ "${#1}" -gt "64" ] || printf '%s' "$1" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-    || case $1 in -*) true;; *) false;; esac; }
+    || case $1 in -*) true ;; *) false ;; esac; }
 }
 
 check_cert_exists() {
@@ -1271,8 +1271,7 @@ EOF
 cat <<'EOF'
 
 Next steps: Configure IKEv2 clients. See:
-  https://git.io/ikev2clients
-Feedback: https://bit.ly/vpn-feedback
+https://git.io/ikev2clients
 
 ================================================
 

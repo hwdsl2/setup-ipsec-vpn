@@ -2,7 +2,6 @@
 #
 # Script for automatic setup of an IPsec VPN server on CentOS/RHEL, Rocky Linux,
 # AlmaLinux and Oracle Linux
-# Works on any dedicated server or virtual private server (VPS)
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -151,7 +150,7 @@ check_client_name() {
   if [ -n "$VPN_CLIENT_NAME" ]; then
     name_len="$(printf '%s' "$VPN_CLIENT_NAME" | wc -m)"
     if [ "$name_len" -gt "64" ] || printf '%s' "$VPN_CLIENT_NAME" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-      || case $VPN_CLIENT_NAME in -*) true;; *) false;; esac; then
+      || case $VPN_CLIENT_NAME in -*) true ;; *) false ;; esac; then
       exiterr "Invalid client name. Use one word only, no special characters except '-' and '_'."
     fi
   fi
@@ -358,7 +357,6 @@ EOF
 
 create_vpn_config() {
   bigecho "Creating VPN configuration..."
-
   L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
   L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
   L2TP_POOL=${VPN_L2TP_POOL:-'192.168.42.10-192.168.42.250'}
@@ -368,7 +366,6 @@ create_vpn_config() {
   DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
   DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
   [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
-
   # Create IPsec config
   conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
@@ -419,13 +416,11 @@ conn xauth-psk
 
 include /etc/ipsec.d/*.conf
 EOF
-
   # Specify IPsec PSK
   conf_bk "/etc/ipsec.secrets"
 cat > /etc/ipsec.secrets <<EOF
 %any  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
-
   # Create xl2tpd config
   conf_bk "/etc/xl2tpd/xl2tpd.conf"
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
@@ -442,7 +437,6 @@ name = l2tpd
 pppoptfile = /etc/ppp/options.xl2tpd
 length bit = yes
 EOF
-
   # Set xl2tpd options
   conf_bk "/etc/ppp/options.xl2tpd"
 cat > /etc/ppp/options.xl2tpd <<EOF
@@ -459,19 +453,16 @@ lcp-echo-interval 30
 connect-delay 5000
 ms-dns $DNS_SRV1
 EOF
-
   if [ -z "$VPN_DNS_SRV1" ] || [ -n "$VPN_DNS_SRV2" ]; then
 cat >> /etc/ppp/options.xl2tpd <<EOF
 ms-dns $DNS_SRV2
 EOF
   fi
-
   # Create VPN credentials
   conf_bk "/etc/ppp/chap-secrets"
 cat > /etc/ppp/chap-secrets <<EOF
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
-
   conf_bk "/etc/ipsec.d/passwd"
   VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 cat > /etc/ipsec.d/passwd <<EOF
@@ -539,7 +530,6 @@ update_iptables() {
   if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
     ipt_flag=1
   fi
-
   ipi='iptables -I INPUT'
   ipf='iptables -I FORWARD'
   ipp='iptables -t nat -I POSTROUTING'
@@ -613,7 +603,6 @@ enable_on_boot() {
   else
     systemctl enable iptables fail2ban 2>/dev/null
   fi
-
   if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     if [ -f /etc/rc.local ]; then
       conf_bk "/etc/rc.local"
@@ -634,26 +623,21 @@ EOF
 start_services() {
   bigecho "Starting services..."
   sysctl -e -q -p
-
   chmod +x /etc/rc.local
   chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
-
   restorecon /etc/ipsec.d/*db 2>/dev/null
   restorecon /usr/local/sbin -Rv 2>/dev/null
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
-
   if [ "$use_nft" = "1" ]; then
     nft -f "$IPT_FILE"
   else
     iptables-restore < "$IPT_FILE"
   fi
-
   # Fix xl2tpd if l2tp_ppp is unavailable
   if ! modprobe -q l2tp_ppp; then
     sed -i '/^ExecStartPre=\//s/=/=-/' /usr/lib/systemd/system/xl2tpd.service
     systemctl daemon-reload
   fi
-
   mkdir -p /run/pluto
   service fail2ban restart 2>/dev/null
   service ipsec restart 2>/dev/null
