@@ -55,7 +55,7 @@ Error: "sudo: ikev2.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
 
 ```bash
-wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -778,7 +778,7 @@ sudo bash ikev2changeaddr.sh
 The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
 
 ```bash
-wget https://git.io/ikev2setup -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 

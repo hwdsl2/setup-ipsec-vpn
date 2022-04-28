@@ -32,7 +32,7 @@ First, prepare your Linux server\* with a fresh install of Ubuntu, Debian or Cen
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 ```
 
 Your VPN login details will be randomly generated, and displayed when finished.
@@ -45,7 +45,7 @@ Alternative one-liners.
 You may also use `curl` to download:
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
 Alternative setup URL:
@@ -113,13 +113,13 @@ To install the VPN, please choose one of the following options:
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished).
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://get.vpnsetup.net -nv -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -132,7 +132,7 @@ sudo sh vpn.sh
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://get.vpnsetup.net -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
@@ -176,7 +176,7 @@ Click here if you are unable to download using wget.
 You may also use `curl` to download. For example:
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh
+curl -fsSL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
@@ -225,7 +225,7 @@ The scripts will backup existing config files before making changes, with `.old-
 Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server.
 
 ```bash
-wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
+wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
 <details>

@@ -32,7 +32,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 使用以下命令快速搭建 IPsec VPN 服务器：
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 ```
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
@@ -45,7 +45,7 @@ wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
 你也可以使用 `curl` 下载：
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh && sudo sh vpn.sh
+curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
 或者，你也可以使用这个链接：
@@ -113,13 +113,13 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会显示）。
 
 ```bash
-wget https://git.io/vpnsetup -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 ```
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://get.vpnsetup.net -nv -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -132,7 +132,7 @@ sudo sh vpn.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://git.io/vpnsetup -nv -O vpn.sh
+wget https://get.vpnsetup.net -nv -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
@@ -176,7 +176,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 你也可以使用 `curl` 下载。例如：
 
 ```bash
-curl -fsSL https://git.io/vpnsetup -o vpn.sh
+curl -fsSL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
@@ -225,7 +225,7 @@ sudo sh vpn.sh
 使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。
 
 ```bash
-wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
+wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
 <details>
