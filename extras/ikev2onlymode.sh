@@ -71,7 +71,7 @@ cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        IKEv2-only mode requires Libreswan 4.2 or newer.
        To update Libreswan, run:
-       wget https://git.io/vpnupgrade -qO vpnup.sh && sudo sh vpnup.sh
+       wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 EOF
     exit 1
   fi
