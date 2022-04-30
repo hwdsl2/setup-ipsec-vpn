@@ -53,7 +53,7 @@ EOF
   command -v openssl >/dev/null 2>&1 || exiterr "'openssl' not found. Abort."
   if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 cat 1>&2 <<'EOF'
-For usage information, visit https://git.io/vpnnotes, then click on Manage VPN Users.
+For usage information, visit vpnsetup.net/notes, then click on Manage VPN Users.
 EOF
     exit 1
   fi
@@ -107,8 +107,8 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:   https://git.io/vpnnotes
-Setup VPN clients: https://git.io/vpnclients
+Important notes:   vpnsetup.net/notes
+Setup VPN clients: vpnsetup.net/clients
 
 ==================================================
 

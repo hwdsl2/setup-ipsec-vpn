@@ -28,9 +28,9 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# Important notes:   https://git.io/vpnnotes
-# Setup VPN clients: https://git.io/vpnclients
-# IKEv2 guide:       https://git.io/ikev2
+# Important notes:   vpnsetup.net/notes
+# Setup VPN clients: vpnsetup.net/clients
+# IKEv2 guide:       vpnsetup.net/ikev2
 
 # =====================================================
 
@@ -660,9 +660,9 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Important notes:   https://git.io/vpnnotes
-Setup VPN clients: https://git.io/vpnclients
-IKEv2 guide:       https://git.io/ikev2
+Important notes:   vpnsetup.net/notes
+Setup VPN clients: vpnsetup.net/clients
+IKEv2 guide:       vpnsetup.net/ikev2
 
 ================================================
 

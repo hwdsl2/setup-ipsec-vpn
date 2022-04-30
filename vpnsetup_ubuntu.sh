@@ -27,9 +27,9 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# Important notes:   https://git.io/vpnnotes
-# Setup VPN clients: https://git.io/vpnclients
-# IKEv2 guide:       https://git.io/ikev2
+# Important notes:   vpnsetup.net/notes
+# Setup VPN clients: vpnsetup.net/clients
+# IKEv2 guide:       vpnsetup.net/ikev2
 
 # =====================================================
 
@@ -624,9 +624,9 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Important notes:   https://git.io/vpnnotes
-Setup VPN clients: https://git.io/vpnclients
-IKEv2 guide:       https://git.io/ikev2
+Important notes:   vpnsetup.net/notes
+Setup VPN clients: vpnsetup.net/clients
+IKEv2 guide:       vpnsetup.net/ikev2
 
 ================================================
 
@@ -634,8 +634,8 @@ EOF
   if [ ! -e /dev/ppp ]; then
 cat <<'EOF'
 Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
-         IKEv2 (https://git.io/ikev2) or IPsec/XAuth mode to connect.
-         Debian 11/10 users, see https://git.io/vpndebian10
+         IKEv2 (vpnsetup.net/ikev2) or IPsec/XAuth mode to connect.
+         Debian 11/10 users, see vpnsetup.net/debian10
 
 EOF
   fi
