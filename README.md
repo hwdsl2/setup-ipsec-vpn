@@ -233,6 +233,8 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 Alternative one-liner.
 </summary>
 
+Alternative update URL:
+
 ```bash
 wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
 ```

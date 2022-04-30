@@ -233,6 +233,8 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 或者，你也可以使用以下命令。
 </summary>
 
+或者，你也可以使用这个链接：
+
 ```bash
 wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
 ```
