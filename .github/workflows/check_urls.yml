@@ -34,6 +34,7 @@ jobs:
           gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
           gl="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master"
           gi="https://git.io"
+          vn="https://get.vpnsetup.net"
 
           $wg vpnsetup.sh          "$gi/vpnsetup"
           $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"
@@ -52,13 +53,17 @@ jobs:
 
           $wg vpnsetup2.sh          "$gh/vpnsetup.sh"
           $wg vpnsetup3.sh          "$gl/vpnsetup.sh"
+          $wg vpnsetup4.sh          "$vn"
           $wg vpnsetup_centos2.sh   "$gh/vpnsetup_centos.sh"
           $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"
           $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"
           $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"
           $wg quickstart2.sh        "$gh/extras/quickstart.sh"
           $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"
+          $wg ikev2setup3.sh        "$vn/ikev2"
           $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"
+          $wg vpnupgrade3.sh        "$gl/extras/vpnupgrade.sh"
+          $wg vpnupgrade4.sh        "$vn/upg"
           $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"
           $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"
           $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"
@@ -82,13 +87,17 @@ jobs:
 
           diff vpnsetup2.sh          ../vpnsetup.sh
           diff vpnsetup3.sh          ../vpnsetup.sh
+          diff vpnsetup4.sh          ../vpnsetup.sh
           diff vpnsetup_centos2.sh   ../vpnsetup_centos.sh
           diff vpnsetup_amzn2.sh     ../vpnsetup_amzn.sh
           diff vpnsetup_ubuntu2.sh   ../vpnsetup_ubuntu.sh
           diff vpnsetup_alpine2.sh   ../vpnsetup_alpine.sh
           diff quickstart2.sh        ../extras/quickstart.sh
           diff ikev2setup2.sh        ../extras/ikev2setup.sh
+          diff ikev2setup3.sh        ../extras/ikev2setup.sh
           diff vpnupgrade2.sh        ../extras/vpnupgrade.sh
+          diff vpnupgrade3.sh        ../extras/vpnupgrade.sh
+          diff vpnupgrade4.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
           diff vpnupgrade_amzn2.sh   ../extras/vpnupgrade_amzn.sh
           diff vpnupgrade_ubuntu2.sh ../extras/vpnupgrade_ubuntu.sh
@@ -111,3 +120,4 @@ jobs:
           curl -fsSI "$bl/updatevpnusers"  | grep -q 'update_vpn_users.sh'
           curl -fsSI "$bl/ikev2onlymode"   | grep -q 'ikev2onlymode.sh'
           curl -fsSI "$bl/ikev2changeaddr" | grep -q 'ikev2changeaddr.sh'
+          curl -fsSI "$bl/vpnuninstall"    | grep -q 'vpnuninstall.sh'
