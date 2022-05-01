@@ -228,6 +228,16 @@ sudo sh vpn.sh
 wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
+```
+</details>
+
 当前支持的 Libreswan 最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
 
 **注：** `xl2tpd` 可以使用系统的软件包管理器进行更新，例如 Ubuntu/Debian 上的 `apt-get`。

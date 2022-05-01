@@ -14,6 +14,17 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget -nv -O vpnunst.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+sudo bash vpnunst.sh
+```
+</details>
+
 When finished, reboot your server.
 
 ## Manually uninstall the VPN

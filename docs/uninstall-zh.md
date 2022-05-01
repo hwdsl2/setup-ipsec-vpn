@@ -14,6 +14,17 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget -nv -O vpnunst.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+sudo bash vpnunst.sh
+```
+</details>
+
 在完成后重启你的服务器。
 
 ## 手动卸载 VPN
