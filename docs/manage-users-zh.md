@@ -39,6 +39,17 @@ wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget -nv -O /opt/src/addvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/add_vpn_user.sh
+chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
+```
+</details>
+
 然后按照说明运行脚本。
 </details>
 
@@ -74,6 +85,17 @@ wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget -nv -O /opt/src/delvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/del_vpn_user.sh
+chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
+```
+</details>
+
 然后按照说明运行脚本。
 </details>
 
@@ -94,6 +116,16 @@ sudo delvpnuser.sh '要删除的用户名'
 ```bash
 wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 ```
+
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget -nv -O updatevpnusers.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/update_vpn_users.sh
+```
+</details>
 
 要使用这个脚本，从以下选项中选择一个：
 

@@ -59,6 +59,17 @@ wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
+```
+</details>
+
 然后按照上面的说明运行脚本。
 </details>
 <details>
@@ -769,6 +780,19 @@ wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
 sudo bash ikev2changeaddr.sh
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+# 下载脚本
+wget -nv -O ikev2changeaddr.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2changeaddr.sh
+# 运行脚本并按照提示操作
+sudo bash ikev2changeaddr.sh
+```
+</details>
+
 **重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
 
 ## 更新 IKEv2 辅助脚本
@@ -779,6 +803,17 @@ IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日�
 wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
+
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
+</details>
 
 ## 手动配置 IKEv2
 

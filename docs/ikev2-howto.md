@@ -59,6 +59,17 @@ wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
+```
+</details>
+
 Then run the script using the instructions above.
 </details>
 <details>
@@ -771,6 +782,19 @@ wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
 sudo bash ikev2changeaddr.sh
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+# Download the script
+wget -nv -O ikev2changeaddr.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2changeaddr.sh
+# Run the script and follow the prompts
+sudo bash ikev2changeaddr.sh
+```
+</details>
+
 **Important:** After running this script, you must manually update the server address (and remote ID, if applicable) on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).
 
 ## Update IKEv2 helper script
@@ -781,6 +805,17 @@ The IKEv2 helper script is updated from time to time for bug fixes and improveme
 wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
+
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
+```
+</details>
 
 ## Manually set up IKEv2
 

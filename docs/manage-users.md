@@ -39,6 +39,17 @@ wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget -nv -O /opt/src/addvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/add_vpn_user.sh
+chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
+```
+</details>
+
 Then run the script using the instructions.
 </details>
 
@@ -74,6 +85,17 @@ wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget -nv -O /opt/src/delvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/del_vpn_user.sh
+chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
+```
+</details>
+
 Then run the script using the instructions.
 </details>
 
@@ -94,6 +116,16 @@ First, download the script:
 ```bash
 wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 ```
+
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+wget -nv -O updatevpnusers.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/update_vpn_users.sh
+```
+</details>
 
 To use this script, choose one of the following options:
 

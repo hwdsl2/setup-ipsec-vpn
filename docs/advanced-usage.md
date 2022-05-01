@@ -49,6 +49,19 @@ wget -nv -O ikev2onlymode.sh https://get.vpnsetup.net/ikev2only
 sudo bash ikev2onlymode.sh
 ```
 
+<details>
+<summary>
+Alternative script URL.
+</summary>
+
+```bash
+# Download the script
+wget -nv -O ikev2onlymode.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2onlymode.sh
+# Run the script and follow the prompts
+sudo bash ikev2onlymode.sh
+```
+</details>
+
 To disable IKEv2-only mode, run the helper script again and select the appropriate option.
 
 <details>
