@@ -44,7 +44,7 @@ To enable IKEv2-only mode, first install the VPN server and set up IKEv2 using i
 
 ```bash
 # Download the script
-wget -nv -O ikev2onlymode.sh https://bit.ly/ikev2onlymode
+wget -nv -O ikev2onlymode.sh https://get.vpnsetup.net/ikev2only
 # Run the script and follow the prompts
 sudo bash ikev2onlymode.sh
 ```

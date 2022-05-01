@@ -764,7 +764,7 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
 ```bash
 # 下载脚本
-wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
 # 运行脚本并按照提示操作
 sudo bash ikev2changeaddr.sh
 ```

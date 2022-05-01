@@ -766,7 +766,7 @@ To change the server address, run this [helper script](../extras/ikev2changeaddr
 
 ```bash
 # Download the script
-wget -nv -O ikev2changeaddr.sh https://bit.ly/ikev2changeaddr
+wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
 # Run the script and follow the prompts
 sudo bash ikev2changeaddr.sh
 ```

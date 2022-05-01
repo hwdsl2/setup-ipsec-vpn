@@ -228,18 +228,6 @@ Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](htt
 wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 ```
 
-<details>
-<summary>
-Alternative one-liner.
-</summary>
-
-Alternative update URL:
-
-```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
-```
-</details>
-
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
 
 **Note:** `xl2tpd` can be updated using your system's package manager, such as `apt-get` on Ubuntu/Debian.

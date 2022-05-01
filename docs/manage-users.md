@@ -35,7 +35,7 @@ Error: "sudo: addvpnuser.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the helper script:
 
 ```bash
-wget -nv -O /opt/src/addvpnuser.sh https://bit.ly/addvpnuser
+wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
@@ -70,7 +70,7 @@ Error: "sudo: delvpnuser.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the helper script:
 
 ```bash
-wget -nv -O /opt/src/delvpnuser.sh https://bit.ly/delvpnuser
+wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
@@ -92,7 +92,7 @@ Remove all existing VPN users and replace with the list of users you specify.
 First, download the script:
 
 ```bash
-wget -nv -O updatevpnusers.sh https://bit.ly/updatevpnusers
+wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 ```
 
 To use this script, choose one of the following options:
