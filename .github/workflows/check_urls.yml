@@ -31,9 +31,9 @@ jobs:
           sudo apt-get -yqq install wget curl
 
           wg="wget -t 3 -T 30 -nv -O"
+          gi="https://git.io"
           gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
           gl="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master"
-          gi="https://git.io"
           vn="https://get.vpnsetup.net"
 
           $wg vpnsetup.sh          "$gi/vpnsetup"
@@ -62,13 +62,19 @@ jobs:
           $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"
           $wg ikev2setup3.sh        "$vn/ikev2"
           $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"
-          $wg vpnupgrade3.sh        "$gl/extras/vpnupgrade.sh"
-          $wg vpnupgrade4.sh        "$vn/upg"
+          $wg vpnupgrade3.sh        "$vn/upg"
           $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"
           $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"
           $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"
           $wg vpnupgrade_alpine2.sh "$gh/extras/vpnupgrade_alpine.sh"
           $wg vpnuninstall2.sh      "$gh/extras/vpnuninstall.sh"
+
+          $wg vpnuninstall.sh     "$vn/unst"
+          $wg ikev2onlymode.sh    "$vn/ikev2only"
+          $wg ikev2changeaddr.sh  "$vn/ikev2addr"
+          $wg add_vpn_user.sh     "$vn/adduser"
+          $wg del_vpn_user.sh     "$vn/deluser"
+          $wg update_vpn_users.sh "$vn/updateusers"
 
           diff vpnsetup.sh          ../vpnsetup.sh
           diff vpnsetup_centos.sh   ../vpnsetup_centos.sh
@@ -97,12 +103,18 @@ jobs:
           diff ikev2setup3.sh        ../extras/ikev2setup.sh
           diff vpnupgrade2.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade3.sh        ../extras/vpnupgrade.sh
-          diff vpnupgrade4.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
           diff vpnupgrade_amzn2.sh   ../extras/vpnupgrade_amzn.sh
           diff vpnupgrade_ubuntu2.sh ../extras/vpnupgrade_ubuntu.sh
           diff vpnupgrade_alpine2.sh ../extras/vpnupgrade_alpine.sh
           diff vpnuninstall2.sh      ../extras/vpnuninstall.sh
+
+          diff vpnuninstall.sh     ../extras/vpnuninstall.sh
+          diff ikev2onlymode.sh    ../extras/ikev2onlymode.sh
+          diff ikev2changeaddr.sh  ../extras/ikev2changeaddr.sh
+          diff add_vpn_user.sh     ../extras/add_vpn_user.sh
+          diff del_vpn_user.sh     ../extras/del_vpn_user.sh
+          diff update_vpn_users.sh ../extras/update_vpn_users.sh
 
           url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
           url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
@@ -113,11 +125,3 @@ jobs:
           $wg 1.deb "$url1/$deb1"
           $wg 2.deb "$url1/$deb2"
           $wg 3.deb "$url2/$deb3"
-
-          bl="https://bit.ly"
-          curl -fsSI "$bl/addvpnuser"      | grep -q 'add_vpn_user.sh'
-          curl -fsSI "$bl/delvpnuser"      | grep -q 'del_vpn_user.sh'
-          curl -fsSI "$bl/updatevpnusers"  | grep -q 'update_vpn_users.sh'
-          curl -fsSI "$bl/ikev2onlymode"   | grep -q 'ikev2onlymode.sh'
-          curl -fsSI "$bl/ikev2changeaddr" | grep -q 'ikev2changeaddr.sh'
-          curl -fsSI "$bl/vpnuninstall"    | grep -q 'vpnuninstall.sh'
