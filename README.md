@@ -176,14 +176,14 @@ Click here if you are unable to download using wget.
 You may also use `curl` to download. For example:
 
 ```bash
-curl -fsSL https://get.vpnsetup.net -o vpn.sh
+curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
 Alternative setup URL:
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
+curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
 sudo sh vpn.sh
 ```
 

@@ -176,14 +176,14 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 你也可以使用 `curl` 下载。例如：
 
 ```bash
-curl -fsSL https://get.vpnsetup.net -o vpn.sh
+curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
 或者，你也可以使用这个链接：
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
+curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
 sudo sh vpn.sh
 ```
 
