@@ -32,6 +32,8 @@ After following this guide, you will be able to connect to the VPN using IKEv2 i
 
 ## Set up IKEv2 using helper script
 
+**Note:** By default, IKEv2 is automatically set up when running the VPN setup script. You may skip this section and continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
+
 **Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
 
 Use this [helper script](../extras/ikev2setup.sh) to automatically set up IKEv2 on the VPN server:
