@@ -9,7 +9,7 @@ Customizable with the following options:
  - Username for VPN **and** SSH
  - Password for VPN **and** SSH
  - IPsec Pre-Shared Key for VPN
- - Operating System Image (Ubuntu 20.04/18.04 or Debian 9)
+ - Operating System Image (Ubuntu 22.04/20.04/18.04 or Debian 9)
  - Virtual Machine Size (Default: Standard_B1s)
 
 **Note:** DO NOT use these special characters within values: `\ " '`
@@ -29,4 +29,10 @@ Copyright (C) 2017-2022 [Lin Song](https://github.com/hwdsl2)
 
 ## Screenshot
 
+<details>
+<summary>
+Click to see screenshot.
+</summary>
+
 ![Azure Custom Deployment](custom_deployment_screenshot.png)
+</details>

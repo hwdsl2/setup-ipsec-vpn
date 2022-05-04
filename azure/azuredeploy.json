@@ -24,13 +24,14 @@
     "image": {
       "type": "string",
       "allowedValues": [
+        "ubuntu22.04",
         "ubuntu20.04",
         "ubuntu18.04",
         "debian9"
       ],
-      "defaultValue": "ubuntu20.04",
+      "defaultValue": "ubuntu22.04",
       "metadata": {
-        "description": "OS to use. Ubuntu 20.04/18.04 or Debian 9."
+        "description": "OS to use. Ubuntu 22.04/20.04/18.04 or Debian 9."
       }
     },
     "VMSize": {
@@ -61,6 +62,12 @@
     "vhdStorageType": "Standard_LRS",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "SubnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
+    "ubuntu22.04": {
+      "publisher": "Canonical",
+      "offer": "0001-com-ubuntu-server-jammy",
+      "sku": "22_04-lts",
+      "version": "latest"
+    },
     "ubuntu20.04": {
       "publisher": "Canonical",
       "offer": "0001-com-ubuntu-server-focal",
@@ -179,7 +186,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageName'))).primaryEndpoints.blob, 'vmachines/', variables('vmName'), '.vhd')]"              
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageName'))).primaryEndpoints.blob, 'vmachines/', variables('vmName'), '.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -192,7 +199,7 @@
             }
           ]
         }
-      } 
+      }
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
