@@ -39,7 +39,7 @@ wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 
 <details>
 <summary>
-或者，你也可以使用这些命令。
+或者，你也可以使用以下命令。
 </summary>
 
 你也可以使用 `curl` 下载：
@@ -48,11 +48,7 @@ wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
-或者，你也可以使用这个链接：
-
-```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
-```
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 <details>
 <summary>
@@ -170,7 +166,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-如果无法通过 wget 下载，点这里查看解决方案。
+如果无法使用 wget 下载，请点这里。
 </summary>
 
 你也可以使用 `curl` 下载。例如：
@@ -180,14 +176,7 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，你也可以使用这个链接：
-
-```bash
-curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
-sudo sh vpn.sh
-```
-
-或者，打开 [vpnsetup.sh](vpnsetup.sh) 并点击右方的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 下一步
@@ -233,9 +222,13 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 或者，你也可以使用以下命令。
 </summary>
 
+你也可以使用 `curl` 下载：
+
 ```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
+curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
 ```
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 当前支持的 Libreswan 最新版本是 `4.6`。查看已安装版本：`ipsec --version`。

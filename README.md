@@ -39,7 +39,7 @@ Your VPN login details will be randomly generated, and displayed when finished.
 
 <details>
 <summary>
-Alternative one-liners.
+Alternative one-liner.
 </summary>
 
 You may also use `curl` to download:
@@ -48,11 +48,7 @@ You may also use `curl` to download:
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
-Alternative setup URL:
-
-```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
-```
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 <details>
 <summary>
@@ -180,14 +176,7 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternative setup URL:
-
-```bash
-curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
-sudo sh vpn.sh
-```
-
-Alternatively, open [vpnsetup.sh](vpnsetup.sh) and click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps
@@ -233,9 +222,13 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 Alternative one-liner.
 </summary>
 
+You may also use `curl` to download:
+
 ```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -qO vpnup.sh && sudo sh vpnup.sh
+curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
 ```
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
