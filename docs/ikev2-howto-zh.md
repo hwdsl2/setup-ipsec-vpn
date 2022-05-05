@@ -61,18 +61,9 @@ wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
-<details>
-<summary>
-或者，你也可以使用以下命令。
-</summary>
-
-```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
-```
-</details>
-
 然后按照上面的说明运行脚本。
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 <details>
 <summary>
@@ -576,7 +567,10 @@ sudo ikev2.sh --exportclient [client name]
 sudo ikev2.sh --deleteclient [client name]
 ```
 
-或者，你也可以手动删除一个客户端证书：
+<details>
+<summary>
+或者，你也可以手动删除一个客户端证书。
+</summary>
 
 1. 列出 IPsec 证书数据库中的证书：
 
@@ -603,6 +597,7 @@ sudo ikev2.sh --deleteclient [client name]
    ```
 
 1. （可选步骤）删除之前为该客户端生成的配置文件（`.p12`, `.mobileconfig` 和 `.sswan` 文件），如果存在。
+</details>
 </details>
 
 ### 吊销客户端证书
@@ -784,15 +779,10 @@ sudo bash ikev2changeaddr.sh
 
 <details>
 <summary>
-或者，你也可以使用以下命令。
+如果无法下载，请点这里。
 </summary>
 
-```bash
-# 下载脚本
-wget -nv -O ikev2changeaddr.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2changeaddr.sh
-# 运行脚本并按照提示操作
-sudo bash ikev2changeaddr.sh
-```
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2changeaddr.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 **重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
@@ -808,13 +798,10 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 
 <details>
 <summary>
-或者，你也可以使用以下命令。
+如果无法下载，请点这里。
 </summary>
 
-```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 ## 手动配置 IKEv2

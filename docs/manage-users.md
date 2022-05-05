@@ -39,18 +39,9 @@ wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
-<details>
-<summary>
-Alternative script URL.
-</summary>
-
-```bash
-wget -nv -O /opt/src/addvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/add_vpn_user.sh
-chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
-```
-</details>
-
 Then run the script using the instructions.
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/add_vpn_user.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 Alternatively, you can run the script with arguments:
@@ -85,18 +76,9 @@ wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
-<details>
-<summary>
-Alternative script URL.
-</summary>
-
-```bash
-wget -nv -O /opt/src/delvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/del_vpn_user.sh
-chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
-```
-</details>
-
 Then run the script using the instructions.
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/del_vpn_user.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 Alternatively, you can run the script with arguments:
@@ -119,12 +101,10 @@ wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 
 <details>
 <summary>
-Alternative script URL.
+Click here if you are unable to download.
 </summary>
 
-```bash
-wget -nv -O updatevpnusers.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/update_vpn_users.sh
-```
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/update_vpn_users.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 To use this script, choose one of the following options:

@@ -61,18 +61,9 @@ wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
-<details>
-<summary>
-Alternative script URL.
-</summary>
-
-```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
-```
-</details>
-
 Then run the script using the instructions above.
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 <details>
 <summary>
@@ -578,7 +569,10 @@ To delete a client certificate:
 sudo ikev2.sh --deleteclient [client name]
 ```
 
-Alternatively, you can manually delete a client certificate:
+<details>
+<summary>
+Alternatively, you can manually delete a client certificate.
+</summary>
 
 1. List certificates in the IPsec database:
 
@@ -605,6 +599,7 @@ Alternatively, you can manually delete a client certificate:
    ```
 
 1. (Optional) Delete the previously generated client configuration files (`.p12`, `.mobileconfig` and `.sswan` files) for this VPN client, if any.
+</details>
 </details>
 
 ### Revoke a client certificate
@@ -786,15 +781,10 @@ sudo bash ikev2changeaddr.sh
 
 <details>
 <summary>
-Alternative script URL.
+Click here if you are unable to download.
 </summary>
 
-```bash
-# Download the script
-wget -nv -O ikev2changeaddr.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2changeaddr.sh
-# Run the script and follow the prompts
-sudo bash ikev2changeaddr.sh
-```
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2changeaddr.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 **Important:** After running this script, you must manually update the server address (and remote ID, if applicable) on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).
@@ -810,13 +800,10 @@ chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 
 <details>
 <summary>
-Alternative script URL.
+Click here if you are unable to download.
 </summary>
 
-```bash
-wget https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2setup.sh -nv -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
-```
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Manually set up IKEv2

@@ -51,15 +51,10 @@ sudo bash ikev2onlymode.sh
 
 <details>
 <summary>
-或者，你也可以使用以下命令。
+如果无法下载，请点这里。
 </summary>
 
-```bash
-# 下载脚本
-wget -nv -O ikev2onlymode.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/ikev2onlymode.sh
-# 运行脚本并按提示操作
-sudo bash ikev2onlymode.sh
-```
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2onlymode.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 要禁用仅限 IKEv2 模式，再次运行辅助脚本并选择适当的选项。

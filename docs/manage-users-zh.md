@@ -39,18 +39,9 @@ wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
-<details>
-<summary>
-或者，你也可以使用以下命令。
-</summary>
-
-```bash
-wget -nv -O /opt/src/addvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/add_vpn_user.sh
-chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
-```
-</details>
-
 然后按照说明运行脚本。
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/add_vpn_user.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 另外，你也可以在添加参数的情况下运行脚本：
@@ -85,18 +76,9 @@ wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
-<details>
-<summary>
-或者，你也可以使用以下命令。
-</summary>
-
-```bash
-wget -nv -O /opt/src/delvpnuser.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/del_vpn_user.sh
-chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
-```
-</details>
-
 然后按照说明运行脚本。
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/del_vpn_user.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 另外，你也可以在添加参数的情况下运行脚本：
@@ -119,12 +101,10 @@ wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 
 <details>
 <summary>
-或者，你也可以使用以下命令。
+如果无法下载，请点这里。
 </summary>
 
-```bash
-wget -nv -O updatevpnusers.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/update_vpn_users.sh
-```
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/update_vpn_users.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 要使用这个脚本，从以下选项中选择一个：

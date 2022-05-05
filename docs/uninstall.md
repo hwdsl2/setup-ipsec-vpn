@@ -16,13 +16,10 @@ sudo bash vpnunst.sh
 
 <details>
 <summary>
-Alternative script URL.
+Click here if you are unable to download.
 </summary>
 
-```bash
-wget -nv -O vpnunst.sh https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
-sudo bash vpnunst.sh
-```
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 When finished, reboot your server.
