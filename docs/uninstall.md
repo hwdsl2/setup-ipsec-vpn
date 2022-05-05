@@ -14,6 +14,8 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
+When finished, reboot your server. This is optional, but recommended.
+
 <details>
 <summary>
 Click here if you are unable to download.
@@ -21,8 +23,6 @@ Click here if you are unable to download.
 
 If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
-
-When finished, reboot your server.
 
 ## Manually uninstall the VPN
 
