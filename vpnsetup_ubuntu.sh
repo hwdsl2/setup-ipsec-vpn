@@ -80,7 +80,6 @@ check_os() {
       exiterr "This script only supports Ubuntu and Debian."
       ;;
   esac
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
   if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
     exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
@@ -536,19 +535,6 @@ apply_gcp_mtu_fix() {
   fi
 }
 
-apply_xl2tpd_fix() {
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bookwormsid" ] && [ "$os_arch" = "x86_64" ]; then
-    xl2tpd_url="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd"
-    deb_file="xl2tpd_1.3.16-1ubuntu0.1_amd64.deb"
-    cd /opt/src || exit 1
-    if wget -t 3 -T 30 -q -O "$deb_file" "$xl2tpd_url/$deb_file"; then
-      bigecho "Applying fix for xl2tpd..."
-      apt-get -yqq install "./$deb_file" >/dev/null
-    fi
-    /bin/rm -f "$deb_file"
-  fi
-}
-
 enable_on_boot() {
   bigecho "Enabling services on boot..."
   IPT_PST=/etc/init.d/iptables-persistent
@@ -701,7 +687,6 @@ vpnsetup() {
   create_vpn_config
   update_sysctl
   update_iptables
-  apply_xl2tpd_fix
   apply_gcp_mtu_fix
   enable_on_boot
   start_services
