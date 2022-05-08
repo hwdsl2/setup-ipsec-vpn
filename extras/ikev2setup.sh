@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   30 Apr 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   8 May 2022
 
 EOF
 }
@@ -1300,6 +1300,15 @@ cat 1>&2 <<EOF
 Error: IKEv2 configuration section found in $IPSEC_CONF.
        This script cannot automatically remove IKEv2 from this server.
        To manually remove IKEv2, see vpnsetup.net/ikev2
+EOF
+    abort_and_exit
+  fi
+  if grep -qs "ikev1-policy=drop" "$IPSEC_CONF" \
+    || grep -qs "ikev1-policy=reject" "$IPSEC_CONF"; then
+cat 1>&2 <<EOF
+Error: IKEv2-only mode is currently enabled on this VPN server.
+       You must first disable IKEv2-only mode before removing IKEv2.
+       Otherwise, you will NOT be able to connect to this VPN server.
 EOF
     abort_and_exit
   fi
