@@ -187,6 +187,7 @@ update_sysctl() {
       sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
     fi
     echo 0 > /proc/sys/net/ipv4/ip_forward
+    echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
   fi
 }
 
@@ -310,7 +311,7 @@ remove_vpn() {
 
 print_vpn_removed() {
   echo
-  echo "IPsec VPN removed! Please reboot your server. This is optional, but recommended."
+  echo "IPsec VPN removed!"
 }
 
 vpnuninstall() {
