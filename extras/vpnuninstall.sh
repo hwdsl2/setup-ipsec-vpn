@@ -310,7 +310,7 @@ remove_vpn() {
 
 print_vpn_removed() {
   echo
-  echo "IPsec VPN removed! Please reboot your server."
+  echo "IPsec VPN removed! Please reboot your server. This is optional, but recommended."
 }
 
 vpnuninstall() {

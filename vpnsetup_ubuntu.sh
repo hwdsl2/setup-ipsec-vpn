@@ -633,7 +633,7 @@ IKEv2 guide:       vpnsetup.net/ikev2
 EOF
   if [ ! -e /dev/ppp ]; then
 cat <<'EOF'
-Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
+WARNING: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
          IKEv2 (vpnsetup.net/ikev2) or IPsec/XAuth mode to connect.
          Debian 11/10 users, see vpnsetup.net/debian10
 
