@@ -14,8 +14,6 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
-When finished, reboot your server. This is optional, but recommended.
-
 <details>
 <summary>
 Click here if you are unable to download.
