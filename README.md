@@ -166,7 +166,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-Click here if you are unable to download using wget.
+Click here if you are unable to download.
 </summary>
 
 You may also use `curl` to download. For example:
