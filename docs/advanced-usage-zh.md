@@ -6,6 +6,7 @@
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
 * [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
+* [自定义 VPN 子网](#自定义-vpn-子网)
 * [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
@@ -187,6 +188,39 @@ iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
+
+## 自定义 VPN 子网
+
+默认情况下，IPsec/L2TP VPN 客户端将使用内部 VPN 子网 `192.168.42.0/24`，而 IPsec/XAuth ("Cisco IPsec") 和 IKEv2 VPN 客户端将使用内部 VPN 子网 `192.168.43.0/24`。有关更多详细信息，请阅读上一节。
+
+对于大多数用例，没有必要也 **不建议** 自定义这些子网。但是，如果你的用例需要它，你可以在安装 VPN 时指定自定义子网。
+
+**重要：** 你只能在 **初始 VPN 安装时** 指定自定义子网。如果 IPsec VPN 已安装，你 **必须** 首先 [卸载 VPN](uninstall-zh.md)，然后指定自定义子网并重新安装。否则，VPN 可能会停止工作。
+
+<details>
+<summary>
+首先，请阅读上面的重要说明。然后点这里查看示例。
+</summary>
+
+```
+# 示例：为 IPsec/L2TP 模式指定自定义 VPN 子网
+# 注：必须指定所有三个变量。
+sudo VPN_L2TP_NET=10.1.0.0/16 \
+VPN_L2TP_LOCAL=10.1.0.1 \
+VPN_L2TP_POOL=10.1.0.10-10.1.254.254 \
+sh vpn.sh
+```
+
+```
+# 示例：为 IPsec/XAuth 和 IKEv2 模式指定自定义 VPN 子网
+# 注：必须指定以下两个变量。
+sudo VPN_XAUTH_NET=10.2.0.0/16 \
+VPN_XAUTH_POOL=10.2.0.10-10.2.254.254 \
+sh vpn.sh
+```
+
+在上面的例子中，`VPN_L2TP_LOCAL` 是在 IPsec/L2TP 模式下的 VPN 服务器的内网 IP。`VPN_L2TP_POOL` 和 `VPN_XAUTH_POOL` 是为 VPN 客户端自动分配的 IP 地址池。
+</details>
 
 ## 转发端口到 VPN 客户端
 

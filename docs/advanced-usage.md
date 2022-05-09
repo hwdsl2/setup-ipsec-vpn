@@ -6,6 +6,7 @@
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 * [IKEv2-only VPN](#ikev2-only-vpn)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
+* [Customize VPN subnets](#customize-vpn-subnets)
 * [Port forwarding to VPN clients](#port-forwarding-to-vpn-clients)
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
@@ -187,6 +188,39 @@ iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
+
+## Customize VPN subnets
+
+By default, IPsec/L2TP VPN clients will use internal VPN subnet `192.168.42.0/24`, while IPsec/XAuth ("Cisco IPsec") and IKEv2 VPN clients will use internal VPN subnet `192.168.43.0/24`. For more details, read the previous section.
+
+For most use cases, it is NOT necessary and NOT recommended to customize these subnets. If your use case requires it, however, you may specify custom subnet(s) when installing the VPN.
+
+**Important:** You may only specify custom subnets **during initial VPN install**. If the IPsec VPN is already installed, you **must** first [uninstall the VPN](uninstall.md), then specify custom subnets and re-install. Otherwise, the VPN may stop working.
+
+<details>
+<summary>
+First, read the important note above. Then click here for examples.
+</summary>
+
+```
+# Example: Specify custom VPN subnet for IPsec/L2TP mode
+# Note: All three variables must be specified.
+sudo VPN_L2TP_NET=10.1.0.0/16 \
+VPN_L2TP_LOCAL=10.1.0.1 \
+VPN_L2TP_POOL=10.1.0.10-10.1.254.254 \
+sh vpn.sh
+```
+
+```
+# Example: Specify custom VPN subnet for IPsec/XAuth and IKEv2 modes
+# Note: Both variables must be specified.
+sudo VPN_XAUTH_NET=10.2.0.0/16 \
+VPN_XAUTH_POOL=10.2.0.10-10.2.254.254 \
+sh vpn.sh
+```
+
+In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPsec/L2TP mode. `VPN_L2TP_POOL` and `VPN_XAUTH_POOL` are the pools of auto-assigned IP addresses for VPN clients.
+</details>
 
 ## Port forwarding to VPN clients
 
