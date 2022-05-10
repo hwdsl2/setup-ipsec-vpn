@@ -154,6 +154,17 @@ check_client_name() {
   fi
 }
 
+check_subnets() {
+  if [ -n "$VPN_L2TP_NET" ] || [ -n "$VPN_L2TP_LOCAL" ] || [ -n "$VPN_L2TP_POOL" ] \
+    || [ -n "$VPN_XAUTH_NET" ] || [ -n "$VPN_XAUTH_POOL" ]; then
+    if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
+      echo "Error: You may only specify custom subnets during initial VPN install." >&2
+      echo "       See Advanced usage -> Customize VPN subnets for more information." >&2
+      exit 1
+    fi
+  fi
+}
+
 check_iptables() {
   if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
     exiterr "IPTables check failed. Reboot and re-run this script."
@@ -672,6 +683,7 @@ vpnsetup() {
   check_dns
   check_server_dns
   check_client_name
+  check_subnets
   check_iptables
   check_libreswan
   start_setup

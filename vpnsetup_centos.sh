@@ -156,6 +156,17 @@ check_client_name() {
   fi
 }
 
+check_subnets() {
+  if [ -n "$VPN_L2TP_NET" ] || [ -n "$VPN_L2TP_LOCAL" ] || [ -n "$VPN_L2TP_POOL" ] \
+    || [ -n "$VPN_XAUTH_NET" ] || [ -n "$VPN_XAUTH_POOL" ]; then
+    if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
+      echo "Error: You may only specify custom subnets during initial VPN install." >&2
+      echo "       See Advanced usage -> Customize VPN subnets for more information." >&2
+      exit 1
+    fi
+  fi
+}
+
 start_setup() {
   bigecho "VPN setup in progress... Please be patient."
   mkdir -p /opt/src
@@ -700,6 +711,7 @@ vpnsetup() {
   check_dns
   check_server_dns
   check_client_name
+  check_subnets
   check_libreswan
   start_setup
   install_setup_pkgs
