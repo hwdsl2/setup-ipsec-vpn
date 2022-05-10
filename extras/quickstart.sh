@@ -197,14 +197,6 @@ check_client_name() {
   fi
 }
 
-check_iptables() {
-  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
-    if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
-      exiterr "IPTables check failed. Reboot and re-run this script."
-    fi
-  fi
-}
-
 wait_for_apt() {
   count=0
   apt_lk=/var/lib/apt/lists/lock
@@ -298,7 +290,6 @@ vpnsetup() {
   check_dns
   check_server_dns
   check_client_name
-  check_iptables
   install_pkgs
   get_setup_url
   run_setup
