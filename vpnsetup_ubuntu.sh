@@ -63,6 +63,17 @@ check_vz() {
   fi
 }
 
+check_lxc() {
+  # shellcheck disable=SC2154
+  if [ "$container" = "lxc" ] && [ ! -e /dev/ppp ]; then
+cat 1>&2 <<'EOF'
+Error: /dev/ppp is missing. LXC containers require configuration.
+       See: https://github.com/hwdsl2/setup-ipsec-vpn/issues/1014
+EOF
+  exit 1
+  fi
+}
+
 check_os() {
   os_type=$(lsb_release -si 2>/dev/null)
   [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
@@ -677,6 +688,7 @@ EOF
 vpnsetup() {
   check_root
   check_vz
+  check_lxc
   check_os
   check_iface
   check_creds
