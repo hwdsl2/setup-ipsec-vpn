@@ -33,8 +33,6 @@ jobs:
           wg="wget -t 3 -T 30 -nv -O"
           gi="https://git.io"
           gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
-          gl="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master"
-          vn="https://get.vpnsetup.net"
 
           $wg vpnsetup.sh          "$gi/vpnsetup"
           $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"
@@ -52,29 +50,23 @@ jobs:
           $wg vpnuninstall.sh      "$gi/vpnuninstall"
 
           $wg vpnsetup2.sh          "$gh/vpnsetup.sh"
-          $wg vpnsetup3.sh          "$gl/vpnsetup.sh"
-          $wg vpnsetup4.sh          "$vn"
           $wg vpnsetup_centos2.sh   "$gh/vpnsetup_centos.sh"
           $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"
           $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"
           $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"
           $wg quickstart2.sh        "$gh/extras/quickstart.sh"
           $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"
-          $wg ikev2setup3.sh        "$vn/ikev2"
           $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"
-          $wg vpnupgrade3.sh        "$vn/upg"
           $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"
           $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"
           $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"
           $wg vpnupgrade_alpine2.sh "$gh/extras/vpnupgrade_alpine.sh"
           $wg vpnuninstall2.sh      "$gh/extras/vpnuninstall.sh"
-
-          $wg vpnuninstall.sh     "$vn/unst"
-          $wg ikev2onlymode.sh    "$vn/ikev2only"
-          $wg ikev2changeaddr.sh  "$vn/ikev2addr"
-          $wg add_vpn_user.sh     "$vn/adduser"
-          $wg del_vpn_user.sh     "$vn/deluser"
-          $wg update_vpn_users.sh "$vn/updateusers"
+          $wg add_vpn_user2.sh      "$gh/extras/add_vpn_user.sh"
+          $wg del_vpn_user2.sh      "$gh/extras/del_vpn_user.sh"
+          $wg update_vpn_users2.sh  "$gh/extras/update_vpn_users.sh"
+          $wg ikev2changeaddr2.sh   "$gh/extras/ikev2changeaddr.sh"
+          $wg ikev2onlymode2.sh     "$gh/extras/ikev2onlymode.sh"
 
           diff vpnsetup.sh          ../vpnsetup.sh
           diff vpnsetup_centos.sh   ../vpnsetup_centos.sh
@@ -92,29 +84,23 @@ jobs:
           diff vpnuninstall.sh      ../extras/vpnuninstall.sh
 
           diff vpnsetup2.sh          ../vpnsetup.sh
-          diff vpnsetup3.sh          ../vpnsetup.sh
-          diff vpnsetup4.sh          ../vpnsetup.sh
           diff vpnsetup_centos2.sh   ../vpnsetup_centos.sh
           diff vpnsetup_amzn2.sh     ../vpnsetup_amzn.sh
           diff vpnsetup_ubuntu2.sh   ../vpnsetup_ubuntu.sh
           diff vpnsetup_alpine2.sh   ../vpnsetup_alpine.sh
           diff quickstart2.sh        ../extras/quickstart.sh
           diff ikev2setup2.sh        ../extras/ikev2setup.sh
-          diff ikev2setup3.sh        ../extras/ikev2setup.sh
           diff vpnupgrade2.sh        ../extras/vpnupgrade.sh
-          diff vpnupgrade3.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
           diff vpnupgrade_amzn2.sh   ../extras/vpnupgrade_amzn.sh
           diff vpnupgrade_ubuntu2.sh ../extras/vpnupgrade_ubuntu.sh
           diff vpnupgrade_alpine2.sh ../extras/vpnupgrade_alpine.sh
           diff vpnuninstall2.sh      ../extras/vpnuninstall.sh
-
-          diff vpnuninstall.sh     ../extras/vpnuninstall.sh
-          diff ikev2onlymode.sh    ../extras/ikev2onlymode.sh
-          diff ikev2changeaddr.sh  ../extras/ikev2changeaddr.sh
-          diff add_vpn_user.sh     ../extras/add_vpn_user.sh
-          diff del_vpn_user.sh     ../extras/del_vpn_user.sh
-          diff update_vpn_users.sh ../extras/update_vpn_users.sh
+          diff add_vpn_user2.sh      ../extras/add_vpn_user.sh
+          diff del_vpn_user2.sh      ../extras/del_vpn_user.sh
+          diff update_vpn_users2.sh  ../extras/update_vpn_users.sh
+          diff ikev2changeaddr2.sh   ../extras/ikev2changeaddr.sh
+          diff ikev2onlymode2.sh     ../extras/ikev2onlymode.sh
 
           url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
           url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
