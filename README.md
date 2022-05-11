@@ -205,7 +205,7 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, see [Advanced usage](docs/advanced-usage.md).
 
-Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` (or `linux-image-extra`) package and run `service xl2tpd restart`.
+Using kernel support could improve IPsec/L2TP performance. It is available on [all supported OS](#requirements). Ubuntu users should install the `linux-modules-extra-$(uname -r)` package and run `service xl2tpd restart`.
 
 The scripts will backup existing config files before making changes, with `.old-date-time` suffix.
 
