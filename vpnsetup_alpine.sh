@@ -501,15 +501,15 @@ start_services() {
   service xl2tpd restart >/dev/null 2>&1
   mkdir -p /etc/crontabs
   cron_cmd="rc-service -c ipsec zap start"
-if ! grep -qs "$cron_cmd" /etc/crontabs/root; then
+  if ! grep -qs "$cron_cmd" /etc/crontabs/root; then
 cat >> /etc/crontabs/root <<EOF
 * * * * * $cron_cmd
 * * * * * sleep 15; $cron_cmd
 * * * * * sleep 30; $cron_cmd
 * * * * * sleep 45; $cron_cmd
 EOF
-  touch /etc/crontabs/cron.update
-fi
+    touch /etc/crontabs/cron.update
+  fi
 }
 
 show_vpn_info() {

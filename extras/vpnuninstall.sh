@@ -291,6 +291,17 @@ EOF
   fi
 }
 
+update_crontabs() {
+  if [ "$os_type" = "alpine" ]; then
+    cron_cmd="rc-service -c ipsec zap start"
+    if grep -qs "$cron_cmd" /etc/crontabs/root; then
+      bigecho "Updating crontabs..."
+      sed -i "/$cron_cmd/d" /etc/crontabs/root
+      touch /etc/crontabs/cron.update
+    fi
+  fi
+}
+
 remove_config_files() {
   bigecho "Removing VPN configuration..."
   /bin/rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/options.xl2tpd* \
@@ -306,6 +317,7 @@ remove_vpn() {
   update_sysctl
   update_rclocal
   update_iptables_rules
+  update_crontabs
   remove_config_files
 }
 
