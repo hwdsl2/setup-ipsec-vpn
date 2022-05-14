@@ -51,12 +51,12 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Features
 
-- **New:** The faster IPsec/XAuth ("Cisco IPsec") and IKEv2 modes are supported
-- **New:** A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) of the VPN server is now available
 - Fully automated IPsec VPN server setup, no user input needed
-- Encapsulates all VPN traffic in UDP - does not need ESP protocol
-- Can be directly used as "user-data" for a new Amazon EC2 instance
-- Includes `sysctl.conf` optimizations for improved performance
+- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
+- Generates Apple profiles to auto-configure iOS and macOS clients
+- Supports Windows, macOS, iOS, Android and Linux as VPN clients
+- Includes helper scripts to manage VPN users and certificates
+- Detailed documentation for client setup, advanced usage and more
 
 ## Requirements
 

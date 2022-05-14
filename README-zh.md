@@ -51,12 +51,12 @@ curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 
 ## 功能特性
 
-- **新:** 增加支持更高效的 IPsec/XAuth ("Cisco IPsec") 和 IKEv2 模式
-- **新:** 现在可以下载 VPN 服务器的预构建 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
-- 封装所有的 VPN 流量在 UDP 协议，不需要 ESP 协议支持
-- 可直接作为 Amazon EC2 实例创建时的用户数据使用
-- 包含 `sysctl.conf` 优化设置，以达到更佳的传输性能
+- 支持具有强大和快速加密算法（例如 AES-GCM）的 IKEv2 模式
+- 生成 Apple 配置文件以自动配置 iOS 和 macOS 客户端
+- 支持 Windows、macOS、iOS、Android 和 Linux 作为 VPN 客户端
+- 包括辅助脚本以管理 VPN 用户和证书
+- 客户端设置、高级用法等的详细文档
 
 ## 系统要求
 
