@@ -2,28 +2,13 @@
 
 [![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
-Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2. All you need to do is provide your own VPN credentials, and let the scripts handle the rest.
+Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
-
-#### Table of Contents
-
-- [Quick start](#quick-start)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Next steps](#next-steps)
-- [Important notes](#important-notes)
-- [Upgrade Libreswan](#upgrade-libreswan)
-- [Manage VPN users](#manage-vpn-users)
-- [Advanced usage](#advanced-usage)
-- [Uninstallation](#uninstallation)
-- [Feedback & Questions](#feedback--questions)
-- [License](#license)
 
 ## Quick start
 
@@ -56,12 +41,13 @@ See the VPN script in action (terminal recording).
 </summary>
 
 **Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
+
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
 
-\* A cloud server, virtual private server (VPS) or dedicated server. OpenVZ VPS is not supported.
+\* A cloud server, virtual private server (VPS) or dedicated server.
 
 ## Features
 
@@ -74,7 +60,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 ## Requirements
 
-A cloud server, virtual private server (VPS) or dedicated server, freshly installed with one of the following OS:
+A cloud server, virtual private server (VPS) or dedicated server, freshly installed with:
 
 - Ubuntu 22.04, 20.04 or 18.04
 - Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) or 9

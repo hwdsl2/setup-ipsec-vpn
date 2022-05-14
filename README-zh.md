@@ -2,28 +2,13 @@
 
 [![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 
-使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP, Cisco IPsec 和 IKEv2 协议。你只需提供自己的 VPN 登录凭证，然后运行脚本自动完成安装。
+使用 Linux 脚本一键快速搭建自己的 IPsec VPN 服务器。支持 IPsec/L2TP, Cisco IPsec 和 IKEv2 协议。
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
 *其他语言版本: [English](README.md), [简体中文](README-zh.md).*
-
-#### 目录
-
-- [快速开始](#快速开始)
-- [功能特性](#功能特性)
-- [系统要求](#系统要求)
-- [安装说明](#安装说明)
-- [下一步](#下一步)
-- [重要提示](#重要提示)
-- [升级Libreswan](#升级libreswan)
-- [管理 VPN 用户](#管理-vpn-用户)
-- [高级用法](#高级用法)
-- [卸载说明](#卸载说明)
-- [问题和反馈](#问题和反馈)
-- [授权协议](#授权协议)
 
 ## 快速开始
 
@@ -56,12 +41,13 @@ curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 </summary>
 
 **注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据 **无效**。
+
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它选项以及客户端配置，请继续阅读以下部分。
 
-\* 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器。OpenVZ VPS 不受支持。
+\* 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器。
 
 ## 功能特性
 
