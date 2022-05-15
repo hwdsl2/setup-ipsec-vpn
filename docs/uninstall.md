@@ -14,14 +14,6 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
-<details>
-<summary>
-Click here if you are unable to download.
-</summary>
-
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
-</details>
-
 ## Manually uninstall the VPN
 
 Alternatively, you may manually uninstall the VPN by following these steps. Commands must be run as `root`, or with `sudo`.

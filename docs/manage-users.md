@@ -40,8 +40,6 @@ chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
 Then run the script using the instructions.
-
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/add_vpn_user.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 Alternatively, you can run the script with arguments:
@@ -77,8 +75,6 @@ chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
 Then run the script using the instructions.
-
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/del_vpn_user.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 Alternatively, you can run the script with arguments:
@@ -98,14 +94,6 @@ First, download the script:
 ```bash
 wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
 ```
-
-<details>
-<summary>
-Click here if you are unable to download.
-</summary>
-
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/update_vpn_users.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
-</details>
 
 To use this script, choose one of the following options:
 

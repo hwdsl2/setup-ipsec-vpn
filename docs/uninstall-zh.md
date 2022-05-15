@@ -14,14 +14,6 @@ wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
 sudo bash vpnunst.sh
 ```
 
-<details>
-<summary>
-如果无法下载，请点这里。
-</summary>
-
-如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
-</details>
-
 ## 手动卸载 VPN
 
 另外，你也可以手动卸载 VPN。按照以下步骤操作。这些命令需要用 `root` 账户运行，或者使用 `sudo`。
