@@ -239,32 +239,20 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgr
 
 请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
 
-- [使用辅助脚本管理 VPN 用户](docs/manage-users-zh.md#使用辅助脚本管理-vpn-用户)
-- [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
-- [查看或更改 IPsec PSK](docs/manage-users-zh.md#查看或更改-ipsec-psk)
-- [手动管理 VPN 用户](docs/manage-users-zh.md#手动管理-vpn-用户)
-
 ## 高级用法
 
 请参见 [高级用法](docs/advanced-usage-zh.md)。
 
-- [使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
-- [域名和更改服务器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
-- [仅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)
-- [VPN 内网 IP 和流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
-- [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)
-- [转发端口到 VPN 客户端](docs/advanced-usage-zh.md#转发端口到-vpn-客户端)
-- [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
-- [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
-- [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
-- [部署 Google BBR 拥塞控制](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制)
+## 卸载 VPN
 
-## 卸载说明
+**警告：** 此[辅助脚本](../extras/vpnuninstall.sh)将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
 
-请参见 [卸载 VPN](docs/uninstall-zh.md)。
+```bash
+wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
+sudo bash vpnunst.sh
+```
 
-- [使用辅助脚本卸载 VPN](docs/uninstall-zh.md#使用辅助脚本卸载-vpn)
-- [手动卸载 VPN](docs/uninstall-zh.md#手动卸载-vpn)
+更多信息请参见 [卸载 VPN](docs/uninstall-zh.md)。
 
 ## 问题和反馈
 
