@@ -38,6 +38,8 @@ curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```bash
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
 ```
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 <details>
 <summary>
@@ -229,6 +231,8 @@ curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
 ```bash
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
 ```
+
+如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
 当前支持的 Libreswan 最新版本是 `4.6`。查看已安装版本：`ipsec --version`。
@@ -245,11 +249,12 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgr
 
 ## 卸载 VPN
 
-**警告：** 此[辅助脚本](../extras/vpnuninstall.sh)将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
+**警告：** 此辅助脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
+
+要卸载 IPsec VPN，运行[辅助脚本](extras/vpnuninstall.sh)：
 
 ```bash
-wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
-sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
 ```
 
 更多信息请参见 [卸载 VPN](docs/uninstall-zh.md)。

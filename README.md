@@ -38,6 +38,8 @@ Alternative setup URL:
 ```bash
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
 ```
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 <details>
 <summary>
@@ -229,6 +231,8 @@ Alternative update URL:
 ```bash
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
 ```
+
+If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
@@ -245,11 +249,12 @@ See [Advanced usage](docs/advanced-usage.md).
 
 ## Uninstall the VPN
 
-**Warning:** This [helper script](../extras/vpnuninstall.sh) will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
+**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
+
+To uninstall IPsec VPN, run the [helper script](extras/vpnuninstall.sh):
 
 ```bash
-wget -nv -O vpnunst.sh https://get.vpnsetup.net/unst
-sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
 ```
 
 For more information, see [Uninstall the VPN](docs/uninstall.md).
