@@ -768,13 +768,13 @@ If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.
 
 In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. Note that the server address you specify on VPN client devices must **exactly match** the server address in the output of the IKEv2 helper script. Otherwise, devices may be unable to connect.
 
-To change the server address, run this [helper script](../extras/ikev2changeaddr.sh) and follow the prompts.
+To change the server address, run the [helper script](../extras/ikev2changeaddr.sh):
 
 ```bash
 # Download the script
-wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
+wget https://get.vpnsetup.net/ikev2addr -nv -O ikev2addr.sh
 # Run the script and follow the prompts
-sudo bash ikev2changeaddr.sh
+sudo bash ikev2addr.sh
 ```
 
 **Important:** After running this script, you must manually update the server address (and remote ID, if applicable) on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).

@@ -13,7 +13,7 @@ By default, a single user account for VPN login is created. If you wish to view 
 
 *Read this in other languages: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [简体中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户).*
 
-You may use helper scripts to [add](../extras/add_vpn_user.sh), [delete](../extras/del_vpn_user.sh) or [update all](../extras/update_vpn_users.sh) VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, please instead see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
+You may use helper scripts to add, delete or update VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
 **Note:** Replace command arguments below with your own values. VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 
@@ -21,7 +21,7 @@ You may use helper scripts to [add](../extras/add_vpn_user.sh), [delete](../extr
 
 Add a new VPN user, or update an existing VPN user with a new password.
 
-Run the script and follow the prompts:
+Run the [helper script](../extras/add_vpn_user.sh) and follow the prompts:
 
 ```bash
 sudo addvpnuser.sh
@@ -35,7 +35,7 @@ Error: "sudo: addvpnuser.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the helper script:
 
 ```bash
-wget -nv -O /opt/src/addvpnuser.sh https://get.vpnsetup.net/adduser
+wget https://get.vpnsetup.net/adduser -nv -O /opt/src/addvpnuser.sh
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
@@ -56,7 +56,7 @@ sudo addvpnuser.sh 'username_to_update' 'new_password'
 
 Delete the specified VPN user.
 
-Run the script and follow the prompts:
+Run the [helper script](../extras/del_vpn_user.sh) and follow the prompts:
 
 ```bash
 sudo delvpnuser.sh
@@ -70,7 +70,7 @@ Error: "sudo: delvpnuser.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the helper script:
 
 ```bash
-wget -nv -O /opt/src/delvpnuser.sh https://get.vpnsetup.net/deluser
+wget https://get.vpnsetup.net/deluser -nv -O /opt/src/delvpnuser.sh
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
@@ -87,17 +87,17 @@ sudo delvpnuser.sh 'username_to_delete'
 
 ### Update all VPN users
 
-Remove all existing VPN users and replace with the list of users you specify.
+Remove **all existing VPN users** and replace with the list of users you specify.
 
-First, download the script:
+First, download the [helper script](../extras/update_vpn_users.sh):
 
 ```bash
-wget -nv -O updatevpnusers.sh https://get.vpnsetup.net/updateusers
+wget https://get.vpnsetup.net/updateusers -nv -O updatevpnusers.sh
 ```
 
-To use this script, choose one of the following options:
+**Important:** This script will remove **all existing VPN users** and replace with the list of users you specify. Therefore, you must include any existing user(s) you want to keep in the variables below.
 
-**Important:** This script will remove **ALL** existing VPN users and replace them with the list of users you specify. Therefore, you must include any existing user(s) you want to keep in the variables below.
+To use this script, choose one of the following options:
 
 **Option 1:** Edit the script and enter VPN user details:
 

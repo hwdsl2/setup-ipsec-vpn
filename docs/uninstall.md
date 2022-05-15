@@ -17,7 +17,7 @@ wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
 
 ## Manually uninstall the VPN
 
-Alternatively, you may manually uninstall the VPN by following these steps. Commands must be run as `root`, or with `sudo`.
+Alternatively, you may manually uninstall IPsec VPN by following these steps. Commands must be run as `root`, or with `sudo`.
 
 **Warning:** These steps will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
 

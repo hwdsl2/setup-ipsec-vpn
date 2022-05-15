@@ -766,13 +766,13 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
 在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。请注意，你在 VPN 客户端指定的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**，否则客户端可能无法连接。
 
-要更改服务器地址，运行这个 [辅助脚本](../extras/ikev2changeaddr.sh) 并按提示操作。
+要更改服务器地址，运行[辅助脚本](../extras/ikev2changeaddr.sh)：
 
 ```bash
 # 下载脚本
-wget -nv -O ikev2changeaddr.sh https://get.vpnsetup.net/ikev2addr
+wget https://get.vpnsetup.net/ikev2addr -nv -O ikev2addr.sh
 # 运行脚本并按照提示操作
-sudo bash ikev2changeaddr.sh
+sudo bash ikev2addr.sh
 ```
 
 **重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
