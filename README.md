@@ -53,10 +53,9 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 - Fully automated IPsec VPN server setup, no user input needed
 - Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
-- Generates Apple profiles to auto-configure iOS and macOS clients
+- Generates VPN profiles to auto-configure iOS, macOS and Android devices
 - Supports Windows, macOS, iOS, Android and Linux as VPN clients
 - Includes helper scripts to manage VPN users and certificates
-- Detailed documentation for client setup, advanced usage and more
 
 ## Requirements
 

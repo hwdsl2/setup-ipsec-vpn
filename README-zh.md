@@ -53,10 +53,9 @@ curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 支持具有强大和快速加密算法（例如 AES-GCM）的 IKEv2 模式
-- 生成 Apple 配置文件以自动配置 iOS 和 macOS 客户端
-- 支持 Windows、macOS、iOS、Android 和 Linux 作为 VPN 客户端
+- 生成 VPN 配置文件以自动配置 iOS, macOS 和 Android 设备
+- 支持 Windows, macOS, iOS, Android 和 Linux 作为 VPN 客户端
 - 包括辅助脚本以管理 VPN 用户和证书
-- 客户端设置、高级用法等的详细文档
 
 ## 系统要求
 
