@@ -33,6 +33,12 @@ wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
+或者，你也可以使用这个链接：
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
+```
+
 如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 <details>
@@ -161,6 +167,13 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
+或者，你也可以使用这个链接：
+
+```bash
+curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
+sudo sh vpn.sh
+```
+
 如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
@@ -211,6 +224,12 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
+```
+
+或者，你也可以使用这个链接：
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
 ```
 
 如果无法下载，点[这里](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh)查看脚本。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。

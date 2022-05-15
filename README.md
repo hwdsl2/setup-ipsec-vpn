@@ -24,13 +24,19 @@ Your VPN login details will be randomly generated, and displayed when finished.
 
 <details>
 <summary>
-Alternative one-liner.
+Alternative one-liners.
 </summary>
 
 You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
+```
+
+Alternative setup URL:
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
 ```
 
 If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
@@ -161,6 +167,13 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
+Alternative setup URL:
+
+```bash
+curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
+sudo sh vpn.sh
+```
+
 If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
@@ -204,13 +217,19 @@ wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-Alternative one-liner.
+Alternative one-liners.
 </summary>
 
 You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
+```
+
+Alternative update URL:
+
+```bash
+curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
 ```
 
 If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
