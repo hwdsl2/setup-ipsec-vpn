@@ -129,10 +129,12 @@ check_client_name() {
 }
 
 check_subnets() {
-  if [ -n "$VPN_L2TP_NET" ] || [ -n "$VPN_L2TP_LOCAL" ] || [ -n "$VPN_L2TP_POOL" ] \
-    || [ -n "$VPN_XAUTH_NET" ] || [ -n "$VPN_XAUTH_POOL" ]; then
-    if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-      echo "Error: You may only specify custom subnets during initial VPN install." >&2
+  if [ -s /etc/ipsec.conf ] && grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
+    L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
+    XAUTH_NET=${VPN_XAUTH_NET:-'192.168.43.0/24'}
+    if ! grep -q "$L2TP_NET" /etc/ipsec.conf \
+      || ! grep -q "$XAUTH_NET" /etc/ipsec.conf; then
+      echo "Error: The custom VPN subnets specified do not match initial install." >&2
       echo "       See Advanced usage -> Customize VPN subnets for more information." >&2
       exit 1
     fi
