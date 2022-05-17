@@ -39,7 +39,7 @@ Alternative setup URL:
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
 ```
 
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 <details>
 <summary>
@@ -174,7 +174,7 @@ curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o v
 sudo sh vpn.sh
 ```
 
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 ## Next steps
@@ -232,7 +232,7 @@ Alternative update URL:
 curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
 ```
 
-If you are unable to download, click [here](https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh) to view the script. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+If you are unable to download, open [vpnupgrade.sh](extras/vpnupgrade.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
 The latest supported Libreswan version is `4.6`. Check installed version: `ipsec --version`.
