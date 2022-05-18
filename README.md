@@ -43,35 +43,35 @@ If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `
 </details>
 <details>
 <summary>
-See the VPN script in action (terminal recording).
-</summary>
-
-**Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
-
-<p align="center"><img src="docs/images/script-demo.svg"></p>
-</details>
-<details>
-<summary>
 Optional: IPsec VPN + OpenVPN + WireGuard server.
 </summary>
 
 After successful installation of the IPsec VPN, advanced users can optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server. To ensure compatibility, the IPsec VPN must be installed first.
 
-To install OpenVPN ([Nyr/openvpn-install](https://github.com/Nyr/openvpn-install)):
+To install OpenVPN:
 
 ```bash
 wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
 sudo bash openvpn.sh
 ```
 
-To install WireGuard ([Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)):
+To install WireGuard:
 
 ```bash
 wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-Report any issues with these scripts in the linked GitHub repos above, not in this repo.
+These scripts are from [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [Nyr/wireguard-install](https://github.com/Nyr/wireguard-install), respectively. Report any related issues to the linked GitHub repos, not here.
+</details>
+<details>
+<summary>
+See the VPN script in action (terminal recording).
+</summary>
+
+**Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
+
+<p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
@@ -180,6 +180,29 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
+Optional: IPsec VPN + OpenVPN + WireGuard server.
+</summary>
+
+After successful installation of the IPsec VPN, advanced users can optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server. To ensure compatibility, the IPsec VPN must be installed first.
+
+To install OpenVPN:
+
+```bash
+wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
+sudo bash openvpn.sh
+```
+
+To install WireGuard:
+
+```bash
+wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
+sudo bash wireguard.sh
+```
+
+These scripts are from [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [Nyr/wireguard-install](https://github.com/Nyr/wireguard-install), respectively. Report any related issues to the linked GitHub repos, not here.
+</details>
+<details>
+<summary>
 Click here if you are unable to download.
 </summary>
 
@@ -198,29 +221,6 @@ sudo sh vpn.sh
 ```
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
-</details>
-<details>
-<summary>
-Optional: IPsec VPN + OpenVPN + WireGuard server.
-</summary>
-
-After successful installation of the IPsec VPN, advanced users can optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server. To ensure compatibility, the IPsec VPN must be installed first.
-
-To install OpenVPN ([Nyr/openvpn-install](https://github.com/Nyr/openvpn-install)):
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-To install WireGuard ([Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)):
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-Report any issues with these scripts in the linked GitHub repos above, not in this repo.
 </details>
 
 ## Next steps
