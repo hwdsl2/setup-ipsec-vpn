@@ -50,6 +50,29 @@ See the VPN script in action (terminal recording).
 
 <p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
+<details>
+<summary>
+Optional: IPsec VPN + OpenVPN + WireGuard server.
+</summary>
+
+After successful installation of the IPsec VPN, advanced users can optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server. To ensure compatibility, the IPsec VPN must be installed first.
+
+To install OpenVPN ([Nyr/openvpn-install](https://github.com/Nyr/openvpn-install)):
+
+```bash
+wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
+sudo bash openvpn.sh
+```
+
+To install WireGuard ([Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)):
+
+```bash
+wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
+sudo bash wireguard.sh
+```
+
+Report any issues with these scripts in the linked GitHub repos above, not in this repo.
+</details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
 
@@ -175,6 +198,29 @@ sudo sh vpn.sh
 ```
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+</details>
+<details>
+<summary>
+Optional: IPsec VPN + OpenVPN + WireGuard server.
+</summary>
+
+After successful installation of the IPsec VPN, advanced users can optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server. To ensure compatibility, the IPsec VPN must be installed first.
+
+To install OpenVPN ([Nyr/openvpn-install](https://github.com/Nyr/openvpn-install)):
+
+```bash
+wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
+sudo bash openvpn.sh
+```
+
+To install WireGuard ([Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)):
+
+```bash
+wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
+sudo bash wireguard.sh
+```
+
+Report any issues with these scripts in the linked GitHub repos above, not in this repo.
 </details>
 
 ## Next steps
