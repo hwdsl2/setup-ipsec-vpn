@@ -43,35 +43,35 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 </details>
 <details>
 <summary>
-可选：IPsec VPN + OpenVPN + WireGuard 服务器。
-</summary>
-
-成功安装 IPsec VPN 后，高级用户可以选择在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。为确保兼容性，必须先安装 IPsec VPN。
-
-要安装 OpenVPN:
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-要安装 WireGuard：
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-这些脚本分别来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)。任何相关问题都应该在链接的 GitHub 代码库中报告，而不是这里。
-</details>
-<details>
-<summary>
 查看 VPN 脚本的示例输出（终端记录）。
 </summary>
 
 **注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据 **无效**。
 
 <p align="center"><img src="docs/images/script-demo.svg"></p>
+</details>
+<details>
+<summary>
+搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
+</summary>
+
+成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
+
+安装 OpenVPN:
+
+```bash
+wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
+sudo bash openvpn.sh
+```
+
+安装 WireGuard:
+
+```bash
+wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
+sudo bash wireguard.sh
+```
+
+这些脚本来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install)，稍作改动以提高与 IPsec VPN 的兼容性。任何相关问题请到链接的 GitHub 代码库中报告。
 </details>
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它选项以及客户端配置，请继续阅读以下部分。
@@ -180,26 +180,26 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-可选：IPsec VPN + OpenVPN + WireGuard 服务器。
+搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
 </summary>
 
-成功安装 IPsec VPN 后，高级用户可以选择在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。为确保兼容性，必须先安装 IPsec VPN。
+成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
 
-要安装 OpenVPN:
+安装 OpenVPN:
 
 ```bash
 wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
 sudo bash openvpn.sh
 ```
 
-要安装 WireGuard：
+安装 WireGuard:
 
 ```bash
 wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-这些脚本分别来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [Nyr/wireguard-install](https://github.com/Nyr/wireguard-install)。任何相关问题都应该在链接的 GitHub 代码库中报告，而不是这里。
+这些脚本来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install)，稍作改动以提高与 IPsec VPN 的兼容性。任何相关问题请到链接的 GitHub 代码库中报告。
 </details>
 <details>
 <summary>
