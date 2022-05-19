@@ -52,7 +52,7 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 </details>
 <details>
 <summary>
-搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
+可选：搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
 </summary>
 
 成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
@@ -71,7 +71,7 @@ wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-这些脚本来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install)，稍作改动以提高与 IPsec VPN 的兼容性。任何相关问题请到链接的 GitHub 代码库中报告。
+这些脚本是在 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install) 的基础上稍作改动以提高与 IPsec VPN 的兼容性。你可以在安装后再次运行这些脚本来管理用户或卸载。任何问题请到链接的 GitHub 代码库中报告，而不是这里。
 </details>
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它选项以及客户端配置，请继续阅读以下部分。
@@ -180,7 +180,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
+可选：搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
 </summary>
 
 成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
@@ -199,7 +199,7 @@ wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-这些脚本来自 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install)，稍作改动以提高与 IPsec VPN 的兼容性。任何相关问题请到链接的 GitHub 代码库中报告。
+这些脚本是在 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install) 的基础上稍作改动以提高与 IPsec VPN 的兼容性。你可以在安装后再次运行这些脚本来管理用户或卸载。任何问题请到链接的 GitHub 代码库中报告，而不是这里。
 </details>
 <details>
 <summary>

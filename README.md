@@ -52,7 +52,7 @@ See the VPN script in action (terminal recording).
 </details>
 <details>
 <summary>
-Set up an IPsec VPN + OpenVPN + WireGuard server.
+Optional: Set up an IPsec VPN + OpenVPN + WireGuard server.
 </summary>
 
 After successful installation of the IPsec VPN, you may optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server.
@@ -71,7 +71,7 @@ wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-These scripts are from [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. Please report any related issues to the linked GitHub repositories.
+These scripts are based on [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. You may run these scripts again after install to manage users or uninstall. Please report any issues to the linked GitHub repositories, not here.
 </details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
@@ -180,7 +180,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-Set up an IPsec VPN + OpenVPN + WireGuard server.
+Optional: Set up an IPsec VPN + OpenVPN + WireGuard server.
 </summary>
 
 After successful installation of the IPsec VPN, you may optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server.
@@ -199,7 +199,7 @@ wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
 sudo bash wireguard.sh
 ```
 
-These scripts are from [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. Please report any related issues to the linked GitHub repositories.
+These scripts are based on [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. You may run these scripts again after install to manage users or uninstall. Please report any issues to the linked GitHub repositories, not here.
 </details>
 <details>
 <summary>
