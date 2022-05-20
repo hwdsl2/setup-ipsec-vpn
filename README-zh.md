@@ -22,6 +22,8 @@ wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
 
+安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
+
 <details>
 <summary>
 或者，你也可以使用以下命令。
@@ -49,29 +51,6 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 **注：** 此终端记录仅用于演示目的。该记录中的 VPN 凭据 **无效**。
 
 <p align="center"><img src="docs/images/script-demo.svg"></p>
-</details>
-<details>
-<summary>
-可选：搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
-</summary>
-
-成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
-
-安装 OpenVPN:
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-安装 WireGuard:
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-这些脚本是在 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install) 的基础上稍作改动以提高与 IPsec VPN 的兼容性。你可以在安装后再次运行这些脚本来管理用户或卸载。任何问题请到链接的 GitHub 代码库中报告，而不是这里。
 </details>
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。如需了解其它选项以及客户端配置，请继续阅读以下部分。
@@ -149,6 +128,8 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
+安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
+
 <details>
 <summary>
 高级用户可以自定义 IKEv2 选项。这是可选的。
@@ -177,29 +158,6 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 ```
-</details>
-<details>
-<summary>
-可选：搭建 IPsec VPN + OpenVPN + WireGuard 服务器。
-</summary>
-
-成功安装 IPsec VPN 后，你可以在同一台服务器上安装 [OpenVPN](https://openvpn.net) 和/或 [WireGuard](https://www.wireguard.com)。这是可选的。
-
-安装 OpenVPN:
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-安装 WireGuard:
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-这些脚本是在 [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) 和 [wireguard-install](https://github.com/Nyr/wireguard-install) 的基础上稍作改动以提高与 IPsec VPN 的兼容性。你可以在安装后再次运行这些脚本来管理用户或卸载。任何问题请到链接的 GitHub 代码库中报告，而不是这里。
 </details>
 <details>
 <summary>

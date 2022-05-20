@@ -22,6 +22,8 @@ wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
 
 Your VPN login details will be randomly generated, and displayed when finished.
 
+After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
+
 <details>
 <summary>
 Alternative one-liners.
@@ -49,29 +51,6 @@ See the VPN script in action (terminal recording).
 **Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
 
 <p align="center"><img src="docs/images/script-demo.svg"></p>
-</details>
-<details>
-<summary>
-Optional: Set up an IPsec VPN + OpenVPN + WireGuard server.
-</summary>
-
-After successful installation of the IPsec VPN, you may optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server.
-
-To install OpenVPN:
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-To install WireGuard:
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-These scripts are based on [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. You may run these scripts again after install to manage users or uninstall. Please report any issues to the linked GitHub repositories, not here.
 </details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
@@ -149,6 +128,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
+After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
+
 <details>
 <summary>
 Advanced users can optionally customize IKEv2 options.
@@ -177,29 +158,6 @@ By default, no password is required when importing IKEv2 client configuration. Y
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 ```
-</details>
-<details>
-<summary>
-Optional: Set up an IPsec VPN + OpenVPN + WireGuard server.
-</summary>
-
-After successful installation of the IPsec VPN, you may optionally install [OpenVPN](https://openvpn.net) and/or [WireGuard](https://www.wireguard.com) on the same server.
-
-To install OpenVPN:
-
-```bash
-wget https://get.vpnsetup.net/ovpn -nv -O openvpn.sh
-sudo bash openvpn.sh
-```
-
-To install WireGuard:
-
-```bash
-wget https://get.vpnsetup.net/wg -nv -O wireguard.sh
-sudo bash wireguard.sh
-```
-
-These scripts are based on [Nyr/openvpn-install](https://github.com/Nyr/openvpn-install) and [wireguard-install](https://github.com/Nyr/wireguard-install), with minor changes for compatibility with the IPsec VPN. You may run these scripts again after install to manage users or uninstall. Please report any issues to the linked GitHub repositories, not here.
 </details>
 <details>
 <summary>
