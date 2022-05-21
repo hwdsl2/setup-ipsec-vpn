@@ -22,7 +22,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Your VPN login details will be randomly generated, and displayed when finished.
 
-After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
+After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
 
 <details>
 <summary>
@@ -105,8 +105,6 @@ To install the VPN, please choose one of the following options:
 wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
 
-After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
-
 **Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
@@ -129,6 +127,8 @@ VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
+
+After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
 
 <details>
 <summary>

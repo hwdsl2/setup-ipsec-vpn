@@ -105,8 +105,6 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
 
-安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
-
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
@@ -129,6 +127,8 @@ VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
+
+安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
 
 <details>
 <summary>
