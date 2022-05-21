@@ -7,12 +7,12 @@
 
 ## Uninstall using helper script
 
-**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
-
 To uninstall IPsec VPN, run the [helper script](../extras/vpnuninstall.sh):
 
+**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
+
 ```bash
-wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
 
 ## Manually uninstall the VPN

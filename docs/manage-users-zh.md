@@ -35,7 +35,7 @@ sudo addvpnuser.sh
 如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载辅助脚本：
 
 ```bash
-wget https://get.vpnsetup.net/adduser -nv -O /opt/src/addvpnuser.sh
+wget https://get.vpnsetup.net/adduser -O /opt/src/addvpnuser.sh
 chmod +x /opt/src/addvpnuser.sh && ln -s /opt/src/addvpnuser.sh /usr/bin
 ```
 
@@ -70,7 +70,7 @@ sudo delvpnuser.sh
 如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载辅助脚本：
 
 ```bash
-wget https://get.vpnsetup.net/deluser -nv -O /opt/src/delvpnuser.sh
+wget https://get.vpnsetup.net/deluser -O /opt/src/delvpnuser.sh
 chmod +x /opt/src/delvpnuser.sh && ln -s /opt/src/delvpnuser.sh /usr/bin
 ```
 
@@ -92,7 +92,7 @@ sudo delvpnuser.sh '要删除的用户名'
 首先下载[辅助脚本](../extras/update_vpn_users.sh)：
 
 ```bash
-wget https://get.vpnsetup.net/updateusers -nv -O updatevpnusers.sh
+wget https://get.vpnsetup.net/updateusers -O updatevpnusers.sh
 ```
 
 **重要：** 这个脚本会将你当前 **所有的 VPN 用户** 移除并替换为你指定的列表中的用户。如果你需要保留已有的 VPN 用户，则必须将它们包含在下面的变量中。

@@ -57,7 +57,7 @@ sudo ikev2.sh
 如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载 IKEv2 辅助脚本：
 
 ```bash
-wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -766,12 +766,10 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
 在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。请注意，你在 VPN 客户端指定的服务器地址必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**，否则客户端可能无法连接。
 
-要更改服务器地址，运行[辅助脚本](../extras/ikev2changeaddr.sh)：
+要更改服务器地址，运行 [辅助脚本](../extras/ikev2changeaddr.sh) 并按提示操作。
 
 ```bash
-# 下载脚本
-wget https://get.vpnsetup.net/ikev2addr -nv -O ikev2addr.sh
-# 运行脚本并按照提示操作
+wget https://get.vpnsetup.net/ikev2addr -O ikev2addr.sh
 sudo bash ikev2addr.sh
 ```
 
@@ -782,7 +780,7 @@ sudo bash ikev2addr.sh
 IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日志](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)）。 当有新版本可用时，你可以更新服务器上的 IKEv2 辅助脚本。这是可选的。请注意，这些命令将覆盖任何现有的 `ikev2.sh`。
 
 ```bash
-wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 

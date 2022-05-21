@@ -57,7 +57,7 @@ Error: "sudo: ikev2.sh: command not found".
 This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
 
 ```bash
-wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
 ```
 
@@ -768,12 +768,10 @@ If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.
 
 In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. Note that the server address you specify on VPN client devices must **exactly match** the server address in the output of the IKEv2 helper script. Otherwise, devices may be unable to connect.
 
-To change the server address, run the [helper script](../extras/ikev2changeaddr.sh):
+To change the server address, run the [helper script](../extras/ikev2changeaddr.sh) and follow the prompts.
 
 ```bash
-# Download the script
-wget https://get.vpnsetup.net/ikev2addr -nv -O ikev2addr.sh
-# Run the script and follow the prompts
+wget https://get.vpnsetup.net/ikev2addr -O ikev2addr.sh
 sudo bash ikev2addr.sh
 ```
 
@@ -784,7 +782,7 @@ sudo bash ikev2addr.sh
 The IKEv2 helper script is updated from time to time for bug fixes and improvements ([commit log](https://github.com/hwdsl2/setup-ipsec-vpn/commits/master/extras/ikev2setup.sh)). When a newer version is available, you may optionally update the IKEv2 helper script on your server. Note that these commands will overwrite any existing `ikev2.sh`.
 
 ```bash
-wget https://get.vpnsetup.net/ikev2 -nv -O /opt/src/ikev2.sh
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
 

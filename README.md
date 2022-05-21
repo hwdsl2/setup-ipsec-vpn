@@ -17,7 +17,7 @@ First, prepare your Linux server\* with a fresh install of Ubuntu, Debian or Cen
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
-wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
 
 Your VPN login details will be randomly generated, and displayed when finished.
@@ -102,13 +102,15 @@ To install the VPN, please choose one of the following options:
 **Option 1:** Have the script generate random VPN credentials for you (will be displayed when finished).
 
 ```bash
-wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
+
+After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
 
 **Option 2:** Edit the script and provide your own VPN credentials.
 
 ```bash
-wget https://get.vpnsetup.net -nv -O vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh
 nano -w vpn.sh
 [Replace with your own values: YOUR_IPSEC_PSK, YOUR_USERNAME and YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -121,14 +123,12 @@ sudo sh vpn.sh
 ```bash
 # All values MUST be placed inside 'single quotes'
 # DO NOT use these special characters within values: \ " '
-wget https://get.vpnsetup.net -nv -O vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh
 sudo VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
 VPN_USER='your_vpn_username' \
 VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
-
-After successful installation, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
 
 <details>
 <summary>
@@ -216,7 +216,7 @@ The scripts will backup existing config files before making changes, with `.old-
 Use this one-liner to update [Libreswan](https://libreswan.org) ([changelog](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [announce](https://lists.libreswan.org/mailman/listinfo/swan-announce)) on your VPN server.
 
 ```bash
-wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
+wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 ```
 
 <details>
@@ -253,12 +253,12 @@ See [Advanced usage](docs/advanced-usage.md).
 
 ## Uninstall the VPN
 
-**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
-
 To uninstall IPsec VPN, run the [helper script](extras/vpnuninstall.sh):
 
+**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
+
 ```bash
-wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
 
 For more information, see [Uninstall the VPN](docs/uninstall.md).

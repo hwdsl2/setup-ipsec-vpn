@@ -44,9 +44,7 @@ Using Libreswan 4.2 or newer, advanced users can enable IKEv2-only mode on the V
 To enable IKEv2-only mode, first install the VPN server and set up IKEv2 using instructions in the [README](../README.md). Then run the [helper script](../extras/ikev2onlymode.sh) and follow the prompts.
 
 ```bash
-# Download the script
-wget https://get.vpnsetup.net/ikev2only -nv -O ikev2only.sh
-# Run the script and follow the prompts
+wget https://get.vpnsetup.net/ikev2only -O ikev2only.sh
 sudo bash ikev2only.sh
 ```
 

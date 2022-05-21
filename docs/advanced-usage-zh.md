@@ -44,9 +44,7 @@ sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
 要启用仅限 IKEv2 模式，首先按照 [自述文件](../README-zh.md) 中的说明安装 VPN 服务器并且配置 IKEv2。然后运行 [辅助脚本](../extras/ikev2onlymode.sh) 并按提示操作。
 
 ```bash
-# 下载脚本
-wget https://get.vpnsetup.net/ikev2only -nv -O ikev2only.sh
-# 运行脚本并按提示操作
+wget https://get.vpnsetup.net/ikev2only -O ikev2only.sh
 sudo bash ikev2only.sh
 ```
 

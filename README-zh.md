@@ -17,7 +17,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 使用以下命令快速搭建 IPsec VPN 服务器：
 
 ```bash
-wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
@@ -102,13 +102,15 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o
 **选项 1:** 使用脚本随机生成的 VPN 登录凭证（完成后会显示）。
 
 ```bash
-wget https://get.vpnsetup.net -qO vpn.sh && sudo sh vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 ```
+
+安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
 
 **选项 2:** 编辑脚本并提供你自己的 VPN 登录凭证。
 
 ```bash
-wget https://get.vpnsetup.net -nv -O vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh
 nano -w vpn.sh
 [替换为你自己的值： YOUR_IPSEC_PSK, YOUR_USERNAME 和 YOUR_PASSWORD]
 sudo sh vpn.sh
@@ -121,14 +123,12 @@ sudo sh vpn.sh
 ```bash
 # 所有变量值必须用 '单引号' 括起来
 # *不要* 在值中使用这些字符：  \ " '
-wget https://get.vpnsetup.net -nv -O vpn.sh
+wget https://get.vpnsetup.net -O vpn.sh
 sudo VPN_IPSEC_PSK='你的IPsec预共享密钥' \
 VPN_USER='你的VPN用户名' \
 VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
-
-安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
 
 <details>
 <summary>
@@ -216,7 +216,7 @@ sudo sh vpn.sh
 使用以下命令更新你的 VPN 服务器上的 [Libreswan](https://libreswan.org)（[更新日志](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知列表](https://lists.libreswan.org/mailman/listinfo/swan-announce)）。
 
 ```bash
-wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
+wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 ```
 
 <details>
@@ -253,12 +253,12 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgr
 
 ## 卸载 VPN
 
-**警告：** 此辅助脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
-
 要卸载 IPsec VPN，运行[辅助脚本](extras/vpnuninstall.sh)：
 
+**警告：** 此辅助脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
+
 ```bash
-wget https://get.vpnsetup.net/unst -qO vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
 
 更多信息请参见 [卸载 VPN](docs/uninstall-zh.md)。
