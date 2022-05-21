@@ -186,7 +186,9 @@ update_sysctl() {
     else
       sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
     fi
-    echo 0 > /proc/sys/net/ipv4/ip_forward
+    if [ ! -f /usr/bin/wg-quick ] && [ ! -f /usr/sbin/openvpn ]; then
+      echo 0 > /proc/sys/net/ipv4/ip_forward
+    fi
     echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
   fi
 }
