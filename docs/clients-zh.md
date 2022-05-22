@@ -328,7 +328,7 @@ Fedora 28（和更新版本）和 CentOS 8/7 用户可以使用 [IPsec/XAuth](cl
 
 Windows 8, 10 和 11 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后[清除 DNS 缓存](https://support.opendns.com/hc/en-us/articles/227988627-How-to-clear-the-DNS-Cache-)并且重启计算机。
 
-另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/hwdsl2/openvpn-install)。
+另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。
 
 ### Android MTU/MSS 问题
 
@@ -377,7 +377,7 @@ OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但
 
 为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 [故意设计的](https://discussions.apple.com/thread/2333948) 并且不能被配置。
 
-如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 [OpenVPN](https://github.com/hwdsl2/openvpn-install)，它支持 [一些选项](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
+如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)，它支持 [一些选项](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
 
 <a name="debian-10-内核"></a>
 Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 和更新版本中不再可用。另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 [这里](https://support.google.com/android/answer/9089766?hl=zh-Hans)。
