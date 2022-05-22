@@ -1,3 +1,5 @@
+[English](README.md) | [中文](README-zh.md)
+
 # IPsec VPN 服务器一键安装脚本
 
 [![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
@@ -7,8 +9,6 @@
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
-
-*其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
 ## 快速开始
 
@@ -22,14 +22,12 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
 
-安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
+安装完成后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
 
 <details>
 <summary>
 或者，你也可以使用以下命令。
 </summary>
-
-你也可以使用 `curl` 下载：
 
 ```bash
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
@@ -128,7 +126,7 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
-安装成功后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
+安装完成后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install)。这是可选的。
 
 <details>
 <summary>
@@ -197,7 +195,7 @@ sudo sh vpn.sh
 
 ## 重要提示
 
-*其他语言版本: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示)。*
+*其他语言版本: [English](README.md#important-notes), [中文](README-zh.md#重要提示)。*
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
@@ -223,8 +221,6 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 <summary>
 或者，你也可以使用以下命令。
 </summary>
-
-你也可以使用 `curl` 下载：
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh

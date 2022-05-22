@@ -1,6 +1,6 @@
 # Advanced usage: Deploy Google BBR congestion control algorithm
 
-*Read this in other languages: [English](bbr.md), [简体中文](bbr-zh.md).*
+*Read this in other languages: [English](bbr.md), [中文](bbr-zh.md).*
 
 Google BBR is a congestion control algorithm that could significantly increase server throughput and reduce latency.
 

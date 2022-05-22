@@ -1,3 +1,5 @@
+[English](README.md) | [中文](README-zh.md)
+
 # IPsec VPN Server Auto Setup Scripts
 
 [![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
@@ -7,8 +9,6 @@ Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco I
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
-
-*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
 ## Quick start
 
@@ -28,8 +28,6 @@ After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/open
 <summary>
 Alternative one-liners.
 </summary>
-
-You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
@@ -197,7 +195,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Important notes
 
-*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示).*
+*Read this in other languages: [English](README.md#important-notes), [中文](README-zh.md#重要提示).*
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
@@ -223,8 +221,6 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 <summary>
 Alternative one-liners.
 </summary>
-
-You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
