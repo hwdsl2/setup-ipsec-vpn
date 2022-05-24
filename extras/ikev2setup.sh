@@ -118,7 +118,7 @@ cat 1>&2 <<EOF
 Error: Libreswan version '$swan_ver' is not supported.
        This script requires Libreswan 3.23 or newer.
        To update Libreswan, run:
-       wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
+       wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 EOF
     exit 1
   fi
@@ -1302,7 +1302,7 @@ check_swan_update() {
 cat <<EOF
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
       To update, run:
-      wget https://get.vpnsetup.net/upg -qO vpnup.sh && sudo sh vpnup.sh
+      wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 
 EOF
   fi
