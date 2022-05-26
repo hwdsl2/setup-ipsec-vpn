@@ -224,7 +224,7 @@ get_helper_scripts() {
 }
 
 get_swan_ver() {
-  SWAN_VER=4.6
+  SWAN_VER=4.7
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" 2>/dev/null | head -n 1)
