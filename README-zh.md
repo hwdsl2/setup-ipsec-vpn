@@ -10,6 +10,8 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
+**&raquo; 另见：[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 和 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 一键安装脚本**
+
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上全新安装 Ubuntu, Debian 或者 CentOS。

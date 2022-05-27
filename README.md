@@ -10,6 +10,8 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
+**&raquo; See also: [OpenVPN](https://github.com/hwdsl2/openvpn-install) and [WireGuard](https://github.com/hwdsl2/wireguard-install) Auto Setup Scripts**
+
 ## Quick start
 
 First, prepare your Linux server\* with a fresh install of Ubuntu, Debian or CentOS.
