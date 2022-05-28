@@ -31,6 +31,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 或者，你也可以使用以下命令。
 </summary>
 
+你也可以使用 `curl` 下载：
+
 ```bash
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
@@ -223,6 +225,8 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 <summary>
 或者，你也可以使用以下命令。
 </summary>
+
+你也可以使用 `curl` 下载：
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh

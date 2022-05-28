@@ -31,6 +31,8 @@ After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/open
 Alternative one-liners.
 </summary>
 
+You may also use `curl` to download:
+
 ```bash
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
@@ -223,6 +225,8 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 <summary>
 Alternative one-liners.
 </summary>
+
+You may also use `curl` to download:
 
 ```bash
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
