@@ -37,10 +37,11 @@ You may also use `curl` to download:
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
-Alternative setup URL:
+Alternative setup URLs:
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ```
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
@@ -173,11 +174,11 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
-Alternative setup URL:
+Alternative setup URLs:
 
 ```bash
-curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
-sudo sh vpn.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ```
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
@@ -232,10 +233,11 @@ You may also use `curl` to download:
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
 ```
 
-Alternative update URL:
+Alternative update URLs:
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 ```
 
 If you are unable to download, open [vpnupgrade.sh](extras/vpnupgrade.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
@@ -262,6 +264,25 @@ To uninstall IPsec VPN, run the [helper script](extras/vpnuninstall.sh):
 ```bash
 wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
+
+<details>
+<summary>
+Alternative commands.
+</summary>
+
+You may also use `curl` to download:
+
+```bash
+curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+```
+
+Alternative script URLs:
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+```
+</details>
 
 For more information, see [Uninstall the VPN](docs/uninstall.md).
 

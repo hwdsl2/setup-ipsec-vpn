@@ -37,10 +37,11 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 curl -fsSL https://get.vpnsetup.net -o vpn.sh && sudo sh vpn.sh
 ```
 
-或者，你也可以使用这个链接：
+或者，你也可以使用这些链接：
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh && sudo sh vpn.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ```
 
 如果无法下载，打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
@@ -173,11 +174,11 @@ curl -fL https://get.vpnsetup.net -o vpn.sh
 sudo sh vpn.sh
 ```
 
-或者，你也可以使用这个链接：
+或者，你也可以使用这些链接：
 
 ```bash
-curl -fL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh -o vpn.sh
-sudo sh vpn.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ```
 
 如果无法下载，打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
@@ -232,10 +233,11 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 curl -fsSL https://get.vpnsetup.net/upg -o vpnup.sh && sudo sh vpnup.sh
 ```
 
-或者，你也可以使用这个链接：
+或者，你也可以使用这些链接：
 
 ```bash
-curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh -o vpnup.sh && sudo sh vpnup.sh
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnupgrade.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 ```
 
 如果无法下载，打开 [vpnupgrade.sh](extras/vpnupgrade.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
@@ -262,6 +264,25 @@ curl -fsSL https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgr
 ```bash
 wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
+
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+你也可以使用 `curl` 下载：
+
+```bash
+curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+```
+
+或者，你也可以使用这些链接：
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+```
+</details>
 
 更多信息请参见 [卸载 VPN](docs/uninstall-zh.md)。
 

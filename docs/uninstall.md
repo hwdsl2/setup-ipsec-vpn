@@ -15,6 +15,25 @@ To uninstall IPsec VPN, run the [helper script](../extras/vpnuninstall.sh):
 wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
 
+<details>
+<summary>
+Alternative commands.
+</summary>
+
+You may also use `curl` to download:
+
+```bash
+curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+```
+
+Alternative script URLs:
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+```
+</details>
+
 ## Manually uninstall the VPN
 
 Alternatively, you may manually uninstall IPsec VPN by following these steps. Commands must be run as `root`, or with `sudo`.

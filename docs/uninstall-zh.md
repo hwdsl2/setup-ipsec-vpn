@@ -15,6 +15,25 @@
 wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 ```
 
+<details>
+<summary>
+或者，你也可以使用以下命令。
+</summary>
+
+你也可以使用 `curl` 下载：
+
+```bash
+curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+```
+
+或者，你也可以使用这些链接：
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/vpnuninstall.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
+```
+</details>
+
 ## 手动卸载 VPN
 
 另外，你也可以手动卸载 IPsec VPN。按照以下步骤操作。这些命令需要用 `root` 账户运行，或者使用 `sudo`。
