@@ -10,7 +10,7 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-**&raquo; See also: [OpenVPN](https://github.com/hwdsl2/openvpn-install) and [WireGuard](https://github.com/hwdsl2/wireguard-install) Auto Setup Scripts**
+**&raquo; See also: [WireGuard](https://github.com/hwdsl2/wireguard-install) and [OpenVPN](https://github.com/hwdsl2/openvpn-install) Auto Setup Scripts**
 
 ## Quick start
 
@@ -24,11 +24,11 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Your VPN login details will be randomly generated, and displayed when finished.
 
-After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
+After setup, you may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server.
 
 <details>
 <summary>
-Alternative one-liners.
+Alternative one-liner.
 </summary>
 
 You may also use `curl` to download:
@@ -131,7 +131,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-After setup, you may optionally install [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [WireGuard](https://github.com/hwdsl2/wireguard-install) on the same server.
+After setup, you may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server.
 
 <details>
 <summary>
@@ -224,7 +224,7 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-Alternative one-liners.
+Alternative one-liner.
 </summary>
 
 You may also use `curl` to download:

@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**&raquo; 另见：[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 和 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 一键安装脚本**
+**&raquo; 另见：[WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 一键安装脚本**
 
 ## 快速开始
 
@@ -24,7 +24,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
 
-安装完成后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md)。这是可选的。
+安装完成后，你可以在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。这是可选的。
 
 <details>
 <summary>
@@ -131,7 +131,7 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
-安装完成后，你可以在同一台服务器上安装 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 和/或 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md)。这是可选的。
+安装完成后，你可以在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。这是可选的。
 
 <details>
 <summary>
