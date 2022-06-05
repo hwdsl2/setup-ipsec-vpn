@@ -273,7 +273,7 @@ update_iptables_rules() {
       nft_bk=$(find /etc/sysconfig -maxdepth 1 -name 'nftables.conf.old-*-*-*-*_*_*' -print0 \
         | xargs -r -0 ls -1 -t | head -1)
       if [ -f "$nft_bk" ] \
-        && [ "$(diff -y --suppress-common-lines "$IPT_FILE" "$nft_bk" | wc -l)" = "25" ]; then
+        && [ "$(diff -y --suppress-common-lines "$IPT_FILE" "$nft_bk" | wc -l)" = "24" ]; then
         bigecho "Restoring nftables rules..."
         conf_bk "$IPT_FILE"
         /bin/cp -f "$nft_bk" "$IPT_FILE" && /bin/rm -f "$nft_bk"

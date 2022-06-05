@@ -581,7 +581,9 @@ update_iptables() {
     $ipf 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
     $ipf 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
     $ipf 7 -s "$XAUTH_NET" -o ppp+ -j ACCEPT
-    iptables -A FORWARD -j DROP
+    if [ "$use_nft" != "1" ]; then
+      iptables -A FORWARD -j DROP
+    fi
     $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
     $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
     echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
