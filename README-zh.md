@@ -24,7 +24,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登录凭证将会被自动随机生成，并在安装完成后显示。
 
-安装完成后，你可以在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。这是可选的。
+**可选：** 在同一台服务器上 [安装 WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。
 
 <details>
 <summary>
@@ -131,7 +131,7 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
-安装完成后，你可以在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。这是可选的。
+安装完成后，你可以在同一台服务器上 [安装 WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。这是可选的。
 
 <details>
 <summary>
