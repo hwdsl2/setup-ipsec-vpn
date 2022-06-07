@@ -711,7 +711,7 @@ cat <<'EOF'
 IKEv2 is already set up on this server.
 
 Next steps: Configure IKEv2 clients. See:
-https://vpnsetup.net/ikev2clients
+https://vpnsetup.net/ikev2
 
 To manage IKEv2 clients, run: sudo ikev2.sh
 

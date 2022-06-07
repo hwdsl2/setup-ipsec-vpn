@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   27 May 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   7 Jun 2022
 
 EOF
 }
@@ -1076,7 +1076,7 @@ create_config_readme() {
     && [ "$use_defaults" = "1" ] && [ ! -t 1 ] && [ ! -f "$readme_file" ]; then
 cat > "$readme_file" <<'EOF'
 These IKEv2 client config files were created during IPsec VPN setup.
-To configure IKEv2 clients, see: https://vpnsetup.net/ikev2clients
+To configure IKEv2 clients, see: https://vpnsetup.net/ikev2
 EOF
     if [ "$export_to_home_dir" = "1" ]; then
       chown "$SUDO_USER:$SUDO_USER" "$readme_file"
@@ -1271,7 +1271,7 @@ EOF
 cat <<'EOF'
 
 Next steps: Configure IKEv2 clients. See:
-https://vpnsetup.net/ikev2clients
+https://vpnsetup.net/ikev2
 
 ================================================
 
