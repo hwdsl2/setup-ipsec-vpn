@@ -186,9 +186,11 @@ If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `
 
 ## Next steps
 
+*Read this in other languages: [English](README.md#next-steps), [中文](README-zh.md#下一步).*
+
 Get your computer or device to use the VPN. Please refer to:
 
-[**Guide: How to Set Up and Use IKEv2 VPN**](docs/ikev2-howto.md)
+[**Configure IKEv2 VPN clients (recommended)**](docs/ikev2-howto.md)
 
 [**Configure IPsec/L2TP VPN Clients**](docs/clients.md)
 

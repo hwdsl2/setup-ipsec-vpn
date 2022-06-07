@@ -186,9 +186,11 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 ## 下一步
 
+*其他语言版本: [English](README.md#next-steps), [中文](README-zh.md#下一步)。*
+
 配置你的计算机或其它设备使用 VPN。请参见：
 
-[**IKEv2 VPN 配置和使用指南**](docs/ikev2-howto-zh.md)
+[**配置 IKEv2 VPN 客户端（推荐）**](docs/ikev2-howto-zh.md)
 
 [**配置 IPsec/L2TP VPN 客户端**](docs/clients-zh.md)
 

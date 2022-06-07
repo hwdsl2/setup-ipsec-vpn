@@ -5,121 +5,22 @@
 **Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
 * [Introduction](#introduction)
-* [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
 * [Manage client certificates](#manage-client-certificates)
 * [Troubleshooting](#troubleshooting)
 * [Change IKEv2 server address](#change-ikev2-server-address)
 * [Update IKEv2 helper script](#update-ikev2-helper-script)
+* [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script)
 * [Manually set up IKEv2](#manually-set-up-ikev2)
 * [Remove IKEv2](#remove-ikev2)
-* [References](#references)
 
 ## Introduction
 
-Modern operating systems (such as Windows 7 and newer) support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains [improvements](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) such as Standard Mobility support through MOBIKE, and improved reliability.
+Modern operating systems support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains [improvements](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) such as Standard Mobility support through MOBIKE, and improved reliability.
 
-Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with:
+Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with Windows, macOS, iOS, Android, Linux and RouterOS.
 
-- Windows 7, 8, 10 and 11
-- OS X (macOS)
-- iOS (iPhone/iPad)
-- Android 4 and newer (using the strongSwan VPN client)
-- Linux
-- Mikrotik RouterOS
-
-After following this guide, you will be able to connect to the VPN using IKEv2 in addition to the existing [IPsec/L2TP](clients.md) and [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) modes.
-
-## Set up IKEv2 using helper script
-
-**Note:** By default, IKEv2 is automatically set up when running the VPN setup script. You may skip this section and continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
-
-**Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
-
-Use this [helper script](../extras/ikev2setup.sh) to automatically set up IKEv2 on the VPN server:
-
-```bash
-# Set up IKEv2 using default options
-sudo ikev2.sh --auto
-# Alternatively, you may customize IKEv2 options
-sudo ikev2.sh
-```
-
-**Note:** If IKEv2 is already set up, but you want to customize IKEv2 options, first [remove IKEv2](#remove-ikev2), then set it up again using `sudo ikev2.sh`.
-
-When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Advanced users can optionally enable [IKEv2-only mode](advanced-usage.md#ikev2-only-vpn).
-
-<details>
-<summary>
-Error: "sudo: ikev2.sh: command not found".
-</summary>
-
-This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
-
-```bash
-wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
-```
-
-Then run the script using the instructions above.
-</details>
-<details>
-<summary>
-You may optionally specify a DNS name, client name and/or custom DNS servers.
-</summary>
-
-When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
-
-```bash
-sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
-```
-
-Similarly, you may specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
-
-```bash
-sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
-```
-
-By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for IKEv2. Example:
-
-```bash
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
-```
-
-By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
-
-```bash
-sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
-```
-</details>
-<details>
-<summary>
-Learn how to change the IKEv2 server address.
-</summary>
-
-In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. Learn more in [this section](#change-ikev2-server-address).
-</details>
-<details>
-<summary>
-View usage information for the IKEv2 script.
-</summary>
-
-```
-Usage: bash ikev2.sh [options]
-
-Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
-  --addclient [client name]     add a new client using default options
-  --exportclient [client name]  export configuration for an existing client
-  --listclients                 list the names of existing clients
-  --revokeclient [client name]  revoke a client certificate
-  --deleteclient [client name]  delete a client certificate
-  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
-  -h, --help                    show this help message and exit
-
-To customize IKEv2 or client options, run this script without arguments.
-```
-</details>
+By default, IKEv2 is automatically set up when running the VPN setup script. If you want to learn more about setting up IKEv2, see [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script).
 
 ## Configure IKEv2 VPN clients
 
@@ -785,6 +686,97 @@ The IKEv2 helper script is updated from time to time for bug fixes and improveme
 wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
+
+## Set up IKEv2 using helper script
+
+**Note:** By default, IKEv2 is automatically set up when running the VPN setup script. You may skip this section and continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients).
+
+**Important:** Before continuing, you should have successfully [set up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn). **Docker users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn)**.
+
+Use this [helper script](../extras/ikev2setup.sh) to automatically set up IKEv2 on the VPN server:
+
+```bash
+# Set up IKEv2 using default options
+sudo ikev2.sh --auto
+# Alternatively, you may customize IKEv2 options
+sudo ikev2.sh
+```
+
+**Note:** If IKEv2 is already set up, but you want to customize IKEv2 options, first [remove IKEv2](#remove-ikev2), then set it up again using `sudo ikev2.sh`.
+
+When finished, continue to [configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Advanced users can optionally enable [IKEv2-only mode](advanced-usage.md#ikev2-only-vpn).
+
+<details>
+<summary>
+Error: "sudo: ikev2.sh: command not found".
+</summary>
+
+This is normal if you used an older version of the VPN setup script. First, download the IKEv2 helper script:
+
+```bash
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
+```
+
+Then run the script using the instructions above.
+</details>
+<details>
+<summary>
+You may optionally specify a DNS name, client name and/or custom DNS servers.
+</summary>
+
+When running IKEv2 setup in auto mode, advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
+
+```bash
+sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
+```
+
+Similarly, you may specify a name for the first IKEv2 client. The default is `vpnclient` if not specified.
+
+```bash
+sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
+```
+
+By default, IKEv2 clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for IKEv2. Example:
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
+```
+
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
+```
+</details>
+<details>
+<summary>
+Learn how to change the IKEv2 server address.
+</summary>
+
+In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. Learn more in [this section](#change-ikev2-server-address).
+</details>
+<details>
+<summary>
+View usage information for the IKEv2 script.
+</summary>
+
+```
+Usage: bash ikev2.sh [options]
+
+Options:
+  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
+  --addclient [client name]     add a new client using default options
+  --exportclient [client name]  export configuration for an existing client
+  --listclients                 list the names of existing clients
+  --revokeclient [client name]  revoke a client certificate
+  --deleteclient [client name]  delete a client certificate
+  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
+  -h, --help                    show this help message and exit
+
+To customize IKEv2 or client options, run this script without arguments.
+```
+</details>
 
 ## Manually set up IKEv2
 

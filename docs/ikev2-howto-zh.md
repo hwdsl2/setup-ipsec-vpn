@@ -5,121 +5,22 @@
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 * [导言](#导言)
-* [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [管理客户端证书](#管理客户端证书)
 * [故障排除](#故障排除)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
+* [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
 * [手动配置 IKEv2](#手动配置-ikev2)
 * [移除 IKEv2](#移除-ikev2)
-* [参考链接](#参考链接)
 
 ## 导言
 
-现代操作系统（比如 Windows 7 和更新版本）支持 IKEv2 协议标准。因特网密钥交换（英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 [功能改进](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
+现代操作系统支持 IKEv2 协议标准。因特网密钥交换（英语：Internet Key Exchange，简称 IKE 或 IKEv2）是一种网络协议，归属于 IPsec 协议族之下，用以创建安全关联 (Security Association, SA)。与 IKE 版本 1 相比较，IKEv2 的 [功能改进](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) 包括比如通过 MOBIKE 实现 Standard Mobility 支持，以及更高的可靠性。
 
-Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于以下系统：
+Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于 Windows, macOS, iOS, Android, Linux 和 RouterOS。
 
-- Windows 7, 8, 10 和 11
-- OS X (macOS)
-- iOS (iPhone/iPad)
-- Android 4 和更新版本（使用 strongSwan VPN 客户端）
-- Linux
-- Mikrotik RouterOS
-
-在按照本指南操作之后，你将可以选择三种模式中的任意一种连接到 VPN：IKEv2，以及已有的 [IPsec/L2TP](clients-zh.md) 和 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 模式。
-
-## 使用辅助脚本配置 IKEv2
-
-**注：** 默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。你可以跳过此部分并转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
-
-**重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
-
-使用这个 [辅助脚本](../extras/ikev2setup.sh) 来自动地在 VPN 服务器上配置 IKEv2：
-
-```bash
-# 使用默认选项配置 IKEv2
-sudo ikev2.sh --auto
-# 或者你也可以自定义 IKEv2 选项
-sudo ikev2.sh
-```
-
-**注：** 如果已配置 IKEv2，但是你想要自定义 IKEv2 选项，首先 [移除 IKEv2](#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
-
-在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。高级用户可以启用 [仅限 IKEv2 模式](advanced-usage-zh.md#仅限-ikev2-的-vpn)。这是可选的。
-
-<details>
-<summary>
-错误："sudo: ikev2.sh: command not found".
-</summary>
-
-如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载 IKEv2 辅助脚本：
-
-```bash
-wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
-chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
-```
-
-然后按照上面的说明运行脚本。
-</details>
-<details>
-<summary>
-你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
-</summary>
-
-在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
-
-```bash
-sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
-```
-
-类似地，你可以指定第一个 IKEv2 客户端的名称。如果未指定，则使用默认值 `vpnclient`。
-
-```bash
-sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
-```
-
-在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。你可以为 IKEv2 指定另外的 DNS 服务器。示例如下：
-
-```bash
-sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
-```
-
-默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。
-
-```bash
-sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
-```
-</details>
-<details>
-<summary>
-了解如何更改 IKEv2 服务器地址。
-</summary>
-
-在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要了解更多信息，参见 [这一小节](#更改-ikev2-服务器地址)。
-</details>
-<details>
-<summary>
-查看 IKEv2 脚本的使用信息。
-</summary>
-
-```
-Usage: bash ikev2.sh [options]
-
-Options:
-  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
-  --addclient [client name]     add a new client using default options
-  --exportclient [client name]  export configuration for an existing client
-  --listclients                 list the names of existing clients
-  --revokeclient [client name]  revoke a client certificate
-  --deleteclient [client name]  delete a client certificate
-  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
-  -h, --help                    show this help message and exit
-
-To customize IKEv2 or client options, run this script without arguments.
-```
-</details>
+默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。如果你想了解有关配置 IKEv2 的更多信息，请参见 [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)。
 
 ## 配置 IKEv2 VPN 客户端
 
@@ -783,6 +684,97 @@ IKEv2 辅助脚本会不时更新，以进行错误修复和改进（[更新日�
 wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
 chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin 2>/dev/null
 ```
+
+## 使用辅助脚本配置 IKEv2
+
+**注：** 默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。你可以跳过此部分并转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。
+
+**重要：** 在继续之前，你应该已经成功地 [搭建自己的 VPN 服务器](../README-zh.md)。**Docker 用户请看 [这里](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)**。
+
+使用这个 [辅助脚本](../extras/ikev2setup.sh) 来自动地在 VPN 服务器上配置 IKEv2：
+
+```bash
+# 使用默认选项配置 IKEv2
+sudo ikev2.sh --auto
+# 或者你也可以自定义 IKEv2 选项
+sudo ikev2.sh
+```
+
+**注：** 如果已配置 IKEv2，但是你想要自定义 IKEv2 选项，首先 [移除 IKEv2](#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
+
+在完成之后，请转到 [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。高级用户可以启用 [仅限 IKEv2 模式](advanced-usage-zh.md#仅限-ikev2-的-vpn)。这是可选的。
+
+<details>
+<summary>
+错误："sudo: ikev2.sh: command not found".
+</summary>
+
+如果你使用了较早版本的 VPN 安装脚本，这是正常的。首先下载 IKEv2 辅助脚本：
+
+```bash
+wget https://get.vpnsetup.net/ikev2 -O /opt/src/ikev2.sh
+chmod +x /opt/src/ikev2.sh && ln -s /opt/src/ikev2.sh /usr/bin
+```
+
+然后按照上面的说明运行脚本。
+</details>
+<details>
+<summary>
+你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
+</summary>
+
+在使用自动模式安装 IKEv2 时，高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+
+```bash
+sudo VPN_DNS_NAME='vpn.example.com' ikev2.sh --auto
+```
+
+类似地，你可以指定第一个 IKEv2 客户端的名称。如果未指定，则使用默认值 `vpnclient`。
+
+```bash
+sudo VPN_CLIENT_NAME='your_client_name' ikev2.sh --auto
+```
+
+在 VPN 已连接时，IKEv2 客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。你可以为 IKEv2 指定另外的 DNS 服务器。示例如下：
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
+```
+
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。
+
+```bash
+sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
+```
+</details>
+<details>
+<summary>
+了解如何更改 IKEv2 服务器地址。
+</summary>
+
+在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要了解更多信息，参见 [这一小节](#更改-ikev2-服务器地址)。
+</details>
+<details>
+<summary>
+查看 IKEv2 脚本的使用信息。
+</summary>
+
+```
+Usage: bash ikev2.sh [options]
+
+Options:
+  --auto                        run IKEv2 setup in auto mode using default options (for initial setup only)
+  --addclient [client name]     add a new client using default options
+  --exportclient [client name]  export configuration for an existing client
+  --listclients                 list the names of existing clients
+  --revokeclient [client name]  revoke a client certificate
+  --deleteclient [client name]  delete a client certificate
+  --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
+  -h, --help                    show this help message and exit
+
+To customize IKEv2 or client options, run this script without arguments.
+```
+</details>
 
 ## 手动配置 IKEv2
 
