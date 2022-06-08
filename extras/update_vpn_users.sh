@@ -107,8 +107,8 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:   vpnsetup.net/notes
-Setup VPN clients: vpnsetup.net/clients
+Important notes:  vpnsetup.net/notes
+VPN client setup: vpnsetup.net/clients
 
 ==================================================
 

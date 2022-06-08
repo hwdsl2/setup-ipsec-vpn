@@ -26,9 +26,8 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# Important notes:   vpnsetup.net/notes
-# Setup VPN clients: vpnsetup.net/clients
-# IKEv2 guide:       vpnsetup.net/ikev2
+# Important notes:  vpnsetup.net/notes
+# VPN client setup: vpnsetup.net/clients
 
 # =====================================================
 
@@ -530,9 +529,8 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Important notes:   vpnsetup.net/notes
-Setup VPN clients: vpnsetup.net/clients
-IKEv2 guide:       vpnsetup.net/ikev2
+Important notes:  vpnsetup.net/notes
+VPN client setup: vpnsetup.net/clients
 
 ================================================
 
