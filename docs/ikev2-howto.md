@@ -20,7 +20,7 @@ Modern operating systems support the IKEv2 standard. Internet Key Exchange (IKE 
 
 Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with Windows, macOS, iOS, Android, Linux and RouterOS.
 
-By default, IKEv2 is automatically set up when running the VPN setup script. If you want to learn more about setting up IKEv2, see [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script).
+By default, IKEv2 is automatically set up when running the VPN setup script. If you want to learn more about setting up IKEv2, see [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
 
 ## Configure IKEv2 VPN clients
 

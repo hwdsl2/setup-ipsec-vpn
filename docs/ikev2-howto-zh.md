@@ -20,7 +20,7 @@
 
 Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来对 IKEv2 客户端进行身份验证。该方法无需 IPsec PSK, 用户名或密码。它可以用于 Windows, macOS, iOS, Android, Linux 和 RouterOS。
 
-默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。如果你想了解有关配置 IKEv2 的更多信息，请参见 [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)。
+默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。如果你想了解有关配置 IKEv2 的更多信息，请参见 [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)。Docker 用户请看 [配置并使用 IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。
 
 ## 配置 IKEv2 VPN 客户端
 
