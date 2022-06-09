@@ -200,6 +200,8 @@ If you get an error when trying to connect, see [Troubleshooting](docs/clients.m
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
+Like this project? You can show your appreciation [here](https://coindrop.to/hwdsl2).
+
 ## Important notes
 
 *Read this in other languages: [English](README.md#important-notes), [中文](README-zh.md#重要提示).*

@@ -200,6 +200,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
+如果你喜欢这个项目，可以在 [这里](https://coindrop.to/hwdsl2) 表达你的感谢。
+
 ## 重要提示
 
 *其他语言版本: [English](README.md#important-notes), [中文](README-zh.md#重要提示)。*
