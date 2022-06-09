@@ -90,8 +90,7 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Important notes:  vpnsetup.net/notes
-VPN client setup: vpnsetup.net/clients
+VPN client setup: https://vpnsetup.net/clients
 
 ================================================
 

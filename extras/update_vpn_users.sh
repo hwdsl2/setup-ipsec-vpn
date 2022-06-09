@@ -53,7 +53,8 @@ EOF
   command -v openssl >/dev/null 2>&1 || exiterr "'openssl' not found. Abort."
   if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 cat 1>&2 <<'EOF'
-For usage information, visit vpnsetup.net/notes, then click on Manage VPN Users.
+For usage information, visit https://github.com/hwdsl2/setup-ipsec-vpn,
+then click on Manage VPN Users.
 EOF
     exit 1
   fi
@@ -107,8 +108,7 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:  vpnsetup.net/notes
-VPN client setup: vpnsetup.net/clients
+VPN client setup: https://vpnsetup.net/clients
 
 ==================================================
 

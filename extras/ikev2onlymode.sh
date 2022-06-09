@@ -59,7 +59,7 @@ EOF
   if ! check_ikev2_exists; then
 cat 1>&2 <<'EOF'
 Error: Your must first set up IKEv2 before selecting IKEv2-only mode.
-       See: vpnsetup.net/ikev2
+       See: https://vpnsetup.net/ikev2
 EOF
     exit 1
   fi

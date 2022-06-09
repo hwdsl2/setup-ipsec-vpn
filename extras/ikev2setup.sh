@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   7 Jun 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Jun 2022
 
 EOF
 }
@@ -175,7 +175,7 @@ Options:
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
-For documentation, see: vpnsetup.net/ikev2
+For documentation, see: https://vpnsetup.net/ikev2
 EOF
   exit 1
 }
@@ -1076,7 +1076,7 @@ create_config_readme() {
     && [ "$use_defaults" = "1" ] && [ ! -t 1 ] && [ ! -f "$readme_file" ]; then
 cat > "$readme_file" <<'EOF'
 These IKEv2 client config files were created during IPsec VPN setup.
-To configure IKEv2 clients, see: https://vpnsetup.net/ikev2
+To configure IKEv2 clients, see: https://vpnsetup.net/clients
 EOF
     if [ "$export_to_home_dir" = "1" ]; then
       chown "$SUDO_USER:$SUDO_USER" "$readme_file"
@@ -1271,7 +1271,7 @@ EOF
 cat <<'EOF'
 
 Next steps: Configure IKEv2 clients. See:
-https://vpnsetup.net/ikev2
+https://vpnsetup.net/clients
 
 ================================================
 
@@ -1299,7 +1299,7 @@ check_ipsec_conf() {
 cat 1>&2 <<EOF
 Error: IKEv2 configuration section found in $IPSEC_CONF.
        This script cannot automatically remove IKEv2 from this server.
-       To manually remove IKEv2, see vpnsetup.net/ikev2
+       To manually remove IKEv2, see https://vpnsetup.net/ikev2
 EOF
     abort_and_exit
   fi

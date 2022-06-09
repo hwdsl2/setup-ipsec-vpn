@@ -27,8 +27,7 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# Important notes:  vpnsetup.net/notes
-# VPN client setup: vpnsetup.net/clients
+# VPN client setup: https://vpnsetup.net/clients
 
 # =====================================================
 

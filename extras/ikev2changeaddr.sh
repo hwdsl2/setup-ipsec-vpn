@@ -104,7 +104,7 @@ check_ikev2() {
   if ! grep -qs "conn ikev2-cp" /etc/ipsec.d/ikev2.conf; then
 cat 1>&2 <<'EOF'
 Error: You must first set up IKEv2 before changing IKEv2 server address.
-       See: vpnsetup.net/ikev2
+       See: https://vpnsetup.net/ikev2
 EOF
     exit 1
   fi
