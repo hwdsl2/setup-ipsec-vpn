@@ -6,8 +6,8 @@
 
 * [导言](#导言)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
-* [管理客户端证书](#管理客户端证书)
 * [故障排除](#故障排除)
+* [管理客户端证书](#管理客户端证书)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
 * [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
@@ -415,6 +415,81 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 > mar/02/2022 12:52:57 by RouterOS 6.48   
 > RouterBOARD 941-2nD
 
+## 故障排除
+
+*其他语言版本: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除)。*
+
+**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
+
+* [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
+* [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
+* [参数错误 policy match error](#参数错误-policy-match-error)
+* [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
+* [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
+* [Windows 10 正在连接](#windows-10-正在连接)
+* [其它已知问题](#其它已知问题)
+
+### 连接 IKEv2 后不能打开网站
+
+如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
+
+1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500：
+
+   ```bash
+   # 将 ens4 替换为你的服务器上的网络接口名称
+   sudo ifconfig ens4 mtu 1500
+   ```
+
+   此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
+
+1. 如果更改 MTU 大小无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
+
+1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
+
+### IKE 身份验证凭证不可接受
+
+如果遇到此错误，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
+
+### 参数错误 policy match error
+
+要解决此错误，你需要为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。
+
+- 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+```
+
+### IKEv2 在一小时后断开连接
+
+如果 IKEv2 连接在一小时（60 分钟）后自动断开，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果不存在，编辑 `/etc/ipsec.conf`）。在 `conn ikev2-cp` 一节的末尾添加以下行，开头必须空两格：
+
+```
+  ikelifetime=24h
+  salifetime=24h
+```
+
+保存修改并运行 `service ipsec restart`。该解决方案已在 2021-01-20 添加到辅助脚本。
+
+### 无法同时连接多个 IKEv2 客户端
+
+如果要连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
+
+如果你无法连接同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
+
+### Windows 10 正在连接
+
+如果你使用 Windows 10 并且 VPN 卡在 "正在连接" 状态超过几分钟，尝试以下步骤：
+
+1. 右键单击系统托盘中的无线/网络图标。
+1. 选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击左侧的 **VPN**。
+1. 选择新的 VPN 连接，然后单击 **连接**。
+
+### 其它已知问题
+
+1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
+1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
+
 ## 管理客户端证书
 
 * [列出已有的客户端](#列出已有的客户端)
@@ -596,72 +671,6 @@ sudo ikev2.sh --revokeclient [client name]
    ipsec crls
    ```
 </details>
-
-## 故障排除
-
-*其他语言版本: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除)。*
-
-**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
-
-* [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
-* [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
-* [参数错误 policy match error](#参数错误-policy-match-error)
-* [IKEv2 在一小时后断开连接](#ikev2-在一小时后断开连接)
-* [无法同时连接多个 IKEv2 客户端](#无法同时连接多个-ikev2-客户端)
-* [其它已知问题](#其它已知问题)
-
-### 连接 IKEv2 后不能打开网站
-
-如果你的 VPN 客户端设备在成功连接到 IKEv2 后无法打开网站，请尝试以下解决方案：
-
-1. 某些云服务提供商，比如 [Google Cloud](https://cloud.google.com)，[默认设置较低的 MTU](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations)。这可能会导致 IKEv2 VPN 客户端的网络问题。要解决此问题，尝试在 VPN 服务器上将 MTU 设置为 1500：
-
-   ```bash
-   # 将 ens4 替换为你的服务器上的网络接口名称
-   sudo ifconfig ens4 mtu 1500
-   ```
-
-   此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
-
-1. 如果更改 MTU 大小无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
-
-1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
-
-### IKE 身份验证凭证不可接受
-
-如果遇到此错误，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
-
-### 参数错误 policy match error
-
-要解决此错误，你需要为 IKEv2 启用更强的加密算法，通过修改一次注册表来实现。请下载并导入下面的 `.reg` 文件，或者打开提升权限命令提示符并运行以下命令。
-
-- 适用于 Windows 7, 8, 10 和 11 ([下载 .reg 文件](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
-
-```console
-REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
-```
-
-### IKEv2 在一小时后断开连接
-
-如果 IKEv2 连接在一小时（60 分钟）后自动断开，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`（如果不存在，编辑 `/etc/ipsec.conf`）。在 `conn ikev2-cp` 一节的末尾添加以下行，开头必须空两格：
-
-```
-  ikelifetime=24h
-  salifetime=24h
-```
-
-保存修改并运行 `service ipsec restart`。该解决方案已在 2021-01-20 添加到辅助脚本。
-
-### 无法同时连接多个 IKEv2 客户端
-
-如果要连接多个客户端，则必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
-
-如果你无法连接同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，可以这样解决：编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`，找到这一行 `leftid=@<your_server_ip>` 并去掉 `@`，也就是说将它替换为 `leftid=<your_server_ip>`。保存修改并运行 `service ipsec restart`。如果 `leftid` 是一个域名则不受影响，不要应用这个解决方案。该解决方案已在 2021-02-01 添加到辅助脚本。
-
-### 其它已知问题
-
-1. Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
-1. 如果你使用 strongSwan Android VPN 客户端，则必须将服务器上的 Libreswan [升级](../README-zh.md#升级libreswan)到版本 3.26 或以上。
 
 ## 更改 IKEv2 服务器地址
 

@@ -6,8 +6,8 @@
 
 * [Introduction](#introduction)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
-* [Manage client certificates](#manage-client-certificates)
 * [Troubleshooting](#troubleshooting)
+* [Manage client certificates](#manage-client-certificates)
 * [Change IKEv2 server address](#change-ikev2-server-address)
 * [Update IKEv2 helper script](#update-ikev2-helper-script)
 * [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script)
@@ -417,6 +417,81 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 > mar/02/2022 12:52:57 by RouterOS 6.48   
 > RouterBOARD 941-2nD
 
+## Troubleshooting
+
+*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除).*
+
+**See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
+
+* [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
+* [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
+* [Policy match error](#policy-match-error)
+* [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
+* [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
+* [Windows 10 connecting](#windows-10-connecting)
+* [Other known issues](#other-known-issues)
+
+### Cannot open websites after connecting to IKEv2
+
+If your VPN client device cannot open websites after successfully connecting to IKEv2, try the following fixes:
+
+1. Some cloud providers, such as [Google Cloud](https://cloud.google.com), [set a lower MTU by default](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations). This could cause network issues with IKEv2 VPN clients. To fix, try setting the MTU to 1500 on the VPN server:
+
+   ```bash
+   # Replace ens4 with the network interface name on your server
+   sudo ifconfig ens4 mtu 1500
+   ```
+
+   This setting **does not** persist after a reboot. To change the MTU size permanently, refer to relevant articles on the web.
+
+1. If changing the MTU size does not fix the issue, try the fix in [Android MTU/MSS issues](clients.md#android-mtumss-issues).
+
+1. In certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
+
+### IKE authentication credentials are unacceptable
+
+If you encounter this error, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. For example, you cannot use a DNS name to connect if it was not specified when setting up IKEv2. To change the IKEv2 server address, read [this section](#change-ikev2-server-address).
+
+### Policy match error
+
+To fix this error, you will need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
+
+- For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
+
+```console
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
+```
+
+### IKEv2 disconnects after one hour
+
+If the IKEv2 connection disconnects automatically after one hour (60 minutes), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (or `/etc/ipsec.conf` if it does not exist), append these lines to the end of section `conn ikev2-cp`, indented by two spaces:
+
+```
+  ikelifetime=24h
+  salifetime=24h
+```
+
+Save the file and run `service ipsec restart`. As of 2021-01-20, the IKEv2 helper script was updated to include this fix.
+
+### Unable to connect multiple IKEv2 clients
+
+To connect multiple IKEv2 clients, you must [generate a unique certificate](#add-a-client-certificate) for each.
+
+If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
+
+### Windows 10 connecting
+
+If using Windows 10 and the VPN is stuck on "connecting" for more than a few minutes, try these steps:
+
+1. Right-click on the wireless/network icon in your system tray.
+1. Select **Open Network & Internet settings**, then on the page that opens, click **VPN** on the left.
+1. Select the new VPN entry, then click **Connect**.
+
+### Other known issues
+
+1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
+1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
+
 ## Manage client certificates
 
 * [List existing clients](#list-existing-clients)
@@ -598,72 +673,6 @@ Alternatively, you can manually revoke a client certificate. This can be done us
    ipsec crls
    ```
 </details>
-
-## Troubleshooting
-
-*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除).*
-
-**See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
-
-* [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
-* [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
-* [Policy match error](#policy-match-error)
-* [IKEv2 disconnects after one hour](#ikev2-disconnects-after-one-hour)
-* [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
-* [Other known issues](#other-known-issues)
-
-### Cannot open websites after connecting to IKEv2
-
-If your VPN client device cannot open websites after successfully connecting to IKEv2, try the following fixes:
-
-1. Some cloud providers, such as [Google Cloud](https://cloud.google.com), [set a lower MTU by default](https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations). This could cause network issues with IKEv2 VPN clients. To fix, try setting the MTU to 1500 on the VPN server:
-
-   ```bash
-   # Replace ens4 with the network interface name on your server
-   sudo ifconfig ens4 mtu 1500
-   ```
-
-   This setting **does not** persist after a reboot. To change the MTU size permanently, refer to relevant articles on the web.
-
-1. If changing the MTU size does not fix the issue, try the fix in [Android MTU/MSS issues](clients.md#android-mtumss-issues).
-
-1. In certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
-
-### IKE authentication credentials are unacceptable
-
-If you encounter this error, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. For example, you cannot use a DNS name to connect if it was not specified when setting up IKEv2. To change the IKEv2 server address, read [this section](#change-ikev2-server-address).
-
-### Policy match error
-
-To fix this error, you will need to enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt.
-
-- For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
-
-```console
-REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
-```
-
-### IKEv2 disconnects after one hour
-
-If the IKEv2 connection disconnects automatically after one hour (60 minutes), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server (or `/etc/ipsec.conf` if it does not exist), append these lines to the end of section `conn ikev2-cp`, indented by two spaces:
-
-```
-  ikelifetime=24h
-  salifetime=24h
-```
-
-Save the file and run `service ipsec restart`. As of 2021-01-20, the IKEv2 helper script was updated to include this fix.
-
-### Unable to connect multiple IKEv2 clients
-
-To connect multiple IKEv2 clients, you must [generate a unique certificate](#add-a-client-certificate) for each.
-
-If you are unable to connect multiple IKEv2 clients from behind the same NAT (e.g. home router), apply this fix: Edit `/etc/ipsec.d/ikev2.conf` on the VPN server, find the line `leftid=@<your_server_ip>` and remove the `@`, i.e. replace it with `leftid=<your_server_ip>`. Save the file and run `service ipsec restart`. Do not apply this fix if `leftid` is a DNS name, which is not affected. As of 2021-02-01, the IKEv2 helper script was updated to include this fix.
-
-### Other known issues
-
-1. The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
-1. If using the strongSwan Android VPN client, you must [update Libreswan](../README.md#upgrade-libreswan) on your server to version 3.26 or above.
 
 ## Change IKEv2 server address
 

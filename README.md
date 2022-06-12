@@ -255,9 +255,25 @@ The latest supported Libreswan version is `4.7`. Check installed version: `ipsec
 
 See [Manage VPN users](docs/manage-users.md).
 
+- [Manage VPN users using helper scripts](docs/manage-users.md#manage-vpn-users-using-helper-scripts)
+- [View VPN users](docs/manage-users.md#view-vpn-users)
+- [View or update the IPsec PSK](docs/manage-users.md#view-or-update-the-ipsec-psk)
+- [Manually manage VPN users](docs/manage-users.md#manually-manage-vpn-users)
+
 ## Advanced usage
 
 See [Advanced usage](docs/advanced-usage.md).
+
+- [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
+- [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
+- [IKEv2-only VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
+- [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
+- [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
+- [Split tunneling](docs/advanced-usage.md#split-tunneling)
+- [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
+- [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
+- [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 
 ## Uninstall the VPN
 
