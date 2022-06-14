@@ -10,8 +10,6 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**&raquo; 另见：[WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 一键安装脚本**
-
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上全新安装 Ubuntu, Debian 或者 CentOS。
@@ -196,15 +194,13 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 [**配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端**](docs/clients-xauth-zh.md)
 
-如果在连接过程中遇到错误，请参见 [故障排除](docs/clients-zh.md#故障排除)。
-
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
 如果你喜欢这个项目，可以 [表达你的支持或感谢](https://coindrop.to/hwdsl2)。
 
-## 重要提示
+<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="38" width="153" alt="Coindrop.to me"></img></a>
 
-*其他语言版本: [English](README.md#important-notes), [中文](README-zh.md#重要提示)。*
+## 重要提示
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 

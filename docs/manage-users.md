@@ -11,8 +11,6 @@ By default, a single user account for VPN login is created. If you wish to view 
 
 ## Manage VPN users using helper scripts
 
-*Read this in other languages: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户).*
-
 You may use helper scripts to add, delete or update VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
 
 **Note:** Replace command arguments below with your own values. VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.

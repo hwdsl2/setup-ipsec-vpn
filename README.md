@@ -10,8 +10,6 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-**&raquo; See also: [WireGuard](https://github.com/hwdsl2/wireguard-install) and [OpenVPN](https://github.com/hwdsl2/openvpn-install) Auto Setup Scripts**
-
 ## Quick start
 
 First, prepare your Linux server\* with a fresh install of Ubuntu, Debian or CentOS.
@@ -196,15 +194,13 @@ Get your computer or device to use the VPN. Please refer to:
 
 [**Configure IPsec/XAuth ("Cisco IPsec") VPN Clients**](docs/clients-xauth.md)
 
-If you get an error when trying to connect, see [Troubleshooting](docs/clients.md#troubleshooting).
-
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).
 
-## Important notes
+<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="38" width="153" alt="Coindrop.to me"></img></a>
 
-*Read this in other languages: [English](README.md#important-notes), [中文](README-zh.md#重要提示).*
+## Important notes
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 

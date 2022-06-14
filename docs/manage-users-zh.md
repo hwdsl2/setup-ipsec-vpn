@@ -11,8 +11,6 @@
 
 ## 使用辅助脚本管理 VPN 用户
 
-*其他语言版本: [English](manage-users.md#manage-vpn-users-using-helper-scripts), [中文](manage-users-zh.md#使用辅助脚本管理-vpn-用户)。*
-
 你可以使用辅助脚本添加，删除或者更新 VPN 用户。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。对于 IKEv2 模式，请参见 [管理客户端证书](ikev2-howto-zh.md#管理客户端证书)。
 
 **注：** 将下面的命令的参数换成你自己的值。VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
