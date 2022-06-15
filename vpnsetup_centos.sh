@@ -407,7 +407,7 @@ conn shared
   rekey=no
   keyingtries=5
   dpddelay=30
-  dpdtimeout=120
+  dpdtimeout=300
   dpdaction=clear
   ikev2=never
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024

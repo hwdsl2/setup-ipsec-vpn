@@ -823,7 +823,7 @@ To customize IKEv2 or client options, run this script without arguments.
      rightrsasigkey=%cert
      narrowing=yes
      dpddelay=30
-     dpdtimeout=120
+     retransmit-timeout=300s
      dpdaction=clear
      auto=add
      ikev2=insist

@@ -825,7 +825,7 @@ View example steps for manually configuring IKEv2 with Libreswan.
      rightrsasigkey=%cert
      narrowing=yes
      dpddelay=30
-     dpdtimeout=120
+     retransmit-timeout=300s
      dpdaction=clear
      auto=add
      ikev2=insist
