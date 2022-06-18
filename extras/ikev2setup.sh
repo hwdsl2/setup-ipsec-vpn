@@ -764,7 +764,7 @@ export_p12_file() {
         -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
     fi
     /bin/rm -f "$pem_file"
-  elif [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bookwormsid" ]; then
+  elif [ "$os_ver" = "bookwormsid" ]; then
     ca_crt="$export_dir$client_name.ca.crt"
     client_crt="$export_dir$client_name.client.crt"
     client_key="$export_dir$client_name.client.key"
