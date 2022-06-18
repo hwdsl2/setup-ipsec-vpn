@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Jun 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   18 Jun 2022
 
 EOF
 }
@@ -574,6 +574,9 @@ check_mobike_support() {
     fi
   fi
   if uname -a | grep -qi qnap; then
+    mobike_support=0
+  fi
+  if uname -a | grep -qi synology; then
     mobike_support=0
   fi
   if [ "$mobike_support" = "1" ]; then
