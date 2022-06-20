@@ -77,7 +77,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - Oracle Linux 8 或者 7
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
 - Amazon Linux 2
-- Alpine Linux 3.15 或者 3.14
+- Alpine Linux 3.16 或者 3.15
 
 这也包括公共云服务中的 Linux 虚拟机，例如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) 和 [Microsoft Azure](https://azure.microsoft.com)。公共云用户也可以使用[用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup)部署。
 
