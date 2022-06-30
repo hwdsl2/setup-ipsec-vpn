@@ -16,6 +16,8 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
   * [iOS (iPhone/iPad)](#ios)
   * [Linux](#linux)
 
+如果你喜欢这个项目，可以[表达你的支持或感谢](https://coindrop.to/hwdsl2)。
+
 ## Windows
 
 > :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。无需安装额外的软件。

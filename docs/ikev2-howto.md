@@ -24,7 +24,7 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 
 ## Configure IKEv2 VPN clients
 
-*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端). Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).*
+*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
 **Note:** To add or export IKEv2 clients, run `sudo ikev2.sh`. Use `-h` to show usage. Client config files can be safely deleted after import.
 
@@ -34,6 +34,8 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [Android](#android)
 * [Linux](#linux)
 * [Mikrotik RouterOS](#routeros)
+
+Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).
 
 ### Windows 7, 8, 10 and 11
 

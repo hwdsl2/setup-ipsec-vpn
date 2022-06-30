@@ -16,6 +16,8 @@ After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn
   * [Linux](#linux)
 * [Troubleshooting](#troubleshooting)
 
+Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).
+
 ## Windows
 
 > :information_source: You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).

@@ -16,6 +16,8 @@
   * [Linux](#linux)
 * [故障排除](#故障排除)
 
+如果你喜欢这个项目，可以[表达你的支持或感谢](https://coindrop.to/hwdsl2)。
+
 ## Windows
 
 > :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
