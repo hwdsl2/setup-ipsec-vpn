@@ -186,6 +186,10 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 *其他语言版本: [English](README.md#next-steps), [中文](README-zh.md#下一步)。*
 
+> 如果你喜欢这个项目，可以表达你的支持或感谢。
+>
+> <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="docs/images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
+
 配置你的计算机或其它设备使用 VPN。请参见：
 
 **[配置 IKEv2 VPN 客户端（推荐）](docs/ikev2-howto-zh.md)**
@@ -195,10 +199,6 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
-
-如果你喜欢这个项目，可以表达你的支持或感谢。
-
-<a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" src="docs/images/kofi1.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
 
 ## 重要提示
 
