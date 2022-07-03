@@ -368,9 +368,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### RouterOS
 
-**Note:** These steps were contributed by [@Unix-User](https://github.com/Unix-User).
-
-It is recommended to use terminal command via SSH connection, eg via Putty.
+**Note:** These steps were contributed by [@Unix-User](https://github.com/Unix-User). It is recommended to run terminal commands via an SSH connection, e.g. via Putty.
 
 1. Securely transfer the generated `.p12` file to your computer.
 
@@ -384,11 +382,20 @@ It is recommended to use terminal command via SSH connection, eg via Putty.
 
 2. In WinBox, go to System > certificates > import. Import the `.p12` certificate file twice (yes, import the same file two times!). Verify in your certificates panel. You will see 2 files, the one that is marked KT is the key.
 
+   <details>
+   <summary>
+   Click to see screencast.
+   </summary>
+
+   ![routeros import certificate](images/routeros-import-cert.gif)
+   </details>
+
    Or you can use terminal instead (empty passphrase):
+
    ```bash
    [admin@MikroTik] > /certificate/import file-name=mikrotik.p12
    passphrase:
-   
+
      certificates-imported: 2
      private-keys-imported: 0
             files-imported: 1
@@ -397,7 +404,7 @@ It is recommended to use terminal command via SSH connection, eg via Putty.
 
    [admin@MikroTik] > /certificate/import file-name=mikrotik.p12
    passphrase:
-   
+
         certificates-imported: 0
         private-keys-imported: 1
                files-imported: 1
@@ -405,15 +412,6 @@ It is recommended to use terminal command via SSH connection, eg via Putty.
      keys-with-no-certificate: 0
 
    ```
-   
-
-   <details>
-   <summary>
-   Click to see screencast.
-   </summary>
-
-   ![routeros import certificate](images/routeros-import-cert.gif)
-   </details>
 
 3. Run these commands in terminal. Replace the following with your own values.
 `YOUR_VPN_SERVER_IP_OR_DNS_NAME` is your VPN server IP or DNS name.
