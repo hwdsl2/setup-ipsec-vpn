@@ -77,7 +77,9 @@ Alternatively, instead of following the steps above, you may create the VPN conn
 # Disable persistent command history
 Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # Create VPN connection
-Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' -L2tpPsk 'Your VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required -AuthenticationMethod Chap,MSChapv2 -Force -RememberCredential -PassThru
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress 'Your VPN Server IP' ^
+  -L2tpPsk 'Your VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required ^
+  -AuthenticationMethod Chap,MSChapv2 -Force -RememberCredential -PassThru
 # Ignore the data encryption warning (data is encrypted in the IPsec tunnel)
 ```
 
