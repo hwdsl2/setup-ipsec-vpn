@@ -79,9 +79,14 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
    ```console
    # Create VPN connection (replace server address with your own value)
-   powershell -command "Add-VpnConnection -ServerAddress 'Your VPN Server IP (or DNS name)' -Name 'My IKEv2 VPN' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru"
+   powershell -command "Add-VpnConnection -ServerAddress 'Your VPN Server IP (or DNS name)' ^
+     -Name 'My IKEv2 VPN' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate ^
+     -EncryptionLevel Required -PassThru"
    # Set IPsec configuration
-   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
+   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' ^
+     -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 ^
+     -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None ^
+     -DHGroup Group14 -PassThru -Force"
    ```
 
    **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
@@ -428,9 +433,11 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
    /ip ipsec mode-config add name=ike2-rw responder=no src-address-list=local
    /ip ipsec policy group add name=ike2-rw
    /ip ipsec profile add name=ike2-rw
-   /ip ipsec peer add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   /ip ipsec peer add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 \
+       name=ike2-rw-client profile=ike2-rw
    /ip ipsec proposal add name=ike2-rw pfs-group=none
-   /ip ipsec identity add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE generate-policy=port-strict mode-config=ike2-rw \
+   /ip ipsec identity add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE \
+       generate-policy=port-strict mode-config=ike2-rw \
        peer=ike2-rw-client policy-template-group=ike2-rw
    /ip ipsec policy add group=ike2-rw proposal=ike2-rw template=yes
    ```

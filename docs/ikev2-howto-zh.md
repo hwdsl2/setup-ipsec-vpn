@@ -79,9 +79,14 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
-   powershell -command "Add-VpnConnection -ServerAddress '你的 VPN 服务器 IP（或者域名）' -Name 'My IKEv2 VPN' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate -EncryptionLevel Required -PassThru"
+   powershell -command "Add-VpnConnection -ServerAddress '你的 VPN 服务器 IP（或者域名）' ^
+     -Name 'My IKEv2 VPN' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate ^
+     -EncryptionLevel Required -PassThru"
    # 设置 IPsec 参数
-   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None -DHGroup Group14 -PassThru -Force"
+   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' ^
+     -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 ^
+     -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None ^
+     -DHGroup Group14 -PassThru -Force"
    ```
 
    **Windows 7** 不支持这些命令，你可以 [手动创建 VPN 连接](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config)。
@@ -426,9 +431,11 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
    /ip ipsec mode-config add name=ike2-rw responder=no src-address-list=local
    /ip ipsec policy group add name=ike2-rw
    /ip ipsec profile add name=ike2-rw
-   /ip ipsec peer add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 name=ike2-rw-client profile=ike2-rw
+   /ip ipsec peer add address=YOUR_VPN_SERVER_IP_OR_DNS_NAME exchange-mode=ike2 \
+       name=ike2-rw-client profile=ike2-rw
    /ip ipsec proposal add name=ike2-rw pfs-group=none
-   /ip ipsec identity add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE generate-policy=port-strict mode-config=ike2-rw \
+   /ip ipsec identity add auth-method=digital-signature certificate=IMPORTED_CERTIFICATE \
+       generate-policy=port-strict mode-config=ike2-rw \
        peer=ike2-rw-client policy-template-group=ike2-rw
    /ip ipsec policy add group=ike2-rw proposal=ike2-rw template=yes
    ```
