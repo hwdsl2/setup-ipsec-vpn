@@ -186,10 +186,6 @@ If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `
 
 *Read this in other languages: [English](README.md#next-steps), [中文](README-zh.md#下一步).*
 
-> Like this project? You can show your support or appreciation.
->
-> <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="docs/images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
-
 Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IKEv2 VPN Clients (recommended)](docs/ikev2-howto.md)**
@@ -199,6 +195,12 @@ Get your computer or device to use the VPN. Please refer to:
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](docs/clients-xauth.md)**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
+
+> Like this project? You can show your support\* or appreciation.
+>
+> <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="docs/images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
+>
+> \* Get access to supporter-only content.
 
 ## Important notes
 
