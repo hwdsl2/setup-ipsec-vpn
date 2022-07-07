@@ -26,12 +26,11 @@
       "allowedValues": [
         "ubuntu22.04",
         "ubuntu20.04",
-        "ubuntu18.04",
-        "debian9"
+        "ubuntu18.04"
       ],
       "defaultValue": "ubuntu22.04",
       "metadata": {
-        "description": "OS to use. Ubuntu 22.04/20.04/18.04 or Debian 9."
+        "description": "OS to use. Ubuntu 22.04, 20.04 or 18.04."
       }
     },
     "VMSize": {
@@ -78,12 +77,6 @@
       "publisher": "Canonical",
       "offer": "UbuntuServer",
       "sku": "18.04-LTS",
-      "version": "latest"
-    },
-    "debian9": {
-      "publisher": "credativ",
-      "offer": "Debian",
-      "sku": "9",
       "version": "latest"
     },
     "installScriptURL": "https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/azure/install.sh",
