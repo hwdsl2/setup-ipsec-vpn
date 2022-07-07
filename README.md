@@ -71,8 +71,8 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 A cloud server, virtual private server (VPS) or dedicated server, freshly installed with:
 
 - Ubuntu 22.04, 20.04 or 18.04
-- Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) or 9
-- CentOS 7 or CentOS Stream 8[\*\*](#centos-8-note)
+- Debian 11 or 10
+- CentOS 7 or CentOS Stream 8
 - Rocky Linux or AlmaLinux 8
 - Oracle Linux 8 or 7
 - Red Hat Enterprise Linux (RHEL) 8 or 7
@@ -86,11 +86,6 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
-
-<a name="debian-10-note"></a>
-\* Debian 11/10 users should [use the standard Linux kernel](docs/clients.md#debian-10-kernel).   
-<a name="centos-8-note"></a>
-\*\* CentOS Linux 8 [is no longer supported](https://www.centos.org/centos-linux-eol/).
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 

@@ -71,8 +71,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，全新安装以下操作系统之一：
 
 - Ubuntu 22.04, 20.04 或者 18.04
-- Debian 11[\*](#debian-10-note), 10[\*](#debian-10-note) 或者 9
-- CentOS 7 或者 CentOS Stream 8[\*\*](#centos-8-note)
+- Debian 11 或者 10
+- CentOS 7 或者 CentOS Stream 8
 - Rocky Linux 或者 AlmaLinux 8
 - Oracle Linux 8 或者 7
 - Red Hat Enterprise Linux (RHEL) 8 或者 7
@@ -86,11 +86,6 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 [**&raquo; 我想建立并使用自己的 VPN，但是没有可用的服务器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 另外，你也可以使用预构建的 [Docker 镜像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)。高级用户可以在 [Raspberry Pi](https://www.raspberrypi.org) 上安装。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
-
-<a name="debian-10-note"></a>
-\* Debian 11/10 用户需要 [使用标准的 Linux 内核](docs/clients-zh.md#debian-10-内核)。   
-<a name="centos-8-note"></a>
-\*\* 对 CentOS Linux 8 的支持 [已经结束](https://www.centos.org/centos-linux-eol/)。
 
 :warning: **不要** 在你的 PC 或者 Mac 上运行这些脚本！它们只能用在服务器上！
 
