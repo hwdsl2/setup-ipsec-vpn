@@ -128,10 +128,10 @@ sh vpn.sh
 
 <details>
 <summary>
-高级用户可以选择自定义 IKEv2 选项。
+可选：在安装 VPN 时自定义 IKEv2 选项。
 </summary>
 
-高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+在安装 VPN 时，你可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh

@@ -22,7 +22,7 @@ After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn
 
 ## Windows
 
-> :information_source: You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
+> You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Windows 11
 
@@ -115,7 +115,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## OS X
 
-> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+> You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Open System Preferences and go to the Network section.
 1. Click the **+** button in the lower-left corner of the window.
@@ -140,7 +140,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## Android
 
-> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode. Android 12 only supports [IKEv2](ikev2-howto.md) mode.
+> You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode. Android 12 only supports [IKEv2](ikev2-howto.md) mode.
 
 1. Launch the **Settings** application.
 1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
@@ -165,7 +165,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## iOS
 
-> :information_source: You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+> You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
 1. Go to Settings -> General -> VPN.
 1. Tap **Add VPN Configuration...**.
@@ -204,7 +204,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ## Linux
 
-> :information_source: You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
+> You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
 
 ### Ubuntu Linux
 

@@ -22,7 +22,7 @@
 
 ## Windows
 
-> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
 ### Windows 11
 
@@ -115,7 +115,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## OS X
 
-> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 1. 打开系统偏好设置并转到网络部分。
 1. 在窗口左下角单击 **+** 按钮。
@@ -141,7 +141,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## Android
 
-> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。Android 12 仅支持 [IKEv2](ikev2-howto-zh.md) 模式。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。Android 12 仅支持 [IKEv2](ikev2-howto-zh.md) 模式。
 
 1. 启动 **设置** 应用程序。
 1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
@@ -166,7 +166,7 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](
 
 ## iOS
 
-> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
 1. 进入设置 -> 通用 -> VPN。
 1. 单击 **添加VPN配置...**。
@@ -205,7 +205,7 @@ VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可�
 
 ## Linux
 
-> :information_source: 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
 
 ### Ubuntu Linux
 

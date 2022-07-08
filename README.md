@@ -128,10 +128,10 @@ After setup, you may optionally install [WireGuard](https://github.com/hwdsl2/wi
 
 <details>
 <summary>
-Advanced users can optionally customize IKEv2 options.
+Optional: Customize IKEv2 options during VPN setup.
 </summary>
 
-Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
+When installing the VPN, you can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```bash
 sudo VPN_DNS_NAME='vpn.example.com' sh vpn.sh
