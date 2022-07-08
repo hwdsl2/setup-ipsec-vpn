@@ -189,13 +189,13 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
+**[下载 VPN 文档的 PDF 版本](https://ko-fi.com/post/PDF-versions-of-Setup-IPsec-VPN-docs-for-easy-shar-E1E4DO69I)**
+
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
-> 如果你喜欢这个项目，可以表达你的支持\*或感谢。
+> 如果你喜欢这个项目，可以表达你的支持或感谢。
 >
 > <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="docs/images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
->
-> \* 访问仅限支持者的内容。
 
 ## 重要提示
 
