@@ -104,9 +104,9 @@ jobs:
 
           url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
           url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
-          deb1="libnss3_3.49.1-1ubuntu1.7_amd64.deb"
-          deb2="libnss3-dev_3.49.1-1ubuntu1.7_amd64.deb"
-          deb3="libnss3-tools_3.49.1-1ubuntu1.7_amd64.deb"
+          deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
+          deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
+          deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
 
           $wg 1.deb "$url1/$deb1"
           $wg 2.deb "$url1/$deb2"
