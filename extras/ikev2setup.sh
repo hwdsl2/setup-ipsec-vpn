@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   18 Jun 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Jul 2022
 
 EOF
 }
@@ -1151,9 +1151,9 @@ apply_ubuntu1804_nss_fix() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
     nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
-    nss_deb1="libnss3_3.49.1-1ubuntu1.7_amd64.deb"
-    nss_deb2="libnss3-dev_3.49.1-1ubuntu1.7_amd64.deb"
-    nss_deb3="libnss3-tools_3.49.1-1ubuntu1.7_amd64.deb"
+    nss_deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
+    nss_deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
+    nss_deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
     if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
       bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
       export DEBIAN_FRONTEND=noninteractive
