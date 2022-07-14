@@ -35,13 +35,19 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [Linux](#linux)
 * [Mikrotik RouterOS](#routeros)
 
-> Like this project? You can show your support or appreciation.
->
-> <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
+<details>
+<summary>
+Like this project? You can show your support or appreciation.
+</summary>
+
+<a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
+</details>
 
 ### Windows 7, 8, 10 and 11
 
 #### Auto-import configuration
+
+[**Screencast:** IKEv2 Auto Import Configuration (supporters)](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
 
 **Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
 
@@ -55,6 +61,8 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
 #### Manually import configuration
+
+[**Screencast:** IKEv2 Manually Import Configuration (supporters)](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
 
 Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
@@ -77,14 +85,14 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
    ```console
    # Create VPN connection (replace server address with your own value)
-   powershell -command "Add-VpnConnection -ServerAddress 'Your VPN Server IP (or DNS name)' ^
+   powershell -command ^"Add-VpnConnection -ServerAddress 'Your VPN Server IP (or DNS name)' ^
      -Name 'My IKEv2 VPN' -TunnelType IKEv2 -AuthenticationMethod MachineCertificate ^
-     -EncryptionLevel Required -PassThru"
+     -EncryptionLevel Required -PassThru^"
    # Set IPsec configuration
-   powershell -command "Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' ^
+   powershell -command ^"Set-VpnConnectionIPsecConfiguration -ConnectionName 'My IKEv2 VPN' ^
      -AuthenticationTransformConstants GCMAES128 -CipherTransformConstants GCMAES128 ^
      -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PfsGroup None ^
-     -DHGroup Group14 -PassThru -Force"
+     -DHGroup Group14 -PassThru -Force^"
    ```
 
    **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
