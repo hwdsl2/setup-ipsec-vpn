@@ -240,7 +240,7 @@ iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 
 ## VPN 分流
 
-在启用 [VPN 分流 (split tunneling)](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。VPN 分流 [有一些局限性](https://wiki.strongswan.org/projects/strongswan/wiki/ForwardingAndSplitTunneling#Split-Tunneling)，而且并非所有的 VPN 客户端都支持。
+在启用 VPN 分流 (split tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。VPN 分流有一些局限性，而且并非所有的 VPN 客户端都支持。
 
 高级用户可以为 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 和/或 [IKEv2](ikev2-howto-zh.md) 模式启用 VPN 分流。这是可选的。IPsec/L2TP 模式 **不支持** 此功能。
 

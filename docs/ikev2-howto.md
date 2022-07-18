@@ -77,7 +77,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
    **Note:** If there is no password for client config files, press Enter to continue, or if manually importing the `.p12` file, leave the password field blank.
 
-   Alternatively, you can [manually import the .p12 file](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs). Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
+   Alternatively, you can [manually import the .p12 file](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Certs/9). Make sure that the client cert is placed in "Personal -> Certificates", and the CA cert is placed in "Trusted Root Certification Authorities -> Certificates".
 
 1. On the Windows computer, add a new IKEv2 VPN connection.
 
@@ -95,13 +95,13 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
      -DHGroup Group14 -PassThru -Force^"
    ```
 
-   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config).
+   **Windows 7** does not support these commands, you can [manually create the VPN connection](https://wiki.strongswan.org/projects/strongswan/wiki/Win7Config/8).
 
    **Note:** The server address you specify must **exactly match** the server address in the output of the IKEv2 helper script. For example, if you specified the server's DNS name during IKEv2 setup, you must enter the DNS name in the **Internet address** field.
 
 1. **This step is required if you manually created the VPN connection.**
 
-   Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients#AES-256-CBC-and-MODP2048).
+   Enable stronger ciphers for IKEv2 with a one-time registry change. Download and import the `.reg` file below, or run the following from an elevated command prompt. Read more [here](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html).
 
    - For Windows 7, 8, 10 and 11 ([download .reg file](https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0/Enable_Stronger_Ciphers_for_IKEv2_on_Windows.reg))
 
@@ -686,7 +686,7 @@ Alternatively, you can manually revoke a client certificate. This can be done us
        CRL Extensions:
    ```
 
-   **Note:** If you want to remove a certificate from the CRL, replace `addcert 3446275956 20200606220100Z` above with `rmcert 3446275956`. For other `crlutil` usage, read [here](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil).
+   **Note:** If you want to remove a certificate from the CRL, replace `addcert 3446275956 20200606220100Z` above with `rmcert 3446275956`. For other `crlutil` usage, read [here](https://firefox-source-docs.mozilla.org/security/nss/legacy/tools/nss_tools_crlutil/index.html).
 
 1. Finally, let Libreswan re-read the updated CRL.
 
@@ -888,7 +888,7 @@ View example steps for manually configuring IKEv2 with Libreswan.
    EOF
    ```
 
-   **Note:** The [MOBIKE](https://wiki.strongswan.org/projects/strongswan/wiki/MobIke) IKEv2 extension allows VPN clients to change network attachment points, e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP. If your server (or Docker host) is **NOT** running Ubuntu Linux, and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
+   **Note:** The MOBIKE IKEv2 extension allows VPN clients to change network attachment points, e.g. switch between mobile data and Wi-Fi and keep the IPsec tunnel up on the new IP. If your server (or Docker host) is **NOT** running Ubuntu Linux, and you wish to enable MOBIKE support, replace `mobike=no` with `mobike=yes` in the command above. **DO NOT** enable this option on Ubuntu systems or Raspberry Pis.
 
    For Libreswan 3.19-3.22:
 
@@ -1008,7 +1008,7 @@ View example steps for manually configuring IKEv2 with Libreswan.
    vpnclient                                          u,u,u
    ```
 
-   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To revoke a client certificate, follow [these steps](#revoke-a-client-certificate). For other `certutil` usage, read [here](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil).
+   **Note:** To display a certificate, use `certutil -L -d sql:/etc/ipsec.d -n "Nickname"`. To revoke a client certificate, follow [these steps](#revoke-a-client-certificate). For other `certutil` usage, read [here](https://firefox-source-docs.mozilla.org/security/nss/legacy/tools/nss_tools_certutil/index.html).
 
 1. **(Important) Restart the IPsec service**:
 
@@ -1088,10 +1088,10 @@ To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.
 * https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2
 * https://libreswan.org/wiki/HOWTO:_Using_NSS_with_libreswan
 * https://libreswan.org/man/ipsec.conf.5.html
-* https://wiki.strongswan.org/projects/strongswan/wiki/WindowsClients
-* https://wiki.strongswan.org/projects/strongswan/wiki/AndroidVpnClient
-* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil
-* https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_crlutil
+* https://docs.strongswan.org/docs/5.9/interop/windowsClients.html
+* https://docs.strongswan.org/docs/5.9/os/androidVpnClient.html
+* https://firefox-source-docs.mozilla.org/security/nss/legacy/tools/nss_tools_certutil/index.html
+* https://firefox-source-docs.mozilla.org/security/nss/legacy/tools/nss_tools_crlutil/index.html
 
 ## License
 
