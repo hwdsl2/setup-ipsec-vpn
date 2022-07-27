@@ -151,7 +151,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Jul 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   27 Jul 2022
 
 EOF
 }
@@ -767,7 +767,7 @@ export_p12_file() {
         -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
     fi
     /bin/rm -f "$pem_file"
-  elif [ "$os_ver" = "bookwormsid" ]; then
+  elif [ "$os_ver" = "bookwormsid" ] || openssl version 2>/dev/null | grep -q "^OpenSSL 3"; then
     ca_crt="$export_dir$client_name.ca.crt"
     client_crt="$export_dir$client_name.client.crt"
     client_key="$export_dir$client_name.client.key"
