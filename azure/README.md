@@ -1,6 +1,6 @@
-# Deploy to Microsoft Azure
+[English](README.md) | [中文](README-zh.md)
 
-*Read this in other languages: [English](README.md), [中文](README-zh.md).*
+# Deploy to Microsoft Azure
 
 This template will create a fully working VPN server on the Microsoft Azure Cloud ([pricing details](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/)).
 

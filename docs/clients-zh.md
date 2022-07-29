@@ -1,6 +1,6 @@
-# 配置 IPsec/L2TP VPN 客户端
+[English](clients.md) | [中文](clients-zh.md)
 
-*其他语言版本: [English](clients.md), [中文](clients-zh.md)。*
+# 配置 IPsec/L2TP VPN 客户端
 
 **注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 

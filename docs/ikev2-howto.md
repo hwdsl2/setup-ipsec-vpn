@@ -1,6 +1,6 @@
-# Guide: How to Set Up and Use IKEv2 VPN
+[English](ikev2-howto.md) | [中文](ikev2-howto-zh.md)
 
-*Read this in other languages: [English](ikev2-howto.md), [中文](ikev2-howto-zh.md).*
+# Guide: How to Set Up and Use IKEv2 VPN
 
 **Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -23,8 +23,6 @@ Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certifica
 By default, IKEv2 is automatically set up when running the VPN setup script. If you want to learn more about setting up IKEv2, see [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
 
 ## Configure IKEv2 VPN clients
-
-*Read this in other languages: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端).*
 
 **Note:** To add or export IKEv2 clients, run `sudo ikev2.sh`. Use `-h` to show usage. Client config files can be safely deleted after import.
 

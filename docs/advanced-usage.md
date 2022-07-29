@@ -1,6 +1,6 @@
-# Advanced Usage
+[English](advanced-usage.md) | [中文](advanced-usage-zh.md)
 
-*Read this in other languages: [English](advanced-usage.md), [中文](advanced-usage-zh.md).*
+# Advanced Usage
 
 * [Use alternative DNS servers](#use-alternative-dns-servers)
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)

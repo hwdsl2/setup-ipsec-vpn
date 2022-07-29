@@ -1,6 +1,6 @@
-# 高级用法：部署 Google BBR 拥塞控制算法
+[English](bbr.md) | [中文](bbr-zh.md)
 
-*其他语言版本: [English](bbr.md), [中文](bbr-zh.md)。*
+# 高级用法：部署 Google BBR 拥塞控制算法
 
 Google BBR是一种拥塞控制算法，它能够显著提升服务器吞吐率并降低延迟。
 

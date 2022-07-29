@@ -1,6 +1,6 @@
-# IKEv2 VPN 配置和使用指南
+[English](ikev2-howto.md) | [中文](ikev2-howto-zh.md)
 
-*其他语言版本: [English](ikev2-howto.md), [中文](ikev2-howto-zh.md)。*
+# IKEv2 VPN 配置和使用指南
 
 **注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -23,8 +23,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 默认情况下，运行 VPN 安装脚本时会自动配置 IKEv2。如果你想了解有关配置 IKEv2 的更多信息，请参见 [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)。Docker 用户请看 [配置并使用 IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。
 
 ## 配置 IKEv2 VPN 客户端
-
-*其他语言版本: [English](ikev2-howto.md#configure-ikev2-vpn-clients), [中文](ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。*
 
 **注：** 如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。使用 `-h` 显示使用信息。客户端配置文件可以在导入后安全删除。
 

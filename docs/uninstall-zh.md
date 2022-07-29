@@ -1,6 +1,6 @@
-# 卸载 VPN
+[English](uninstall.md) | [中文](uninstall-zh.md)
 
-*其他语言版本: [English](uninstall.md), [中文](uninstall-zh.md)。*
+# 卸载 VPN
 
 * [使用辅助脚本卸载 VPN](#使用辅助脚本卸载-vpn)
 * [手动卸载 VPN](#手动卸载-vpn)

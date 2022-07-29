@@ -1,6 +1,6 @@
-# 配置 IPsec/XAuth VPN 客户端
+[English](clients-xauth.md) | [中文](clients-xauth-zh.md)
 
-*其他语言版本: [English](clients-xauth.md), [中文](clients-xauth-zh.md)。*
+# 配置 IPsec/XAuth VPN 客户端
 
 **注：** 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 

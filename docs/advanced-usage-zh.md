@@ -1,6 +1,6 @@
-# 高级用法
+[English](advanced-usage.md) | [中文](advanced-usage-zh.md)
 
-*其他语言版本: [English](advanced-usage.md), [中文](advanced-usage-zh.md)。*
+# 高级用法
 
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
