@@ -218,15 +218,12 @@ install_vpn_pkgs_1() {
   rp1="$erp=epel"
   rp2="$erp=*server-*optional*"
   rp3="$erp=*releases-optional*"
-  rp4="$erp=[Pp]ower[Tt]ools"
   if [ "$os_type" = "ol" ] && [ "$os_ver" = "8" ]; then
     rp1="$erp=ol8_developer_EPEL"
-    rp4="$erp=ol8_codeready_builder"
   fi
   if [ "$os_type" = "ol" ] && [ "$os_ver" = "7" ]; then
     rp3="$erp=ol7_optional_latest"
   fi
-  [ "$os_type" = "rhel" ] && rp4="$erp=codeready-builder-for-rhel-8-*"
   (
     set -x
     yum -y -q install nss-devel nspr-devel pkgconfig pam-devel \
@@ -256,7 +253,7 @@ install_vpn_pkgs_3() {
   else
     (
       set -x
-      yum "$rp4" -y -q install $p1 $p2 $p3 >/dev/null
+      yum -y -q install $p1 $p2 >/dev/null
     ) || exiterr2
     if systemctl is-active --quiet firewalld \
       || systemctl is-active --quiet nftables \

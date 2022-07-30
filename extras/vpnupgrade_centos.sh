@@ -163,14 +163,9 @@ install_pkgs_2() {
   erp="--enablerepo"
   rp1="$erp=*server-*optional*"
   rp2="$erp=*releases-optional*"
-  rp3="$erp=[Pp]ower[Tt]ools"
-  if [ "$os_type" = "ol" ] && [ "$os_ver" = "8" ]; then
-    rp3="$erp=ol8_codeready_builder"
-  fi
   if [ "$os_type" = "ol" ] && [ "$os_ver" = "7" ]; then
     rp2="$erp=ol7_optional_latest"
   fi
-  [ "$os_type" = "rhel" ] && rp3="$erp=codeready-builder-for-rhel-8-*"
   if [ "$os_ver" = "7" ]; then
     (
       set -x
@@ -179,7 +174,7 @@ install_pkgs_2() {
   else
     (
       set -x
-      yum "$rp3" -y -q install systemd-devel libevent-devel fipscheck-devel >/dev/null
+      yum -y -q install systemd-devel libevent-devel >/dev/null
     ) || exiterr2
   fi
 }
