@@ -93,9 +93,6 @@ check_os() {
   elif grep -qs "release 9" "$rh_file"; then
     os_ver=9
     grep -qi stream "$rh_file" && os_ver=9s
-    if [ "$os_type" = "ol" ]; then
-      exiterr "Oracle Linux 9 is not supported."
-    fi
   else
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
@@ -629,7 +626,9 @@ apply_gcp_mtu_fix() {
 enable_on_boot() {
   bigecho "Enabling services on boot..."
   systemctl --now mask firewalld 2>/dev/null
-  if [ "$use_nft" = "1" ]; then
+  if [ "$os_type$os_ver" = "ol9" ]; then
+    systemctl enable nftables 2>/dev/null
+  elif [ "$use_nft" = "1" ]; then
     systemctl enable nftables fail2ban 2>/dev/null
   else
     systemctl enable iptables fail2ban 2>/dev/null
@@ -743,12 +742,16 @@ vpnsetup() {
   install_vpn_pkgs_1
   install_vpn_pkgs_2
   install_vpn_pkgs_3
-  install_fail2ban
+  if [ "$os_type$os_ver" != "ol9" ]; then
+    install_fail2ban
+  fi
   get_helper_scripts
   get_libreswan
   install_libreswan
   create_vpn_config
-  create_f2b_config
+  if [ "$os_type$os_ver" != "ol9" ]; then
+    create_f2b_config
+  fi
   update_sysctl
   update_iptables
   apply_gcp_mtu_fix

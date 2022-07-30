@@ -88,9 +88,6 @@ check_os() {
   elif grep -qs "release 9" "$rh_file"; then
     os_ver=9
     grep -qi stream "$rh_file" && os_ver=9s
-    if [ "$os_type" = "ol" ]; then
-      exiterr "Oracle Linux 9 is not supported."
-    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
