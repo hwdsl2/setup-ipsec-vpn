@@ -80,15 +80,21 @@ check_os() {
     os_type=rhel
   fi
   [ -f /etc/oracle-release ] && os_type=ol
+  grep -qi rocky "$rh_file" && os_type=rocky
+  grep -qi alma "$rh_file" && os_type=alma
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
     os_ver=8
     grep -qi stream "$rh_file" && os_ver=8s
-    grep -qi rocky "$rh_file" && os_type=rocky
-    grep -qi alma "$rh_file" && os_type=alma
     if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
       exiterr "CentOS Linux 8 is EOL and not supported."
+    fi
+  elif grep -qs "release 9" "$rh_file"; then
+    os_ver=9
+    grep -qi stream "$rh_file" && os_ver=9s
+    if [ "$os_type" = "ol" ]; then
+      exiterr "Oracle Linux 9 is not supported."
     fi
   else
 cat 1>&2 <<'EOF'
@@ -218,11 +224,14 @@ install_vpn_pkgs_1() {
   rp1="$erp=epel"
   rp2="$erp=*server-*optional*"
   rp3="$erp=*releases-optional*"
-  if [ "$os_type" = "ol" ] && [ "$os_ver" = "8" ]; then
-    rp1="$erp=ol8_developer_EPEL"
-  fi
-  if [ "$os_type" = "ol" ] && [ "$os_ver" = "7" ]; then
-    rp3="$erp=ol7_optional_latest"
+  if [ "$os_type" = "ol" ]; then
+    if [ "$os_ver" = "9" ]; then
+      rp1="$erp=ol9_developer_EPEL"
+    elif [ "$os_ver" = "8" ]; then
+      rp1="$erp=ol8_developer_EPEL"
+    else
+      rp3="$erp=ol7_optional_latest"
+    fi
   fi
   (
     set -x
@@ -255,7 +264,8 @@ install_vpn_pkgs_3() {
       set -x
       yum -y -q install $p1 $p2 >/dev/null
     ) || exiterr2
-    if systemctl is-active --quiet firewalld \
+    if [ "$os_ver" = "9" ] || [ "$os_ver" = "9s" ] \
+      || systemctl is-active --quiet firewalld \
       || systemctl is-active --quiet nftables \
       || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
       use_nft=1

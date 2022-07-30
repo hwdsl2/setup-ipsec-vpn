@@ -40,7 +40,8 @@ check_os() {
     os_type=rhel
   fi
   [ -f /etc/oracle-release ] && os_type=ol
-  if grep -qs "release 7" "$rh_file" || grep -qs "release 8" "$rh_file"; then
+  if grep -qs "release 7" "$rh_file" || grep -qs "release 8" "$rh_file" \
+    || grep -qs "release 9" "$rh_file"; then
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
@@ -272,8 +273,12 @@ update_iptables_rules() {
     else
       nft_bk=$(find /etc/sysconfig -maxdepth 1 -name 'nftables.conf.old-*-*-*-*_*_*' -print0 \
         | xargs -r -0 ls -1 -t | head -1)
+      diff_count=24
+      if grep -qs "release 9" /etc/redhat-release; then
+        diff_count=38
+      fi
       if [ -f "$nft_bk" ] \
-        && [ "$(diff -y --suppress-common-lines "$IPT_FILE" "$nft_bk" | wc -l)" = "24" ]; then
+        && [ "$(diff -y --suppress-common-lines "$IPT_FILE" "$nft_bk" | wc -l)" = "$diff_count" ]; then
         bigecho "Restoring nftables rules..."
         conf_bk "$IPT_FILE"
         /bin/cp -f "$nft_bk" "$IPT_FILE" && /bin/rm -f "$nft_bk"
