@@ -74,7 +74,7 @@ A cloud server, virtual private server (VPS) or dedicated server, freshly instal
 - Debian 11 or 10
 - CentOS 7 or CentOS Stream 9/8
 - Rocky Linux or AlmaLinux 9/8
-- Oracle Linux 8 or 7
+- Oracle Linux 9, 8 or 7
 - Red Hat Enterprise Linux (RHEL) 9, 8 or 7
 - Amazon Linux 2
 - Alpine Linux 3.16 or 3.15

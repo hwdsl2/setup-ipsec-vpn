@@ -74,7 +74,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - Debian 11 或者 10
 - CentOS 7 或者 CentOS Stream 9/8
 - Rocky Linux 或者 AlmaLinux 9/8
-- Oracle Linux 8 或者 7
+- Oracle Linux 9, 8 或者 7
 - Red Hat Enterprise Linux (RHEL) 9, 8 或者 7
 - Amazon Linux 2
 - Alpine Linux 3.16 或者 3.15
