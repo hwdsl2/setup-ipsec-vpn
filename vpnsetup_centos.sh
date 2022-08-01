@@ -608,6 +608,16 @@ update_iptables() {
   fi
 }
 
+fix_nss_config() {
+  nss_conf="/etc/crypto-policies/back-ends/nss.config"
+  if [ -s "$nss_conf" ]; then
+    if ! grep -q ":SHA1:" "$nss_conf" \
+      && ! grep -q " allow=SHA1:" "$nss_conf"; then
+      sed -i "/ALL allow=/s/ allow=/ allow=SHA1:/" "$nss_conf"
+    fi
+  fi
+}
+
 apply_gcp_mtu_fix() {
   if dmidecode -s system-product-name 2>/dev/null | grep -qi 'Google Compute Engine' \
     && ifconfig 2>/dev/null | grep "$NET_IFACE" | head -n 1 | grep -qi 'mtu 1460'; then
@@ -754,6 +764,7 @@ vpnsetup() {
   fi
   update_sysctl
   update_iptables
+  fix_nss_config
   apply_gcp_mtu_fix
   enable_on_boot
   start_services
