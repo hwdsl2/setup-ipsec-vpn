@@ -87,6 +87,8 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.org). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
+For servers with an external firewall (e.g. AWS), you will need to open UDP ports 500 and 4500 for the VPN. Please refer [to the documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html).
+
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
 ## Installation
