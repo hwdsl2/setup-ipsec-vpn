@@ -53,8 +53,8 @@ check_os() {
     os_type=rhel
   fi
   [ -f /etc/oracle-release ] && os_type=ol
-  grep -qi rocky "$rh_file" && os_type=rocky
-  grep -qi alma "$rh_file" && os_type=alma
+  grep -qs -i rocky "$rh_file" && os_type=rocky
+  grep -qs -i alma "$rh_file" && os_type=alma
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
@@ -154,7 +154,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   31 Jul 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   9 Aug 2022
 
 EOF
 }

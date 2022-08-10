@@ -80,8 +80,8 @@ check_os() {
     os_type=rhel
   fi
   [ -f /etc/oracle-release ] && os_type=ol
-  grep -qi rocky "$rh_file" && os_type=rocky
-  grep -qi alma "$rh_file" && os_type=alma
+  grep -qs -i rocky "$rh_file" && os_type=rocky
+  grep -qs -i alma "$rh_file" && os_type=alma
   if grep -qs "release 7" "$rh_file"; then
     os_ver=7
   elif grep -qs "release 8" "$rh_file"; then
