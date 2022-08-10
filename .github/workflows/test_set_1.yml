@@ -86,8 +86,8 @@ jobs:
           yum -y -q update
           yum -y -q install wget rsyslog
           if grep -qs 'release 9' /etc/redhat-release; then
-            if grep -qi rocky /etc/redhat-release \
-              || grep -qi alma /etc/redhat-release; then
+            if grep -qs -i rocky /etc/redhat-release \
+              || grep -qs -i alma /etc/redhat-release; then
               yum -y -q install diffutils
             fi
           fi
@@ -144,13 +144,13 @@ jobs:
           y
           ANSWERS
           rm -f /etc/ipsec.d/vpnclient*
-          if grep -qi stream /etc/redhat-release \
+          if grep -qs -i stream /etc/redhat-release \
             || grep -qs -E 'release (8|9)' /etc/oracle-release; then
             mkdir /etc/xl2tpd
           fi
           if grep -qs 'release 9' /etc/redhat-release; then
-            if grep -qi rocky /etc/redhat-release \
-              || grep -qi alma /etc/redhat-release; then
+            if grep -qs -i rocky /etc/redhat-release \
+              || grep -qs -i alma /etc/redhat-release; then
               mkdir /etc/xl2tpd
             fi
           fi
