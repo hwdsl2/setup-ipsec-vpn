@@ -76,7 +76,7 @@ check_os() {
       [Uu]buntu)
         os_type=ubuntu
         ;;
-      [Dd]ebian)
+      [Dd]ebian|[Kk]ali)
         os_type=debian
         ;;
       [Rr]aspbian)
@@ -763,17 +763,7 @@ export_p12_file() {
   p12_file="$export_dir$client_name.p12"
   p12_file_enc="$export_dir$client_name.enc.p12"
   pk12util -W "$p12_password" -d "$CERT_DB" -n "$client_name" -o "$p12_file_enc" >/dev/null || exit 1
-  if [ "$os_type" = "alpine" ] || { [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "11" ]; }; then
-    pem_file="$export_dir$client_name.temp.pem"
-    openssl pkcs12 -in "$p12_file_enc" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file_enc" \
-      -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
-    if [ "$use_config_password" = "0" ]; then
-      openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
-        -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
-    fi
-    /bin/rm -f "$pem_file"
-  elif [ "$os_ver" = "bookwormsid" ] || openssl version 2>/dev/null | grep -q "^OpenSSL 3"; then
+  if [ "$os_ver" = "bookwormsid" ] || openssl version 2>/dev/null | grep -q "^OpenSSL 3"; then
     ca_crt="$export_dir$client_name.ca.crt"
     client_crt="$export_dir$client_name.client.crt"
     client_key="$export_dir$client_name.client.key"
@@ -789,6 +779,16 @@ export_p12_file() {
     if [ "$use_config_password" = "0" ]; then
       openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
         -legacy -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
+    fi
+    /bin/rm -f "$pem_file"
+  elif [ "$os_type" = "alpine" ] || [ "$os_ver" = "kalirolling" ] || [ "$os_type$os_ver" = "ubuntu11" ]; then
+    pem_file="$export_dir$client_name.temp.pem"
+    openssl pkcs12 -in "$p12_file_enc" -out "$pem_file" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file_enc" \
+      -name "$client_name" -passin "pass:$p12_password" -passout "pass:$p12_password" || exit 1
+    if [ "$use_config_password" = "0" ]; then
+      openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in "$pem_file" -out "$p12_file" \
+        -name "$client_name" -passin "pass:$p12_password" -passout pass: || exit 1
     fi
     /bin/rm -f "$pem_file"
   elif [ "$use_config_password" = "0" ]; then

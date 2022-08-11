@@ -46,7 +46,7 @@ check_os() {
     [Uu]buntu)
       os_type=ubuntu
       ;;
-    [Dd]ebian)
+    [Dd]ebian|[Kk]ali)
       os_type=debian
       ;;
     [Rr]aspbian)
