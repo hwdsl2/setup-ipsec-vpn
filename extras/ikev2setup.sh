@@ -214,6 +214,7 @@ check_arguments() {
   if [ "$use_defaults" = "1" ] && check_ikev2_exists; then
     echo "Error: Invalid parameter '--auto'. IKEv2 is already set up on this server." >&2
     echo "       To manage VPN clients, re-run this script without '--auto'." >&2
+    echo "       To change IKEv2 server address, see https://vpnsetup.net/ikev2" >&2
     exit 1
   fi
   if [ "$((add_client + export_client + list_clients + revoke_client + delete_client))" -gt 1 ]; then
