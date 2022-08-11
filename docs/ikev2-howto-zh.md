@@ -40,6 +40,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
 </details>
+<details>
+<summary>
+了解如何更改 IKEv2 服务器地址。
+</summary>
+
+在某些情况下，你可能需要更改 IKEv2 服务器地址，例如切换为使用域名，或者在服务器的 IP 更改之后。要了解更多信息，参见 [这一小节](#更改-ikev2-服务器地址)。
+</details>
 
 ### Windows 7, 8, 10 和 11
 
@@ -774,13 +781,6 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 ikev2.sh --auto
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
 ```
-</details>
-<details>
-<summary>
-了解如何更改 IKEv2 服务器地址。
-</summary>
-
-在某些情况下，你可能需要在配置之后更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要了解更多信息，参见 [这一小节](#更改-ikev2-服务器地址)。
 </details>
 <details>
 <summary>

@@ -40,6 +40,13 @@ Like this project? You can show your support or appreciation.
 
 <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
 </details>
+<details>
+<summary>
+Learn how to change the IKEv2 server address.
+</summary>
+
+In certain circumstances, you may need to change the IKEv2 server address. For example, to switch to use a DNS name, or after server IP changes. Learn more in [this section](#change-ikev2-server-address).
+</details>
 
 ### Windows 7, 8, 10 and 11
 
@@ -776,13 +783,6 @@ By default, no password is required when importing IKEv2 client configuration. Y
 ```bash
 sudo VPN_PROTECT_CONFIG=yes ikev2.sh --auto
 ```
-</details>
-<details>
-<summary>
-Learn how to change the IKEv2 server address.
-</summary>
-
-In certain circumstances, you may need to change the IKEv2 server address after setup. For example, to switch to use a DNS name, or after server IP changes. Learn more in [this section](#change-ikev2-server-address).
 </details>
 <details>
 <summary>
