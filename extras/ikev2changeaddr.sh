@@ -36,44 +36,16 @@ check_root() {
 }
 
 check_os() {
-  os_type=centos
-  rh_file="/etc/redhat-release"
-  if grep -qs "Red Hat" "$rh_file"; then
-    os_type=rhel
-  fi
-  [ -f /etc/oracle-release ] && os_type=ol
-  if grep -qs "release 7" "$rh_file" || grep -qs "release 8" "$rh_file" \
-    || grep -qs "release 9" "$rh_file"; then
-    grep -qs -i rocky "$rh_file" && os_type=rocky
-    grep -qs -i alma "$rh_file" && os_type=alma
-  elif grep -qs "Amazon Linux release 2" /etc/system-release; then
-    os_type=amzn
-  else
-    os_type=$(lsb_release -si 2>/dev/null)
-    [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
-    case $os_type in
-      [Uu]buntu)
-        os_type=ubuntu
-        ;;
-      [Dd]ebian)
-        os_type=debian
-        ;;
-      [Rr]aspbian)
-        os_type=raspbian
-        ;;
-      [Aa]lpine)
-        os_type=alpine
-        ;;
-      *)
-cat 1>&2 <<'EOF'
-Error: This script only supports one of the following OS:
-       Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
-       Oracle Linux, Amazon Linux 2 or Alpine Linux
-EOF
-        exit 1
-        ;;
-    esac
-  fi
+  os_type=$(lsb_release -si 2>/dev/null)
+  [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
+  case $os_type in
+    [Aa]lpine)
+      os_type=alpine
+      ;;
+    *)
+      os_type=other
+      ;;
+  esac
 }
 
 check_libreswan() {

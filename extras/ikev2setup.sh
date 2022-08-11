@@ -46,23 +46,26 @@ check_container() {
 }
 
 check_os() {
-  os_type=centos
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   rh_file="/etc/redhat-release"
-  if grep -qs "Red Hat" "$rh_file"; then
-    os_type=rhel
-  fi
-  [ -f /etc/oracle-release ] && os_type=ol
-  grep -qs -i rocky "$rh_file" && os_type=rocky
-  grep -qs -i alma "$rh_file" && os_type=alma
-  if grep -qs "release 7" "$rh_file"; then
-    os_ver=7
-  elif grep -qs "release 8" "$rh_file"; then
-    os_ver=8
-    grep -qi stream "$rh_file" && os_ver=8s
-  elif grep -qs "release 9" "$rh_file"; then
-    os_ver=9
-    grep -qi stream "$rh_file" && os_ver=9s
+  if [ -f "$rh_file" ]; then
+    os_type=centos
+    if grep -q "Red Hat" "$rh_file"; then
+      os_type=rhel
+    fi
+    [ -f /etc/oracle-release ] && os_type=ol
+    grep -qi rocky "$rh_file" && os_type=rocky
+    grep -qi alma "$rh_file" && os_type=alma
+    if grep -q "release 7" "$rh_file"; then
+      os_ver=7
+    elif grep -q "release 8" "$rh_file"; then
+      os_ver=8
+      grep -qi stream "$rh_file" && os_ver=8s
+    elif grep -q "release 9" "$rh_file"; then
+      os_ver=9
+      grep -qi stream "$rh_file" && os_ver=9s
+    else
+      exiterr "This script only supports CentOS/RHEL 7-9."
+    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
     os_ver=2
@@ -154,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   9 Aug 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Aug 2022
 
 EOF
 }
@@ -1151,6 +1154,7 @@ EOF
 }
 
 apply_ubuntu1804_nss_fix() {
+  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
     nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"

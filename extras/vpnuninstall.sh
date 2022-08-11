@@ -34,16 +34,18 @@ check_root() {
 }
 
 check_os() {
-  os_type=centos
   rh_file="/etc/redhat-release"
-  if grep -qs "Red Hat" "$rh_file"; then
-    os_type=rhel
-  fi
-  [ -f /etc/oracle-release ] && os_type=ol
-  if grep -qs "release 7" "$rh_file" || grep -qs "release 8" "$rh_file" \
-    || grep -qs "release 9" "$rh_file"; then
-    grep -qs -i rocky "$rh_file" && os_type=rocky
-    grep -qs -i alma "$rh_file" && os_type=alma
+  if [ -f "$rh_file" ]; then
+    os_type=centos
+    if grep -q "Red Hat" "$rh_file"; then
+      os_type=rhel
+    fi
+    [ -f /etc/oracle-release ] && os_type=ol
+    grep -qi rocky "$rh_file" && os_type=rocky
+    grep -qi alma "$rh_file" && os_type=alma
+    if ! grep -q -E "release (7|8|9)" "$rh_file"; then
+      exiterr "This script only supports CentOS/RHEL 7-9."
+    fi
   elif grep -qs "Amazon Linux release 2" /etc/system-release; then
     os_type=amzn
   else

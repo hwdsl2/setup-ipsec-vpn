@@ -74,25 +74,29 @@ EOF
 }
 
 check_os() {
-  os_type=centos
   rh_file="/etc/redhat-release"
-  if grep -qs "Red Hat" "$rh_file"; then
-    os_type=rhel
-  fi
-  [ -f /etc/oracle-release ] && os_type=ol
-  grep -qs -i rocky "$rh_file" && os_type=rocky
-  grep -qs -i alma "$rh_file" && os_type=alma
-  if grep -qs "release 7" "$rh_file"; then
-    os_ver=7
-  elif grep -qs "release 8" "$rh_file"; then
-    os_ver=8
-    grep -qi stream "$rh_file" && os_ver=8s
-    if [ "$os_type" = "centos" ] && [ "$os_ver" = "8" ]; then
-      exiterr "CentOS Linux 8 is EOL and not supported."
+  if [ -f "$rh_file" ]; then
+    os_type=centos
+    if grep -q "Red Hat" "$rh_file"; then
+      os_type=rhel
     fi
-  elif grep -qs "release 9" "$rh_file"; then
-    os_ver=9
-    grep -qi stream "$rh_file" && os_ver=9s
+    [ -f /etc/oracle-release ] && os_type=ol
+    grep -qi rocky "$rh_file" && os_type=rocky
+    grep -qi alma "$rh_file" && os_type=alma
+    if grep -q "release 7" "$rh_file"; then
+      os_ver=7
+    elif grep -q "release 8" "$rh_file"; then
+      os_ver=8
+      grep -qi stream "$rh_file" && os_ver=8s
+      if [ "$os_type$os_ver" = "centos8" ]; then
+        exiterr "CentOS Linux 8 is EOL and not supported."
+      fi
+    elif grep -q "release 9" "$rh_file"; then
+      os_ver=9
+      grep -qi stream "$rh_file" && os_ver=9s
+    else
+      exiterr "This script only supports CentOS/RHEL 7-9."
+    fi
   else
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
