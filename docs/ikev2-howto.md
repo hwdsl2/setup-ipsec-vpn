@@ -271,7 +271,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 <details>
 <summary>
-Alternatively, Android 12+ users can also connect using the native IKEv2 client.
+Alternatively, Android 11+ users can also connect using the native IKEv2 client.
 </summary>
 
 1. Securely transfer the generated `.p12` file to your Android device.

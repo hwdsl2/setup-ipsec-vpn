@@ -271,7 +271,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 <details>
 <summary>
-或者，Android 12+ 用户也可以使用系统自带的 IKEv2 客户端连接。
+或者，Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
 </summary>
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
