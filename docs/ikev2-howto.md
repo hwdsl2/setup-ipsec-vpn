@@ -271,6 +271,32 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 <details>
 <summary>
+Alternatively, Android 12+ users can also connect using the native IKEv2 client.
+</summary>
+
+1. Securely transfer the generated `.p12` file to your Android device.
+1. Launch the **Settings** application.
+1. Go to Security -> Advanced -> Encryption & credentials.
+1. Tap **Install a certificate**.
+1. Tap **VPN & app user certificate**.
+1. Choose the `.p12` file you transferred from the VPN server.   
+   **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
+1. Enter a name for the certificate, then tap **OK**.
+1. Go to Settings -> Network & internet -> VPN, then tap the "+" button.
+1. Enter a name for the VPN profile.
+1. Select **IKEv2/IPSec RSA** from the **Type** drop-down menu.
+1. Enter `Your VPN Server IP` (or DNS name) in the **Server address** field.   
+   **Note:** This must **exactly match** the server address in the output of the IKEv2 helper script.
+1. Enter anything (e.g. `empty`) in the **IPSec identifier** field.   
+   **Note:** This field should not be required. It is a bug in Android.
+1. Select the certificate you imported from the **IPSec user certificate** drop-down menu.
+1. Select the certificate you imported from the **IPSec CA certificate** drop-down menu.
+1. Select **(receive from server)** from the **IPSec server certificate** drop-down menu.
+1. Tap **Save**. Then tap the new VPN connection and tap **Connect**.
+</details>
+
+<details>
+<summary>
 If your device runs Android 6.0 or older, click here for additional instructions.
 </summary>
 
@@ -290,7 +316,8 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
 1. Launch the **Settings** application.
 1. Go to Security -> Advanced -> Encryption & credentials.
-1. Tap **Install certificates from storage (or SD card)**.
+1. Tap **Install a certificate**.
+1. Tap **VPN & app user certificate**.
 1. Choose the `.p12` file you transferred from the VPN server, and follow the prompts.   
    **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
 1. Launch the strongSwan VPN client and tap **Add VPN Profile**.
