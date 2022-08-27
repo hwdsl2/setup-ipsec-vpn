@@ -240,7 +240,7 @@ If you want the rules to persist after reboot, you may add these commands to `/e
 
 ## Split tunneling
 
-With split tunneling, VPN clients will only send traffic for specific destination subnet(s) through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has some limitations, and is not supported by all VPN clients.
+With split tunneling, VPN clients will only send traffic for a specific destination subnet through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has some limitations, and is not supported by all VPN clients.
 
 Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) and/or [IKEv2](ikev2-howto.md) modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
 
@@ -251,14 +251,9 @@ IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
 
 The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands must be run as `root`.
 
-1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
-   For a single subnet:
+1. Edit `/etc/ipsec.conf` on the VPN server. In the section `conn xauth-psk`, replace `leftsubnet=0.0.0.0/0` with the subnet you want VPN clients to send traffic through the VPN tunnel. For example:   
    ```
    leftsubnet=10.123.123.0/24
-   ```
-   For multiple subnets (use `leftsubnets` instead):
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
    ```
 1. **(Important)** Restart the IPsec service:
    ```
@@ -273,14 +268,9 @@ IKEv2 mode: Enable split tunneling
 
 The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`.
 
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet(s) you want VPN clients to send traffic through the VPN tunnel. For example:   
-   For a single subnet:
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. In the section `conn ikev2-cp`, replace `leftsubnet=0.0.0.0/0` with the subnet you want VPN clients to send traffic through the VPN tunnel. For example:   
    ```
    leftsubnet=10.123.123.0/24
-   ```
-   For multiple subnets (use `leftsubnets` instead):
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
    ```
 1. **(Important)** Restart the IPsec service:
    ```

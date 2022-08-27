@@ -252,13 +252,8 @@ IPsec/XAuth ("Cisco IPsec") 模式：启用 VPN 分流 (split tunneling)
 下面的示例 **仅适用于** IPsec/XAuth ("Cisco IPsec") 模式。这些命令必须用 `root` 账户运行。
 
 1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。在 `conn xauth-psk` 小节中，将 `leftsubnet=0.0.0.0/0` 替换为你想要 VPN 客户端通过 VPN 隧道发送流量的子网。例如：   
-   对于单个子网：
    ```
    leftsubnet=10.123.123.0/24
-   ```
-   对于多个子网（使用 `leftsubnets`）：
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
    ```
 1. **（重要）** 重启 IPsec 服务：
    ```
@@ -274,13 +269,8 @@ IKEv2 模式：启用 VPN 分流 (split tunneling)
 下面的示例 **仅适用于** IKEv2 模式。这些命令必须用 `root` 账户运行。
 
 1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节中，将 `leftsubnet=0.0.0.0/0` 替换为你想要 VPN 客户端通过 VPN 隧道发送流量的子网。例如：   
-   对于单个子网：
    ```
    leftsubnet=10.123.123.0/24
-   ```
-   对于多个子网（使用 `leftsubnets`）：
-   ```
-   leftsubnets="10.123.123.0/24,10.100.0.0/16"
    ```
 1. **（重要）** 重启 IPsec 服务：
    ```
