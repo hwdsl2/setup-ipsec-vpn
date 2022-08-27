@@ -538,12 +538,20 @@ EOF
 set_up_ikev2() {
   status=0
   if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-    sleep 1
-    VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
-    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
-    VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-    VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
-    /bin/bash /opt/src/ikev2.sh --auto || status=1
+    skip_ikev2=0
+    case $VPN_SKIP_IKEV2 in
+      [yY][eE][sS])
+        skip_ikev2=1
+        ;;
+    esac
+    if [ "$skip_ikev2" = "0" ]; then
+      sleep 1
+      VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+      VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+      VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+      VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+      /bin/bash /opt/src/ikev2.sh --auto || status=1
+    fi
   elif [ -s /opt/src/ikev2.sh ]; then
 cat <<'EOF'
 ================================================
