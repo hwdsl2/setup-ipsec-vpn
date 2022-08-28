@@ -188,7 +188,7 @@ check_dns() {
 
 check_server_dns() {
   if [ -n "$VPN_DNS_NAME" ] && ! check_dns_name "$VPN_DNS_NAME"; then
-      exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
+    exiterr "Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)."
   fi
 }
 
@@ -266,7 +266,8 @@ run_setup() {
     if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url1" \
       || wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url2" \
       || curl -fsL "$setup_url1" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
-      VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" VPN_PASSWORD="$VPN_PASSWORD" \
+      VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" \
+      VPN_PASSWORD="$VPN_PASSWORD" \
       VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \
       VPN_L2TP_LOCAL="$VPN_L2TP_LOCAL" VPN_L2TP_POOL="$VPN_L2TP_POOL" \
       VPN_XAUTH_NET="$VPN_XAUTH_NET" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
