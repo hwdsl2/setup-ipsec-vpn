@@ -130,7 +130,33 @@ sh vpn.sh
 
 <details>
 <summary>
-可选：在安装 VPN 时自定义 IKEv2 选项。
+如果无法下载，请点这里。
+</summary>
+
+你也可以使用 `curl` 下载。例如：
+
+```bash
+curl -fL https://get.vpnsetup.net -o vpn.sh
+sudo sh vpn.sh
+```
+
+或者，你也可以使用这些链接：
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
+```
+
+如果无法下载，打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+</details>
+
+#### 可选：在安装 VPN 时自定义 IKEv2 选项。
+
+在安装 VPN 时，你可以自定义 IKEv2 选项。这是可选的。
+
+<details>
+<summary>
+选项 1: 使用环境变量自定义 IKEv2 选项。
 </summary>
 
 在安装 VPN 时，你可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
@@ -159,24 +185,24 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-如果无法下载，请点这里。
+选项 2: 在安装 VPN 时跳过 IKEv2，然后使用自定义选项配置 IKEv2。
 </summary>
 
-你也可以使用 `curl` 下载。例如：
+在安装 VPN 时，你可以跳过 IKEv2，仅安装 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式：
 
 ```bash
-curl -fL https://get.vpnsetup.net -o vpn.sh
-sudo sh vpn.sh
+sudo VPN_SKIP_IKEV2=yes sh vpn.sh
 ```
 
-或者，你也可以使用这些链接：
+（可选）如需指定另外的 DNS 服务器，请参见上面的选项 1。
+
+然后运行 IKEv2 [辅助脚本](docs/ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 使用自定义选项以交互方式配置 IKEv2:
 
 ```bash
-https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
-https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
+sudo ikev2.sh
 ```
 
-如果无法下载，打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
+**注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 </details>
 
 ## 下一步

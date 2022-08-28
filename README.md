@@ -130,7 +130,33 @@ After setup, you may optionally install [WireGuard](https://github.com/hwdsl2/wi
 
 <details>
 <summary>
-Optional: Customize IKEv2 options during VPN setup.
+Click here if you are unable to download.
+</summary>
+
+You may also use `curl` to download. For example:
+
+```bash
+curl -fL https://get.vpnsetup.net -o vpn.sh
+sudo sh vpn.sh
+```
+
+Alternative setup URLs:
+
+```bash
+https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
+https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
+```
+
+If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+</details>
+
+#### Optional: Customize IKEv2 options during VPN setup.
+
+When installing the VPN, you can optionally customize IKEv2 options.
+
+<details>
+<summary>
+Option 1: Customize IKEv2 options using environment variables.
 </summary>
 
 When installing the VPN, you can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
@@ -159,24 +185,24 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 </details>
 <details>
 <summary>
-Click here if you are unable to download.
+Option 2: Skip IKEv2 during VPN setup, then set up IKEv2 using custom options.
 </summary>
 
-You may also use `curl` to download. For example:
+When installing the VPN, you can skip IKEv2 and only install the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes:
 
 ```bash
-curl -fL https://get.vpnsetup.net -o vpn.sh
-sudo sh vpn.sh
+sudo VPN_SKIP_IKEV2=yes sh vpn.sh
 ```
 
-Alternative setup URLs:
+(Optional) If you want to specify custom DNS server(s), refer to option 1 above.
+
+After that, run the IKEv2 [helper script](docs/ikev2-howto.md#set-up-ikev2-using-helper-script) to set up IKEv2 interactively using custom options:
 
 ```bash
-https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh
-https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
+sudo ikev2.sh
 ```
 
-If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
+**Note:** The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
 </details>
 
 ## Next steps
