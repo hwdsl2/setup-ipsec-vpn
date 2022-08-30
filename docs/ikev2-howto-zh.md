@@ -498,7 +498,13 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 无法连接多个 IKEv2 客户端
 
-如果要同时连接多个 IKEv2 客户端，你必须为每个客户端 [生成唯一的证书](#添加客户端证书)。
+如果要同时连接在同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，你需要为每个客户端生成唯一的证书。否则，你可能会遇到稍后连接的客户端影响现有客户端的 VPN 连接，从而导致无法访问 Internet 的问题。
+
+要为其它的 IKEv2 客户端生成证书，运行辅助脚本并添加 `--addclient` 选项。要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+
+```bash
+sudo ikev2.sh --addclient [client name]
+```
 
 ### IKE 身份验证凭证不可接受
 
@@ -561,7 +567,7 @@ sudo ikev2.sh --listclients
 
 ### 添加客户端证书
 
-要为更多的 IKEv2 客户端添加证书，运行辅助脚本并添加 `--addclient` 选项。要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+要为其它的 IKEv2 客户端生成证书，运行辅助脚本并添加 `--addclient` 选项。要自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```bash
 sudo ikev2.sh --addclient [client name]
@@ -978,7 +984,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 1. 生成客户端证书，然后导出 `.p12` 文件，该文件包含客户端证书，私钥以及 CA 证书。
 
-   **注：** 你可以重复本步骤来为更多的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。如需连接多个客户端，则必须为每个客户端生成唯一的证书。
+   **注：** 你可以重复本步骤来为其它的客户端生成证书，但必须将所有的 `vpnclient` 换成比如 `vpnclient2`，等等。如果要同时连接在同一个 NAT（比如家用路由器）后面的多个 IKEv2 客户端，你需要为每个客户端生成唯一的证书。
 
    生成客户端证书：
 

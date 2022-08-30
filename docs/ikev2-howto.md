@@ -500,7 +500,13 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 
 ### Unable to connect multiple IKEv2 clients
 
-To connect multiple IKEv2 clients at the same time, you must [generate a unique certificate](#add-a-client-certificate) for each client.
+To connect multiple IKEv2 clients from behind the same NAT (e.g. home router) at the same time, you will need to generate a unique certificate for each client. Otherwise, you could encounter the issue where a later connected client affects the VPN connection of an existing client, which may lose Internet access.
+
+To generate certificates for additional IKEv2 clients, run the helper script with the `--addclient` option. To customize client options, run the script without arguments.
+
+```bash
+sudo ikev2.sh --addclient [client name]
+```
 
 ### IKE authentication credentials are unacceptable
 
@@ -563,7 +569,7 @@ sudo ikev2.sh --listclients
 
 ### Add a client certificate
 
-To add certificates for additional IKEv2 clients, run the helper script with the `--addclient` option. To customize client options, run the script without arguments.
+To generate certificates for additional IKEv2 clients, run the helper script with the `--addclient` option. To customize client options, run the script without arguments.
 
 ```bash
 sudo ikev2.sh --addclient [client name]
@@ -980,7 +986,7 @@ View example steps for manually configuring IKEv2 with Libreswan.
 
 1. Generate client certificate(s), then export the `.p12` file that contains the client certificate, private key, and CA certificate.
 
-   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple VPN clients, you must generate a unique certificate for each.
+   **Note:** You may repeat this step to generate certificates for additional VPN clients, but make sure to replace every `vpnclient` with `vpnclient2`, etc. To connect multiple IKEv2 clients from behind the same NAT (e.g. home router) at the same time, you will need to generate a unique certificate for each client.
 
    Generate client certificate:
 
