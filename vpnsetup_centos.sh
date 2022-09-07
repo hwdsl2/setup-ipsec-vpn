@@ -549,6 +549,12 @@ net.core.rmem_max = 12582912
 net.ipv4.tcp_rmem = 10240 87380 12582912
 net.ipv4.tcp_wmem = 10240 87380 12582912
 EOF
+    if modprobe -q tcp_bbr; then
+cat >> /etc/sysctl.conf <<'EOF'
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+EOF
+    fi
   fi
 }
 
