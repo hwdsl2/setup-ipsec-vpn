@@ -93,9 +93,15 @@ Amazon Linux 2提供过经过验证的新版Linux内核，并可以通过启用�
    net.core.default_qdisc = fq
    net.ipv4.tcp_congestion_control = bbr
    ```
-3. 启用Google BBR
+3. 启用Google BBR   
+   首先使用 `uname -r` 检查你的服务器的内核版本。   
+   对于内核版本 >= 4.20，应用 `sysctl` 设置：
    ```bash
    sudo sysctl -p
+   ```
+   对于内核版本 < 4.20，你必须重启服务器：
+   ```bash
+   sudo reboot
    ```
 4. 检查Google BBR状态
    ```bash

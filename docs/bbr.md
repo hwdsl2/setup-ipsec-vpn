@@ -93,9 +93,15 @@ In this section, we will start Google BBR by modifying the configuration file.
    net.core.default_qdisc = fq
    net.ipv4.tcp_congestion_control = bbr
    ```
-3. Enable Google BBR
+3. Enable Google BBR   
+   First, check your server's kernel version using `uname -r`.   
+   For kernel versions >= 4.20, apply `sysctl` settings:
    ```bash
    sudo sysctl -p
+   ```
+   For kernel versions < 4.20, you must reboot the server:
+   ```bash
+   sudo reboot
    ```
 4. Check Google BBR status
    ```bash
