@@ -384,15 +384,22 @@ jobs:
           ANSWERS
 
           bash ikev2.sh --listclients | grep "vpnclient2 \+revoked"
+          ls -ld /etc/ipsec.d/vpnclient2.mobileconfig && exit 1
+          ls -ld /etc/ipsec.d/vpnclient2.sswan && exit 1
+          ls -ld /etc/ipsec.d/vpnclient2.p12 && exit 1
 
           bash ikev2.sh --revokeclient vpnclient2 2>&1 | grep -i "already been revoked"
           bash ikev2.sh --exportclient vpnclient2 2>&1 | grep -i "revoked"
 
           bash ikev2.sh --deleteclient nonexistclient 2>&1 | grep -i "does not exist"
-          bash ikev2.sh --deleteclient vpnclient2 <<ANSWERS
+          bash ikev2.sh --deleteclient vpnclient1 <<ANSWERS
           y
           ANSWERS
+
           bash ikev2.sh --listclients | grep "1 client"
+          ls -ld /etc/ipsec.d/vpnclient1.mobileconfig && exit 1
+          ls -ld /etc/ipsec.d/vpnclient1.sswan && exit 1
+          ls -ld /etc/ipsec.d/vpnclient1.p12 && exit 1
 
           bash ikev2.sh -h 2>&1 | grep -i "usage:"
           bash ikev2.sh --invalidoption 2>&1 | grep -i "usage:"
