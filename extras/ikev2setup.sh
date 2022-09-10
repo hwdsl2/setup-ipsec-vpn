@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Aug 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   10 Sept 2022
 
 EOF
 }
@@ -229,8 +229,8 @@ check_arguments() {
     [ "$add_client" = "1" ] && exiterr "You must first set up IKEv2 before adding a client."
     [ "$export_client" = "1" ] && exiterr "You must first set up IKEv2 before exporting a client."
     [ "$list_clients" = "1" ] && exiterr "You must first set up IKEv2 before listing clients."
-    [ "$revoke_client" = "1" ] && exiterr "You must first set up IKEv2 before revoking a client certificate."
-    [ "$delete_client" = "1" ] && exiterr "You must first set up IKEv2 before deleting a client certificate."
+    [ "$revoke_client" = "1" ] && exiterr "You must first set up IKEv2 before revoking a client."
+    [ "$delete_client" = "1" ] && exiterr "You must first set up IKEv2 before deleting a client."
     [ "$remove_ikev2" = "1" ] && exiterr "Cannot remove IKEv2 because it has not been set up on this server."
   fi
   if [ "$add_client" = "1" ]; then
@@ -657,10 +657,10 @@ IKEv2 is already set up on this server.
 
 Select an option:
   1) Add a new client
-  2) Export configuration for an existing client
+  2) Export config for an existing client
   3) List existing clients
-  4) Revoke a client certificate
-  5) Delete a client certificate
+  4) Revoke an existing client
+  5) Delete an existing client
   6) Remove IKEv2
   7) Exit
 EOF
@@ -1186,6 +1186,7 @@ restart_ipsec_service() {
 }
 
 create_crl() {
+  bigecho "Revoking client certificate..."
   if ! crlutil -L -d "$CERT_DB" -n "$CA_NAME" >/dev/null 2>&1; then
     crlutil -G -d "$CERT_DB" -n "$CA_NAME" -c /dev/null >/dev/null
   fi
@@ -1207,8 +1208,30 @@ reload_crls() {
 }
 
 delete_client_cert() {
+  bigecho "Deleting client certificate..."
   certutil -F -d "$CERT_DB" -n "$client_name"
   certutil -D -d "$CERT_DB" -n "$client_name" 2>/dev/null
+}
+
+remove_client_config() {
+  p12_file="$export_dir$client_name.p12"
+  mc_file="$export_dir$client_name.mobileconfig"
+  sswan_file="$export_dir$client_name.sswan"
+  if [ -f "$p12_file" ] || [ -f "$mc_file" ] || [ -f "$sswan_file" ]; then
+    bigecho "Removing client config files..."
+    if [ -f "$p12_file" ]; then
+      printf '%s\n' "$p12_file"
+      /bin/rm -f "$p12_file"
+    fi
+    if [ -f "$mc_file" ]; then
+      printf '%s\n' "$mc_file"
+      /bin/rm -f "$mc_file"
+    fi
+    if [ -f "$sswan_file" ]; then
+      printf '%s\n' "$sswan_file"
+      /bin/rm -f "$sswan_file"
+    fi
+  fi
 }
 
 print_client_added() {
@@ -1236,11 +1259,13 @@ EOF
 }
 
 print_client_revoked() {
-  echo "Certificate '$client_name' revoked!"
+  echo
+  echo "Client '$client_name' revoked!"
 }
 
 print_client_deleted() {
-  echo "Certificate '$client_name' deleted!"
+  echo
+  echo "Client '$client_name' deleted!"
 }
 
 print_setup_complete() {
@@ -1488,6 +1513,7 @@ ikev2setup() {
     create_crl
     add_client_cert_to_crl
     reload_crls
+    remove_client_config
     print_client_revoked
     exit 0
   fi
@@ -1496,6 +1522,7 @@ ikev2setup() {
     show_header
     confirm_delete_cert
     delete_client_cert
+    remove_client_config
     print_client_deleted
     exit 0
   fi
@@ -1550,6 +1577,7 @@ ikev2setup() {
         create_crl
         add_client_cert_to_crl
         reload_crls
+        remove_client_config
         print_client_revoked
         exit 0
         ;;
@@ -1558,6 +1586,7 @@ ikev2setup() {
         echo
         confirm_delete_cert
         delete_client_cert
+        remove_client_config
         print_client_deleted
         exit 0
         ;;
