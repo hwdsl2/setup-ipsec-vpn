@@ -115,10 +115,26 @@ rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/optio
 rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
-删除 IKEv2 脚本：
+删除辅助脚本：
 
 ```bash
-rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh \
+      /usr/bin/addvpnuser.sh /opt/src/addvpnuser.sh \
+      /usr/bin/delvpnuser.sh /opt/src/delvpnuser.sh
+```
+
+删除 fail2ban：
+
+**注：** 这是可选的。Fail2ban 可以帮助保护你的服务器上的 SSH。\*不推荐\*删除它。
+
+```bash
+service fail2ban stop
+# Ubuntu & Debian
+apt-get purge fail2ban
+# CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+yum remove fail2ban
+# Alpine Linux
+apk del fail2ban
 ```
 
 ### 完成后

@@ -115,10 +115,26 @@ rm -f /etc/ipsec.conf* /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ppp/optio
 rm -rf /etc/ipsec.d /etc/xl2tpd
 ```
 
-Remove IKEv2 script:
+Remove helper scripts:
 
 ```bash
-rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
+rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh \
+      /usr/bin/addvpnuser.sh /opt/src/addvpnuser.sh \
+      /usr/bin/delvpnuser.sh /opt/src/delvpnuser.sh
+```
+
+Remove fail2ban:
+
+**Note:** This is optional. Fail2ban can help protect SSH on your server. Removing it is NOT recommended.
+
+```bash
+service fail2ban stop
+# Ubuntu & Debian
+apt-get purge fail2ban
+# CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+yum remove fail2ban
+# Alpine Linux
+apk del fail2ban
 ```
 
 ### When finished
