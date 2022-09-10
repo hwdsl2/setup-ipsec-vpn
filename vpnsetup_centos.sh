@@ -279,12 +279,36 @@ install_vpn_pkgs_3() {
   fi
 }
 
+create_f2b_config() {
+  F2B_FILE=/etc/fail2ban/jail.local
+  if [ ! -f "$F2B_FILE" ]; then
+    bigecho "Creating basic Fail2Ban rules..."
+cat > "$F2B_FILE" <<'EOF'
+[ssh-iptables]
+enabled = true
+filter = sshd
+logpath = /var/log/secure
+EOF
+
+    if [ "$use_nft" = "1" ]; then
+cat >> "$F2B_FILE" <<'EOF'
+port = ssh
+banaction = nftables-multiport[blocktype=drop]
+EOF
+    else
+cat >> "$F2B_FILE" <<'EOF'
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+EOF
+    fi
+  fi
+}
+
 install_fail2ban() {
   bigecho "Installing Fail2Ban to protect SSH..."
   (
     set -x
     yum "$rp1" -y -q install fail2ban >/dev/null
-  ) || exiterr2
+  ) && create_f2b_config
 }
 
 get_helper_scripts() {
@@ -500,30 +524,6 @@ $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 }
 
-create_f2b_config() {
-  F2B_FILE=/etc/fail2ban/jail.local
-  if [ ! -f "$F2B_FILE" ]; then
-    bigecho "Creating basic Fail2Ban rules..."
-cat > "$F2B_FILE" <<'EOF'
-[ssh-iptables]
-enabled = true
-filter = sshd
-logpath = /var/log/secure
-EOF
-
-    if [ "$use_nft" = "1" ]; then
-cat >> "$F2B_FILE" <<'EOF'
-port = ssh
-banaction = nftables-multiport[blocktype=drop]
-EOF
-    else
-cat >> "$F2B_FILE" <<'EOF'
-action = iptables[name=SSH, port=ssh, protocol=tcp]
-EOF
-    fi
-  fi
-}
-
 update_sysctl() {
   bigecho "Updating sysctl settings..."
   if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
@@ -650,9 +650,11 @@ enable_on_boot() {
   if [ "$os_type$os_ver" = "ol9" ]; then
     systemctl enable nftables 2>/dev/null
   elif [ "$use_nft" = "1" ]; then
-    systemctl enable nftables fail2ban 2>/dev/null
+    systemctl enable nftables 2>/dev/null
+    systemctl enable fail2ban 2>/dev/null
   else
-    systemctl enable iptables fail2ban 2>/dev/null
+    systemctl enable iptables 2>/dev/null
+    systemctl enable fail2ban 2>/dev/null
   fi
   if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     if [ -f /etc/rc.local ]; then
@@ -778,9 +780,6 @@ vpnsetup() {
   get_libreswan
   install_libreswan
   create_vpn_config
-  if [ "$os_type$os_ver" != "ol9" ]; then
-    create_f2b_config
-  fi
   update_sysctl
   update_iptables
   fix_nss_config

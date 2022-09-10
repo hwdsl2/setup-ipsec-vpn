@@ -245,7 +245,7 @@ install_fail2ban() {
   (
     set -x
     apt-get -yqq install fail2ban >/dev/null
-  ) || exiterr2
+  )
 }
 
 get_helper_scripts() {

@@ -194,7 +194,7 @@ install_fail2ban() {
   (
     set -x
     apk add -U -q fail2ban
-  ) || exiterr2
+  )
 }
 
 get_helper_scripts() {
@@ -487,7 +487,7 @@ EOF
   chmod +x /etc/network/if-pre-up.d/iptablesload
   sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   for svc in fail2ban ipsec xl2tpd; do
-    rc-update add "$svc" default >/dev/null
+    rc-update add "$svc" default >/dev/null 2>&1
   done
 }
 

@@ -189,12 +189,26 @@ install_vpn_pkgs_2() {
   ) || exiterr2
 }
 
+create_f2b_config() {
+  F2B_FILE=/etc/fail2ban/jail.local
+  if [ ! -f "$F2B_FILE" ]; then
+    bigecho "Creating basic Fail2Ban rules..."
+cat > "$F2B_FILE" <<'EOF'
+[ssh-iptables]
+enabled = true
+filter = sshd
+logpath = /var/log/secure
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+EOF
+  fi
+}
+
 install_fail2ban() {
   bigecho "Installing Fail2Ban to protect SSH..."
   (
     set -x
     yum --enablerepo=epel -y -q install fail2ban >/dev/null
-  ) || exiterr2
+  ) && create_f2b_config
 }
 
 get_helper_scripts() {
@@ -410,20 +424,6 @@ $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 }
 
-create_f2b_config() {
-  F2B_FILE=/etc/fail2ban/jail.local
-  if [ ! -f "$F2B_FILE" ]; then
-    bigecho "Creating basic Fail2Ban rules..."
-cat > "$F2B_FILE" <<'EOF'
-[ssh-iptables]
-enabled = true
-filter = sshd
-logpath = /var/log/secure
-action = iptables[name=SSH, port=ssh, protocol=tcp]
-EOF
-  fi
-}
-
 update_sysctl() {
   bigecho "Updating sysctl settings..."
   if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
@@ -490,7 +490,8 @@ update_iptables() {
 enable_on_boot() {
   bigecho "Enabling services on boot..."
   systemctl --now mask firewalld 2>/dev/null
-  systemctl enable iptables fail2ban 2>/dev/null
+  systemctl enable iptables 2>/dev/null
+  systemctl enable fail2ban 2>/dev/null
   if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     if [ -f /etc/rc.local ]; then
       conf_bk "/etc/rc.local"
@@ -606,7 +607,6 @@ vpnsetup() {
   get_libreswan
   install_libreswan
   create_vpn_config
-  create_f2b_config
   update_sysctl
   update_iptables
   enable_on_boot
