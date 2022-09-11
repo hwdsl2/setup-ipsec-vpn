@@ -2,12 +2,10 @@
 
 # IKEv2 VPN 配置和使用指南
 
-**注：** 你也可以使用 [IPsec/L2TP](clients-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
-
 * [导言](#导言)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
 * [故障排除](#故障排除)
-* [管理客户端证书](#管理客户端证书)
+* [管理 IKEv2 客户端](#管理-ikev2-客户端)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
 * [使用辅助脚本配置 IKEv2](#使用辅助脚本配置-ikev2)
@@ -549,7 +547,7 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
 Windows 自带的 VPN 客户端可能不支持 IKEv2 fragmentation（该功能[需要](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 或更新版本）。在有些网络上，这可能会导致连接错误或其它连接问题。你可以尝试换用 [IPsec/L2TP](clients-zh.md) 或 [IPsec/XAuth](clients-xauth-zh.md) 模式。
 
-## 管理客户端证书
+## 管理 IKEv2 客户端
 
 * [列出已有的客户端](#列出已有的客户端)
 * [添加客户端证书](#添加客户端证书)
@@ -594,7 +592,7 @@ sudo ikev2.sh --exportclient [client name]
 
 **警告：** 这将**永久删除**客户端证书和私钥。此操作**不可撤销**！
 
-如果要删除一个客户端证书：
+如果要删除一个现有的客户端：
 
 ```bash
 sudo ikev2.sh --deleteclient [client name]
@@ -635,7 +633,9 @@ sudo ikev2.sh --deleteclient [client name]
 
 ### 吊销客户端证书
 
-在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。要吊销证书，可以运行辅助脚本。
+在某些情况下，你可能需要吊销一个之前生成的 VPN 客户端证书。
+
+如果要吊销一个现有的客户端：
 
 ```bash
 sudo ikev2.sh --revokeclient [client name]
@@ -828,8 +828,8 @@ Options:
   --addclient [client name]     add a new client using default options
   --exportclient [client name]  export configuration for an existing client
   --listclients                 list the names of existing clients
-  --revokeclient [client name]  revoke a client certificate
-  --deleteclient [client name]  delete a client certificate
+  --revokeclient [client name]  revoke an existing client
+  --deleteclient [client name]  delete an existing client
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 

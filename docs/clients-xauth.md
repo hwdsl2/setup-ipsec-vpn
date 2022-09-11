@@ -2,8 +2,6 @@
 
 # Configure IPsec/XAuth VPN Clients
 
-**Note:** You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/L2TP](clients.md) mode.
-
 After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), follow these steps to configure your devices. IPsec/XAuth ("Cisco IPsec") is natively supported by Android, iOS and OS X. There is no additional software to install. Windows users can use the free [Shrew Soft client](https://www.shrew.net/download/vpn). In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
 IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally **faster than** IPsec/L2TP with less overhead.

@@ -2,7 +2,7 @@
 
 # Manage VPN Users
 
-By default, a single user account for VPN login is created. If you wish to view or manage users for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, read this document. For IKEv2, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
+By default, a single user account for VPN login is created. If you wish to view or manage users for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, read this document. For IKEv2, see [Manage IKEv2 clients](ikev2-howto.md#manage-ikev2-clients).
 
 * [Manage VPN users using helper scripts](#manage-vpn-users-using-helper-scripts)
 * [View VPN users](#view-vpn-users)
@@ -11,7 +11,7 @@ By default, a single user account for VPN login is created. If you wish to view 
 
 ## Manage VPN users using helper scripts
 
-You may use helper scripts to add, delete or update VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2 mode, see [Manage client certificates](ikev2-howto.md#manage-client-certificates).
+You may use helper scripts to add, delete or update VPN users for both IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2, see [Manage IKEv2 clients](ikev2-howto.md#manage-ikev2-clients).
 
 **Note:** Replace command arguments below with your own values. VPN users are stored in `/etc/ppp/chap-secrets` and `/etc/ipsec.d/passwd`. The scripts will backup these files before making changes, with `.old-date-time` suffix.
 

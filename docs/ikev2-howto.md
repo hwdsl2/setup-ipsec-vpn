@@ -2,12 +2,10 @@
 
 # Guide: How to Set Up and Use IKEv2 VPN
 
-**Note:** You may also connect using [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
-
 * [Introduction](#introduction)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
 * [Troubleshooting](#troubleshooting)
-* [Manage client certificates](#manage-client-certificates)
+* [Manage IKEv2 clients](#manage-ikev2-clients)
 * [Change IKEv2 server address](#change-ikev2-server-address)
 * [Update IKEv2 helper script](#update-ikev2-helper-script)
 * [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script)
@@ -551,7 +549,7 @@ If using Windows 10 and the VPN is stuck on "connecting" for more than a few min
 
 The built-in VPN client in Windows may not support IKEv2 fragmentation (this feature [requires](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-ikee/74df968a-7125-431d-9c98-4ea929e548dc) Windows 10 v1803 or newer). On some networks, this can cause the connection to fail or have other issues. You may instead try the [IPsec/L2TP](clients.md) or [IPsec/XAuth](clients-xauth.md) mode.
 
-## Manage client certificates
+## Manage IKEv2 clients
 
 * [List existing clients](#list-existing-clients)
 * [Add a client certificate](#add-a-client-certificate)
@@ -596,7 +594,7 @@ First, read the important note above. Then click here for instructions.
 
 **Warning:** The client certificate and private key will be **permanently deleted**. This **cannot be undone**!
 
-To delete a client certificate:
+To delete an existing client:
 
 ```bash
 sudo ikev2.sh --deleteclient [client name]
@@ -637,7 +635,9 @@ Alternatively, you can manually delete a client certificate.
 
 ### Revoke a client certificate
 
-In certain circumstances, you may need to revoke a previously generated VPN client certificate. To revoke a certificate, run the helper script.
+In certain circumstances, you may need to revoke a previously generated VPN client certificate.
+
+To revoke an existing client:
 
 ```bash
 sudo ikev2.sh --revokeclient [client name]
@@ -830,8 +830,8 @@ Options:
   --addclient [client name]     add a new client using default options
   --exportclient [client name]  export configuration for an existing client
   --listclients                 list the names of existing clients
-  --revokeclient [client name]  revoke a client certificate
-  --deleteclient [client name]  delete a client certificate
+  --revokeclient [client name]  revoke an existing client
+  --deleteclient [client name]  delete an existing client
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
   -h, --help                    show this help message and exit
 
