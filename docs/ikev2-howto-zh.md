@@ -256,6 +256,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### Android
 
+[**屏幕录影：** 使用 Android strongSwan VPN 客户端连接（支持者）](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Android-strongSwan-V-D1D3F2ITM)
+
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
 1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
 1. 启动 strongSwan VPN 客户端。
@@ -271,6 +273,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 <summary>
 或者，Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
 </summary>
+
+[**屏幕录影：** 使用 Android 11+ 系统自带的 VPN 客户端连接（支持者）](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Native-VPN-Client-on-F1F3F2IYW)
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 启动 **设置** App。

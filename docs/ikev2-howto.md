@@ -256,6 +256,8 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 ### Android
 
+[**Screencast:** Connect using Android strongSwan VPN Client (supporters)](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Android-strongSwan-V-D1D3F2ITM)
+
 1. Securely transfer the generated `.sswan` file to your Android device.
 1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
 1. Launch the strongSwan VPN client.
@@ -271,6 +273,8 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 <summary>
 Alternatively, Android 11+ users can also connect using the native IKEv2 client.
 </summary>
+
+[**Screencast:** Connect using Native VPN Client on Android 11+ (supporters)](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Native-VPN-Client-on-F1F3F2IYW)
 
 1. Securely transfer the generated `.p12` file to your Android device.
 1. Launch the **Settings** application.
