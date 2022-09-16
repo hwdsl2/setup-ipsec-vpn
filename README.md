@@ -75,9 +75,18 @@ A cloud server, virtual private server (VPS) or dedicated server, freshly instal
 - CentOS 7 or CentOS Stream 9/8
 - Rocky Linux or AlmaLinux 9/8
 - Oracle Linux 9, 8 or 7
-- Red Hat Enterprise Linux (RHEL) 9, 8 or 7
 - Amazon Linux 2
+
+<details>
+<summary>
+Other supported Linux distributions.
+</summary>
+
+- Raspberry Pi OS (Raspbian) 11 or 10
+- Kali Linux 2022
 - Alpine Linux 3.16 or 3.15
+- Red Hat Enterprise Linux (RHEL) 9, 8 or 7
+</details>
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) and [Microsoft Azure](https://azure.microsoft.com). Public cloud users can also deploy using [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
