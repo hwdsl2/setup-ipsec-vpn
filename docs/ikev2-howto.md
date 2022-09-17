@@ -144,6 +144,8 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 ### OS X (macOS)
 
+[**Screencast:** IKEv2 Import Configuration and Connect on macOS (supporters)](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-m-X8X7F38K1)
+
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
 To connect to the VPN:
@@ -197,6 +199,8 @@ To remove the IKEv2 VPN connection, open System Preferences -> Profiles and remo
 </details>
 
 ### iOS
+
+[**Screencast:** IKEv2 Import Configuration and Connect on iOS (iPhone & iPad) (supporters)](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-i-T6T1F38M7)
 
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
 

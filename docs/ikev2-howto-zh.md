@@ -144,6 +144,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### OS X (macOS)
 
+[**屏幕录影：** 在 macOS 上导入 IKEv2 配置并连接（支持者）](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-m-X8X7F38K1)
+
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。如果你的 Mac 运行 macOS Big Sur 或更新版本，打开系统偏好设置并转到描述文件部分以完成导入。在完成之后，检查并确保 "IKEv2 VPN" 显示在系统偏好设置 -> 描述文件中。
 
 要连接到 VPN：
@@ -197,6 +199,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 </details>
 
 ### iOS
+
+[**屏幕录影：** 在 iOS (iPhone & iPad) 上导入 IKEv2 配置并连接（支持者）](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-i-T6T1F38M7)
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
