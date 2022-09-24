@@ -90,7 +90,7 @@ check_os() {
       ;;
   esac
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-  if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
+  if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
     exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
   fi
 }
@@ -194,8 +194,8 @@ wait_for_apt() {
   pkg_lk=/var/lib/dpkg/lock
   while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
     || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
-    [ "$count" = "0" ] && echo "## Waiting for apt to be available..."
-    [ "$count" -ge "100" ] && exiterr "Could not get apt/dpkg lock."
+    [ "$count" = 0 ] && echo "## Waiting for apt to be available..."
+    [ "$count" -ge 100 ] && exiterr "Could not get apt/dpkg lock."
     count=$((count+1))
     printf '%s' '.'
     sleep 3
@@ -312,7 +312,7 @@ check_libreswan() {
 }
 
 get_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Downloading Libreswan..."
     cd /opt/src || exit 1
     swan_file="libreswan-$SWAN_VER.tar.gz"
@@ -330,7 +330,7 @@ get_libreswan() {
 }
 
 install_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Compiling and installing Libreswan, please wait..."
     cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
@@ -532,7 +532,7 @@ update_iptables() {
   ipf='iptables -I FORWARD'
   ipp='iptables -t nat -I POSTROUTING'
   res='RELATED,ESTABLISHED'
-  if [ "$ipt_flag" = "1" ]; then
+  if [ "$ipt_flag" = 1 ]; then
     service fail2ban stop >/dev/null 2>&1
     iptables-save > "$IPT_FILE.old-$SYS_DT"
     $ipi 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
@@ -583,7 +583,7 @@ enable_on_boot() {
   if [ -f "$IPT_FILE2" ] && { [ -f "$IPT_PST" ] || [ -f "$IPT_PST2" ]; }; then
     ipt_load=0
   fi
-  if [ "$ipt_load" = "1" ]; then
+  if [ "$ipt_load" = 1 ]; then
     mkdir -p /etc/network/if-pre-up.d
 cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
@@ -688,7 +688,7 @@ set_up_ikev2() {
         skip_ikev2=1
         ;;
     esac
-    if [ "$skip_ikev2" = "0" ]; then
+    if [ "$skip_ikev2" = 0 ]; then
       sleep 1
       VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
       VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \

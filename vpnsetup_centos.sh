@@ -237,9 +237,9 @@ install_vpn_pkgs_1() {
   rp2="$erp=*server-*optional*"
   rp3="$erp=*releases-optional*"
   if [ "$os_type" = "ol" ]; then
-    if [ "$os_ver" = "9" ]; then
+    if [ "$os_ver" = 9 ]; then
       rp1="$erp=ol9_developer_EPEL"
-    elif [ "$os_ver" = "8" ]; then
+    elif [ "$os_ver" = 8 ]; then
       rp1="$erp=ol8_developer_EPEL"
     else
       rp3="$erp=ol7_optional_latest"
@@ -266,7 +266,7 @@ install_vpn_pkgs_3() {
   p2=libevent-devel
   p3=fipscheck-devel
   p4=iptables-services
-  if [ "$os_ver" = "7" ]; then
+  if [ "$os_ver" = 7 ]; then
     (
       set -x
       yum "$rp2" "$rp3" -y -q install $p1 $p2 $p3 $p4 >/dev/null
@@ -276,7 +276,7 @@ install_vpn_pkgs_3() {
       set -x
       yum -y -q install $p1 $p2 >/dev/null
     ) || exiterr2
-    if [ "$os_ver" = "9" ] || [ "$os_ver" = "9s" ] \
+    if [ "$os_ver" = 9 ] || [ "$os_ver" = 9s ] \
       || systemctl is-active --quiet firewalld \
       || systemctl is-active --quiet nftables \
       || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then
@@ -301,7 +301,7 @@ filter = sshd
 logpath = /var/log/secure
 EOF
 
-    if [ "$use_nft" = "1" ]; then
+    if [ "$use_nft" = 1 ]; then
 cat >> "$F2B_FILE" <<'EOF'
 port = ssh
 banaction = nftables-multiport[blocktype=drop]
@@ -375,7 +375,7 @@ check_libreswan() {
 }
 
 get_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Downloading Libreswan..."
     cd /opt/src || exit 1
     swan_file="libreswan-$SWAN_VER.tar.gz"
@@ -393,7 +393,7 @@ get_libreswan() {
 }
 
 install_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Compiling and installing Libreswan, please wait..."
     cd "libreswan-$SWAN_VER" || exit 1
 cat > Makefile.inc.local <<'EOF'
@@ -573,7 +573,7 @@ EOF
 update_iptables() {
   bigecho "Updating IPTables rules..."
   IPT_FILE=/etc/sysconfig/iptables
-  [ "$use_nft" = "1" ] && IPT_FILE=/etc/sysconfig/nftables.conf
+  [ "$use_nft" = 1 ] && IPT_FILE=/etc/sysconfig/nftables.conf
   ipt_flag=0
   if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE"; then
     ipt_flag=1
@@ -584,9 +584,9 @@ update_iptables() {
   res='RELATED,ESTABLISHED'
   nff='nft insert rule inet firewalld'
   nfn='nft insert rule inet nftables_svc'
-  if [ "$ipt_flag" = "1" ]; then
+  if [ "$ipt_flag" = 1 ]; then
     service fail2ban stop >/dev/null 2>&1
-    if [ "$use_nft" = "1" ]; then
+    if [ "$use_nft" = 1 ]; then
       nft list ruleset > "$IPT_FILE.old-$SYS_DT"
       chmod 600 "$IPT_FILE.old-$SYS_DT"
     else
@@ -605,13 +605,13 @@ update_iptables() {
     $ipf 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
     $ipf 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
     $ipf 7 -s "$XAUTH_NET" -o ppp+ -j ACCEPT
-    if [ "$use_nft" != "1" ]; then
+    if [ "$use_nft" != 1 ]; then
       iptables -A FORWARD -j DROP
     fi
     $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
     $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
     echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
-    if [ "$use_nft" = "1" ]; then
+    if [ "$use_nft" = 1 ]; then
       for vport in 500 4500 1701; do
         $nff filter_INPUT udp dport "$vport" accept 2>/dev/null
         $nfn allow udp dport "$vport" accept 2>/dev/null
@@ -660,7 +660,7 @@ enable_on_boot() {
   systemctl --now mask firewalld 2>/dev/null
   if [ "$os_type$os_ver" = "ol9" ]; then
     systemctl enable nftables 2>/dev/null
-  elif [ "$use_nft" = "1" ]; then
+  elif [ "$use_nft" = 1 ]; then
     systemctl enable nftables 2>/dev/null
     systemctl enable fail2ban 2>/dev/null
   else
@@ -692,7 +692,7 @@ start_services() {
   restorecon /etc/ipsec.d/*db 2>/dev/null
   restorecon /usr/local/sbin -Rv 2>/dev/null
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
-  if [ "$use_nft" = "1" ]; then
+  if [ "$use_nft" = 1 ]; then
     nft -f "$IPT_FILE"
   else
     iptables-restore < "$IPT_FILE"
@@ -740,7 +740,7 @@ set_up_ikev2() {
         skip_ikev2=1
         ;;
     esac
-    if [ "$skip_ikev2" = "0" ]; then
+    if [ "$skip_ikev2" = 0 ]; then
       sleep 1
       VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
       VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \

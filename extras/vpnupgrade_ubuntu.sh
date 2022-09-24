@@ -57,7 +57,7 @@ check_os() {
       ;;
   esac
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-  if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
+  if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
     exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
   fi
 }
@@ -260,10 +260,10 @@ update_config() {
       -e "s/^[[:space:]]\+sha2-truncbug=yes/  sha2-truncbug=no/" \
       -e "s/^[[:space:]]\+ike=.\+/$IKE_NEW/" \
       -e "s/^[[:space:]]\+phase2alg=.\+/$PHASE2_NEW/" /etc/ipsec.conf
-  if [ "$dns_state" = "1" ]; then
+  if [ "$dns_state" = 1 ]; then
     sed -i -e "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=\"$DNS_SRV1 $DNS_SRV2\"/" \
         -e "/modecfgdns2=/d" /etc/ipsec.conf
-  elif [ "$dns_state" = "2" ]; then
+  elif [ "$dns_state" = 2 ]; then
     sed -i "s/^[[:space:]]\+modecfgdns1=.\+/  modecfgdns=$DNS_SRV1/" /etc/ipsec.conf
   fi
   sed -i "/ikev2=never/d" /etc/ipsec.conf
@@ -289,7 +289,7 @@ Libreswan $SWAN_VER has been successfully installed!
 ================================================
 
 EOF
-  if [ "$dns_state" = "3" ]; then
+  if [ "$dns_state" = 3 ]; then
 cat <<'EOF'
 IMPORTANT: You must edit /etc/ipsec.conf and replace
            all occurrences of these two lines:

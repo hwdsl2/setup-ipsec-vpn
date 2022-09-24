@@ -95,7 +95,7 @@ EOF
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-      if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
+      if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
         exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
       fi
     fi

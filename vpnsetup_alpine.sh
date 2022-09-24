@@ -261,7 +261,7 @@ check_libreswan() {
 }
 
 get_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Downloading Libreswan..."
     cd /opt/src || exit 1
     swan_file="libreswan-$SWAN_VER.tar.gz"
@@ -279,7 +279,7 @@ get_libreswan() {
 }
 
 install_libreswan() {
-  if [ "$check_result" = "0" ]; then
+  if [ "$check_result" = 0 ]; then
     bigecho "Compiling and installing Libreswan, please wait..."
     cd "libreswan-$SWAN_VER" || exit 1
     sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h
@@ -463,7 +463,7 @@ update_iptables() {
   ipf='iptables -I FORWARD'
   ipp='iptables -t nat -I POSTROUTING'
   res='RELATED,ESTABLISHED'
-  if [ "$ipt_flag" = "1" ]; then
+  if [ "$ipt_flag" = 1 ]; then
     service fail2ban stop >/dev/null 2>&1
     iptables-save > "$IPT_FILE.old-$SYS_DT"
     $ipi 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
@@ -555,7 +555,7 @@ set_up_ikev2() {
         skip_ikev2=1
         ;;
     esac
-    if [ "$skip_ikev2" = "0" ]; then
+    if [ "$skip_ikev2" = 0 ]; then
       sleep 1
       VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
       VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \

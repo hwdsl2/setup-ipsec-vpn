@@ -99,7 +99,7 @@ check_iface() {
     else
       check_wl=1
     fi
-    if [ "$check_wl" = "1" ]; then
+    if [ "$check_wl" = 1 ]; then
       case $def_iface in
         wl*)
           exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -244,8 +244,8 @@ update_iptables_rules() {
   ipf='iptables -D FORWARD'
   ipp='iptables -t nat -D POSTROUTING'
   res='RELATED,ESTABLISHED'
-  if [ "$ipt_flag" = "1" ]; then
-    if [ "$use_nft" = "0" ]; then
+  if [ "$ipt_flag" = 1 ]; then
+    if [ "$use_nft" = 0 ]; then
       bigecho "Updating IPTables rules..."
       get_vpn_subnets
       iptables-save > "$IPT_FILE.old-$SYS_DT"

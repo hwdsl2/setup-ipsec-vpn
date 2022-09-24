@@ -127,7 +127,7 @@ EOF
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-      if [ "$os_ver" = "8" ] || [ "$os_ver" = "jessiesid" ]; then
+      if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
         exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
       fi
     fi
@@ -150,7 +150,7 @@ check_iface() {
       check_wl=1
     fi
   fi
-  if [ "$check_wl" = "1" ]; then
+  if [ "$check_wl" = 1 ]; then
     case $def_iface in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -208,8 +208,8 @@ wait_for_apt() {
   pkg_lk=/var/lib/dpkg/lock
   while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
     || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
-    [ "$count" = "0" ] && echo "## Waiting for apt to be available..."
-    [ "$count" -ge "100" ] && exiterr "Could not get apt/dpkg lock."
+    [ "$count" = 0 ] && echo "## Waiting for apt to be available..."
+    [ "$count" -ge 100 ] && exiterr "Could not get apt/dpkg lock."
     count=$((count+1))
     printf '%s' '.'
     sleep 3

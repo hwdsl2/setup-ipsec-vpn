@@ -108,7 +108,6 @@ get_server_address() {
 show_welcome() {
 cat <<EOF
 Welcome! Use this script to change this IKEv2 VPN server's address.
-A new server certificate will be generated if necessary.
 
 Current server address: $server_addr_old
 
@@ -124,10 +123,11 @@ get_default_ip() {
 }
 
 get_server_ip() {
-  bigecho "Trying to auto discover IP of this server..."
+  use_default_ip=0
   public_ip=${VPN_PUBLIC_IP:-''}
   check_ip "$public_ip" || get_default_ip
-  check_ip "$public_ip" && return 0
+  check_ip "$public_ip" && { use_default_ip=1; return 0; }
+  bigecho "Trying to auto discover IP of this server..."
   check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
   check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
   check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
@@ -147,7 +147,7 @@ enter_server_address() {
       echo
       ;;
   esac
-  if [ "$use_dns_name" = "1" ]; then
+  if [ "$use_dns_name" = 1 ]; then
     read -rp "Enter the DNS name of this VPN server: " server_addr
     until check_dns_name "$server_addr"; do
       echo "Invalid DNS name. You must enter a fully qualified domain name (FQDN)."
@@ -155,7 +155,7 @@ enter_server_address() {
     done
   else
     get_server_ip
-    echo
+    [ "$use_default_ip" = 0 ] && echo
     read -rp "Enter the IPv4 address of this VPN server: [$public_ip] " server_addr
     [ -z "$server_addr" ] && server_addr="$public_ip"
     until check_ip "$server_addr"; do
@@ -178,7 +178,11 @@ confirm_changes() {
 cat <<EOF
 
 You are about to change this IKEv2 VPN server's address.
-Read the important notes below before continuing.
+
+*IMPORTANT* After running this script, you must manually update
+the server address (and remote ID, if applicable) on any existing
+IKEv2 client devices. For iOS clients, you'll need to export and
+re-import client configuration using the IKEv2 helper script.
 
 ===========================================
 
@@ -186,12 +190,6 @@ Current server address: $server_addr_old
 New server address:     $server_addr
 
 ===========================================
-
-*IMPORTANT*
-After running this script, you must manually update the server address
-(and remote ID, if applicable) on any existing IKEv2 client devices.
-For iOS clients, you'll need to export and re-import client configuration
-using the IKEv2 helper script.
 
 EOF
   printf "Do you want to continue? [Y/n] "
@@ -211,7 +209,7 @@ create_server_cert() {
     bigecho "Server certificate '$server_addr' already exists, skipping..."
   else
     bigecho "Generating server certificate..."
-    if [ "$use_dns_name" = "1" ]; then
+    if [ "$use_dns_name" = 1 ]; then
       certutil -z <(head -c 1024 /dev/urandom) \
         -S -c "IKEv2 VPN CA" -n "$server_addr" \
         -s "O=IKEv2 VPN,CN=$server_addr" \
@@ -242,7 +240,7 @@ update_ikev2_conf() {
   sed -i".old-$SYS_DT" \
       -e "/^[[:space:]]\+leftcert=/d" \
       -e "/^[[:space:]]\+leftid=/d" /etc/ipsec.d/ikev2.conf
-  if [ "$use_dns_name" = "1" ]; then
+  if [ "$use_dns_name" = 1 ]; then
     sed -i "/conn ikev2-cp/a \  leftid=@$server_addr" /etc/ipsec.d/ikev2.conf
   else
     sed -i "/conn ikev2-cp/a \  leftid=$server_addr" /etc/ipsec.d/ikev2.conf
