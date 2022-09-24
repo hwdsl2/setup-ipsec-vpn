@@ -265,7 +265,7 @@ run_setup() {
   if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
     if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url1" \
       || wget -t 3 -T 30 -q -O "$tmpdir/vpn.sh" "$setup_url2" \
-      || curl -fsL "$setup_url1" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
+      || curl -m 30 -fsL "$setup_url1" -o "$tmpdir/vpn.sh" 2>/dev/null ); then
       VPN_IPSEC_PSK="$VPN_IPSEC_PSK" VPN_USER="$VPN_USER" \
       VPN_PASSWORD="$VPN_PASSWORD" \
       VPN_PUBLIC_IP="$VPN_PUBLIC_IP" VPN_L2TP_NET="$VPN_L2TP_NET" \

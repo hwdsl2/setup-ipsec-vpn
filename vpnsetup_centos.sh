@@ -202,11 +202,22 @@ install_setup_pkgs() {
   ) || exiterr2
 }
 
+get_default_ip() {
+  def_ip=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}' 2>/dev/null)
+  if check_ip "$def_ip" \
+    && ! printf '%s' "$def_ip" | grep -Eq '^(10|127|172\.(1[6-9]|2[0-9]|3[0-1])|192\.168|169\.254)\.'; then
+    public_ip="$def_ip"
+  fi
+}
+
 detect_ip() {
-  bigecho "Trying to auto discover IP of this server..."
   public_ip=${VPN_PUBLIC_IP:-''}
+  check_ip "$public_ip" || get_default_ip
+  check_ip "$public_ip" && return 0
+  bigecho "Trying to auto discover IP of this server..."
   check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-  check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
   check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it as variable 'VPN_PUBLIC_IP' and re-run this script."
 }
 
@@ -339,8 +350,8 @@ get_swan_ver() {
   SWAN_VER=4.7
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" 2>/dev/null | head -n 1)
-  [ -z "$swan_ver_latest" ] && swan_ver_latest=$(curl -fsL "$swan_ver_url" 2>/dev/null | head -n 1)
+  swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
+  [ -z "$swan_ver_latest" ] && swan_ver_latest=$(curl -m 10 -fsL "$swan_ver_url" 2>/dev/null | head -n 1)
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'; then
     SWAN_VER="$swan_ver_latest"
   fi

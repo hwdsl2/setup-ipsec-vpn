@@ -107,19 +107,30 @@ get_server_address() {
 
 show_welcome() {
 cat <<EOF
-Welcome! Use this script to change this IKEv2 VPN server's address. A new server
-certificate will be generated if necessary.
+Welcome! Use this script to change this IKEv2 VPN server's address.
+A new server certificate will be generated if necessary.
 
 Current server address: $server_addr_old
 
 EOF
 }
 
+get_default_ip() {
+  def_ip=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}' 2>/dev/null)
+  if check_ip "$def_ip" \
+    && ! printf '%s' "$def_ip" | grep -Eq '^(10|127|172\.(1[6-9]|2[0-9]|3[0-1])|192\.168|169\.254)\.'; then
+    public_ip="$def_ip"
+  fi
+}
+
 get_server_ip() {
   bigecho "Trying to auto discover IP of this server..."
   public_ip=${VPN_PUBLIC_IP:-''}
+  check_ip "$public_ip" || get_default_ip
+  check_ip "$public_ip" && return 0
   check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-  check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
 }
 
 enter_server_address() {

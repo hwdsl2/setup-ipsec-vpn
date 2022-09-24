@@ -862,7 +862,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
    ```bash
    PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-   [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+   [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
    printf '%s\n' "$PUBLIC_IP"
    ```
 

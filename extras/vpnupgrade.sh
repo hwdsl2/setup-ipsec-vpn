@@ -161,7 +161,7 @@ run_setup() {
   if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
     if ( set -x; wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url1" \
       || wget -t 3 -T 30 -q -O "$tmpdir/vpnup.sh" "$setup_url2" \
-      || curl -fsL "$setup_url1" -o "$tmpdir/vpnup.sh" 2>/dev/null ); then
+      || curl -m 30 -fsL "$setup_url1" -o "$tmpdir/vpnup.sh" 2>/dev/null ); then
       VPN_UPDATE_SWAN_VER="$SWAN_VER" /bin/bash "$tmpdir/vpnup.sh" || status=1
     else
       status=1
