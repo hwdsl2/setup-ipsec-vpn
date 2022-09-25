@@ -12,7 +12,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 ## 快速开始
 
-首先，在你的 Linux 服务器\* 上全新安装 Ubuntu, Debian 或者 CentOS。
+首先，在你的 Linux 服务器\* 上安装 Ubuntu, Debian 或者 CentOS。
 
 使用以下命令快速搭建 IPsec VPN 服务器：
 
@@ -68,7 +68,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 ## 系统要求
 
-一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，全新安装以下操作系统之一：
+一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，安装以下操作系统之一：
 
 - Ubuntu 22.04, 20.04 或者 18.04
 - Debian 11 或者 10

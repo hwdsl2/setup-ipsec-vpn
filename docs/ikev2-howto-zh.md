@@ -52,7 +52,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 #### 自动导入配置
 
-[**屏幕录影：** 自动导入 IKEv2 配置（支持者）](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
+[**屏幕录影：** 在 Windows 上自动导入 IKEv2 配置](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
 
 **Windows 8, 10 和 11** 用户可以自动导入 IKEv2 配置：
 
@@ -67,7 +67,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 #### 手动导入配置
 
-[**屏幕录影：** 手动导入 IKEv2 配置（支持者）](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
+[**屏幕录影：** 在 Windows 上手动导入 IKEv2 配置（支持者）](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
 
 或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
 

@@ -52,7 +52,7 @@ In certain circumstances, you may need to change the IKEv2 server address. For e
 
 #### Auto-import configuration
 
-[**Screencast:** IKEv2 Auto Import Configuration (supporters)](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
+[**Screencast:** IKEv2 Auto Import Configuration on Windows](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
 
 **Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
 
@@ -67,7 +67,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 #### Manually import configuration
 
-[**Screencast:** IKEv2 Manually Import Configuration (supporters)](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
+[**Screencast:** IKEv2 Manually Import Configuration on Windows (supporters)](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
 
 Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
