@@ -184,10 +184,17 @@ update_sysctl() {
   if grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
     bigecho "Updating sysctl settings..."
     conf_bk "/etc/sysctl.conf"
+    count=17
+    line1=$(grep -A 18 "hwdsl2 VPN script" /etc/sysctl.conf | tail -n 1)
+    line2=$(grep -A 19 "hwdsl2 VPN script" /etc/sysctl.conf | tail -n 1)
+    if [ "$line1" = "net.core.default_qdisc = fq" ] \
+      && [ "$line2" = "net.ipv4.tcp_congestion_control = bbr" ]; then
+        count=19
+    fi
     if [ "$os_type" = "alpine" ]; then
-      sed -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
+      sed -i "/# Added by hwdsl2 VPN script/,+${count}d" /etc/sysctl.conf
     else
-      sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+17d' /etc/sysctl.conf
+      sed --follow-symlinks -i "/# Added by hwdsl2 VPN script/,+${count}d" /etc/sysctl.conf
     fi
     if [ ! -f /usr/bin/wg-quick ] && [ ! -f /usr/sbin/openvpn ]; then
       echo 0 > /proc/sys/net/ipv4/ip_forward
