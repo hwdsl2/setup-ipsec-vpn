@@ -255,7 +255,7 @@ update_ikev2_script() {
 
 update_config() {
   bigecho "Updating VPN configuration..."
-  IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024"
+  IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
   PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
   dns_state=0
   DNS_SRV1=$(grep "modecfgdns1=" /etc/ipsec.conf | head -n 1 | cut -d '=' -f 2)
