@@ -209,7 +209,7 @@ update_ikev2_script() {
 
 update_config() {
   bigecho "Updating VPN configuration..."
-  IKE_NEW="  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1"
+  IKE_NEW="  ike=aes256-sha2;modp2048,aes128-sha2;modp2048,aes256-sha1;modp2048,aes128-sha1;modp2048"
   PHASE2_NEW="  phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2"
   if uname -m | grep -qi '^arm'; then
     if ! modprobe -q sha512; then
