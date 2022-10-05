@@ -96,6 +96,15 @@ check_os() {
 }
 
 check_iface() {
+  if ! command -v route >/dev/null 2>&1 && ! command -v ip >/dev/null 2>&1; then
+    wait_for_apt
+    export DEBIAN_FRONTEND=noninteractive
+    (
+      set -x
+      apt-get -yqq update || apt-get -yqq update
+      apt-get -yqq install iproute2 >/dev/null
+    )
+  fi
   def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
   [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)

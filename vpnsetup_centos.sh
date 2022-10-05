@@ -107,6 +107,12 @@ EOF
 }
 
 check_iface() {
+  if ! command -v route >/dev/null 2>&1 && ! command -v ip >/dev/null 2>&1; then
+    (
+      set -x
+      yum -y -q install iproute >/dev/null || yum -y -q install iproute >/dev/null
+    )
+  fi
   def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
   [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
