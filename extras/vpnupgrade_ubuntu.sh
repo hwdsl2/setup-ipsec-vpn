@@ -191,7 +191,7 @@ cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 EOF
-  if [ "$SWAN_VER" = "3.32" ] || ! grep -qs 'VERSION_CODENAME=' /etc/os-release; then
+  if [ "$SWAN_VER" = "3.32" ]; then
 cat >> Makefile.inc.local <<'EOF'
 USE_DH31=false
 USE_NSS_AVA_COPY=true

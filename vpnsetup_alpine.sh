@@ -282,7 +282,6 @@ install_libreswan() {
   if [ "$check_result" = 0 ]; then
     bigecho "Compiling and installing Libreswan, please wait..."
     cd "libreswan-$SWAN_VER" || exit 1
-    sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false

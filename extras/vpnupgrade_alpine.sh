@@ -169,7 +169,6 @@ install_libreswan() {
   cd "libreswan-$SWAN_VER" || exit 1
   sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   service ipsec stop >/dev/null 2>&1
-  sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
