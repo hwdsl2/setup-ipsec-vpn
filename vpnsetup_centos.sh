@@ -330,23 +330,20 @@ install_fail2ban() {
 
 get_helper_scripts() {
   bigecho "Downloading helper scripts..."
-  base_url1="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
-  base_url2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
-  ikev2_url1="$base_url1/ikev2setup.sh"
-  ikev2_url2="$base_url2/ikev2setup.sh"
-  add_url1="$base_url1/add_vpn_user.sh"
-  add_url2="$base_url2/add_vpn_user.sh"
-  del_url1="$base_url1/del_vpn_user.sh"
-  del_url2="$base_url2/del_vpn_user.sh"
+  base1="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
+  base2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
   cd /opt/src || exit 1
   printf '%s' "+ "
   for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
-    [ "$sc" = "ikev2.sh" ] && dl_url1="$ikev2_url1" && dl_url2="$ikev2_url2"
-    [ "$sc" = "addvpnuser.sh" ] && dl_url1="$add_url1" && dl_url2="$add_url2"
-    [ "$sc" = "delvpnuser.sh" ] && dl_url1="$del_url1" && dl_url2="$del_url2"
+    [ "$sc" = "ikev2.sh" ] && dl1="$base1/ikev2setup.sh" \
+      && dl2="$base2/ikev2setup.sh"
+    [ "$sc" = "addvpnuser.sh" ] && dl1="$base1/add_vpn_user.sh" \
+      && dl2="$base2/add_vpn_user.sh"
+    [ "$sc" = "delvpnuser.sh" ] && dl1="$base1/del_vpn_user.sh" \
+      && dl2="$base2/del_vpn_user.sh"
     printf '%s' "$sc "
-    wget -t 3 -T 30 -q -O "$sc" "$dl_url1" \
-    || wget -t 3 -T 30 -q -O "$sc" "$dl_url2" || /bin/rm -f "$sc"
+    wget -t 3 -T 30 -q -O "$sc" "$dl1" || wget -t 3 -T 30 -q -O "$sc" "$dl2" \
+      || /bin/rm -f "$sc"
     [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
   done
   echo
