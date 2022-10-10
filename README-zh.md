@@ -135,7 +135,7 @@ VPN_PASSWORD='你的VPN密码' \
 sh vpn.sh
 ```
 
-安装完成后，你可以选择在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。
+你可以选择在同一台服务器上安装 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。如果你的服务器运行 CentOS Stream, Rocky Linux 或 AlmaLinux，请先安装 OpenVPN/WireGuard，然后安装 IPsec VPN。
 
 <details>
 <summary>
@@ -203,7 +203,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 sudo VPN_SKIP_IKEV2=yes sh vpn.sh
 ```
 
-（可选）如需指定另外的 DNS 服务器，请参见上面的选项 1。
+（可选）如需为 VPN 客户端指定另外的 DNS 服务器，你可以定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。有关详细信息，参见上面的选项 1。
 
 然后运行 IKEv2 [辅助脚本](docs/ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 使用自定义选项以交互方式配置 IKEv2:
 

@@ -135,7 +135,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-After setup, you may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server.
+You may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server. If your server runs CentOS Stream, Rocky Linux or AlmaLinux, first install OpenVPN/WireGuard, then install the IPsec VPN.
 
 <details>
 <summary>
@@ -203,7 +203,7 @@ When installing the VPN, you can skip IKEv2 and only install the IPsec/L2TP and 
 sudo VPN_SKIP_IKEV2=yes sh vpn.sh
 ```
 
-(Optional) If you want to specify custom DNS server(s), refer to option 1 above.
+(Optional) If you want to specify custom DNS server(s) for VPN clients, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2`. See option 1 above for details.
 
 After that, run the IKEv2 [helper script](docs/ikev2-howto.md#set-up-ikev2-using-helper-script) to set up IKEv2 interactively using custom options:
 
