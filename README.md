@@ -213,6 +213,43 @@ sudo ikev2.sh
 
 **Note:** The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
 </details>
+<details>
+<summary>
+For reference: List of IKEv1 and IKEv2 parameters.
+</summary>
+
+| IKEv1 parameter\*           | Default value         | Customize (env variable)\*\*             |
+| --------------------------- | --------------------- | ---------------------------------------- |
+| Server address (DNS name)   | -                     | No, but you can connect using a DNS name |
+| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                            |
+| IPsec pre-shared key        | Auto generate         | VPN_IPSEC_PSK                            |
+| VPN username                | vpnuser               | VPN_USER                                 |
+| VPN password                | Auto generate         | VPN_PASSWORD                             |
+| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2               |
+| Skip IKEv2 setup            | No                    | VPN_SKIP_IKEV2=yes                       |
+
+\* These IKEv1 parameters are for IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.   
+\*\* Define these as environment variables when running vpn(setup).sh.
+
+| IKEv2 parameter\*           | Default value         | Customize (env variable)\*\* | Customize (setup)\*\*\* |
+| --------------------------- | --------------------- | ---------------------------- | ----------------------- |
+| Server address (DNS name)   | -                     | VPN_DNS_NAME                 | ✅                      |
+| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                | ✅                      |
+| Name of first client        | vpnclient             | VPN_CLIENT_NAME              | ✅                      |
+| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✅                      |
+| Protect client config files | No                    | VPN_PROTECT_CONFIG=yes       | ✅                      |
+| Enable/Disable MOBIKE       | Enable if supported   | ❌                           | ✅                      |
+| Client cert validity        | 10 years (120 months) | ❌                           | ✅                      |
+| CA & server cert validity   | 10 years (120 months) | ❌                           | ❌                      |
+| CA certificate name         | IKEv2 VPN CA          | ❌                           | ❌                      |
+| Certificate key size        | 3072 bits             | ❌                           | ❌                      |
+
+\* These IKEv2 parameters are for IKEv2 mode.   
+\*\* Define these as environment variables when running vpn(setup).sh, or when setting up IKEv2 in auto mode (`sudo ikev2.sh --auto`).   
+\*\*\* Can be customized during interactive IKEv2 setup (`sudo ikev2.sh`). Refer to option 2 above.
+
+In addition to these parameters, advanced users can also [customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets) during VPN setup.
+</details>
 
 ## Next steps
 

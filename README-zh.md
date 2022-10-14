@@ -213,6 +213,43 @@ sudo ikev2.sh
 
 **注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 </details>
+<details>
+<summary>
+供参考：IKEv1 和 IKEv2 参数列表。
+</summary>
+
+| IKEv1 参数\* |默认值 |自定义（环境变量）\*\* |
+| ------------ | ---- | ----------------- |
+|服务器地址（DNS域名）| - |不能，但你可以使用 DNS 域名进行连接 |
+|服务器地址（公网IP）|自动检测 | VPN_PUBLIC_IP |
+| IPsec 预共享密钥 |自动生成 | VPN_IPSEC_PSK |
+| VPN 用户名 | vpnuser | VPN_USER |
+| VPN 密码 |自动生成 | VPN_PASSWORD |
+|客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 |
+|跳过 IKEv2 安装 |否 | VPN_SKIP_IKEV2=yes |
+
+\* 这些 IKEv1 参数适用于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。   
+\*\* 在运行 vpn(setup).sh 时将这些定义为环境变量。
+
+| IKEv2 参数\* |默认值 |自定义（环境变量）\*\* |自定义（安装时）\*\*\* |
+| ----------- | ---- | ------------------ | ----------------- |
+|服务器地址（DNS域名）| - | VPN_DNS_NAME | ✅ |
+|服务器地址（公网IP）|自动检测 | VPN_PUBLIC_IP | ✅ |
+|第一个客户端的名称 | vpnclient | VPN_CLIENT_NAME | ✅ |
+|客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 | ✅ |
+|保护客户端配置文件 |否 | VPN_PROTECT_CONFIG=yes | ✅ |
+|启用/禁用 MOBIKE |如果系统支持则启用 | ❌ | ✅ |
+|客户端证书有效期 | 10 年（120 个月）| ❌ | ✅ |
+| CA 和服务器证书有效期 | 10 年（120 个月）| ❌ | ❌ |
+| CA 证书名称 | IKEv2 VPN CA | ❌ | ❌ |
+|证书密钥长度 | 3072 bits | ❌ | ❌ |
+
+\* 这些 IKEv2 参数适用于 IKEv2 模式。   
+\*\* 在运行 vpn(setup).sh 时，或者在自动模式下配置 IKEv2 时 (`sudo ikev2.sh --auto`) 将这些定义为环境变量。   
+\*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 2。
+
+除了这些参数，高级用户还可以在安装时 [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)。
+</details>
 
 ## 下一步
 
