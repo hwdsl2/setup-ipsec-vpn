@@ -226,23 +226,23 @@ For reference: List of IKEv1 and IKEv2 parameters.
 | VPN username                | vpnuser               | VPN_USER                                 |
 | VPN password                | Auto generate         | VPN_PASSWORD                             |
 | DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2               |
-| Skip IKEv2 setup            | No                    | VPN_SKIP_IKEV2=yes                       |
+| Skip IKEv2 setup            | no                    | VPN_SKIP_IKEV2=yes                       |
 
 \* These IKEv1 parameters are for IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.   
 \*\* Define these as environment variables when running vpn(setup).sh.
 
-| IKEv2 parameter\*           | Default value         | Customize (env variable)\*\* | Customize (setup)\*\*\* |
-| --------------------------- | --------------------- | ---------------------------- | ----------------------- |
-| Server address (DNS name)   | -                     | VPN_DNS_NAME                 | ✅                      |
-| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                | ✅                      |
-| Name of first client        | vpnclient             | VPN_CLIENT_NAME              | ✅                      |
-| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✅                      |
-| Protect client config files | No                    | VPN_PROTECT_CONFIG=yes       | ✅                      |
-| Enable/Disable MOBIKE       | Enable if supported   | ❌                           | ✅                      |
-| Client cert validity        | 10 years (120 months) | ❌                           | ✅                      |
-| CA & server cert validity   | 10 years (120 months) | ❌                           | ❌                      |
-| CA certificate name         | IKEv2 VPN CA          | ❌                           | ❌                      |
-| Certificate key size        | 3072 bits             | ❌                           | ❌                      |
+| IKEv2 parameter\*           | Default value         | Customize (env variable)\*\* | Customize (interactive)\*\*\* |
+| --------------------------- | --------------------- | ---------------------------- | ----------------------------- |
+| Server address (DNS name)   | -                     | VPN_DNS_NAME                 | ✅                            |
+| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                | ✅                            |
+| Name of first client        | vpnclient             | VPN_CLIENT_NAME              | ✅                            |
+| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✅                            |
+| Protect client config files | no                    | VPN_PROTECT_CONFIG=yes       | ✅                            |
+| Enable/Disable MOBIKE       | Enable if supported   | ❌                           | ✅                            |
+| Client cert validity        | 10 years (120 months) | ❌                           | ✅                            |
+| CA & server cert validity   | 10 years (120 months) | ❌                           | ❌                            |
+| CA certificate name         | IKEv2 VPN CA          | ❌                           | ❌                            |
+| Certificate key size        | 3072 bits             | ❌                           | ❌                            |
 
 \* These IKEv2 parameters are for IKEv2 mode.   
 \*\* Define these as environment variables when running vpn(setup).sh, or when setting up IKEv2 in auto mode (`sudo ikev2.sh --auto`).   
@@ -355,7 +355,7 @@ To uninstall IPsec VPN, run the [helper script](extras/vpnuninstall.sh):
 **Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
 
 ```bash
-wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
 ```
 
 <details>
@@ -366,7 +366,7 @@ Alternative commands.
 You may also use `curl` to download:
 
 ```bash
-curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+curl -fsSL https://get.vpnsetup.net/unst -o unst.sh && sudo bash unst.sh
 ```
 
 Alternative script URLs:

@@ -12,7 +12,7 @@
 **警告：** 此辅助脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
 
 ```bash
-wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
 ```
 
 <details>
@@ -23,7 +23,7 @@ wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 你也可以使用 `curl` 下载：
 
 ```bash
-curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+curl -fsSL https://get.vpnsetup.net/unst -o unst.sh && sudo bash unst.sh
 ```
 
 或者，你也可以使用这些链接：

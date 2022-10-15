@@ -226,18 +226,18 @@ sudo ikev2.sh
 | VPN 用户名 | vpnuser | VPN_USER |
 | VPN 密码 |自动生成 | VPN_PASSWORD |
 |客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 |
-|跳过 IKEv2 安装 |否 | VPN_SKIP_IKEV2=yes |
+|跳过 IKEv2 安装 |no | VPN_SKIP_IKEV2=yes |
 
 \* 这些 IKEv1 参数适用于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。   
 \*\* 在运行 vpn(setup).sh 时将这些定义为环境变量。
 
-| IKEv2 参数\* |默认值 |自定义（环境变量）\*\* |自定义（安装时）\*\*\* |
+| IKEv2 参数\* |默认值 |自定义（环境变量）\*\* |自定义（交互式）\*\*\* |
 | ----------- | ---- | ------------------ | ----------------- |
 |服务器地址（DNS域名）| - | VPN_DNS_NAME | ✅ |
 |服务器地址（公网IP）|自动检测 | VPN_PUBLIC_IP | ✅ |
 |第一个客户端的名称 | vpnclient | VPN_CLIENT_NAME | ✅ |
 |客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 | ✅ |
-|保护客户端配置文件 |否 | VPN_PROTECT_CONFIG=yes | ✅ |
+|保护客户端配置文件 |no | VPN_PROTECT_CONFIG=yes | ✅ |
 |启用/禁用 MOBIKE |如果系统支持则启用 | ❌ | ✅ |
 |客户端证书有效期 | 10 年（120 个月）| ❌ | ✅ |
 | CA 和服务器证书有效期 | 10 年（120 个月）| ❌ | ❌ |
@@ -355,7 +355,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 **警告：** 此辅助脚本将从你的服务器中删除 IPsec VPN。所有的 VPN 配置将被**永久删除**，并且 Libreswan 和 xl2tpd 将被移除。此操作**不可撤销**！
 
 ```bash
-wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
+wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
 ```
 
 <details>
@@ -366,7 +366,7 @@ wget https://get.vpnsetup.net/unst -O vpnunst.sh && sudo bash vpnunst.sh
 你也可以使用 `curl` 下载：
 
 ```bash
-curl -fsSL https://get.vpnsetup.net/unst -o vpnunst.sh && sudo bash vpnunst.sh
+curl -fsSL https://get.vpnsetup.net/unst -o unst.sh && sudo bash unst.sh
 ```
 
 或者，你也可以使用这些链接：

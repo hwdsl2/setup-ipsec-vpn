@@ -90,7 +90,7 @@ sudo delvpnuser.sh '要删除的用户名'
 首先下载[辅助脚本](../extras/update_vpn_users.sh)：
 
 ```bash
-wget https://get.vpnsetup.net/updateusers -O updatevpnusers.sh
+wget https://get.vpnsetup.net/updateusers -O updateusers.sh
 ```
 
 **重要：** 这个脚本会将你当前 **所有的 VPN 用户** 移除并替换为你指定的列表中的用户。如果你需要保留已有的 VPN 用户，则必须将它们包含在下面的变量中。
@@ -100,9 +100,9 @@ wget https://get.vpnsetup.net/updateusers -O updatevpnusers.sh
 **选项 1:** 编辑脚本并输入 VPN 用户信息：
 
 ```bash
-nano -w updatevpnusers.sh
+nano -w updateusers.sh
 [替换为你自己的值： YOUR_USERNAMES 和 YOUR_PASSWORDS]
-sudo bash updatevpnusers.sh
+sudo bash updateusers.sh
 ```
 
 **选项 2:** 将 VPN 用户信息定义为环境变量：
@@ -114,7 +114,7 @@ sudo bash updatevpnusers.sh
 sudo \
 VPN_USERS='用户名1 用户名2 ...' \
 VPN_PASSWORDS='密码1 密码2 ...' \
-bash updatevpnusers.sh
+bash updateusers.sh
 ```
 
 ## 查看 VPN 用户

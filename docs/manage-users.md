@@ -90,7 +90,7 @@ Remove **all existing VPN users** and replace with the list of users you specify
 First, download the [helper script](../extras/update_vpn_users.sh):
 
 ```bash
-wget https://get.vpnsetup.net/updateusers -O updatevpnusers.sh
+wget https://get.vpnsetup.net/updateusers -O updateusers.sh
 ```
 
 **Important:** This script will remove **all existing VPN users** and replace with the list of users you specify. Therefore, you must include any existing user(s) you want to keep in the variables below.
@@ -100,9 +100,9 @@ To use this script, choose one of the following options:
 **Option 1:** Edit the script and enter VPN user details:
 
 ```bash
-nano -w updatevpnusers.sh
+nano -w updateusers.sh
 [Replace with your own values: YOUR_USERNAMES and YOUR_PASSWORDS]
-sudo bash updatevpnusers.sh
+sudo bash updateusers.sh
 ```
 
 **Option 2:** Define VPN user details as environment variables:
@@ -114,7 +114,7 @@ sudo bash updatevpnusers.sh
 sudo \
 VPN_USERS='username1 username2 ...' \
 VPN_PASSWORDS='password1 password2 ...' \
-bash updatevpnusers.sh
+bash updateusers.sh
 ```
 
 ## View VPN users
