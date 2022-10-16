@@ -239,14 +239,15 @@ sudo ikev2.sh
 |客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 | ✅ |
 |保护客户端配置文件 |no | VPN_PROTECT_CONFIG=yes | ✅ |
 |启用/禁用 MOBIKE |如果系统支持则启用 | ❌ | ✅ |
-|客户端证书有效期 | 10 年（120 个月）| ❌ | ✅ |
+|客户端证书有效期 | 10 年（120 个月）| VPN_CLIENT_VALIDITY\*\*\*\* | ✅ |
 | CA 和服务器证书有效期 | 10 年（120 个月）| ❌ | ❌ |
 | CA 证书名称 | IKEv2 VPN CA | ❌ | ❌ |
 |证书密钥长度 | 3072 bits | ❌ | ❌ |
 
 \* 这些 IKEv2 参数适用于 IKEv2 模式。   
 \*\* 在运行 vpn(setup).sh 时，或者在自动模式下配置 IKEv2 时 (`sudo ikev2.sh --auto`) 将这些定义为环境变量。   
-\*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 2。
+\*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 2。   
+\*\*\*\* 使用 `VPN_CLIENT_VALIDITY` 定义客户端证书的有效期（单位：月）。它必须是 1 到 120 之间的整数。
 
 除了这些参数，高级用户还可以在安装时 [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)。
 </details>

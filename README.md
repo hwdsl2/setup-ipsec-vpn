@@ -239,14 +239,15 @@ For reference: List of IKEv1 and IKEv2 parameters.
 | DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✅                            |
 | Protect client config files | no                    | VPN_PROTECT_CONFIG=yes       | ✅                            |
 | Enable/Disable MOBIKE       | Enable if supported   | ❌                           | ✅                            |
-| Client cert validity        | 10 years (120 months) | ❌                           | ✅                            |
+| Client cert validity        | 10 years (120 months) | VPN_CLIENT_VALIDITY\*\*\*\*  | ✅                            |
 | CA & server cert validity   | 10 years (120 months) | ❌                           | ❌                            |
 | CA certificate name         | IKEv2 VPN CA          | ❌                           | ❌                            |
 | Certificate key size        | 3072 bits             | ❌                           | ❌                            |
 
 \* These IKEv2 parameters are for IKEv2 mode.   
 \*\* Define these as environment variables when running vpn(setup).sh, or when setting up IKEv2 in auto mode (`sudo ikev2.sh --auto`).   
-\*\*\* Can be customized during interactive IKEv2 setup (`sudo ikev2.sh`). Refer to option 2 above.
+\*\*\* Can be customized during interactive IKEv2 setup (`sudo ikev2.sh`). Refer to option 2 above.   
+\*\*\*\* Use `VPN_CLIENT_VALIDITY` to specify the client cert validity period in months. Must be an integer between 1 and 120.
 
 In addition to these parameters, advanced users can also [customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets) during VPN setup.
 </details>
