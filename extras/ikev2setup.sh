@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   24 Sept 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   16 Oct 2022
 
 EOF
 }
@@ -278,6 +278,11 @@ check_custom_dns() {
   fi
 }
 
+check_client_validity() {
+  ! { printf '%s' "$1" | LC_ALL=C grep -q '[^0-9]\+' || [ "$1" -lt "1" ] \
+  || [ "$1" -gt "120" ] || [ "$1" != "$((10#$1))" ]; }
+}
+
 check_and_set_client_name() {
   if [ -n "$VPN_CLIENT_NAME" ]; then
     client_name="$VPN_CLIENT_NAME"
@@ -287,6 +292,22 @@ check_and_set_client_name() {
     client_name=vpnclient
   fi
   check_cert_exists "$client_name" && exiterr "Client '$client_name' already exists."
+}
+
+check_and_set_client_validity() {
+  if [ -n "$VPN_CLIENT_VALIDITY" ]; then
+    client_validity="$VPN_CLIENT_VALIDITY"
+    if ! check_client_validity "$client_validity"; then
+cat <<EOF
+WARNING: Invalid client cert validity period. Must be an integer between 1 and 120.
+         Falling back to default validity (120 months).
+EOF
+      VPN_CLIENT_VALIDITY=""
+      client_validity=120
+    fi
+  else
+    client_validity=120
+  fi
 }
 
 set_server_address() {
@@ -331,14 +352,19 @@ EOF
 show_start_setup() {
   op_text=default
   if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] \
-    || [ -n "$VPN_DNS_SRV1" ] || [ -n "$VPN_PROTECT_CONFIG" ]; then
+    || [ -n "$VPN_DNS_SRV1" ] || [ -n "$VPN_PROTECT_CONFIG" ] \
+    || [ -n "$VPN_CLIENT_VALIDITY" ]; then
     op_text=custom
   fi
   bigecho "Starting IKEv2 setup in auto mode, using $op_text options."
 }
 
 show_add_client() {
-  bigecho "Adding a new IKEv2 client '$client_name', using default options."
+  op_text=default
+  if [ -n "$VPN_CLIENT_VALIDITY" ]; then
+    op_text=custom
+  fi
+  bigecho "Adding a new IKEv2 client '$client_name', using $op_text options."
 }
 
 show_export_client() {
@@ -514,13 +540,11 @@ enter_client_name_for() {
 enter_client_validity() {
   echo
   echo "Specify the validity period (in months) for this client certificate."
-  read -rp "Enter a number between 1 and 120: [120] " client_validity
+  read -rp "Enter an integer between 1 and 120: [120] " client_validity
   [ -z "$client_validity" ] && client_validity=120
-  while printf '%s' "$client_validity" | LC_ALL=C grep -q '[^0-9]\+' \
-    || [ "$client_validity" -lt "1" ] || [ "$client_validity" -gt "120" ] \
-    || [ "$client_validity" != "$((10#$client_validity))" ]; do
+  while ! check_client_validity "$client_validity"; do
     echo "Invalid validity period."
-    read -rp "Enter a number between 1 and 120: [120] " client_validity
+    read -rp "Enter an integer between 1 and 120: [120] " client_validity
     [ -z "$client_validity" ] && client_validity=120
   done
 }
@@ -1492,9 +1516,9 @@ ikev2setup() {
   get_export_dir
 
   if [ "$add_client" = 1 ]; then
+    check_and_set_client_validity
     show_header
     show_add_client
-    client_validity=120
     create_client_cert
     export_client_config
     print_client_added
@@ -1639,7 +1663,7 @@ ikev2setup() {
     check_server_dns_name
     check_custom_dns
     check_and_set_client_name
-    client_validity=120
+    check_and_set_client_validity
     show_header
     show_start_setup
     set_server_address

@@ -692,6 +692,7 @@ set_up_ikev2() {
       VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
       VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+      VPN_CLIENT_VALIDITY="$VPN_CLIENT_VALIDITY" \
       /bin/bash /opt/src/ikev2.sh --auto || status=1
     fi
   elif [ -s /opt/src/ikev2.sh ]; then

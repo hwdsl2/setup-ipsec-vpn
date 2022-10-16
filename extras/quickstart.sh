@@ -274,6 +274,7 @@ run_setup() {
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
       VPN_DNS_NAME="$VPN_DNS_NAME" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
       VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+      VPN_CLIENT_VALIDITY="$VPN_CLIENT_VALIDITY" \
       VPN_SKIP_IKEV2="$VPN_SKIP_IKEV2" \
       /bin/bash "$tmpdir/vpn.sh" || status=1
     else
