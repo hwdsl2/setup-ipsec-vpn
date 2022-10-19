@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   16 Oct 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   19 Oct 2022
 
 EOF
 }
@@ -423,12 +423,13 @@ list_existing_clients() {
   printf "%-${max_len}s  %s\n" 'Client Name' 'Certificate Status'
   printf "%-${max_len}s  %s\n" '------------' '-------------------'
   if [ -n "$client_names" ]; then
-    printf '%s\n' "$client_names" | LC_ALL=C sort | while read -r line; do
+    client_list=$(printf '%s\n' "$client_names" | LC_ALL=C sort)
+    while IFS= read -r line; do
       printf "%-${max_len}s  " "$line"
       client_status=$(certutil -V -u C -d "$CERT_DB" -n "$line" | grep -o -e ' valid' -e expired -e revoked | sed -e 's/^ //')
       [ -z "$client_status" ] && client_status=unknown
       printf '%s\n' "$client_status"
-    done
+    done <<< "$client_list"
   fi
   client_count=$(printf '%s\n' "$client_names" | wc -l 2>/dev/null)
   [ -z "$client_names" ] && client_count=0
@@ -706,10 +707,9 @@ EOF
   done
 }
 
-print_server_client_info() {
+print_server_info() {
 cat <<EOF
 VPN server address: $server_addr
-VPN client name: $client_name
 
 EOF
 }
@@ -721,8 +721,10 @@ We are ready to set up IKEv2 now. Below are the setup options you selected.
 
 ======================================
 
+Server address: $server_addr
+Client name: $client_name
+
 EOF
-  print_server_client_info
   if [ "$client_validity" = 1 ]; then
     echo "Client cert valid for: 1 month"
   else
@@ -1278,7 +1280,7 @@ cat <<EOF
 New IKEv2 client "$client_name" added!
 
 EOF
-  print_server_client_info
+  print_server_info
 }
 
 print_client_exported() {
@@ -1290,7 +1292,7 @@ cat <<EOF
 IKEv2 client "$client_name" exported!
 
 EOF
-  print_server_client_info
+  print_server_info
 }
 
 print_client_revoked() {
@@ -1311,8 +1313,10 @@ cat <<EOF
 
 IKEv2 setup successful. Details for IKEv2 mode:
 
+VPN server address: $server_addr
+VPN client name: $client_name
+
 EOF
-  print_server_client_info
 }
 
 print_client_info() {
@@ -1339,10 +1343,14 @@ $p12_password
 Write this down, you'll need it for import!
 EOF
   fi
-cat <<'EOF'
+  config_url="https://vpnsetup.net/clients"
+  if [ "$in_container" = 1 ]; then
+    config_url="${config_url}2"
+  fi
+cat <<EOF
 
 Next steps: Configure IKEv2 clients. See:
-https://vpnsetup.net/clients
+$config_url
 
 ================================================
 
@@ -1425,10 +1433,11 @@ delete_ikev2_conf() {
 delete_certificates() {
   echo
   bigecho "Deleting certificates and keys from the IPsec database..."
-  certutil -L -d "$CERT_DB" | grep -v -e '^$' -e "$CA_NAME" | tail -n +3 | cut -f1 -d ' ' | while read -r line; do
+  cert_list=$(certutil -L -d "$CERT_DB" | grep -v -e '^$' -e "$CA_NAME" | tail -n +3 | cut -f1 -d ' ')
+  while IFS= read -r line; do
     certutil -F -d "$CERT_DB" -n "$line"
     certutil -D -d "$CERT_DB" -n "$line" 2>/dev/null
-  done
+  done <<< "$cert_list"
   crlutil -D -d "$CERT_DB" -n "$CA_NAME" 2>/dev/null
   certutil -F -d "$CERT_DB" -n "$CA_NAME"
   certutil -D -d "$CERT_DB" -n "$CA_NAME" 2>/dev/null
