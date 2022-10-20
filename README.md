@@ -26,7 +26,16 @@ Your VPN login details will be randomly generated, and displayed when finished.
 
 <details>
 <summary>
-Alternative one-liner.
+See the script in action (terminal recording).
+</summary>
+
+**Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
+
+<p align="center"><img src="docs/images/script-demo.svg"></p>
+</details>
+<details>
+<summary>
+Click here if you are unable to download.
 </summary>
 
 You may also use `curl` to download:
@@ -43,15 +52,6 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ```
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
-</details>
-<details>
-<summary>
-See the VPN script in action (terminal recording).
-</summary>
-
-**Note:** This recording is for demo purposes only. VPN credentials in this recording are **NOT** valid.
-
-<p align="center"><img src="docs/images/script-demo.svg"></p>
 </details>
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
@@ -302,7 +302,7 @@ wget https://get.vpnsetup.net/upg -O vpnup.sh && sudo sh vpnup.sh
 
 <details>
 <summary>
-Alternative one-liner.
+Click here if you are unable to download.
 </summary>
 
 You may also use `curl` to download:
@@ -361,7 +361,7 @@ wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
 
 <details>
 <summary>
-Alternative commands.
+Click here if you are unable to download.
 </summary>
 
 You may also use `curl` to download:

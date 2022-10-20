@@ -17,7 +17,7 @@ wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
 
 <details>
 <summary>
-Alternative commands.
+Click here if you are unable to download.
 </summary>
 
 You may also use `curl` to download:
