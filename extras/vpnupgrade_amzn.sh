@@ -52,7 +52,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=4.7
+  swan_ver_cur=4.9
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-amzn-2-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -63,6 +63,9 @@ get_swan_ver() {
 }
 
 check_swan_ver() {
+  if [ "$SWAN_VER" = "4.8" ]; then
+    exiterr "Libreswan version 4.8 is not supported."
+  fi
   if [ "$SWAN_VER" != "3.32" ] \
     && { ! printf '%s\n%s' "4.1" "$SWAN_VER" | sort -C -V \
     || ! printf '%s\n%s' "$SWAN_VER" "$swan_ver_cur" | sort -C -V; }; then
@@ -156,14 +159,18 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
+USE_DH2=true
 EOF
-  echo "USE_DH2=true" >> Makefile.inc.local
+  if [ "$SWAN_VER" != "3.32" ]; then
+cat >> Makefile.inc.local <<'EOF'
+USE_NSS_KDF=false
+USE_LINUX_AUDIT=false
+USE_SECCOMP=false
+FINALNSSDIR=/etc/ipsec.d
+EOF
+  fi
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
     echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
-  fi
-  if [ "$SWAN_VER" != "3.32" ]; then
-    echo "USE_NSS_KDF=false" >> Makefile.inc.local
-    echo "FINALNSSDIR=/etc/ipsec.d" >> Makefile.inc.local
   fi
   NPROCS=$(grep -c ^processor /proc/cpuinfo)
   [ -z "$NPROCS" ] && NPROCS=1
