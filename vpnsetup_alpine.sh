@@ -230,7 +230,7 @@ get_helper_scripts() {
 }
 
 get_swan_ver() {
-  SWAN_VER=4.7
+  SWAN_VER=4.9
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -284,7 +284,6 @@ WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 USE_DH2=true
 FINALNSSDIR=/etc/ipsec.d
-USE_GLIBC_KERN_FLIP_HEADERS=true
 EOF
     NPROCS=$(grep -c ^processor /proc/cpuinfo)
     [ -z "$NPROCS" ] && NPROCS=1

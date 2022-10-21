@@ -350,7 +350,7 @@ get_helper_scripts() {
 }
 
 get_swan_ver() {
-  SWAN_VER=4.7
+  SWAN_VER=4.9
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -404,6 +404,8 @@ WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 USE_DH2=true
 USE_NSS_KDF=false
+USE_LINUX_AUDIT=false
+USE_SECCOMP=false
 FINALNSSDIR=/etc/ipsec.d
 EOF
     if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
