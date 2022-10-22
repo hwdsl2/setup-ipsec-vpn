@@ -262,18 +262,18 @@ install_vpn_pkgs() {
 
 install_nss_pkgs() {
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
-    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
-    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
+  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
+    && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
+    base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
     nss_deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
     bigecho "Installing NSS packages on Ubuntu 18.04..."
     if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
       nss_dl=0
-      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$nss_url1/$nss_deb1" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$nss_url1/$nss_deb2" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$nss_url2/$nss_deb3"; then
+      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$base_url/$nss_deb1" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$base_url/$nss_deb2" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$base_url/$nss_deb3"; then
         apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
       else
         nss_dl=1

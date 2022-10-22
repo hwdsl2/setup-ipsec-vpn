@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   19 Oct 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   21 Oct 2022
 
 EOF
 }
@@ -1193,23 +1193,30 @@ EOF
 
 apply_ubuntu1804_nss_fix() {
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ]; then
-    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
-    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
+  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
+    && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
+    base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
     nss_deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
     nss_deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
     nss_deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
+    bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
     if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
-      bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
       export DEBIAN_FRONTEND=noninteractive
-      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$nss_url1/$nss_deb1" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$nss_url1/$nss_deb2" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$nss_url2/$nss_deb3"; then
+      nss_dl=0
+      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$base_url/$nss_deb1" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$base_url/$nss_deb2" \
+        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$base_url/$nss_deb3"; then
         apt-get -yqq update || apt-get -yqq update
         apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
+      else
+        nss_dl=1
+        echo "Error: Could not download NSS packages." >&2
       fi
       /bin/rm -f "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb"
       /bin/rmdir "$tmpdir"
+      [ "$nss_dl" = 1 ] && exit 1
+    else
+      exiterr "Could not create temporary directory."
     fi
   fi
 }
