@@ -67,7 +67,7 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 #### Manually import configuration
 
-[**Screencast:** IKEv2 Manually Import Configuration on Windows (supporters)](https://ko-fi.com/post/Video-IKEv2-Manually-Import-Configuration-H2H1DS8SV)
+[**Screencast:** IKEv2 Manually Import Configuration on Windows (supporters)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
@@ -146,7 +146,7 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 ### OS X (macOS)
 
-[**Screencast:** IKEv2 Import Configuration and Connect on macOS (supporters)](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-m-X8X7F38K1)
+[**Screencast:** IKEv2 Import Configuration and Connect on macOS (supporters)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
@@ -202,7 +202,7 @@ To remove the IKEv2 VPN connection, open System Preferences -> Profiles and remo
 
 ### iOS
 
-[**Screencast:** IKEv2 Import Configuration and Connect on iOS (iPhone & iPad) (supporters)](https://ko-fi.com/post/Video-IKEv2-Import-Configuration-and-Connect-on-i-T6T1F38M7)
+[**Screencast:** IKEv2 Import Configuration and Connect on iOS (iPhone & iPad) (supporters)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
 
@@ -262,7 +262,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 ### Android
 
-[**Screencast:** Connect using Android strongSwan VPN Client (supporters)](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Android-strongSwan-V-D1D3F2ITM)
+[**Screencast:** Connect using Android strongSwan VPN Client (supporters)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 1. Securely transfer the generated `.sswan` file to your Android device.
 1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
@@ -280,7 +280,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 Alternatively, Android 11+ users can also connect using the native IKEv2 client.
 </summary>
 
-[**Screencast:** Connect using Native VPN Client on Android 11+ (supporters)](https://ko-fi.com/post/Video-Connect-to-IKEv2-using-Native-VPN-Client-on-F1F3F2IYW)
+[**Screencast:** Connect using Native VPN Client on Android 11+ (supporters)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 1. Securely transfer the generated `.p12` file to your Android device.
 1. Launch the **Settings** application.
