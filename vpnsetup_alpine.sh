@@ -208,25 +208,37 @@ install_fail2ban() {
   )
 }
 
-get_helper_scripts() {
-  bigecho "Downloading helper scripts..."
-  base1="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
-  base2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
+link_scripts() {
   cd /opt/src || exit 1
-  printf '%s' "+ "
+  /bin/mv -f ikev2setup.sh ikev2.sh
+  /bin/mv -f add_vpn_user.sh addvpnuser.sh
+  /bin/mv -f del_vpn_user.sh delvpnuser.sh
+  echo "+ ikev2.sh addvpnuser.sh delvpnuser.sh"
   for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
-    [ "$sc" = "ikev2.sh" ] && dl1="$base1/ikev2setup.sh" \
-      && dl2="$base2/ikev2setup.sh"
-    [ "$sc" = "addvpnuser.sh" ] && dl1="$base1/add_vpn_user.sh" \
-      && dl2="$base2/add_vpn_user.sh"
-    [ "$sc" = "delvpnuser.sh" ] && dl1="$base1/del_vpn_user.sh" \
-      && dl2="$base2/del_vpn_user.sh"
-    printf '%s' "$sc "
-    wget -t 3 -T 30 -q -O "$sc" "$dl1" || wget -t 3 -T 30 -q -O "$sc" "$dl2" \
-      || /bin/rm -f "$sc"
     [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
   done
-  echo
+}
+
+get_helper_scripts() {
+  bigecho "Downloading helper scripts..."
+  base1="https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras"
+  base2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
+  sc1=ikev2setup.sh
+  sc2=add_vpn_user.sh
+  sc3=del_vpn_user.sh
+  cd /opt/src || exit 1
+  /bin/rm -f "$sc1" "$sc2" "$sc3"
+  if wget -t 3 -T 30 -q "$base1/$sc1" "$base1/$sc2" "$base1/$sc3"; then
+    link_scripts
+  else
+    /bin/rm -f "$sc1" "$sc2" "$sc3"
+    if wget -t 3 -T 30 -q "$base2/$sc1" "$base2/$sc2" "$base2/$sc3"; then
+      link_scripts
+    else
+      echo "Warning: Could not download helper scripts." >&2
+      /bin/rm -f "$sc1" "$sc2" "$sc3"
+    fi
+  fi
 }
 
 get_swan_ver() {

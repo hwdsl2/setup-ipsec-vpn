@@ -176,26 +176,28 @@ install_nss_pkgs() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
     && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
     base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
-    nss_deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
-    nss_deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
-    nss_deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
+    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
+    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
+    deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
+    deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
+    deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
     bigecho "Installing NSS packages on Ubuntu 18.04..."
-    if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
-      nss_dl=0
-      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$base_url/$nss_deb1" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$base_url/$nss_deb2" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$base_url/$nss_deb3"; then
-        apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
+    cd /opt/src || exit 1
+    nss_dl=0
+    /bin/rm -f "$deb1" "$deb2" "$deb3"
+    if wget -t 3 -T 30 -q "$base_url/$deb1" "$base_url/$deb2" "$base_url/$deb3"; then
+      apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
+    else
+      /bin/rm -f "$deb1" "$deb2" "$deb3"
+      if wget -t 3 -T 30 -q "$nss_url1/$deb1" "$nss_url1/$deb2" "$nss_url2/$deb3"; then
+        apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
       else
         nss_dl=1
         echo "Error: Could not download NSS packages." >&2
       fi
-      /bin/rm -f "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb"
-      /bin/rmdir "$tmpdir"
-      [ "$nss_dl" = 1 ] && exit 1
-    else
-      exiterr "Could not create temporary directory."
     fi
+    /bin/rm -f "$deb1" "$deb2" "$deb3"
+    [ "$nss_dl" = 1 ] && exit 1
   fi
 }
 

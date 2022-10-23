@@ -265,26 +265,28 @@ install_nss_pkgs() {
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
     && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
     base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
-    nss_deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
-    nss_deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
-    nss_deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
+    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
+    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
+    deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
+    deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
+    deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
     bigecho "Installing NSS packages on Ubuntu 18.04..."
-    if tmpdir=$(mktemp --tmpdir -d vpn.XXXXX 2>/dev/null); then
-      nss_dl=0
-      if wget -t 3 -T 30 -q -O "$tmpdir/1.deb" "$base_url/$nss_deb1" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/2.deb" "$base_url/$nss_deb2" \
-        && wget -t 3 -T 30 -q -O "$tmpdir/3.deb" "$base_url/$nss_deb3"; then
-        apt-get -yqq install "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb" >/dev/null
+    cd /opt/src || exit 1
+    nss_dl=0
+    /bin/rm -f "$deb1" "$deb2" "$deb3"
+    if wget -t 3 -T 30 -q "$base_url/$deb1" "$base_url/$deb2" "$base_url/$deb3"; then
+      apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
+    else
+      /bin/rm -f "$deb1" "$deb2" "$deb3"
+      if wget -t 3 -T 30 -q "$nss_url1/$deb1" "$nss_url1/$deb2" "$nss_url2/$deb3"; then
+        apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
       else
         nss_dl=1
         echo "Error: Could not download NSS packages." >&2
       fi
-      /bin/rm -f "$tmpdir/1.deb" "$tmpdir/2.deb" "$tmpdir/3.deb"
-      /bin/rmdir "$tmpdir"
-      [ "$nss_dl" = 1 ] && exit 1
-    else
-      exiterr "Could not create temporary directory."
     fi
+    /bin/rm -f "$deb1" "$deb2" "$deb3"
+    [ "$nss_dl" = 1 ] && exit 1
   fi
 }
 
@@ -296,25 +298,37 @@ install_fail2ban() {
   )
 }
 
-get_helper_scripts() {
-  bigecho "Downloading helper scripts..."
-  base1="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras"
-  base2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
+link_scripts() {
   cd /opt/src || exit 1
-  printf '%s' "+ "
+  /bin/mv -f ikev2setup.sh ikev2.sh
+  /bin/mv -f add_vpn_user.sh addvpnuser.sh
+  /bin/mv -f del_vpn_user.sh delvpnuser.sh
+  echo "+ ikev2.sh addvpnuser.sh delvpnuser.sh"
   for sc in ikev2.sh addvpnuser.sh delvpnuser.sh; do
-    [ "$sc" = "ikev2.sh" ] && dl1="$base1/ikev2setup.sh" \
-      && dl2="$base2/ikev2setup.sh"
-    [ "$sc" = "addvpnuser.sh" ] && dl1="$base1/add_vpn_user.sh" \
-      && dl2="$base2/add_vpn_user.sh"
-    [ "$sc" = "delvpnuser.sh" ] && dl1="$base1/del_vpn_user.sh" \
-      && dl2="$base2/del_vpn_user.sh"
-    printf '%s' "$sc "
-    wget -t 3 -T 30 -q -O "$sc" "$dl1" || wget -t 3 -T 30 -q -O "$sc" "$dl2" \
-      || /bin/rm -f "$sc"
     [ -s "$sc" ] && chmod +x "$sc" && ln -s "/opt/src/$sc" /usr/bin 2>/dev/null
   done
-  echo
+}
+
+get_helper_scripts() {
+  bigecho "Downloading helper scripts..."
+  base1="https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras"
+  base2="https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras"
+  sc1=ikev2setup.sh
+  sc2=add_vpn_user.sh
+  sc3=del_vpn_user.sh
+  cd /opt/src || exit 1
+  /bin/rm -f "$sc1" "$sc2" "$sc3"
+  if wget -t 3 -T 30 -q "$base1/$sc1" "$base1/$sc2" "$base1/$sc3"; then
+    link_scripts
+  else
+    /bin/rm -f "$sc1" "$sc2" "$sc3"
+    if wget -t 3 -T 30 -q "$base2/$sc1" "$base2/$sc2" "$base2/$sc3"; then
+      link_scripts
+    else
+      echo "Warning: Could not download helper scripts." >&2
+      /bin/rm -f "$sc1" "$sc2" "$sc3"
+    fi
+  fi
 }
 
 get_swan_ver() {
