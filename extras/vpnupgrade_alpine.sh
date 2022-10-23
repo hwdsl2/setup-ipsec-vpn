@@ -199,7 +199,7 @@ EOF
 update_ikev2_script() {
   bigecho "Updating IKEv2 script..."
   cd /opt/src || exit 1
-  ikev2_url="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh"
+  ikev2_url="https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/extras/ikev2setup.sh"
   (
     set -x
     wget -t 3 -T 30 -q -O ikev2.sh.new "$ikev2_url"
