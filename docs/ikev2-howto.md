@@ -38,7 +38,7 @@ Like this project? You can show your support or appreciation.
 
 <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;&nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
 
-Supporter-only content is available. [Click to see details](https://ko-fi.com/hwdsl2).
+Supporter-only content is available. [Click to see details](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 </details>
 <details>
 <summary>
