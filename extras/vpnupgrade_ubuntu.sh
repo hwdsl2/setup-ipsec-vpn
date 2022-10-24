@@ -41,6 +41,7 @@ check_vz() {
 
 check_os() {
   os_type=$(lsb_release -si 2>/dev/null)
+  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
   case $os_type in
     [Uu]buntu)
@@ -59,6 +60,14 @@ check_os() {
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
   if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
     exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
+  fi
+  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] \
+    && [ "$os_arch" != "x86_64" ]; then
+cat 1>&2 <<EOF
+Error: For Ubuntu 18.04, this script supports only the x86_64 architecture.
+       This system runs on $os_arch and is unsupported.
+EOF
+    exit 1
   fi
 }
 
@@ -172,7 +181,6 @@ install_pkgs() {
 }
 
 install_nss_pkgs() {
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
     && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
     base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
