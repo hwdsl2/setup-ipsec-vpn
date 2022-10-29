@@ -63,7 +63,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - 全自动的 IPsec VPN 服务器配置，无需用户输入
 - 支持具有强大和快速加密算法（例如 AES-GCM）的 IKEv2 模式
 - 生成 VPN 配置文件以自动配置 iOS, macOS 和 Android 设备
-- 支持 Windows, macOS, iOS, Android 和 Linux 作为 VPN 客户端
+- 支持 Windows, macOS, iOS, Android, Chrome OS 和 Linux 客户端
 - 包括辅助脚本以管理 VPN 用户和证书
 
 ## 系统要求

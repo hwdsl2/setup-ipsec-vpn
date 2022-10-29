@@ -10,7 +10,7 @@ After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn
   * [OS X (macOS)](#os-x)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
-  * [Chromebook](#chromebook)
+  * [Chrome OS (Chromebook)](#chrome-os)
   * [Linux](#linux)
 * [Troubleshooting](#troubleshooting)
 
@@ -193,19 +193,21 @@ Once connected, you will see a VPN icon in the status bar. You can verify that y
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
-## Chromebook
+## Chrome OS
 
-1. If you haven't already, sign in to your Chromebook.
-1. Click the status area, where your account picture appears.
-1. Click **Settings**.
-1. In the **Internet connection** section, click **Add connection**.
-1. Click **Add OpenVPN / L2TP**.
-1. Enter `Your VPN Server IP` for the **Server hostname**.
+> You may also connect using [IKEv2](ikev2-howto.md) mode (recommended).
+
+1. Go to Settings -> Network.
+1. Click **Add connection**, then click **Add built-in VPN**.
 1. Enter anything you like for the **Service name**.
-1. Make sure **Provider type** is **L2TP/IPSec + pre-shared key**.
-1. Enter `Your VPN IPsec PSK` for the **Pre-shared key**.
+1. Select **L2TP/IPsec** in the **Provider type** drop-down menu.
+1. Enter `Your VPN Server IP` for the **Server hostname**.
+1. Select **Pre-shared key** in the **Authentication type** drop-down menu.
 1. Enter `Your VPN Username` for the **Username**.
 1. Enter `Your VPN Password` for the **Password**.
+1. Enter `Your VPN IPsec PSK` for the **Pre-shared key**.
+1. Leave other fields blank.
+1. Enable **Save identity and password**.
 1. Click **Connect**.
 
 Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".

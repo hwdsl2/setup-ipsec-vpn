@@ -16,7 +16,7 @@
 
 Modern operating systems support the IKEv2 standard. Internet Key Exchange (IKE or IKEv2) is the protocol used to set up a Security Association (SA) in the IPsec protocol suite. Compared to IKE version 1, IKEv2 contains [improvements](https://en.wikipedia.org/wiki/Internet_Key_Exchange#Improvements_with_IKEv2) such as Standard Mobility support through MOBIKE, and improved reliability.
 
-Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with Windows, macOS, iOS, Android, Linux and RouterOS.
+Libreswan can authenticate IKEv2 clients on the basis of X.509 Machine Certificates using RSA signatures. This method does not require an IPsec PSK, username or password. It can be used with Windows, macOS, iOS, Android, Chrome OS, Linux and RouterOS.
 
 By default, IKEv2 is automatically set up when running the VPN setup script. If you want to learn more about setting up IKEv2, see [Set up IKEv2 using helper script](#set-up-ikev2-using-helper-script). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
 
@@ -28,6 +28,7 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [OS X (macOS)](#os-x-macos)
 * [iOS (iPhone/iPad)](#ios)
 * [Android](#android)
+* [Chrome OS (Chromebook)](#chrome-os)
 * [Linux](#linux)
 * [Mikrotik RouterOS](#routeros)
 
@@ -61,7 +62,7 @@ In certain circumstances, you may need to change the IKEv2 server address. For e
 1. Right-click on the saved script, select **Properties**. Click on **Unblock** at the bottom, then click on **OK**.
 1. Right-click on the saved script, select **Run as administrator** and follow the prompts.
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -114,7 +115,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
      REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
      ```
 
-To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -188,7 +189,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Click **Connect**.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -248,7 +249,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 1. Slide the **VPN** switch ON.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -351,7 +352,49 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 1. Save the new VPN connection, then tap to connect.
 </details>
 
-Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+
+### Chrome OS
+
+First, on your VPN server, export the CA certificate as `ikev2vpnca.cer`:
+
+```bash
+sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
+```
+
+Securely transfer the generated `.p12` and `ikev2vpnca.cer` files to your Chrome OS device.
+
+Install user and CA certificates:
+
+1. Open a new tab in Google Chrome.
+1. In the address bar, enter **chrome://settings/certificates**
+1. **(Important)** Click **Import and Bind**, not **Import**.
+1. In the box that opens, choose the `.p12` file you transferred from the VPN server and select **Open**.
+1. Click **OK** if the certificate does not have a password. Otherwise, enter the certificate's password.
+1. Click the **Authorities** tab. Then click **Import**.
+1. In the box that opens, select **All files** in the drop-down menu at the bottom left.
+1. Choose the `ikev2vpnca.cer` file you transferred from the VPN server and select **Open**.
+1. Keep the default options and click **OK**.
+
+Add a new VPN connection:
+
+1. Go to Settings -> Network.
+1. Click **Add connection**, then click **Add built-in VPN**.
+1. Enter anything you like for the **Service name**.
+1. Select **IPsec (IKEv2)** in the **Provider type** drop-down menu.
+1. Enter `Your VPN Server IP` (or DNS name) for the **Server hostname**.
+1. Select **User certificate** in the **Authentication type** drop-down menu.
+1. Select **IKEv2 VPN CA [IKEv2 VPN CA]** in the **Server CA certificate** drop-down menu.
+1. Select **IKEv2 VPN CA [client name]** in the **User certificate** drop-down menu.
+1. Leave other fields blank.
+1. Enable **Save identity and password**.
+1. Click **Connect**.
+
+Once connected, you will see a VPN icon overlay on the network status icon. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+
+(Optional feature) You can choose to enable the "Always-on VPN" feature on Chrome OS. To manage this setting, go to Settings -> Network, then click **VPN**.
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 
@@ -415,7 +458,7 @@ You can then set up and enable the VPN connection:
 1. Click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
-Once successfully connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
 

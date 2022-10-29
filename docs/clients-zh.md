@@ -10,7 +10,7 @@
   * [OS X (macOS)](#os-x)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
-  * [Chromebook](#chromebook)
+  * [Chrome OS (Chromebook)](#chrome-os)
   * [Linux](#linux)
 * [故障排除](#故障排除)
 
@@ -170,7 +170,7 @@ Docker 用户：在 [你的 env 文件](https://github.com/hwdsl2/docker-ipsec-v
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -190,26 +190,28 @@ VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](
 1. 单击右上角的 **完成**。
 1. 启用 **VPN** 连接。
 
-VPN 连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
-## Chromebook
+## Chrome OS
 
-1. 如果你尚未登录 Chromebook，请先登录。
-1. 单击状态区（其中显示你的帐户头像）。
-1. 单击 **设置**。
-1. 在 **互联网连接** 部分，单击 **添加连接**。
-1. 单击 **添加 OpenVPN / L2TP**。
-1. 在 **服务器主机名** 字段中输入`你的 VPN 服务器 IP`。
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
+
+1. 进入设置 -> 网络。
+1. 单击 **添加连接**，然后单击 **添加内置 VPN**。
 1. 在 **服务名称** 字段中输入任意内容。
-1. 在 **供应商类型** 下拉菜单选择 **L2TP/IPsec + 预共享密钥**。
-1. 在 **预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
+1. 在 **提供商类型** 下拉菜单选择 **L2TP/IPsec**。
+1. 在 **服务器主机名** 字段中输入`你的 VPN 服务器 IP`。
+1. 在 **身份验证类型** 下拉菜单选择 **预共享密钥**。
 1. 在 **用户名** 字段中输入`你的 VPN 用户名`。
 1. 在 **密码** 字段中输入`你的 VPN 密码`。
+1. 在 **预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
+1. 保持其他字段空白。
+1. 启用 **保存身份信息和密码**。
 1. 单击 **连接**。
 
-VPN 连接成功后，网络状态图标上会出现 VPN 指示。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，网络状态图标上会出现 VPN 指示。你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
 
@@ -241,7 +243,7 @@ Ubuntu 18.04 和更新版本用户可以使用 `apt` 安装 [network-manager-l2t
 
 如果在连接过程中遇到错误，请尝试 [这个解决方案](https://github.com/nm-l2tp/NetworkManager-l2tp/blob/2926ea0239fe970ff08cb8a7863f8cb519ece032/README.md#unable-to-establish-l2tp-connection-without-udp-source-port-1701)。
 
-VPN 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### Fedora 和 CentOS
 
