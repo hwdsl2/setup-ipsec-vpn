@@ -225,7 +225,7 @@ To connect to the VPN:
 If you manually set up IKEv2 without using the helper script, click here for instructions.
 </summary>
 
-First, securely transfer the generated `ikev2vpnca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
+First, securely transfer the generated `ca.cer` and `.p12` files to your iOS device, then import them one by one as iOS profiles. To transfer the files, you may use:
 
 1. AirDrop, or
 1. Upload to your device (any App folder) using [File Sharing](https://support.apple.com/en-us/HT210598), then open the "Files" App on your iOS device, move the uploaded files to the "On My iPhone" folder. After that, tap each file and go to the "Settings" App to import, or
@@ -358,13 +358,13 @@ If you get an error when trying to connect, see [Troubleshooting](#troubleshooti
 
 ### Chrome OS
 
-First, on your VPN server, export the CA certificate as `ikev2vpnca.cer`:
+First, on your VPN server, export the CA certificate as `ca.cer`:
 
 ```bash
-sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
+sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ca.cer
 ```
 
-Securely transfer the generated `.p12` and `ikev2vpnca.cer` files to your Chrome OS device.
+Securely transfer the generated `.p12` and `ca.cer` files to your Chrome OS device.
 
 Install user and CA certificates:
 
@@ -375,7 +375,7 @@ Install user and CA certificates:
 1. Click **OK** if the certificate does not have a password. Otherwise, enter the certificate's password.
 1. Click the **Authorities** tab. Then click **Import**.
 1. In the box that opens, select **All files** in the drop-down menu at the bottom left.
-1. Choose the `ikev2vpnca.cer` file you transferred from the VPN server and select **Open**.
+1. Choose the `ca.cer` file you transferred from the VPN server and select **Open**.
 1. Keep the default options and click **OK**.
 
 Add a new VPN connection:
@@ -429,15 +429,15 @@ Next, securely transfer the generated `.p12` file from the VPN server to your Li
 # Note: You may need to enter the import password, which can be found
 #       in the output of the IKEv2 helper script. If the output does not
 #       contain an import password, press Enter to continue.
-openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
-openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
-openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
+openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ca.cer
+openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out client.cer
+openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out client.key
 rm vpnclient.p12
 
 # (Important) Protect certificate and private key files
 # Note: This step is optional, but strongly recommended.
-sudo chown root.root ikev2vpnca.cer vpnclient.cer vpnclient.key
-sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
+sudo chown root.root ca.cer client.cer client.key
+sudo chmod 600 ca.cer client.cer client.key
 ```
 
 You can then set up and enable the VPN connection:
@@ -446,11 +446,11 @@ You can then set up and enable the VPN connection:
 1. Select **IPsec/IKEv2 (strongswan)**.
 1. Enter anything you like in the **Name** field.
 1. In the **Gateway (Server)** section, enter `Your VPN Server IP` (or DNS name) for the **Address**.
-1. Select the `ikev2vpnca.cer` file for the **Certificate**.
+1. Select the `ca.cer` file for the **Certificate**.
 1. In the **Client** section, select **Certificate(/private key)** in the **Authentication** drop-down menu.
 1. Select **Certificate/private key** in the **Certificate** drop-down menu (if exists).
-1. Select the `vpnclient.cer` file for the **Certificate (file)**.
-1. Select the `vpnclient.key` file for the **Private key**.
+1. Select the `client.cer` file for the **Certificate (file)**.
+1. Select the `client.key` file for the **Private key**.
 1. In the **Options** section, check the **Request an inner IP address** checkbox.
 1. In the **Cipher proposals (Algorithms)** section, check the **Enable custom proposals** checkbox.
 1. Leave the **IKE** field blank.
@@ -552,7 +552,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 
 ### Cannot connect to the VPN server
 
-First, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script.
+First, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. Refer to the sections below and [Check logs and VPN status](clients.md#check-logs-and-vpn-status).
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
@@ -1078,10 +1078,10 @@ View example steps for manually configuring IKEv2 with Libreswan.
 
    Enter a secure password to protect the exported `.p12` file (when importing into an iOS or macOS device, this password cannot be empty).
 
-1. (For iOS clients) Export the CA certificate as `ikev2vpnca.cer`:
+1. (For iOS clients) Export the CA certificate as `ca.cer`:
 
    ```bash
-   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ca.cer
    ```
 
 1. The database should now contain:

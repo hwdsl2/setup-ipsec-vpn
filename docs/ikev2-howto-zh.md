@@ -225,7 +225,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
 </summary>
 
-首先，将生成的 `ikev2vpnca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
+首先，将生成的 `ca.cer` 和 `.p12` 文件安全地传送到你的 iOS 设备，并且逐个导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
 1. AirDrop（隔空投送），或者
 1. 使用 [文件共享](https://support.apple.com/zh-cn/HT210598) 功能上传到设备（任何 App 目录），然后打开 iOS 设备上的 "文件" App，将上传的文件移动到 "On My iPhone" 目录下。然后逐个单击它们并到 "设置" App 中导入，或者
@@ -358,13 +358,13 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### Chrome OS
 
-首先，在 VPN 服务器上导出 CA 证书到 `ikev2vpnca.cer`：
+首先，在 VPN 服务器上导出 CA 证书到 `ca.cer`：
 
 ```bash
-sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
+sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ca.cer
 ```
 
-将生成的 `.p12` 文件和 `ikev2vpnca.cer` 文件安全地传送到你的 Chrome OS 设备。
+将生成的 `.p12` 文件和 `ca.cer` 文件安全地传送到你的 Chrome OS 设备。
 
 安装用户证书和 CA 证书：
 
@@ -375,7 +375,7 @@ sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
 1. 如果证书没有密码，单击 **确定**。否则输入该证书的密码。
 1. 单击上面的 **授权机构** 选项卡，然后单击 **导入**。
 1. 在对话框中左下角的下拉菜单选择 **所有文件**。
-1. 选择你从服务器传送过来的 `ikev2vpnca.cer` 文件并选择 **打开**。
+1. 选择你从服务器传送过来的 `ca.cer` 文件并选择 **打开**。
 1. 保持默认选项并单击 **确定**。
 
 添加 VPN 连接：
@@ -427,15 +427,15 @@ sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 # 示例：提取 CA 证书，客户端证书和私钥。在完成后可以删除 .p12 文件。
 # 注：你可能需要输入 import password，它可以在 IKEv2 辅助脚本的输出中找到。
 #    如果在脚本的输出中没有 import password，请按回车键继续。
-openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ikev2vpnca.cer
-openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out vpnclient.cer
-openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out vpnclient.key
+openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ca.cer
+openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out client.cer
+openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out client.key
 rm vpnclient.p12
 
 # （重要）保护证书和私钥文件
 # 注：这一步是可选的，但强烈推荐。
-sudo chown root.root ikev2vpnca.cer vpnclient.cer vpnclient.key
-sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
+sudo chown root.root ca.cer client.cer client.key
+sudo chmod 600 ca.cer client.cer client.key
 ```
 
 然后你可以创建并启用 VPN 连接：
@@ -444,11 +444,11 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 1. 选择 **IPsec/IKEv2 (strongswan)**。
 1. 在 **Name** 字段中输入任意内容。
 1. 在 **Gateway (Server)** 部分的 **Address** 字段中输入 `你的 VPN 服务器 IP`（或者域名）。
-1. 为 **Certificate** 字段选择 `ikev2vpnca.cer` 文件。
+1. 为 **Certificate** 字段选择 `ca.cer` 文件。
 1. 在 **Client** 部分的 **Authentication** 下拉菜单选择 **Certificate(/private key)**。
 1. 在 **Certificate** 下拉菜单（如果存在）选择 **Certificate/private key**。
-1. 为 **Certificate (file)** 字段选择 `vpnclient.cer` 文件。
-1. 为 **Private key** 字段选择 `vpnclient.key` 文件。
+1. 为 **Certificate (file)** 字段选择 `client.cer` 文件。
+1. 为 **Private key** 字段选择 `client.key` 文件。
 1. 在 **Options** 部分，选中 **Request an inner IP address** 复选框。
 1. 在 **Cipher proposals (Algorithms)** 部分，选中 **Enable custom proposals** 复选框。
 1. 保持 **IKE** 字段空白。
@@ -550,7 +550,7 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 ### 无法连接到 VPN 服务器
 
-首先，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。
+首先，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。参见下面的小节以及 [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
@@ -1076,10 +1076,10 @@ To customize IKEv2 or client options, run this script without arguments.
 
    指定一个安全的密码以保护导出的 `.p12` 文件（在导入到 iOS 或 macOS 设备时，该密码不能为空）。
 
-1. （适用于 iOS 客户端） 导出 CA 证书到 `ikev2vpnca.cer`：
+1. （适用于 iOS 客户端） 导出 CA 证书到 `ca.cer`：
 
    ```bash
-   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ikev2vpnca.cer
+   certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ca.cer
    ```
 
 1. 证书数据库现在应该包含以下内容：
