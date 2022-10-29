@@ -424,7 +424,9 @@ service xl2tpd restart
 
 **Docker users:** Run `docker restart ipsec-vpn-server`.
 
-Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection. Make sure that the VPN credentials are entered correctly.
+Then reboot your VPN client device, and retry the connection. If still unable to connect, try removing and recreating the VPN connection. Make sure that the VPN server address and VPN credentials are entered correctly.
+
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN.
 
 Check the Libreswan (IPsec) and xl2tpd logs for errors:
 

@@ -497,12 +497,19 @@ sudo chmod 600 ikev2vpnca.cer vpnclient.cer vpnclient.key
 
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
+* [无法连接到 VPN 服务器](#无法连接到-vpn-服务器)
 * [无法连接多个 IKEv2 客户端](#无法连接多个-ikev2-客户端)
 * [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
 * [参数错误 policy match error](#参数错误-policy-match-error)
 * [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [其它已知问题](#其它已知问题)
+
+### 无法连接到 VPN 服务器
+
+首先，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。
+
+对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
 ### 无法连接多个 IKEv2 客户端
 

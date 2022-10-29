@@ -499,12 +499,19 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
 
+* [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
 * [Policy match error](#policy-match-error)
 * [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
 * [Windows 10 connecting](#windows-10-connecting)
 * [Other known issues](#other-known-issues)
+
+### Cannot connect to the VPN server
+
+First, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script.
+
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
 ### Unable to connect multiple IKEv2 clients
 
