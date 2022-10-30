@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   22 Oct 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   30 Oct 2022
 
 EOF
 }
@@ -932,8 +932,22 @@ cat > "$mc_file" <<EOF
         <key>OnDemandRules</key>
         <array>
           <dict>
-          <key>Action</key>
-          <string>Connect</string>
+            <key>InterfaceTypeMatch</key>
+            <string>WiFi</string>
+            <key>URLStringProbe</key>
+            <string>http://captive.apple.com/hotspot-detect.html</string>
+            <key>Action</key>
+            <string>Connect</string>
+          </dict>
+          <dict>
+            <key>InterfaceTypeMatch</key>
+            <string>Cellular</string>
+            <key>Action</key>
+            <string>Disconnect</string>
+          </dict>
+          <dict>
+            <key>Action</key>
+            <string>Ignore</string>
           </dict>
         </array>
         <key>RemoteAddress</key>
