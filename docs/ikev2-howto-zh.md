@@ -158,7 +158,9 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **连接**。
 
-（可选功能）你可以选择启用 [VPN On Demand（按需连接）](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules) ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。
+（可选功能）启用 **VPN On Demand（按需连接）** 以在你的 Mac 连接到 Wi-Fi 时自动启动 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络）。参见：
+
+[**指南：** 为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则（支持者）](https://ko-fi.com/post/Guide-Customize-IKEv2-VPN-On-Demand-rules-for-mac-H2H7G61WH)
 
 <details>
 <summary>
@@ -218,7 +220,9 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 进入设置 -> VPN。选择与 `你的 VPN 服务器 IP`（或者域名）对应的 VPN 连接。
 1. 启用 **VPN** 连接。
 
-（可选功能）你可以选择启用 [VPN On Demand（按需连接）](https://developer.apple.com/documentation/networkextension/personal_vpn/vpn_on_demand_rules) ，该功能在使用 Wi-Fi 网络时自动建立 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
+（可选功能）启用 **VPN On Demand（按需连接）** 以在你的 iOS 设备连接到 Wi-Fi 时自动启动 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络），或者在 Wi-Fi 和蜂窝网络上都启动 VPN 连接。参见：
+
+[**指南：** 为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则（支持者）](https://ko-fi.com/post/Guide-Customize-IKEv2-VPN-On-Demand-rules-for-mac-H2H7G61WH)
 
 <details>
 <summary>
