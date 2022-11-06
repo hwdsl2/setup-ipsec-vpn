@@ -10,6 +10,7 @@
 * [Port forwarding to VPN clients](#port-forwarding-to-vpn-clients)
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
+* [Access VPN clients from server's subnet](#access-vpn-clients-from-servers-subnet)
 * [Modify IPTables rules](#modify-iptables-rules)
 * [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
@@ -295,6 +296,28 @@ iptables -I FORWARD 2 -s 192.168.43.0/24 -o "$netif" -j ACCEPT
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 ```
+
+## Access VPN clients from server's subnet
+
+In certain circumstances, you may need to access services on VPN clients from other devices that are on the same local subnet as the VPN server. This can be done using the following steps.
+
+Assume that the VPN server IP is `10.1.0.2`, and the IP of the device from which you want to access VPN clients is `10.1.0.3`.
+
+1. Add IPTables rules on the VPN server to allow this traffic. For example:
+   ```
+   # Get default network interface name
+   netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+   iptables -I FORWARD 2 -i "$netif" -o ppp+ -s 10.1.0.3 -j ACCEPT
+   iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -s 10.1.0.3 -j ACCEPT
+   ```
+2. Add routing rules on the device you want to access VPN clients. For example:
+   ```
+   # Replace eth0 with the network interface name of the device's local subnet
+   route add -net 192.168.42.0 netmask 255.255.255.0 gw 10.1.0.2 dev eth0
+   route add -net 192.168.43.0 netmask 255.255.255.0 gw 10.1.0.2 dev eth0
+   ```
+
+Learn more about internal VPN IPs in [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic).
 
 ## Modify IPTables rules
 

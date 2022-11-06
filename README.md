@@ -346,6 +346,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [Access VPN server's subnet](docs/advanced-usage.md#access-vpn-servers-subnet)
+- [Access VPN clients from server's subnet](docs/advanced-usage.md#access-vpn-clients-from-servers-subnet)
 - [Modify IPTables rules](docs/advanced-usage.md#modify-iptables-rules)
 - [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 

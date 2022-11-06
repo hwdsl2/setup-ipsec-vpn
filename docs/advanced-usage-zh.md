@@ -10,6 +10,7 @@
 * [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
+* [VPN 服务器网段访问 VPN 客户端](#vpn-服务器网段访问-vpn-客户端)
 * [更改 IPTables 规则](#更改-iptables-规则)
 * [部署 Google BBR 拥塞控制](#部署-google-bbr-拥塞控制)
 
@@ -294,6 +295,28 @@ iptables -I FORWARD 2 -s 192.168.43.0/24 -o "$netif" -j ACCEPT
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 ```
+
+## VPN 服务器网段访问 VPN 客户端
+
+在某些情况下，你可能需要从 VPN 服务器位于同一本地子网内的其他设备访问 VPN 客户端上的服务。这可以通过以下几个步骤实现。
+
+假设 VPN 服务器 IP 是 `10.1.0.2`，你想要访问 VPN 客户端的设备的 IP 是 `10.1.0.3`。
+
+1. 在 VPN 服务器上添加 IPTables 规则以允许该流量。例如：
+   ```
+   # 获取默认网络接口名称
+   netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+   iptables -I FORWARD 2 -i "$netif" -o ppp+ -s 10.1.0.3 -j ACCEPT
+   iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -s 10.1.0.3 -j ACCEPT
+   ```
+2. 在你想要访问 VPN 客户端的设备上添加路由规则。例如：
+   ```
+   # 将 eth0 替换为设备的本地子网的网络接口名称
+   route add -net 192.168.42.0 netmask 255.255.255.0 gw 10.1.0.2 dev eth0
+   route add -net 192.168.43.0 netmask 255.255.255.0 gw 10.1.0.2 dev eth0
+   ```
+
+在 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量) 小节了解 VPN 内网 IP 的更多信息。
 
 ## 更改 IPTables 规则
 
