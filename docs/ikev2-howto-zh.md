@@ -548,6 +548,7 @@ sudo chmod 600 ca.cer client.cer client.key
 * [无法连接多个 IKEv2 客户端](#无法连接多个-ikev2-客户端)
 * [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
 * [参数错误 policy match error](#参数错误-policy-match-error)
+* [参数错误 parameter is incorrect](#参数错误-parameter-is-incorrect)
 * [连接 IKEv2 后不能打开网站](#连接-ikev2-后不能打开网站)
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [其它已知问题](#其它已知问题)
@@ -581,6 +582,10 @@ sudo ikev2.sh --addclient [client name]
 ```console
 REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
 ```
+
+### 参数错误 parameter is incorrect
+
+如果你在尝试使用 IKEv2 模式连接时遇到 "错误 87：参数错误 The parameter is incorrect"，请尝试 [这个 Issue](https://github.com/trailofbits/algo/issues/1051) 中的解决方案，更具体地说，第 2 步 "reset device manager adapters"。
 
 ### 连接 IKEv2 后不能打开网站
 

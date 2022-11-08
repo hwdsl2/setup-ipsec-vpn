@@ -550,6 +550,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
 * [Policy match error](#policy-match-error)
+* [Parameter is incorrect](#parameter-is-incorrect)
 * [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
 * [Windows 10 connecting](#windows-10-connecting)
 * [Other known issues](#other-known-issues)
@@ -583,6 +584,10 @@ To fix this error, you will need to enable stronger ciphers for IKEv2 with a one
 ```console
 REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2048_AES256 /t REG_DWORD /d 0x1 /f
 ```
+
+### Parameter is incorrect
+
+If you encounter "Error 87: The parameter is incorrect" when trying to connect using IKEv2 mode, try the solutions in [this issue](https://github.com/trailofbits/algo/issues/1051), more specifically, step 2 "reset device manager adapters".
 
 ### Cannot open websites after connecting to IKEv2
 
