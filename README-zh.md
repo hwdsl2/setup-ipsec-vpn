@@ -264,7 +264,7 @@ sudo ikev2.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**[下载电子书：搭建自己的 VPN 服务器（支持者）](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)**
+**[[支持者] 下载电子书：搭建自己的 VPN 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
