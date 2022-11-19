@@ -32,15 +32,7 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [Linux](#linux)
 * [Mikrotik RouterOS](#routeros)
 
-<details>
-<summary>
-Like this project? You can show your support or appreciation.
-</summary>
-
-<a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;&nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
-
-Supporter-only content is available. [Click to see details](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
-</details>
+Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata_o=v) or [:coffee: Support](https://ko-fi.com/hwdsl2) and access [supporter-only content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 <details>
 <summary>
 Learn how to change the IKEv2 server address.
