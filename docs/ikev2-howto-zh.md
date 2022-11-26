@@ -419,6 +419,8 @@ sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 # 示例：提取 CA 证书，客户端证书和私钥。在完成后可以删除 .p12 文件。
 # 注：你可能需要输入 import password，它可以在 IKEv2 辅助脚本的输出中找到。
 #    如果在脚本的输出中没有 import password，请按回车键继续。
+# 注：如果使用 OpenSSL 3.x (运行 "openssl version" 进行检查)，
+#    请将 "-legacy" 附加到下面的 3 个命令。
 openssl pkcs12 -in vpnclient.p12 -cacerts -nokeys -out ca.cer
 openssl pkcs12 -in vpnclient.p12 -clcerts -nokeys -out client.cer
 openssl pkcs12 -in vpnclient.p12 -nocerts -nodes  -out client.key
