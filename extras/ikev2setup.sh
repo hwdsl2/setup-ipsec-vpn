@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2022 Lin Song   30 Oct 2022
+IKEv2 Script   Copyright (c) 2020-2022 Lin Song   1 Dec 2022
 
 EOF
 }
@@ -1247,6 +1247,20 @@ restart_ipsec_service() {
   fi
 }
 
+check_ikev2_connection() {
+  if grep -qs 'mobike=yes' "$IKEV2_CONF"; then
+    (sleep 3
+    if ! ipsec status | grep -q ikev2-cp; then
+      sed -i '/mobike=yes/s/yes/no/' "$IKEV2_CONF"
+      if [ "$os_type" = "alpine" ]; then
+        ipsec auto --add ikev2-cp >/dev/null
+      else
+        restart_ipsec_service >/dev/null
+      fi
+    fi) >/dev/null 2>&1 &
+  fi
+}
+
 create_crl() {
   bigecho "Revoking client certificate..."
   if ! crlutil -L -d "$CERT_DB" -n "$CA_NAME" >/dev/null 2>&1; then
@@ -1717,6 +1731,7 @@ ikev2setup() {
   else
     restart_ipsec_service
   fi
+  check_ikev2_connection
   print_setup_complete
   print_client_info
   if [ "$in_container" = 0 ]; then
