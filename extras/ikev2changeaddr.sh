@@ -248,6 +248,13 @@ update_ikev2_conf() {
   sed -i "/conn ikev2-cp/a \  leftcert=$server_addr" /etc/ipsec.d/ikev2.conf
 }
 
+update_ikev2_log() {
+  ikev2_log="/etc/ipsec.d/ikev2setup.log"
+  if [ -s "$ikev2_log" ]; then
+    sed -i "/VPN server address:/s/$server_addr_old/$server_addr/" "$ikev2_log"
+  fi
+}
+
 restart_ipsec_service() {
   bigecho "Restarting IPsec service..."
   mkdir -p /run/pluto
@@ -278,6 +285,7 @@ ikev2changeaddr() {
 
   create_server_cert
   update_ikev2_conf
+  update_ikev2_log
   if [ "$os_type" = "alpine" ]; then
     ipsec auto --replace ikev2-cp >/dev/null
   else
