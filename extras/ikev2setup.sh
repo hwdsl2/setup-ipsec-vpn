@@ -353,7 +353,7 @@ show_start_setup() {
   op_text=default
   if [ -n "$VPN_DNS_NAME" ] || [ -n "$VPN_CLIENT_NAME" ] \
     || [ -n "$VPN_DNS_SRV1" ] || [ -n "$VPN_PROTECT_CONFIG" ] \
-    || [ -n "$VPN_CLIENT_VALIDITY" ]; then
+    || [ -n "$VPN_CLIENT_VALIDITY" ] || [ -n "$VPN_IKEV2_USER_CERTS" ]; then
     op_text=custom
   fi
   bigecho "Starting IKEv2 setup in auto mode, using $op_text options."
@@ -650,6 +650,58 @@ EOF
         ;;
     esac
   fi
+}
+
+check_use_user_cert() {
+  if [ "$use_user_certs" = 1 ]; then
+cat <<'EOF'
+
+'--usercert' argument passed: using certs in $USER_CERTS_DIR
+
+EOF
+  else
+    case $VPN_IKEV2_USER_CERTS in
+      [yY][eE][sS])
+        use_user_certs=1
+cat <<'EOF'
+
+'VPN_IKEV2_USER_CERTS' set to YES: using certs in $USER_CERTS_DIR
+
+EOF
+        ;;
+      *)
+        if grep -qs '^IKEV2_USER_CERTS=.\+' "$CONF_FILE"; then
+          use_user_certs=1
+cat <<'EOF'
+
+'IKEV2_USER_CERTS' set to YES in "$CONF_FILE": using certs in $USER_CERTS_DIR
+
+EOF
+        fi
+        ;;
+    esac
+  fi
+
+# expecting the following file in /user-certs
+# - vpn_ca.p12
+#
+
+  if [ "$use_user_certs" = 1 ]; then
+      if ! [ -e "${USER_CERTS_DIR}vpn_ca.p12" ]; then
+        exiterr "${USER_CERTS_DIR}vpn_ca.p12 must exist."
+      fi
+      if ! [ -n "$VPN_IKEV2_USER_CERTS_PASS" ]; then
+        ca_p12_password=$(grep -s '^IKEV2_USER_CERTS_PASS=.\+' "$CONF_FILE" | tail -n 1 | cut -f2- -d= | sed -e "s/^'//" -e "s/'$//")
+        if [ -z "$ca_p12_password" ]; then
+          bigecho2 "Did not find a password for vpn_ca.p12, using an EMPTY password!"
+          VPN_IKEV2_USER_CERTS_PASS=''
+        else
+          VPN_IKEV2_USER_CERTS_PASS="$ca_p12_password"
+        fi
+      fi
+  fi
+
+  add_user_certs
 }
 
 check_config_password() {
@@ -1098,18 +1150,37 @@ export_client_config() {
   create_android_profile
 }
 
+add_user_certs() {
+  bigecho2 "Adding user CA certificate..."
+
+# gnutils-bin has certtool
+# certtool can create a working p12 from a key+crt but certtool is not installed in the img
+# certtool --to-p12 --outder --load-certificate a.crt --load-privkey a.key --outfile a.p12
+
+  pk12util -i "$USER_CERTS_DIR"vpn_ca.p12 -d /etc/ipsec.d/ -W "$VPN_IKEV2_USER_CERTS_PASS"
+
+  bigecho2 "Get cert nickname and set as CA_NAME"
+  CA_NAME=$(openssl pkcs12 -info -in "$USER_CERTS_DIR"vpn_ca.p12 -passin pass:"$VPN_IKEV2_USER_CERTS_PASS" -nokeys |grep 'friendlyName:'|awk -F":" '{gsub(/^[ \t]+/, "", $2); gsub(/[ \t]+$/, "", $2); print $2}')
+
+  bigecho2 "Update permissions on new CA cert: $CA_NAME"
+  certutil -M -d /etc/ipsec.d/ -t "CTu,u,u" -n "$CA_NAME"
+}
+
 create_ca_server_certs() {
-  bigecho2 "Generating CA and server certificates..."
-  certutil -z <(head -c 1024 /dev/urandom) \
-    -S -x -n "$CA_NAME" \
-    -s "O=IKEv2 VPN,CN=$CA_NAME" \
-    -k rsa -g 3072 -v 120 \
-    -d "$CERT_DB" -t "CT,," -2 >/dev/null 2>&1 <<ANSWERS || exiterr "Failed to create CA certificate."
+  if [ "$use_user_certs" = 0 ]; then
+    bigecho2 "Generating CA certificate...$CA_NAME"
+    certutil -z <(head -c 1024 /dev/urandom) \
+      -S -x -n "$CA_NAME" \
+      -s "O=IKEv2 VPN,CN=$CA_NAME" \
+      -k rsa -g 3072 -v 120 \
+      -d "$CERT_DB" -t "CT,," -2 >/dev/null 2>&1 <<ANSWERS || exiterr "Failed to create CA certificate."
 y
 
 N
 ANSWERS
-  sleep 1
+    sleep 1
+  fi
+  bigecho2 "Generating server certificates...$CA_NAME"
   if [ "$use_dns_name" = 1 ]; then
     certutil -z <(head -c 1024 /dev/urandom) \
       -S -c "$CA_NAME" -n "$server_addr" \
@@ -1505,6 +1576,7 @@ ikev2setup() {
   revoke_client=0
   delete_client=0
   remove_ikev2=0
+  use_user_certs=0
   while [ "$#" -gt 0 ]; do
     case $1 in
       --auto)
@@ -1543,6 +1615,10 @@ ikev2setup() {
         remove_ikev2=1
         shift
         ;;
+        --usercert)
+        use_user_certs=1
+        shift
+        ;;
       -h|--help)
         show_usage
         ;;
@@ -1554,11 +1630,13 @@ ikev2setup() {
 
   CA_NAME="IKEv2 VPN CA"
   CERT_DB="sql:/etc/ipsec.d"
-  CONF_DIR="/etc/ipsec.d"
+  CONF_DIR="/etc/ipsec.d/"
   CONF_FILE="/etc/ipsec.d/.vpnconfig"
   IKEV2_CONF="/etc/ipsec.d/ikev2.conf"
   IPSEC_CONF="/etc/ipsec.conf"
+  USER_CERTS_DIR="/user-certs/"
 
+  check_use_user_cert
   check_arguments
   check_config_password
   get_export_dir
@@ -1693,7 +1771,9 @@ ikev2setup() {
     esac
   fi
 
-  check_cert_exists_and_exit "$CA_NAME"
+  if [ "$use_user_certs" = 0 ]; then
+    check_cert_exists_and_exit "$CA_NAME"
+  fi
 
   if [ "$use_defaults" = 0 ]; then
     show_header
