@@ -32,7 +32,7 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [Linux](#linux)
 * [Mikrotik RouterOS](#routeros)
 
-Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata_o=v) or [:coffee: Support](https://ko-fi.com/hwdsl2) and access [supporter-only content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
+Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata_o=v) or [:coffee: Support](https://ko-fi.com/hwdsl2) and access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 <details>
 <summary>
 Learn how to change the IKEv2 server address.
@@ -150,7 +150,7 @@ To connect to the VPN:
 1. Check the **Show VPN status in menu bar** checkbox.
 1. Click **Connect**.
 
-(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your Mac is on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network. See [[Supporters] **Guide:** Customize IKEv2 VPN On Demand rules for macOS and iOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your Mac is on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: eBook: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://mybook.to/vpn).
 
 <details>
 <summary>
@@ -210,7 +210,7 @@ To connect to the VPN:
 1. Go to Settings -> VPN. Select the VPN connection with `Your VPN Server IP` (or DNS name).
 1. Slide the **VPN** switch ON.
 
-(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your iOS device is on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network, or to start the VPN connection both on Wi-Fi and cellular. See [[Supporters] **Guide:** Customize IKEv2 VPN On Demand rules for macOS and iOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your iOS device is on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network, or to start the VPN connection both on Wi-Fi and cellular. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: eBook: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://mybook.to/vpn).
 
 <details>
 <summary>
