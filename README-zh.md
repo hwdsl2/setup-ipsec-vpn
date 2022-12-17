@@ -10,6 +10,8 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
+**[&raquo; 电子书：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://mybook.to/vpnzhs) [[繁體版](https://mybook.to/vpnzh)]**
+
 ## 快速开始
 
 首先，在你的 Linux 服务器\* 上安装 Ubuntu, Debian 或者 CentOS。
@@ -264,11 +266,11 @@ sudo ikev2.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**[[支持者] 下载电子书：搭建自己的 VPN 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)**
+**[:book: 电子书：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://mybook.to/vpnzhs) [[繁體版](https://mybook.to/vpnzh)]**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
-喜欢这个项目？[:heart: 赞助](https://github.com/sponsors/hwdsl2?metadata_o=iz) 或 [:coffee: 支持](https://ko-fi.com/hwdsl2) 并访问 [仅限支持者的内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。
+喜欢这个项目？[:heart: 赞助](https://github.com/sponsors/hwdsl2?metadata_o=iz) 或 [:coffee: 支持](https://ko-fi.com/hwdsl2) 并访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。
 
 ## 重要提示
 
