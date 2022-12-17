@@ -1052,10 +1052,32 @@ $ca_base64
 </dict>
 </plist>
 EOF
+
+  # sign mobileconfig
+  mc_file_signed="$export_dir$client_name.signed.mobileconfig"
+  #export cert and key
+  pk12util -o vpn_ca.p12 -n "$CA_NAME" -d "$CERT_DB" -W "$p12_password" || exit 1
+  #extract key in pem format
+  openssl pkcs12 -in vpn_ca.p12 -out vpn_ca.pem -nocerts -nodes -passin "pass:$p12_password" || exit 1
+  openssl pkcs12 -in vpn_ca.p12 -out "$export_dir"vpn_ca.crt -clcerts -nokeys -passin "pass:$p12_password" || exit 1
+  #sign with key
+  openssl smime \
+  -sign \
+  -signer "$export_dir"vpn_ca.crt \
+  -inkey vpn_ca.pem \
+  -certfile "$export_dir"vpn_ca.crt \
+  -nodetach \
+  -outform der \
+  -in "$mc_file" \
+  -out "$mc_file_signed" || exit 1
+
   if [ "$export_to_home_dir" = 1 ]; then
-    chown "$SUDO_USER:$SUDO_USER" "$mc_file"
+    chown "$SUDO_USER:$SUDO_USER" "$mc_file" "$mc_file_signed"
   fi
-  chmod 600 "$mc_file"
+  chmod 600 "$mc_file" "$mc_file_signed"
+  /bin/rm -f "vpn_ca.pem" "vpn_ca.p12"
+
+
 }
 
 create_android_profile() {
@@ -1373,6 +1395,7 @@ cat <<EOF
 $export_dir$client_name.p12 (for Windows & Linux)
 $export_dir$client_name.sswan (for Android)
 $export_dir$client_name.mobileconfig (for iOS & macOS)
+$export_dir$client_name.signed.mobileconfig (for iOS & macOS)
 EOF
   if [ "$use_config_password" = 1 ]; then
 cat <<EOF
