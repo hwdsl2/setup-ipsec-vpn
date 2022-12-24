@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**[&raquo; :book: 获取 VPN 电子书：简体版（限时免费）](https://mybook.to/vpnzhs) [繁體版](https://mybook.to/vpnzh)**
+**[&raquo; 电子书：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://mybook.to/vpnzhs) [[繁體版](https://mybook.to/vpnzh)]**
 
 ## 快速开始
 
@@ -266,7 +266,7 @@ sudo ikev2.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**[:book: 获取 VPN 电子书：简体版（限时免费）](https://mybook.to/vpnzhs) [繁體版](https://mybook.to/vpnzh)**
+**[:book: 电子书：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://mybook.to/vpnzhs) [[繁體版](https://mybook.to/vpnzh)]**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
