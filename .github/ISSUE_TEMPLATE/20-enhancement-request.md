@@ -14,7 +14,7 @@ assignees: ''
 - [ ] I read the [README](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README.md)
 - [ ] I read the [Important notes](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README.md#important-notes)
 - [ ] I followed instructions to [configure VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README.md#next-steps)
-- [ ] I checked [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting) and [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
+- [ ] I checked [IKEv1 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#ikev1-troubleshooting), [IKEv2 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#ikev2-troubleshooting) and [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
 
 **Describe the enhancement request**
 A clear and concise description of your enhancement request.

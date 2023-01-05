@@ -235,16 +235,16 @@ sudo ikev2.sh
 
 | IKEv2 参数\* |默认值 |自定义（环境变量）\*\* |自定义（交互式）\*\*\* |
 | ----------- | ---- | ------------------ | ----------------- |
-|服务器地址（DNS域名）| - | VPN_DNS_NAME | ✔ |
-|服务器地址（公网IP）|自动检测 | VPN_PUBLIC_IP | ✔ |
-|第一个客户端的名称 | vpnclient | VPN_CLIENT_NAME | ✔ |
-|客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 | ✔ |
-|保护客户端配置文件 |no | VPN_PROTECT_CONFIG=yes | ✔ |
-|启用/禁用 MOBIKE |如果系统支持则启用 | ✘ | ✔ |
-|客户端证书有效期 | 10 年（120 个月）| VPN_CLIENT_VALIDITY\*\*\*\* | ✔ |
-| CA 和服务器证书有效期 | 10 年（120 个月）| ✘ | ✘ |
-| CA 证书名称 | IKEv2 VPN CA | ✘ | ✘ |
-|证书密钥长度 | 3072 bits | ✘ | ✘ |
+|服务器地址（DNS域名）| - | VPN_DNS_NAME | ✅ |
+|服务器地址（公网IP）|自动检测 | VPN_PUBLIC_IP | ✅ |
+|第一个客户端的名称 | vpnclient | VPN_CLIENT_NAME | ✅ |
+|客户端的 DNS 服务器 |Google Public DNS | VPN_DNS_SRV1, VPN_DNS_SRV2 | ✅ |
+|保护客户端配置文件 |no | VPN_PROTECT_CONFIG=yes | ✅ |
+|启用/禁用 MOBIKE |如果系统支持则启用 | ❌ | ✅ |
+|客户端证书有效期 | 10 年（120 个月）| VPN_CLIENT_VALIDITY\*\*\*\* | ✅ |
+| CA 和服务器证书有效期 | 10 年（120 个月）| ❌ | ❌ |
+| CA 证书名称 | IKEv2 VPN CA | ❌ | ❌ |
+|证书密钥长度 | 3072 bits | ❌ | ❌ |
 
 \* 这些 IKEv2 参数适用于 IKEv2 模式。   
 \*\* 在运行 vpn(setup).sh 时，或者在自动模式下配置 IKEv2 时 (`sudo ikev2.sh --auto`) 将这些定义为环境变量。   
@@ -384,7 +384,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 
 ## 授权协议
 
-版权所有 (C) 2014-2022 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版权所有 (C) 2014-2023 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基于 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy) (版权所有 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   

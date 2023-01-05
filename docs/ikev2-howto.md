@@ -4,7 +4,7 @@
 
 * [Introduction](#introduction)
 * [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients)
-* [Troubleshooting](#troubleshooting)
+* [IKEv2 troubleshooting](#ikev2-troubleshooting)
 * [Manage IKEv2 clients](#manage-ikev2-clients)
 * [Change IKEv2 server address](#change-ikev2-server-address)
 * [Update IKEv2 helper script](#update-ikev2-helper-script)
@@ -56,11 +56,11 @@ In certain circumstances, you may need to change the IKEv2 server address. For e
 
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 #### Manually import configuration
 
-[[Supporters] **Screencast:** IKEv2 Manually Import Configuration on Windows](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+[**Screencast:** IKEv2 Manually Import Configuration on Windows](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
 
@@ -109,7 +109,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
 To connect to the VPN: Click on the wireless/network icon in your system tray, select the new VPN entry, and click **Connect**. Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 <details>
 <summary>
@@ -139,7 +139,7 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 ### OS X (macOS)
 
-[[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+[**Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
@@ -183,7 +183,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 <details>
 <summary>
@@ -195,7 +195,7 @@ To remove the IKEv2 VPN connection, open System Preferences -> Profiles and remo
 
 ### iOS
 
-[[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on iOS (iPhone & iPad)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+[**Screencast:** IKEv2 Import Configuration and Connect on iOS (iPhone & iPad)](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 First, securely transfer the generated `.mobileconfig` file to your iOS device, then import it as an iOS profile. To transfer the file, you may use:
 
@@ -243,7 +243,7 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 <details>
 <summary>
@@ -255,7 +255,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 ### Android
 
-[[Supporters] **Screencast:** Connect using Android strongSwan VPN Client](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+[**Screencast:** Connect using Android strongSwan VPN Client](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 1. Securely transfer the generated `.sswan` file to your Android device.
 1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
@@ -273,7 +273,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 Alternatively, Android 11+ users can also connect using the native IKEv2 client.
 </summary>
 
-[[Supporters] **Screencast:** Connect using Native VPN Client on Android 11+](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+[**Screencast:** Connect using Native VPN Client on Android 11+](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
 1. Securely transfer the generated `.p12` file to your Android device.
 1. Launch the **Settings** application.
@@ -346,7 +346,7 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 ### Chrome OS
 
@@ -388,7 +388,7 @@ Once connected, you will see a VPN icon overlay on the network status icon. You 
 
 (Optional feature) You can choose to enable the "Always-on VPN" feature on Chrome OS. To manage this setting, go to Settings -> Network, then click **VPN**.
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 ### Linux
 
@@ -454,7 +454,7 @@ You can then set up and enable the VPN connection:
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
 ### RouterOS
 
@@ -530,11 +530,11 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 > mar/02/2022 12:52:57 by RouterOS 6.48   
 > RouterBOARD 941-2nD
 
-## Troubleshooting
+## IKEv2 troubleshooting
 
-*Read this in other languages: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除).*
+*Read this in other languages: [English](ikev2-howto.md#ikev2-troubleshooting), [中文](ikev2-howto-zh.md#ikev2-故障排除).*
 
-**See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#troubleshooting) and [Advanced usage](advanced-usage.md).
+**See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#ikev1-troubleshooting) and [Advanced usage](advanced-usage.md).
 
 * [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
@@ -1185,7 +1185,7 @@ To manually remove IKEv2 from the VPN server, but keep the [IPsec/L2TP](clients.
 
 ## License
 
-Copyright (C) 2016-2022 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Copyright (C) 2016-2023 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
 This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/)  

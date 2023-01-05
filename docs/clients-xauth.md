@@ -38,7 +38,7 @@ Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata
 
 Once connected, you will see **tunnel enabled** in the VPN Connect status window. Click the "Network" tab, and confirm that **Established - 1** is displayed under "Security Associations". You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](clients.md#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
 
 ## OS X
 
@@ -62,7 +62,7 @@ If you get an error when trying to connect, see [Troubleshooting](clients.md#tro
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](clients.md#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
 
 ## Android
 
@@ -92,7 +92,7 @@ After that, follow the steps below on your Android device:
 
 Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](clients.md#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
 
 ## iOS
 
@@ -112,7 +112,7 @@ If you get an error when trying to connect, see [Troubleshooting](clients.md#tro
 
 Once connected, you will see a VPN icon in the status bar. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
-If you get an error when trying to connect, see [Troubleshooting](clients.md#troubleshooting).
+If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
 
 ## Linux
 
@@ -143,16 +143,12 @@ Once connected, you can verify that your traffic is being routed properly by [lo
 
 Other Linux users can connect using [IPsec/L2TP](clients.md#linux) mode.
 
-## Credits
-
-This document was adapted from the [Streisand](https://github.com/StreisandEffect/streisand) project, maintained by Joshua Lund and contributors.
-
 ## License
 
 Note: This license applies to this document only.
 
-Copyright (C) 2016-2022 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
-Based on [the work of Joshua Lund](https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2) (Copyright 2014-2016)
+Copyright (C) 2016-2023 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Inspired by [the work of Joshua Lund](https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

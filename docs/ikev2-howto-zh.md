@@ -4,7 +4,7 @@
 
 * [导言](#导言)
 * [配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)
-* [故障排除](#故障排除)
+* [IKEv2 故障排除](#ikev2-故障排除)
 * [管理 IKEv2 客户端](#管理-ikev2-客户端)
 * [更改 IKEv2 服务器地址](#更改-ikev2-服务器地址)
 * [更新 IKEv2 辅助脚本](#更新-ikev2-辅助脚本)
@@ -56,11 +56,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 #### 手动导入配置
 
-[[支持者] **屏幕录影：** 在 Windows 上手动导入 IKEv2 配置](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+[**屏幕录影：** 在 Windows 上手动导入 IKEv2 配置](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
 或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
 
@@ -109,7 +109,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 要连接到 VPN：单击系统托盘中的无线/网络图标，选择新的 VPN 连接，然后单击 **连接**。连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 <details>
 <summary>
@@ -139,7 +139,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### OS X (macOS)
 
-[[支持者] **屏幕录影：** 在 macOS 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+[**屏幕录影：** 在 macOS 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。如果你的 Mac 运行 macOS Big Sur 或更新版本，打开系统偏好设置并转到描述文件部分以完成导入。在完成之后，检查并确保 "IKEv2 VPN" 显示在系统偏好设置 -> 描述文件中。
 
@@ -183,7 +183,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 <details>
 <summary>
@@ -195,7 +195,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### iOS
 
-[[支持者] **屏幕录影：** 在 iOS (iPhone & iPad) 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+[**屏幕录影：** 在 iOS (iPhone & iPad) 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 iOS 设备，并且导入为 iOS 配置描述文件。要传送文件，你可以使用：
 
@@ -243,7 +243,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 <details>
 <summary>
@@ -255,7 +255,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### Android
 
-[[支持者] **屏幕录影：** 使用 Android strongSwan VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+[**屏幕录影：** 使用 Android strongSwan VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
 1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
@@ -273,7 +273,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 或者，Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
 </summary>
 
-[[支持者] **屏幕录影：** 使用 Android 11+ 系统自带的 VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+[**屏幕录影：** 使用 Android 11+ 系统自带的 VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
 1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
 1. 启动 **设置** App。
@@ -346,7 +346,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 ### Chrome OS
 
@@ -388,7 +388,7 @@ sudo certutil -L -d sql:/etc/ipsec.d -n "IKEv2 VPN CA" -a -o ca.cer
 
 （可选功能）你可以选择启用 Chrome OS 上的 "始终开启的 VPN" 功能。要管理该设置，进入设置 -> 网络，然后单击 **VPN**。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 ### Linux
 
@@ -452,7 +452,7 @@ sudo chmod 600 ca.cer client.cer client.key
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](#故障排除)。
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
 ### RouterOS
 
@@ -528,11 +528,11 @@ sudo chmod 600 ca.cer client.cer client.key
 > mar/02/2022 12:52:57 by RouterOS 6.48   
 > RouterBOARD 941-2nD
 
-## 故障排除
+## IKEv2 故障排除
 
-*其他语言版本: [English](ikev2-howto.md#troubleshooting), [中文](ikev2-howto-zh.md#故障排除)。*
+*其他语言版本: [English](ikev2-howto.md#ikev2-troubleshooting), [中文](ikev2-howto-zh.md#ikev2-故障排除)。*
 
-**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#故障排除) 和 [高级用法](advanced-usage-zh.md)。
+**另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#ikev1-故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
 * [无法连接到 VPN 服务器](#无法连接到-vpn-服务器)
 * [无法连接多个 IKEv2 客户端](#无法连接多个-ikev2-客户端)
@@ -1183,7 +1183,7 @@ sudo ikev2.sh --removeikev2
 
 ## 授权协议
 
-版权所有 (C) 2016-2022 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版权所有 (C) 2016-2023 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
 这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   

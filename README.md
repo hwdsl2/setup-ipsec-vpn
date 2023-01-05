@@ -235,16 +235,16 @@ For reference: List of IKEv1 and IKEv2 parameters.
 
 | IKEv2 parameter\*           | Default value         | Customize (env variable)\*\* | Customize (interactive)\*\*\* |
 | --------------------------- | --------------------- | ---------------------------- | ----------------------------- |
-| Server address (DNS name)   | -                     | VPN_DNS_NAME                 | ✔                            |
-| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                | ✔                            |
-| Name of first client        | vpnclient             | VPN_CLIENT_NAME              | ✔                            |
-| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✔                            |
-| Protect client config files | no                    | VPN_PROTECT_CONFIG=yes       | ✔                            |
-| Enable/Disable MOBIKE       | Enable if supported   | ✘                           | ✔                            |
-| Client cert validity        | 10 years (120 months) | VPN_CLIENT_VALIDITY\*\*\*\*  | ✔                            |
-| CA & server cert validity   | 10 years (120 months) | ✘                           | ✘                            |
-| CA certificate name         | IKEv2 VPN CA          | ✘                           | ✘                            |
-| Certificate key size        | 3072 bits             | ✘                           | ✘                            |
+| Server address (DNS name)   | -                     | VPN_DNS_NAME                 | ✅                            |
+| Server address (public IP)  | Auto detect           | VPN_PUBLIC_IP                | ✅                            |
+| Name of first client        | vpnclient             | VPN_CLIENT_NAME              | ✅                            |
+| DNS servers for clients     | Google Public DNS     | VPN_DNS_SRV1, VPN_DNS_SRV2   | ✅                            |
+| Protect client config files | no                    | VPN_PROTECT_CONFIG=yes       | ✅                            |
+| Enable/Disable MOBIKE       | Enable if supported   | ❌                           | ✅                            |
+| Client cert validity        | 10 years (120 months) | VPN_CLIENT_VALIDITY\*\*\*\*  | ✅                            |
+| CA & server cert validity   | 10 years (120 months) | ❌                           | ❌                            |
+| CA certificate name         | IKEv2 VPN CA          | ❌                           | ❌                            |
+| Certificate key size        | 3072 bits             | ❌                           | ❌                            |
 
 \* These IKEv2 parameters are for IKEv2 mode.   
 \*\* Define these as environment variables when running vpn(setup).sh, or when setting up IKEv2 in auto mode (`sudo ikev2.sh --auto`).   
@@ -384,7 +384,7 @@ For more information, see [Uninstall the VPN](docs/uninstall.md).
 
 ## License
 
-Copyright (C) 2014-2022 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Copyright (C) 2014-2023 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   

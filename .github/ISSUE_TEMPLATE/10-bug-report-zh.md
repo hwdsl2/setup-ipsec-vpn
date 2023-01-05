@@ -12,7 +12,7 @@ assignees: ''
 - [ ] 我已阅读 [自述文件](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 - [ ] 我已阅读 [重要提示](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#重要提示)
 - [ ] 我已按照说明 [配置 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#下一步)
-- [ ] 我检查了 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)，[IKEv2 故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#故障排除) 以及 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
+- [ ] 我检查了 [IKEv1 故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#ikev1-故障排除)，[IKEv2 故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#ikev2-故障排除) 以及 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
 - [ ] 我搜索了已有的 [Issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue)
 - [ ] 这个 bug 是关于 VPN 安装脚本，而不是 IPsec VPN 本身
 

@@ -1,7 +1,7 @@
 ### Creative Commons Attribution-ShareAlike 3.0 Unported License
 Link to license summary: https://creativecommons.org/licenses/by-sa/3.0/
 
-Copyright (C) 2014-2022 [Lin Song](https://github.com/hwdsl2)   
+Copyright (C) 2014-2023 [Lin Song](https://github.com/hwdsl2)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 See the [azure/](azure/) subfolder for its authors.
