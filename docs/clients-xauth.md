@@ -14,8 +14,6 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally **faster t
   * [iOS (iPhone/iPad)](#ios)
   * [Linux](#linux)
 
-Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata_o=x) or [:coffee: Support](https://ko-fi.com/hwdsl2) and access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
-
 ## Windows
 
 > You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/L2TP](clients.md) mode. No additional software is required.

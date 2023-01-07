@@ -14,8 +14,6 @@
   * [Linux](#linux)
 * [IKEv1 故障排除](#ikev1-故障排除)
 
-喜欢这个项目？[:heart: 赞助](https://github.com/sponsors/hwdsl2?metadata_o=lz) 或 [:coffee: 支持](https://ko-fi.com/hwdsl2) 并访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。
-
 ## Windows
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）。
