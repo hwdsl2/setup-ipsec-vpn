@@ -26,8 +26,6 @@ YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
 
-# VPN client setup: https://vpnsetup.net/clients
-
 # =====================================================
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
