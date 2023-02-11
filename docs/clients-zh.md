@@ -69,8 +69,8 @@
 # 不保存命令行历史记录
 Set-PSReadlineOption –HistorySaveStyle SaveNothing
 # 创建 VPN 连接
-Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' ^
-  -L2tpPsk '你的 VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required ^
+Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' `
+  -L2tpPsk '你的 VPN IPsec PSK' -TunnelType L2tp -EncryptionLevel Required `
   -AuthenticationMethod Chap,MSChapv2 -Force -RememberCredential -PassThru
 # 忽略 data encryption 警告（数据在 IPsec 隧道中已被加密）
 ```
