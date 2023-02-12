@@ -85,7 +85,7 @@ Other supported Linux distributions.
 </summary>
 
 - Raspberry Pi OS (Raspbian) 11 or 10
-- Kali Linux 2022
+- Kali Linux
 - Alpine Linux 3.17 or 3.16
 - Red Hat Enterprise Linux (RHEL) 9, 8 or 7
 </details>
