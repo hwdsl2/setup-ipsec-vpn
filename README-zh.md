@@ -86,7 +86,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 - Raspberry Pi OS (Raspbian) 11 或者 10
 - Kali Linux 2022
-- Alpine Linux 3.16 或者 3.15
+- Alpine Linux 3.17 或者 3.16
 - Red Hat Enterprise Linux (RHEL) 9, 8 或者 7
 </details>
 
