@@ -1212,9 +1212,9 @@ apply_ubuntu1804_nss_fix() {
     base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
     nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
     nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
-    deb1="libnss3_3.49.1-1ubuntu1.8_amd64.deb"
-    deb2="libnss3-dev_3.49.1-1ubuntu1.8_amd64.deb"
-    deb3="libnss3-tools_3.49.1-1ubuntu1.8_amd64.deb"
+    deb1="libnss3_3.49.1-1ubuntu1.9_amd64.deb"
+    deb2="libnss3-dev_3.49.1-1ubuntu1.9_amd64.deb"
+    deb3="libnss3-tools_3.49.1-1ubuntu1.9_amd64.deb"
     bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
     mkdir -p /opt/src
     cd /opt/src || exit 1
