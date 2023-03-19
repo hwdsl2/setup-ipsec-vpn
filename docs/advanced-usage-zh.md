@@ -277,6 +277,8 @@ IKEv2 模式：启用 VPN 分流 (split tunneling)
    ```
    service ipsec restart
    ```
+
+**注：** 高级用户可以为特定的 IKEv2 客户端设置不同的 VPN 分流配置。请参见 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量) 部分并展开 "IKEv2 模式：为 VPN 客户端分配静态 IP"。在该部分中的示例的基础上，你可以将 `leftsubnet=...` 选项添加到特定 IKEv2 客户端的 `conn` 小节，然后重启 IPsec 服务。
 </details>
 
 ## 访问 VPN 服务器的网段
