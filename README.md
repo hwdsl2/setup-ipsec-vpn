@@ -10,7 +10,7 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-**[&raquo; :book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://mybook.to/vpn)**
+**[&raquo; :book: Book: Build Your Own VPN Server: A Step by Step Guide](https://mybook.to/vpnguide)**
 
 ## Quick start
 
