@@ -28,25 +28,26 @@ jobs:
 
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get -yqq update
-          sudo apt-get -yqq install wget curl
+          sudo apt-get -yqq install wget
 
           wg="wget -t 3 -T 30 -nv -O"
+          sl="sleep 1"
           gi="https://git.io"
           gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
 
-          $wg vpnsetup.sh          "$gi/vpnsetup"
-          $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"
-          $wg vpnsetup_amzn.sh     "$gi/vpnsetup-amzn"
-          $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup-ubuntu"
-          $wg vpnsetup_alpine.sh   "$gi/vpnsetup-alpine"
-          $wg quickstart.sh        "$gi/vpnstart"
-          $wg quickstart_.sh       "$gi/vpnquickstart"
-          $wg ikev2setup.sh        "$gi/ikev2setup"
-          $wg vpnupgrade.sh        "$gi/vpnupgrade"
-          $wg vpnupgrade_centos.sh "$gi/vpnupgrade-centos"
-          $wg vpnupgrade_amzn.sh   "$gi/vpnupgrade-amzn"
-          $wg vpnupgrade_ubuntu.sh "$gi/vpnupgrade-ubuntu"
-          $wg vpnupgrade_alpine.sh "$gi/vpnupgrade-alpine"
+          $wg vpnsetup.sh          "$gi/vpnsetup"; $sl
+          $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"; $sl
+          $wg vpnsetup_amzn.sh     "$gi/vpnsetup-amzn"; $sl
+          $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup-ubuntu"; $sl
+          $wg vpnsetup_alpine.sh   "$gi/vpnsetup-alpine"; $sl
+          $wg quickstart.sh        "$gi/vpnstart"; $sl
+          $wg quickstart_.sh       "$gi/vpnquickstart"; $sl
+          $wg ikev2setup.sh        "$gi/ikev2setup"; $sl
+          $wg vpnupgrade.sh        "$gi/vpnupgrade"; $sl
+          $wg vpnupgrade_centos.sh "$gi/vpnupgrade-centos"; $sl
+          $wg vpnupgrade_amzn.sh   "$gi/vpnupgrade-amzn"; $sl
+          $wg vpnupgrade_ubuntu.sh "$gi/vpnupgrade-ubuntu"; $sl
+          $wg vpnupgrade_alpine.sh "$gi/vpnupgrade-alpine"; $sl
           $wg vpnuninstall.sh      "$gi/vpnuninstall"
 
           $wg vpnsetup2.sh          "$gh/vpnsetup.sh"
