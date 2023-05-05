@@ -72,7 +72,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，安装以下操作系统之一：
 
-- Ubuntu 22.04, 20.04 或者 18.04
+- Ubuntu 22.04 或者 20.04
 - Debian 11 或者 10
 - CentOS 7 或者 CentOS Stream 9/8
 - Rocky Linux 或者 AlmaLinux 9/8
@@ -315,7 +315,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 如果无法下载，打开 [vpnupgrade.sh](extras/vpnupgrade.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
-当前支持的 Libreswan 最新版本是 `4.10`。查看已安装版本：`ipsec --version`。
+当前支持的 Libreswan 最新版本是 `4.11`。查看已安装版本：`ipsec --version`。
 
 **注：** `xl2tpd` 可以使用系统的软件包管理器进行更新，例如 Ubuntu/Debian 上的 `apt-get`。
 

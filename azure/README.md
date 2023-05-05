@@ -9,7 +9,7 @@ Customizable with the following options:
  - Username for VPN **and** SSH
  - Password for VPN **and** SSH
  - IPsec Pre-Shared Key for VPN
- - Operating System Image (Ubuntu 22.04, 20.04 or 18.04)
+ - Operating System Image (Ubuntu 22.04 or 20.04)
  - Virtual Machine Size (Default: Standard_B1s)
 
 **Note:** DO NOT use these special characters within values: `\ " '`
