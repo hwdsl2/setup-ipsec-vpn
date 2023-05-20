@@ -672,10 +672,14 @@ EOF
     else
       echo '#!/bin/sh' > /etc/rc.local
     fi
-cat >> /etc/rc.local <<'EOF'
+    rc_delay=15
+    if uname -m | grep -qi '^arm'; then
+      rc_delay=60
+    fi
+cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
-(sleep 15
+(sleep $rc_delay
 service ipsec restart
 service xl2tpd restart
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
