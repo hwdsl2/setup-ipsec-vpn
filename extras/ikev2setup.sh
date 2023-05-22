@@ -66,7 +66,7 @@ check_os() {
     else
       exiterr "This script only supports CentOS/RHEL 7-9."
     fi
-  elif grep -qs "Amazon Linux release 2" /etc/system-release; then
+  elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
     os_type=amzn
     os_ver=2
   else
