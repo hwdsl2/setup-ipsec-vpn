@@ -265,6 +265,12 @@ install_vpn_pkgs() {
       libcurl4-nss-dev flex bison gcc make libnss3-tools \
       libevent-dev libsystemd-dev uuid-runtime ppp xl2tpd >/dev/null
   ) || exiterr2
+  if [ "$os_type" = "debian" ] && [ "$os_ver" = 12 ]; then
+    (
+      set -x
+      apt-get -yqq install rsyslog >/dev/null
+    ) || exiterr2
+  fi
 }
 
 install_nss_pkgs() {
