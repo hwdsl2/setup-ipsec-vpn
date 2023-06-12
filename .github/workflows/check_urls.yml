@@ -32,41 +32,45 @@ jobs:
 
           wg="wget -t 3 -T 30 -nv -O"
           sl="sleep 1"
-          gi="https://git.io"
+          gi="https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master"
           gh="https://github.com/hwdsl2/setup-ipsec-vpn/raw/master"
 
-          $wg vpnsetup.sh          "$gi/vpnsetup"; $sl
-          $wg vpnsetup_centos.sh   "$gi/vpnsetup-centos"; $sl
-          $wg vpnsetup_amzn.sh     "$gi/vpnsetup-amzn"; $sl
-          $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup-ubuntu"; $sl
-          $wg vpnsetup_alpine.sh   "$gi/vpnsetup-alpine"; $sl
-          $wg quickstart.sh        "$gi/vpnstart"; $sl
-          $wg quickstart_.sh       "$gi/vpnquickstart"; $sl
-          $wg ikev2setup.sh        "$gi/ikev2setup"; $sl
-          $wg vpnupgrade.sh        "$gi/vpnupgrade"; $sl
-          $wg vpnupgrade_centos.sh "$gi/vpnupgrade-centos"; $sl
-          $wg vpnupgrade_amzn.sh   "$gi/vpnupgrade-amzn"; $sl
-          $wg vpnupgrade_ubuntu.sh "$gi/vpnupgrade-ubuntu"; $sl
-          $wg vpnupgrade_alpine.sh "$gi/vpnupgrade-alpine"; $sl
-          $wg vpnuninstall.sh      "$gi/vpnuninstall"
+          $wg vpnsetup.sh          "$gi/vpnsetup.sh"; $sl
+          $wg vpnsetup_centos.sh   "$gi/vpnsetup_centos.sh"; $sl
+          $wg vpnsetup_amzn.sh     "$gi/vpnsetup_amzn.sh"; $sl
+          $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup_ubuntu.sh"; $sl
+          $wg vpnsetup_alpine.sh   "$gi/vpnsetup_alpine.sh"; $sl
+          $wg quickstart.sh        "$gi/extras/quickstart.sh"; $sl
+          $wg ikev2setup.sh        "$gi/extras/ikev2setup.sh"; $sl
+          $wg vpnupgrade.sh        "$gi/extras/vpnupgrade.sh"; $sl
+          $wg vpnupgrade_centos.sh "$gi/extras/vpnupgrade_centos.sh"; $sl
+          $wg vpnupgrade_amzn.sh   "$gi/extras/vpnupgrade_amzn.sh"; $sl
+          $wg vpnupgrade_ubuntu.sh "$gi/extras/vpnupgrade_ubuntu.sh"; $sl
+          $wg vpnupgrade_alpine.sh "$gi/extras/vpnupgrade_alpine.sh"; $sl
+          $wg vpnuninstall.sh      "$gi/extras/vpnuninstall.sh"; $sl
+          $wg add_vpn_user.sh      "$gi/extras/add_vpn_user.sh"; $sl
+          $wg del_vpn_user.sh      "$gi/extras/del_vpn_user.sh"; $sl
+          $wg update_vpn_users.sh  "$gi/extras/update_vpn_users.sh"; $sl
+          $wg ikev2changeaddr.sh   "$gi/extras/ikev2changeaddr.sh"; $sl
+          $wg ikev2onlymode.sh     "$gi/extras/ikev2onlymode.sh"; $sl
 
-          $wg vpnsetup2.sh          "$gh/vpnsetup.sh"
-          $wg vpnsetup_centos2.sh   "$gh/vpnsetup_centos.sh"
-          $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"
-          $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"
-          $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"
-          $wg quickstart2.sh        "$gh/extras/quickstart.sh"
-          $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"
-          $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"
-          $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"
-          $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"
-          $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"
-          $wg vpnupgrade_alpine2.sh "$gh/extras/vpnupgrade_alpine.sh"
-          $wg vpnuninstall2.sh      "$gh/extras/vpnuninstall.sh"
-          $wg add_vpn_user2.sh      "$gh/extras/add_vpn_user.sh"
-          $wg del_vpn_user2.sh      "$gh/extras/del_vpn_user.sh"
-          $wg update_vpn_users2.sh  "$gh/extras/update_vpn_users.sh"
-          $wg ikev2changeaddr2.sh   "$gh/extras/ikev2changeaddr.sh"
+          $wg vpnsetup2.sh          "$gh/vpnsetup.sh"; $sl
+          $wg vpnsetup_centos2.sh   "$gh/vpnsetup_centos.sh"; $sl
+          $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"; $sl
+          $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"; $sl
+          $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"; $sl
+          $wg quickstart2.sh        "$gh/extras/quickstart.sh"; $sl
+          $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"; $sl
+          $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"; $sl
+          $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"; $sl
+          $wg vpnupgrade_amzn2.sh   "$gh/extras/vpnupgrade_amzn.sh"; $sl
+          $wg vpnupgrade_ubuntu2.sh "$gh/extras/vpnupgrade_ubuntu.sh"; $sl
+          $wg vpnupgrade_alpine2.sh "$gh/extras/vpnupgrade_alpine.sh"; $sl
+          $wg vpnuninstall2.sh      "$gh/extras/vpnuninstall.sh"; $sl
+          $wg add_vpn_user2.sh      "$gh/extras/add_vpn_user.sh"; $sl
+          $wg del_vpn_user2.sh      "$gh/extras/del_vpn_user.sh"; $sl
+          $wg update_vpn_users2.sh  "$gh/extras/update_vpn_users.sh"; $sl
+          $wg ikev2changeaddr2.sh   "$gh/extras/ikev2changeaddr.sh"; $sl
           $wg ikev2onlymode2.sh     "$gh/extras/ikev2onlymode.sh"
 
           diff vpnsetup.sh          ../vpnsetup.sh
@@ -75,7 +79,6 @@ jobs:
           diff vpnsetup_ubuntu.sh   ../vpnsetup_ubuntu.sh
           diff vpnsetup_alpine.sh   ../vpnsetup_alpine.sh
           diff quickstart.sh        ../extras/quickstart.sh
-          diff quickstart_.sh       ../extras/quickstart.sh
           diff ikev2setup.sh        ../extras/ikev2setup.sh
           diff vpnupgrade.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
@@ -83,6 +86,11 @@ jobs:
           diff vpnupgrade_ubuntu.sh ../extras/vpnupgrade_ubuntu.sh
           diff vpnupgrade_alpine.sh ../extras/vpnupgrade_alpine.sh
           diff vpnuninstall.sh      ../extras/vpnuninstall.sh
+          diff add_vpn_user.sh      ../extras/add_vpn_user.sh
+          diff del_vpn_user.sh      ../extras/del_vpn_user.sh
+          diff update_vpn_users.sh  ../extras/update_vpn_users.sh
+          diff ikev2changeaddr.sh   ../extras/ikev2changeaddr.sh
+          diff ikev2onlymode.sh     ../extras/ikev2onlymode.sh
 
           diff vpnsetup2.sh          ../vpnsetup.sh
           diff vpnsetup_centos2.sh   ../vpnsetup_centos.sh
