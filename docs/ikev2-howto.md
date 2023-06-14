@@ -140,16 +140,18 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 [[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
-First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
+First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. For macOS Ventura and newer, open System Settings and search for Profiles. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
 To connect to the VPN:
 
 1. Open System Preferences and go to the Network section.
 1. Select the VPN connection with `Your VPN Server IP` (or DNS name).
-1. Check the **Show VPN status in menu bar** checkbox.
-1. Click **Connect**.
+1. Check the **Show VPN status in menu bar** checkbox. For macOS Ventura and newer, this setting can be configured in System Settings -> Control Center -> Menu Bar Only section.
+1. Click **Connect**, or slide the VPN switch ON.
 
-(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your Mac is on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn).
+(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your Mac is on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**. To find this setting on macOS Ventura and newer, click on the "i" icon on the right of the VPN connection.
+
+You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn).
 
 <details>
 <summary>
@@ -209,7 +211,9 @@ To connect to the VPN:
 1. Go to Settings -> VPN. Select the VPN connection with `Your VPN Server IP` (or DNS name).
 1. Slide the **VPN** switch ON.
 
-(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your iOS device is on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**. You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network, or to start the VPN connection both on Wi-Fi and cellular. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn).
+(Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your iOS device is on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
+
+You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network, or to start the VPN connection both on Wi-Fi and cellular. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn).
 
 <details>
 <summary>
