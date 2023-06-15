@@ -93,6 +93,8 @@ check_os() {
   elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
     os_type=amzn
     os_ver=2
+  elif grep -qs "Amazon Linux release 2023" /etc/system-release; then
+    exiterr "Amazon Linux 2023 is not supported."
   else
     os_type=$(lsb_release -si 2>/dev/null)
     [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")

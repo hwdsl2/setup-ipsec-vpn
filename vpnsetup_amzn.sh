@@ -54,7 +54,11 @@ check_root() {
 
 check_os() {
   if ! grep -qs "Amazon Linux release 2 " /etc/system-release; then
-    exiterr "This script only supports Amazon Linux 2."
+    if grep -qs "Amazon Linux release 2023" /etc/system-release; then
+      exiterr "Amazon Linux 2023 is not supported."
+    else
+      exiterr "This script only supports Amazon Linux 2."
+    fi
   fi
 }
 
