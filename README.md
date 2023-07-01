@@ -84,10 +84,10 @@ A cloud server, virtual private server (VPS) or dedicated server, with an instal
 Other supported Linux distributions.
 </summary>
 
-- Raspberry Pi OS (Raspbian) 11 or 10
+- Raspberry Pi OS (Raspbian)
 - Kali Linux
-- Alpine Linux 3.17 or 3.16
-- Red Hat Enterprise Linux (RHEL) 9, 8 or 7
+- Alpine Linux
+- Red Hat Enterprise Linux (RHEL)
 </details>
 
 This also includes Linux VMs in public clouds, such as [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) and [Microsoft Azure](https://azure.microsoft.com). Public cloud users can also deploy using [user data](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
@@ -266,11 +266,9 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](docs/clients-xauth.md)**
 
-**[:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn)**
+**Read [:book: VPN book](https://books2read.com/vpn) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
-
-Like this project? [:heart: Sponsor](https://github.com/sponsors/hwdsl2?metadata_o=i) or [:coffee: Support](https://ko-fi.com/hwdsl2) and access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 
 ## Important notes
 

@@ -84,10 +84,10 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 其他受支持的 Linux 发行版。
 </summary>
 
-- Raspberry Pi OS (Raspbian) 11 或者 10
+- Raspberry Pi OS (Raspbian)
 - Kali Linux
-- Alpine Linux 3.17 或者 3.16
-- Red Hat Enterprise Linux (RHEL) 9, 8 或者 7
+- Alpine Linux
+- Red Hat Enterprise Linux (RHEL)
 </details>
 
 这也包括公共云服务中的 Linux 虚拟机，例如 [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) 和 [Microsoft Azure](https://azure.microsoft.com)。公共云用户也可以使用[用户数据](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup)部署。
@@ -266,11 +266,9 @@ sudo ikev2.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**[:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://books2read.com/vpnzh)**
+**阅读 [:book: VPN book](https://books2read.com/vpnzh) 以访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
-
-喜欢这个项目？[:heart: 赞助](https://github.com/sponsors/hwdsl2?metadata_o=iz) 或 [:coffee: 支持](https://ko-fi.com/hwdsl2) 并访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。
 
 ## 重要提示
 
