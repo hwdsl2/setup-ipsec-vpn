@@ -107,7 +107,7 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 
 If you get an error when trying to connect, see [Troubleshooting](#ikev1-troubleshooting).
 
-## OS X
+## OS X (Pre 13.x Ventura)
 
 > You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
 
@@ -129,6 +129,31 @@ If you get an error when trying to connect, see [Troubleshooting](#ikev1-trouble
 1. Click **OK** to close the Advanced settings, and then click **Apply** to save the VPN connection information.
 
 To connect to the VPN: Use the menu bar icon, or go to the Network section of System Preferences, select the VPN and choose **Connect**. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see [Troubleshooting](#ikev1-troubleshooting).
+
+## OS X 13.x +
+
+> You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/XAuth](clients-xauth.md) mode.
+
+1. Open **System Settings** and go to the **Network** section.
+1. Click the **VPN** button on the right hand side of the window.
+1. Click the **Add VPN Configuration** drop-down menu and select **L2TP over IPSec**.
+1. In the window that opens enter anything you like for the **Display Name**.
+1. Leave **Configuration** as `Default`
+1. Enter `Your VPN Server IP` for the **Server Address**.
+1. Enter `Your VPN Username` for the **Account Name**.
+1. For **User Authentication** leave the dropdown selection on `Password`
+1. For **Password** enter `Your VPN Password`.
+1. For **Machine Authentication**, select the **Shared Secret** from the dropdown
+1. For **Shared Secret** enter `Your VPN IPsec PSK`.
+1. Leave **Group Name** empty 
+1. **(Important before you click create)** Click the **Options** tab and make sure the **Send all traffic over VPN connection** toggle is on.
+1. **(Important before you click create)** Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** drop down.
+1. Click **Create** to save yoiur configuration and close the settings window
+1. To show the VPN status in your menu bar and for shortcut access go into **System Settings** and to the **Control Centre** section. Scroll to the bottom and choose `Show in menu bar` from the dropdown. 
+
+To connect to the VPN: Use the menu bar icon, or go to the **Network** section of **System Settings**, select the **VPN** and toggle the switch for your VPN configuration. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#ikev1-troubleshooting).
 
