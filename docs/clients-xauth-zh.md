@@ -9,7 +9,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 ---
 * 平台名称
   * [Windows](#windows)
-  * [OS X (macOS)](#os-x)
+  * [OS X (macOS)](#os-x-macos)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Linux](#linux)
@@ -38,7 +38,30 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 
 如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
 
-## OS X
+## OS X (macOS)
+
+### macOS 13 (Ventura) and newer
+
+> 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
+
+1. 打开系统设置并转到网络部分。
+1. 在窗口右方单击 **VPN**。
+1. 从 **添加VPN配置** 下拉菜单选择 **Cisco IPSec**。
+1. 在打开的窗口中的 **显示名称** 字段中输入任意内容。
+1. 在 **服务器地址** 字段中输入`你的 VPN 服务器 IP`。
+1. 在 **帐户名称** 字段中输入`你的 VPN 用户名`。
+1. 在 **密码** 字段中输入`你的 VPN 密码`。
+1. 从 **类型** 下拉菜单选择 **共享密钥**。
+1. 在 **共享密钥** 字段中输入`你的 VPN IPsec PSK`。
+1. 保持 **群组名称** 字段空白。
+1. 单击 **创建** 保存 VPN 连接信息。
+1. 如果要在菜单栏显示 VPN 状态并快速访问相关设置，你可以转到系统设置的控制中心部分，滚动到页面底部并在 **VPN** 下拉菜单选择 **在菜单栏中显示**。
+
+要连接到 VPN：使用菜单栏中的图标，或者打开系统设置的 **VPN** 部分并启用 VPN 连接。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+
+### macOS 12 (Monterey) and older
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 
@@ -56,7 +79,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 1. 保持 **群组名称** 字段空白。
 1. 单击 **好**。
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
-1. 单击 **应用** 保存VPN连接信息。
+1. 单击 **应用** 保存 VPN 连接信息。
 
 要连接到 VPN：使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 

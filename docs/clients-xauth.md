@@ -9,7 +9,7 @@ IPsec/XAuth mode is also called "Cisco IPsec". This mode is generally **faster t
 ---
 * Platforms
   * [Windows](#windows)
-  * [OS X (macOS)](#os-x)
+  * [OS X (macOS)](#os-x-macos)
   * [Android](#android)
   * [iOS (iPhone/iPad)](#ios)
   * [Linux](#linux)
@@ -38,7 +38,30 @@ Once connected, you will see **tunnel enabled** in the VPN Connect status window
 
 If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
 
-## OS X
+## OS X (macOS)
+
+### macOS 13 (Ventura) and newer
+
+> You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/L2TP](clients.md) mode.
+
+1. Open **System Settings** and go to the **Network** section.
+1. Click **VPN** on the right hand side of the window.
+1. Click the **Add VPN Configuration** drop-down menu and select **Cisco IPSec**.
+1. In the window that opens, enter anything you like for the **Display name**.
+1. Enter `Your VPN Server IP` for the **Server address**.
+1. Enter `Your VPN Username` for the **Account name**.
+1. Enter `Your VPN Password` for the **Password**.
+1. Select **Shared secret** from the **Type** drop-down menu.
+1. Enter `Your VPN IPsec PSK` for the **Shared secret**.
+1. Leave the **Group name** field blank.
+1. Click **Create** to save the VPN configuration.
+1. To show VPN status in your menu bar and for shortcut access, go to the **Control Center** section of **System Settings**. Scroll to the bottom and select `Show in Menu Bar` from the **VPN** drop-down menu.
+
+To connect to the VPN: Use the menu bar icon, or go to the **VPN** section of **System Settings** and toggle the switch for your VPN configuration. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see [Troubleshooting](clients.md#ikev1-troubleshooting).
+
+### macOS 12 (Monterey) and older
 
 > You may also connect using [IKEv2](ikev2-howto.md) (recommended) or [IPsec/L2TP](clients.md) mode.
 
