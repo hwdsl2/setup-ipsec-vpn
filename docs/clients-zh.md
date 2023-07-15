@@ -109,7 +109,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## OS X (macOS)
 
-### macOS 13 (Ventura) and newer
+### macOS 13 (Ventura) 及以上
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -134,7 +134,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 如果在连接过程中遇到错误，请参见 [故障排除](#ikev1-故障排除)。
 
-### macOS 12 (Monterey) and older
+### macOS 12 (Monterey) 及以下
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接。
 
@@ -465,15 +465,12 @@ strongswan down myvpn
 * [Windows 错误 789 或 691](#windows-错误-789-或-691)
 * [Windows 错误 628 或 766](#windows-错误-628-或-766)
 * [Windows 10 正在连接](#windows-10-正在连接)
-* [Windows 10 升级](#windows-10-升级)
+* [Windows 10/11 升级](#windows-1011-升级)
 * [Windows DNS 泄漏和 IPv6](#windows-dns-泄漏和-ipv6)
 * [Android MTU/MSS 问题](#android-mtumss-问题)
-* [Android 6 和 7](#android-6-和-7)
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
-* [iOS 13+ 和 macOS 10.15/11+](#ios-13-和-macos-101511)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
-* [Debian 11/10 内核](#debian-1110-内核)
-* [其它错误](#其它错误)
+* [Debian 内核](#debian-内核)
 
 ### 检查日志及 VPN 状态
 
@@ -584,9 +581,9 @@ ipsec trafficstatus
 1. 选择 **打开"网络和 Internet"设置**，然后在打开的页面中单击左侧的 **VPN**。
 1. 选择新的 VPN 连接，然后单击 **连接**。如果出现提示，在登录窗口中输入 `你的 VPN 用户名` 和 `密码` ，并单击 **确定**。
 
-### Windows 10 升级
+### Windows 10/11 升级
 
-在升级 Windows 10 版本之后 （比如从 1709 到 1803），你可能需要重新按照上面的 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
+在升级 Windows 10/11 版本之后（比如从 21H2 到 22H2），你可能需要重新按照 [Windows 错误 809](#windows-错误-809) 中的步骤修改注册表并重启。
 
 ### Windows DNS 泄漏和 IPv6
 
@@ -613,52 +610,36 @@ echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 
 参考链接：[[1]](https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/)。
 
-### Android 6 和 7
-
-如果你的 Android 6.x 或者 7.x 设备无法连接，请尝试以下步骤：
-
-1. 单击 VPN 连接旁边的设置按钮，选择 "Show advanced options" 并且滚动到底部。如果选项 "Backward compatible mode" 存在（参见[屏幕截图](images/vpn-profile-Android.png)），请启用它并重试连接。如果不存在，请尝试下一步。
-1. 编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug` 一行并切换它的值。也就是说，将 `sha2-truncbug=no` 替换为 `sha2-truncbug=yes`，或者将 `sha2-truncbug=yes` 替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
-
-**Docker 用户：** 如需在 `/etc/ipsec.conf` 中设置 `sha2-truncbug=yes`（默认为 `no`），你可以在[你的 env 文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#如何使用本镜像)中添加 `VPN_SHA2_TRUNCBUG=yes`，然后重新创建 Docker 容器。
-
 ### macOS 通过 VPN 发送通信
 
-OS X (macOS) 用户： 如果可以成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [macOS](#os-x-macos) 部分并完成以下步骤。保存 VPN 配置然后重新连接。
+OS X (macOS) 用户：如果可以成功地使用 IPsec/L2TP 模式连接，但是你的公有 IP 没有显示为 `你的 VPN 服务器 IP`，请阅读上面的 [macOS](#os-x-macos) 部分并完成以下步骤。保存 VPN 配置然后重新连接。
+
+对于 macOS 13 (Ventura) 及以上：
+
+1. 单击 **选项** 选项卡，并启用 **通过VPN连接发送所有流量**。
+1. 单击 **TCP/IP** 选项卡，然后在 **配置IPv6** 下拉菜单选择 **仅本地链接**。
+
+对于 macOS 12 (Monterey) 及以下：
 
 1. 单击 **高级** 按钮，并选中 **通过VPN连接发送所有通信** 复选框。
 1. 单击 **TCP/IP** 选项卡，并在 **配置IPv6** 部分中选择 **仅本地链接**。
 
 如果在尝试上面步骤之后，你的计算机仍然不能通过 VPN 连接发送通信，检查一下服务顺序。进入系统偏好设置中的网络部分，单击左侧连接列表下方的齿轮按钮，选择 "设定服务顺序"。然后将 VPN 连接拖动到顶端。
 
-### iOS 13+ 和 macOS 10.15/11+
-
-如果你的设备运行 iOS 13+, macOS 10.15 (Catalina), macOS 11 (Big Sur) 或以上版本，并且无法连接到 VPN，请尝试以下步骤：编辑 VPN 服务器上的 `/etc/ipsec.conf`。找到 `sha2-truncbug=yes` 并将它替换为 `sha2-truncbug=no`。保存修改并运行 `service ipsec restart`。然后重新连接 VPN。
-
-另外，macOS Big Sur 11.0 用户应该更新到版本 11.1 或以上，以修复 VPN 连接的某些问题。要检查 macOS 版本并安装更新，请看[这里](https://www.businessinsider.com/how-to-check-mac-os-version)。
-
 ### iOS/Android 睡眠模式
 
-为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后不久就会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被 [故意设计的](https://discussions.apple.com/thread/2333948) 并且不能被配置。
+为了节约电池，iOS 设备 (iPhone/iPad) 在屏幕变黑（睡眠模式）之后会自动断开 Wi-Fi 连接。这会导致 IPsec VPN 断开。该行为是被[故意设计的](https://discussions.apple.com/thread/2333948)并且不能被配置。
 
 如果需要 VPN 在设备唤醒后自动重连，你可以使用 [IKEv2](ikev2-howto-zh.md) 模式连接（推荐）并启用 "VPN On Demand" 功能。或者你也可以另外尝试使用 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)，它支持 [一些选项](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) 比如 "Reconnect on Wakeup" 和 "Seamless Tunnel"。
 
 <a name="debian-10-内核"></a>
-Android 设备在进入睡眠模式不久后也会断开 Wi-Fi 连接，如果你没有启用选项 "睡眠期间保持 WLAN 开启" 的话。该选项在 Android 8 (Oreo) 和更新版本中不再可用。另外，你也可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 [这里](https://support.google.com/android/answer/9089766?hl=zh-Hans)。
+Android 设备在进入睡眠模式后也会断开 Wi-Fi 连接。你可以尝试打开 "始终开启 VPN" 选项以保持连接。详情请看 [这里](https://support.google.com/android/answer/9089766?hl=zh-Hans)。
 
-### Debian 11/10 内核
+### Debian 内核
 
-Debian 11 或者 10 用户：运行 `uname -r` 检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形并显示警告。在这种情况下，你可以另外使用 [IKEv2](ikev2-howto-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接到 VPN。
+Debian 用户：运行 `uname -r` 检查你的服务器的 Linux 内核版本。如果它包含 `cloud` 字样，并且 `/dev/ppp` 不存在，则该内核缺少 `ppp` 支持从而不能使用 IPsec/L2TP 模式。VPN 安装脚本会尝试检测此情形并显示警告。在这种情况下，你可以另外使用 [IKEv2](ikev2-howto-zh.md) 或者 [IPsec/XAuth](clients-xauth-zh.md) 模式连接到 VPN。
 
 要解决 IPsec/L2TP 模式的问题，你可以换用标准的 Linux 内核，通过安装比如 `linux-image-amd64` 软件包来实现。然后更新 GRUB 的内核默认值并重启服务器。
-
-### 其它错误
-
-如果你遇到其它错误，请参见以下链接：
-
-* http://www.tp-link.com/en/faq-1029.html
-* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-* https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
 ## 授权协议
 

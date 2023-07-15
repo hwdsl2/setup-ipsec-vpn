@@ -463,15 +463,12 @@ strongswan down myvpn
 * [Windows error 789 or 691](#windows-error-789-or-691)
 * [Windows error 628 or 766](#windows-error-628-or-766)
 * [Windows 10 connecting](#windows-10-connecting)
-* [Windows 10 upgrades](#windows-10-upgrades)
+* [Windows 10/11 upgrades](#windows-1011-upgrades)
 * [Windows DNS leaks and IPv6](#windows-dns-leaks-and-ipv6)
 * [Android MTU/MSS issues](#android-mtumss-issues)
-* [Android 6 and 7](#android-6-and-7)
 * [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
-* [iOS 13+ and macOS 10.15/11+](#ios-13-and-macos-101511)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
-* [Debian 11/10 kernel](#debian-1110-kernel)
-* [Other errors](#other-errors)
+* [Debian kernel](#debian-kernel)
 
 ### Check logs and VPN status
 
@@ -582,9 +579,9 @@ If using Windows 10 and the VPN is stuck on "connecting" for more than a few min
 1. Select **Open Network & Internet settings**, then on the page that opens, click **VPN** on the left.
 1. Select the new VPN entry, then click **Connect**. If prompted, enter `Your VPN Username` and `Password`, then click **OK**.
 
-### Windows 10 upgrades
+### Windows 10/11 upgrades
 
-After upgrading Windows 10 version (e.g. from 1709 to 1803), you may need to re-apply the fix above for [Windows Error 809](#windows-error-809) and reboot.
+After upgrading Windows 10/11 version (e.g. from 21H2 to 22H2), you may need to re-apply the fix above for [Windows Error 809](#windows-error-809) and reboot.
 
 ### Windows DNS leaks and IPv6
 
@@ -611,29 +608,21 @@ echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
 
 Reference: [[1]](https://www.zeitgeist.se/2013/11/26/mtu-woes-in-ipsec-tunnels-how-to-fix/).
 
-### Android 6 and 7
-
-If your Android 6.x or 7.x device cannot connect, try these steps:
-
-1. Tap the "Settings" icon next to your VPN profile. Select "Show advanced options" and scroll down to the bottom. If the option "Backward compatible mode" exists ([see screenshot](images/vpn-profile-Android.png)), enable it and reconnect the VPN. If not, try the next step.
-1. Edit `/etc/ipsec.conf` on the VPN server. Find the line `sha2-truncbug` and toggle its value. i.e. Replace `sha2-truncbug=no` with `sha2-truncbug=yes`, or replace `sha2-truncbug=yes` with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
-
-**Docker users:** You may set `sha2-truncbug=yes` (default is `no`) in `/etc/ipsec.conf` by adding `VPN_SHA2_TRUNCBUG=yes` to [your env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image), then re-create the Docker container.
-
 ### macOS send traffic over VPN
 
 OS X (macOS) users: If you can successfully connect using IPsec/L2TP mode, but your public IP does not show `Your VPN Server IP`, read the [macOS](#os-x-macos) section above and complete these steps. Save VPN configuration and re-connect.
+
+For macOS 13 (Ventura) and newer:
+
+1. Click the **Options** tab, and make sure the **Send all traffic over VPN connection** toggle is ON.
+1. Click the **TCP/IP** tab, and select **Link-local only** from the **Configure IPv6** drop-down menu.
+
+For macOS 12 (Monterey) and older:
 
 1. Click the **Advanced** button and make sure the **Send all traffic over VPN connection** checkbox is checked.
 1. Click the **TCP/IP** tab, and make sure **Link-local only** is selected in the **Configure IPv6** section.
 
 After trying the steps above, if your computer is still not sending traffic over the VPN, check the service order. From the main network preferences screen, select "set service order" in the cog drop down under the list of connections. Drag the VPN connection to the top.
-
-### iOS 13+ and macOS 10.15/11+
-
-If your device running iOS 13+, macOS 10.15 (Catalina), macOS 11 (Big Sur) or above cannot connect, try these steps: Edit `/etc/ipsec.conf` on the VPN server. Find `sha2-truncbug=yes` and replace it with `sha2-truncbug=no`. Save the file and run `service ipsec restart`. Then reconnect the VPN.
-
-In addition, users running macOS Big Sur 11.0 should update to version 11.1 or newer, to fix some issues with VPN connections. To check your macOS version and update, refer to [this article](https://www.businessinsider.com/how-to-check-mac-os-version).
 
 ### iOS/Android sleep mode
 
@@ -642,21 +631,13 @@ To save battery, iOS devices (iPhone/iPad) will automatically disconnect Wi-Fi s
 If you need the VPN to auto-reconnect when the device wakes up, you may connect using [IKEv2](ikev2-howto.md) mode (recommended) and enable the "VPN On Demand" feature. Alternatively, you may try [OpenVPN](https://github.com/hwdsl2/openvpn-install) instead, which [has support for options](https://openvpn.net/vpn-server-resources/faq-regarding-openvpn-connect-ios/) such as "Reconnect on Wakeup" and "Seamless Tunnel".
 
 <a name="debian-10-kernel"></a>
-Android devices will also disconnect Wi-Fi shortly after entering sleep mode, unless the option "Keep Wi-Fi on during sleep" is enabled. This option is no longer available in Android 8 (Oreo) and newer. Alternatively, you may try enabling the "Always-on VPN" option to stay connected. Learn more [here](https://support.google.com/android/answer/9089766?hl=en).
+Android devices may also disconnect Wi-Fi after entering sleep mode. You may try enabling the "Always-on VPN" option to stay connected. Learn more [here](https://support.google.com/android/answer/9089766).
 
-### Debian 11/10 kernel
+### Debian kernel
 
-Debian 11 or 10 users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show a warning. In this case, you may instead use [IKEv2](ikev2-howto.md) or [IPsec/XAuth](clients-xauth.md) mode to connect to the VPN.
+Debian users: Run `uname -r` to check your server's Linux kernel version. If it contains the word "cloud", and `/dev/ppp` is missing, then the kernel lacks `ppp` support and cannot use IPsec/L2TP mode. The VPN setup scripts try to detect this and show a warning. In this case, you may instead use [IKEv2](ikev2-howto.md) or [IPsec/XAuth](clients-xauth.md) mode to connect to the VPN.
 
 To fix the issue with IPsec/L2TP mode, you may switch to the standard Linux kernel by installing e.g. the `linux-image-amd64` package. Then update the default kernel in GRUB and reboot your server.
-
-### Other errors
-
-If you encounter other errors, refer to the links below:
-
-* http://www.tp-link.com/en/faq-1029.html
-* https://documentation.meraki.com/MX-Z/Client_VPN/Troubleshooting_Client_VPN#Common_Connection_Issues   
-* https://stackoverflow.com/questions/25245854/windows-8-1-gets-error-720-on-connect-vpn
 
 ## License
 

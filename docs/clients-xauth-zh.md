@@ -40,7 +40,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 
 ## OS X (macOS)
 
-### macOS 13 (Ventura) and newer
+### macOS 13 (Ventura) 及以上
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 
@@ -61,7 +61,7 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 
 如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
 
-### macOS 12 (Monterey) and older
+### macOS 12 (Monterey) 及以下
 
 > 你也可以使用 [IKEv2](ikev2-howto-zh.md)（推荐）或者 [IPsec/L2TP](clients-zh.md) 模式连接。
 
