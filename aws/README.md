@@ -7,7 +7,7 @@ This template will create a fully-working IPsec VPN server on Amazon Elastic Com
 Available customization parameters:
 
 - Amazon EC2 instance type
-> <details><summary><strong>Note:</strong> It is possible that not all instance type options offered by this template are available in a specific AWS region.(expand for details)
+> <details><summary><strong>Note</strong>: It is possible that not all instance type options offered by this template are available in a specific AWS region.(expand for details)
 > </summary>
 > 
 > For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).</details>
@@ -16,7 +16,7 @@ Available customization parameters:
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
 
-> **Note:** DO NOT use these special characters within values: `\ " '`
+> **Note**: DO NOT use these special characters within values: `\ " '`
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
