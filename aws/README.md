@@ -78,7 +78,7 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 
 ## Author
 
-Copyright (C) 2020-2021 [S. X. Liang](https://github.com/scottpedia)
+Copyright (C) 2020-2023 [S. X. Liang](https://github.com/scottpedia)
 
 ## Screenshots
 
