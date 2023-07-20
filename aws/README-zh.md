@@ -53,9 +53,9 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 
 | 发行版本 | 默认登录用户名 |
 | --- | --- |
-| Ubuntu (`Ubuntu *.04`) |  `ubuntu` |
-| Debian (`Debian 9`) | `admin` |
-| CentOS (`CenOS 7/8`) | `centos` |
+| Ubuntu |  `ubuntu` |
+| Debian | `admin` |
+| CentOS | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
 此模板在部署期间为你生成一个密钥对，并且在成功创建堆栈后，其中的私钥将在 **Outputs** 选项卡下以文本形式提供。
