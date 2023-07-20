@@ -13,255 +13,14 @@
             }
         }
     },
-    "Metadata": {
-        "AWS::CloudFormation::Designer": {
-            "0a162613-8f2e-4864-be99-75d946934a4a": {
-                "size": {
-                    "width": 350,
-                    "height": 440
-                },
-                "position": {
-                    "x": 290,
-                    "y": 70
-                },
-                "z": 1,
-                "embeds": [
-                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
-                ]
-            },
-            "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2": {
-                "size": {
-                    "width": 290,
-                    "height": 360
-                },
-                "position": {
-                    "x": 310,
-                    "y": 110
-                },
-                "z": 2,
-                "parent": "0a162613-8f2e-4864-be99-75d946934a4a",
-                "embeds": [
-                    "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a",
-                    "464ea4ae-199c-4917-9404-aed674a8615a",
-                    "ec256f27-66c3-423c-9d98-b9f0f634e7b8",
-                    "4731d93c-f3fc-420a-b535-f0b99840f356",
-                    "40c2d4e7-f01a-45b2-8878-a06680aa2216"
-                ],
-                "dependson": [
-                    "0a162613-8f2e-4864-be99-75d946934a4a",
-                    "464ea4ae-199c-4917-9404-aed674a8615a"
-                ]
-            },
-            "4731d93c-f3fc-420a-b535-f0b99840f356": {
-                "size": {
-                    "width": 230,
-                    "height": 130
-                },
-                "position": {
-                    "x": 350,
-                    "y": 320
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": [
-                    "5262ea47-2337-4be8-a4d1-1f0af38a1731"
-                ],
-                "iscontainedinside": [
-                    "0a162613-8f2e-4864-be99-75d946934a4a"
-                ],
-                "dependson": [
-                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
-                ]
-            },
-            "5262ea47-2337-4be8-a4d1-1f0af38a1731": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 440,
-                    "y": 350
-                },
-                "z": 4,
-                "parent": "4731d93c-f3fc-420a-b535-f0b99840f356",
-                "embeds": [],
-                "isassociatedwith": [
-                    "db7c3441-9f9a-4677-a14d-bccfc06714d1"
-                ],
-                "dependson": [
-                    "4731d93c-f3fc-420a-b535-f0b99840f356",
-                    "9d3d19ab-d561-4f59-89de-73498eeeebda",
-                    "464ea4ae-199c-4917-9404-aed674a8615a"
-                ]
-            },
-            "464ea4ae-199c-4917-9404-aed674a8615a": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 510,
-                    "y": 220
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": [],
-                "dependson": [
-                    "0a162613-8f2e-4864-be99-75d946934a4a"
-                ]
-            },
-            "40c2d4e7-f01a-45b2-8878-a06680aa2216": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 430,
-                    "y": 140
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": [],
-                "iscontainedinside": [
-                    "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
-                ],
-                "dependson": [
-                    "4731d93c-f3fc-420a-b535-f0b99840f356",
-                    "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a",
-                    "99fce86e-18b8-4b1b-a572-7bef3c5cece7",
-                    "58a1ab6f-49ac-4ffa-93c7-3f708bf65871",
-                    "ec256f27-66c3-423c-9d98-b9f0f634e7b8"
-                ]
-            },
-            "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 350,
-                    "y": 140
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": []
-            },
-            "ec256f27-66c3-423c-9d98-b9f0f634e7b8": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 430,
-                    "y": 220
-                },
-                "z": 3,
-                "parent": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2",
-                "embeds": [],
-                "iscontainedinside": [
-                    "0a162613-8f2e-4864-be99-75d946934a4a"
-                ]
-            },
-            "5bb16646-dc1e-4661-9164-6ecc6848dc83": {
-                "source": {
-                    "id": "4731d93c-f3fc-420a-b535-f0b99840f356"
-                },
-                "target": {
-                    "id": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
-                },
-                "z": 3
-            },
-            "99fce86e-18b8-4b1b-a572-7bef3c5cece7": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 150,
-                    "y": 250
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "58a1ab6f-49ac-4ffa-93c7-3f708bf65871": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 150,
-                    "y": 170
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "d3fab7a7-d694-435e-930d-ff7693dffbbc": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 110,
-                    "y": 90
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "2c5cc5a9-5a17-4d54-80ea-56e204c9c1a1": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 70,
-                    "y": 170
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "e81dfbbc-e8ee-4f4b-adb0-b314056ab0b3": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 70,
-                    "y": 250
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "9d3d19ab-d561-4f59-89de-73498eeeebda": {
-                "source": {
-                    "id": "0a162613-8f2e-4864-be99-75d946934a4a"
-                },
-                "target": {
-                    "id": "464ea4ae-199c-4917-9404-aed674a8615a"
-                },
-                "z": 3
-            },
-            "361e0035-6c5a-48df-8339-3e31f19bf032": {
-                "source": {
-                    "id": "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a"
-                },
-                "target": {
-                    "id": "40c2d4e7-f01a-45b2-8878-a06680aa2216"
-                },
-                "z": 3
-            }
-        }
-    },
+    "Metadata": {},
     "Resources": {
         "VpnVpc": {
             "Type": "AWS::EC2::VPC",
             "Properties": {
                 "CidrBlock": "10.0.0.0/24"
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "0a162613-8f2e-4864-be99-75d946934a4a"
-                }
-            }
+            "Metadata": {}
         },
         "VpnSubnet": {
             "Type": "AWS::EC2::Subnet",
@@ -280,11 +39,7 @@
                     ]
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "5198eb6d-da4f-43e2-8a4b-b9bff02b26a2"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "VpnVpc",
                 "VpcInternetGateway"
@@ -297,11 +52,7 @@
                     "Ref": "VpnVpc"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "4731d93c-f3fc-420a-b535-f0b99840f356"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "VpnSubnet"
             ]
@@ -317,11 +68,7 @@
                     "Ref": "VpcInternetGateway"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "5262ea47-2337-4be8-a4d1-1f0af38a1731"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "VpnRouteTable",
                 "VpcInternetGateway",
@@ -430,11 +177,7 @@
                     ]
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "40c2d4e7-f01a-45b2-8878-a06680aa2216"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "VpnRouteTable",
                 "VpnServerVolume",
@@ -478,11 +221,7 @@
                     }
                 ]
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "ec256f27-66c3-423c-9d98-b9f0f634e7b8"
-                }
-            }
+            "Metadata": {}
         },
         "VpnServerVolume": {
             "Type": "AWS::EC2::Volume",
@@ -497,20 +236,12 @@
                 },
                 "Size": 8
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "9d4cbbc2-f521-436d-bb4a-85b82cf22a2a"
-                }
-            }
+            "Metadata": {}
         },
         "VpcInternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
             "Properties": {},
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "464ea4ae-199c-4917-9404-aed674a8615a"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "VpnVpc"
             ]
@@ -525,11 +256,7 @@
                     "Ref": "VpnSubnet"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "5bb16646-dc1e-4661-9164-6ecc6848dc83"
-                }
-            }
+            "Metadata": {}
         },
         "KeyPairCreation": {
             "Type": "AWS::Lambda::Function",
@@ -573,11 +300,7 @@
                     }
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "99fce86e-18b8-4b1b-a572-7bef3c5cece7"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "LambdaExecutionRole"
             ]
@@ -598,11 +321,7 @@
                     "Ref": "OS"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "2c5cc5a9-5a17-4d54-80ea-56e204c9c1a1"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "AMIInfoFunction"
             ]
@@ -655,11 +374,7 @@
                 },
                 "Timeout": 30
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "58a1ab6f-49ac-4ffa-93c7-3f708bf65871"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "LambdaExecutionRole"
             ]
@@ -709,11 +424,7 @@
                     }
                 ]
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "d3fab7a7-d694-435e-930d-ff7693dffbbc"
-                }
-            }
+            "Metadata": {}
         },
         "KeyPairInfo": {
             "Type": "Custom::KeyPairInfo",
@@ -728,11 +439,7 @@
                     ]
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "e81dfbbc-e8ee-4f4b-adb0-b314056ab0b3"
-                }
-            },
+            "Metadata": {},
             "DependsOn": [
                 "KeyPairCreation"
             ]
@@ -747,11 +454,7 @@
                     "Ref": "VpnVpc"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "9d3d19ab-d561-4f59-89de-73498eeeebda"
-                }
-            }
+            "Metadata": {}
         },
         "EC2VA41EUF": {
             "Type": "AWS::EC2::VolumeAttachment",
@@ -764,11 +467,7 @@
                     "Ref": "VpnInstance"
                 }
             },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "361e0035-6c5a-48df-8339-3e31f19bf032"
-                }
-            }
+            "Metadata": {}
         }
     },
     "Parameters": {
