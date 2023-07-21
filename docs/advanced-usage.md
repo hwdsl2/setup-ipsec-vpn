@@ -226,7 +226,7 @@ In certain circumstances, you may want to forward port(s) on the VPN server to a
 Example 1: Forward TCP port 443 on the VPN server to the IPsec/L2TP client at `192.168.42.10`.
 ```
 # Get default network interface name
-netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
 iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
@@ -234,7 +234,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 Example 2: Forward UDP port 123 on the VPN server to the IKEv2 (or IPsec/XAuth) client at `192.168.43.10`.
 ```
 # Get default network interface name
-netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
 iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
@@ -310,7 +310,7 @@ Assume that the VPN server IP is `10.1.0.2`, and the IP of the device from which
 1. Add IPTables rules on the VPN server to allow this traffic. For example:
    ```
    # Get default network interface name
-   netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+   netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
    iptables -I FORWARD 2 -i "$netif" -o ppp+ -s 10.1.0.3 -j ACCEPT
    iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -s 10.1.0.3 -j ACCEPT
    ```

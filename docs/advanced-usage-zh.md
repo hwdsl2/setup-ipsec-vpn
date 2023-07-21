@@ -226,7 +226,7 @@ sh vpn.sh
 示例 1：将 VPN 服务器上的 TCP 端口 443 转发到位于 `192.168.42.10` 的 IPsec/L2TP 客户端。
 ```
 # 获取默认网络接口名称
-netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
 iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
@@ -234,7 +234,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 示例 2：将 VPN 服务器上的 UDP 端口 123 转发到位于 `192.168.43.10` 的 IKEv2（或 IPsec/XAuth）客户端。
 ```
 # 获取默认网络接口名称
-netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
 iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
@@ -309,7 +309,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 1. 在 VPN 服务器上添加 IPTables 规则以允许该流量。例如：
    ```
    # 获取默认网络接口名称
-   netif=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
+   netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
    iptables -I FORWARD 2 -i "$netif" -o ppp+ -s 10.1.0.3 -j ACCEPT
    iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -s 10.1.0.3 -j ACCEPT
    ```
