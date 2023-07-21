@@ -12,7 +12,7 @@ Available customization parameters:
 > 
 > For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).</details>
 
-- OS for your VPN server (Ubuntu 20.04, CentOS 7, Amazon Linux 2)
+- OS for your VPN server (Ubuntu 22.04/20.04, Debian 10/11/12, CentOS 7, Amazon Linux 2)
 - Your VPN username
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)

@@ -12,7 +12,7 @@
 > 
 > 比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://ec2instances.info](https://ec2instances.info)。</details>
 
-- VPN 服务器的操作系统（Ubuntu 20.04, CentOS 7, Amazon Linux 2）
+- VPN 服务器的操作系统（Ubuntu 22.04/20.04, Debian 10/11/12, CentOS 7, Amazon Linux 2）
 - 你的 VPN 用户名
 - 你的 VPN 密码
 - 你的 VPN IPsec PSK（预共享密钥）
