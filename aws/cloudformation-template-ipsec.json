@@ -374,7 +374,7 @@
                                 "           'Debian10': 'debian-10-amd64-*',",
                                 "           'Debian11': 'debian-11-amd64-*',",
                                 "           'Debian12': 'debian-12-amd64-*',",
-                                "           'CentOS7': 'CentOS 7.9.2009 x86_64',",
+                                "           'CentOS7': 'CentOS Linux 7 x86_64 - *',",
                                 "           'AmazonLinux2': 'amzn2-ami-hvm-*.*-x86_64-gp2',",
                                 "       }[distribution]",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '136693071363', '125523088429', 'amazon'])",

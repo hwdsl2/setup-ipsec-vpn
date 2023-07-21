@@ -55,7 +55,7 @@ List of default usernames:
 | --- | --- |
 | Ubuntu |  `ubuntu` |
 | Debian | `admin` |
-| CentOS | `centos` |
+| CentOS (`CentOS Linux 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
 This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.
