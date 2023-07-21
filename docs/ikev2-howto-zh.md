@@ -455,6 +455,8 @@ sudo chmod 600 ca.cer client.cer client.key
 1. 单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
+另外，你也可以使用命令行连接。示例步骤请参见 [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) 和 [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007)。
+
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。

@@ -457,6 +457,8 @@ You can then set up and enable the VPN connection:
 1. Click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
 
+Alternatively, you may connect using the command line. See [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) and [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007) for example steps.
+
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
