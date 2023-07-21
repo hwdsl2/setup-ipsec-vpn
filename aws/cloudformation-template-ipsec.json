@@ -5,6 +5,18 @@
             "Ubuntu2004": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
             },
+            "Ubuntu2204": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+            },
+            "Debian10": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+            },
+            "Debian11": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+            },
+            "Debian12": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
+            },
             "CentOS7": {
                 "HelperInstallationCommands": "yum -y install python3 wget\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
             },
@@ -358,10 +370,14 @@
                                 "       ec2 = boto3.client('ec2',regionName)",
                                 "       AMIName = {",
                                 "           'Ubuntu2004': 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',",
+                                "           'Ubuntu2204': 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',",
+                                "           'Debian10': 'debian-10-amd64-*',",
+                                "           'Debian11': 'debian-11-amd64-*',",
+                                "           'Debian12': 'debian-12-amd64-*',",
                                 "           'CentOS7': 'CentOS 7.9.2009 x86_64',",
                                 "           'AmazonLinux2': 'amzn2-ami-hvm-*.*-x86_64-gp2',",
                                 "       }[distribution]",
-                                "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '379101102735', '125523088429', 'amazon'])",
+                                "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '136693071363', '125523088429', 'amazon'])",
                                 "       images = response['Images']",
                                 "       images.sort(key=creation_date,reverse=True)",
                                 "       AMIId = images[0]['ImageId']",
@@ -489,6 +505,10 @@
             "Default": "Ubuntu2004",
             "AllowedValues": [
                 "Ubuntu2004",
+                "Ubuntu2204",
+                "Debian10",
+                "Debian11",
+                "Debian12",
                 "CentOS7",
                 "AmazonLinux2"
             ]
@@ -553,6 +573,10 @@
         "NextStep": {
             "Description": "Learn how to configure VPN clients.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
+        },
+        "WarningForDebianUsers":{
+            "Description": "Please be noted that due to Debian images on AWS EC2 using cloud kernels, you are unable to use IPSec/L2TP mode if your server is running Debian. For more information, please refer to the link to the left.",
+            "Value": "https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#debian-kernel"
         }
     }
 }
