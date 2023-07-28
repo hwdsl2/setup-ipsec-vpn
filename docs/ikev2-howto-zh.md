@@ -455,7 +455,7 @@ sudo chmod 600 ca.cer client.cer client.key
 1. 单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
-另外，你也可以使用命令行连接。示例步骤请参见 [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) 和 [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007)。
+另外，你也可以使用命令行连接。示例步骤请参见 [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) 和 [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007)。如果你遇到错误 `Could not find source connection`，编辑 `/etc/netplan/01-netcfg.yaml` 并将 `renderer: networkd` 替换为 `renderer: NetworkManager`，然后运行 `sudo netplan apply`。要连接到 VPN，运行 `sudo nmcli c up VPN`。要断开连接：`sudo nmcli c down VPN`。
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
