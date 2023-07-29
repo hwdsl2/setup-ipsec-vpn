@@ -569,8 +569,6 @@ To fix these errors, please follow these steps:
 1. Click **OK** to close the **Advanced settings**.
 1. Click **OK** to save the VPN connection details.
 
-For reference, see [this screenshot](images/vpn-properties.png) of the VPN connection properties dialog.
-
 ### Windows 10 connecting
 
 If using Windows 10 and the VPN is stuck on "connecting" for more than a few minutes, try these steps:

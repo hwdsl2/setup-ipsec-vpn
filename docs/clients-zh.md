@@ -571,8 +571,6 @@ ipsec trafficstatus
 1. 单击 **确定** 关闭 **高级设置**。
 1. 单击 **确定** 保存 VPN 连接的详细信息。
 
-请参见 VPN 连接属性对话框的[屏幕截图](images/vpn-properties-zh.png)。
-
 ### Windows 10 正在连接
 
 如果你使用 Windows 10 并且 VPN 卡在 "正在连接" 状态超过几分钟，尝试以下步骤：
