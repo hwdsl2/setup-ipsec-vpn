@@ -39,11 +39,26 @@
 
 要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
-> **注：** IKEv2 模式的客户端配置文件可以在你的 VPN 服务器的 `/root` 目录中找到。要使用 SSH 连接到服务器，请参见下面的 "常见问题" 小节。
-
 > **注：** 如果你删除使用此模板部署的 CloudFormation 堆栈，在部署期间添加的密钥对将不会自动被清理。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
 
 ## 常见问题
+
+<details>
+<summary>
+如何在部署结束后提取 IKEv2 连接配置文件？
+</summary>
+
+部署结束以后，生成的 IKEv2 配置文件已经被上传到了一个预先创建好的 AWS Simple Storage Service(S3) 储存桶。下载配置文件的链接可以在 **Outputs** 页面下找到。
+
+点击下载链接下载名为 `profiles.zip` 的压缩包文件。解压密码为**你之前配置好的 VPN 连接密码。**
+
+值得注意的是，配置文件下载链接将会在**1天内过期**，从堆栈部署完成时算起。如果你将堆栈删除，存放配置文件的储存桶不会被删除。
+
+关于如何在 IKEv2 模式下配置你的客户端，请参见: [IKEv2 VPN 配置和使用指南](/docs/ikev2-howto-zh.md#管理-ikev2-客户端)。
+
+![IKEv2 配置文件](images/credentials.png)
+
+</details>
 
 <details>
 <summary>
@@ -85,4 +100,4 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 
 ## 作者
 
-版权所有 (C) 2020-2023 [S. X. Liang](https://github.com/scottpedia)
+版权所有 (C) 2020-2023 [S. X. Liang](https://github.com/scottpedia) <[scottliang3@cmail.carleton.ca](mailto:scottliang3@cmail.carleton.ca)>

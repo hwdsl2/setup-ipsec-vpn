@@ -7,7 +7,7 @@
                     "",
                     "AWS Cloudformation Template for deploying IPSec VPN Servers on AWS EC2,",
                     "based on the work of Lin Song <linsongui@gmail.com> : https://github.com/hwdsl2/setup-ipsec-vpn",
-                    "The latest verstion of this template can be found at : https://github.com/hwdsl2/setup-ipsec-vpn/aws",
+                    "The latest version of this template can be found at : https://github.com/hwdsl2/setup-ipsec-vpn/aws",
                     "",
                     "Copyright (C) 2020-2023 Scott X. Liang <scott.liang@pm.me>",
                     "",
