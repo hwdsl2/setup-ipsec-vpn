@@ -394,7 +394,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "Handler": "index.handler",
-                "Runtime": "python3.7",
+                "Runtime": "python3.8",
                 "Role": {
                     "Fn::GetAtt": [
                         "LambdaExecutionRole",
@@ -462,7 +462,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "Handler": "index.handler",
-                "Runtime": "python3.7",
+                "Runtime": "python3.8",
                 "Role": {
                     "Fn::GetAtt": [
                         "LambdaExecutionRole",
