@@ -9,7 +9,7 @@
                     "based on the work of Lin Song <linsongui@gmail.com> : https://github.com/hwdsl2/setup-ipsec-vpn",
                     "The latest version of this template can be found at : https://github.com/hwdsl2/setup-ipsec-vpn/aws",
                     "",
-                    "Copyright (C) 2020-2023 Scott X. Liang <scottliang3@cmail.carleton.ca>",
+                    "Copyright (C) 2020-2023 Scott X. L. <wtanglef@pm.me>",
                     "",
                     "This work is licensed under the Creative Commons Attribution-ShareAlike 3.0",
                     "Unported License: http://creativecommons.org/licenses/by-sa/3.0/",
@@ -60,12 +60,12 @@
                 "Path": "/setup-ipsec-vpn/",
                 "Roles": [
                     {
-                        "Ref": "LambdaExecutionRole"
+                        "Ref": "S3ExecutionRole"
                     }
                 ]
             },
             "DependsOn": [
-                "LambdaExecutionRole",
+                "S3ExecutionRole",
                 "KeyPairInfo"
             ]
         },
@@ -554,6 +554,59 @@
                                     "Effect": "Allow",
                                     "Action": "*",
                                     "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "Metadata": {}
+        },
+        "S3ExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "s3.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "s3-bucket-specific-policy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "s3:UploadObject",
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    {
+                                                        "Fn::GetAtt": [
+                                                            "Ikev2S3Bucket",
+                                                            "Arn"
+                                                        ]
+                                                    },
+                                                    "/*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         }
