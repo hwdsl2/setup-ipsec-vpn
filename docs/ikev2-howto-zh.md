@@ -597,7 +597,7 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
    此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
 
-1. 如果更改 MTU 大小无法解决问题，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
+1. 如果你的 Android 或 Linux VPN 客户端可以连接到 IKEv2 但是无法打开网站，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
 
 1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
 

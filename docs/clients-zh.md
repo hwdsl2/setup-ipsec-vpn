@@ -591,7 +591,7 @@ Windows 8, 10 和 11 默认使用 "smart multi-homed name resolution" （智能�
 
 ### Android MTU/MSS 问题
 
-某些 Android 设备有 MTU/MSS 问题，表现为使用 IPsec/XAuth ("Cisco IPsec") 模式可以连接到 VPN 但是无法打开网站。如果你遇到该问题，尝试在 VPN 服务器上运行以下命令。如果成功解决，你可以将这些命令添加到 `/etc/rc.local` 以使它们重启后继续有效。
+某些 Android 设备和 Linux 系统有 MTU/MSS 问题，表现为使用 IPsec/XAuth ("Cisco IPsec") 或者 IKEv2 模式可以连接到 VPN 但是无法打开网站。如果你遇到该问题，尝试在 VPN 服务器上运行以下命令。如果成功解决，你可以将这些命令添加到 `/etc/rc.local` 以使它们重启后继续有效。
 
 ```
 iptables -t mangle -A FORWARD -m policy --pol ipsec --dir in \

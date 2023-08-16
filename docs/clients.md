@@ -589,7 +589,7 @@ In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS 
 
 ### Android MTU/MSS issues
 
-Some Android devices have MTU/MSS issues, that they are able to connect to the VPN using IPsec/XAuth ("Cisco IPsec") mode, but cannot open websites. If you encounter this problem, try running the following commands on the VPN server. If successful, you may add these commands to `/etc/rc.local` to persist after reboot.
+Some Android devices and Linux systems have MTU/MSS issues, that they are able to connect to the VPN using IPsec/XAuth ("Cisco IPsec") or IKEv2 mode, but cannot open websites. If you encounter this problem, try running the following commands on the VPN server. If successful, you may add these commands to `/etc/rc.local` to persist after reboot.
 
 ```
 iptables -t mangle -A FORWARD -m policy --pol ipsec --dir in \
