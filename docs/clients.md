@@ -465,7 +465,7 @@ strongswan down myvpn
 * [Windows 10 connecting](#windows-10-connecting)
 * [Windows 10/11 upgrades](#windows-1011-upgrades)
 * [Windows DNS leaks and IPv6](#windows-dns-leaks-and-ipv6)
-* [Android MTU/MSS issues](#android-mtumss-issues)
+* [Android/Linux MTU/MSS issues](#androidlinux-mtumss-issues)
 * [macOS send traffic over VPN](#macos-send-traffic-over-vpn)
 * [iOS/Android sleep mode](#iosandroid-sleep-mode)
 * [Debian kernel](#debian-kernel)
@@ -587,7 +587,7 @@ Windows 8, 10 and 11 use "smart multi-homed name resolution" by default, which m
 
 In addition, if your computer has IPv6 enabled, all IPv6 traffic (including DNS queries) will bypass the VPN. Learn how to [disable IPv6](https://support.microsoft.com/en-us/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users) in Windows. If you need a VPN with IPv6 support, you could instead try [OpenVPN](https://github.com/hwdsl2/openvpn-install).
 
-### Android MTU/MSS issues
+### Android/Linux MTU/MSS issues
 
 Some Android devices and Linux systems have MTU/MSS issues, that they are able to connect to the VPN using IPsec/XAuth ("Cisco IPsec") or IKEv2 mode, but cannot open websites. If you encounter this problem, try running the following commands on the VPN server. If successful, you may add these commands to `/etc/rc.local` to persist after reboot.
 

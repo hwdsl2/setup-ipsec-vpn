@@ -554,9 +554,11 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 
 ### Cannot connect to the VPN server
 
-First, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. Refer to the sections below and [Check logs and VPN status](clients.md#check-logs-and-vpn-status).
+First, make sure that the VPN server address specified on your VPN client device **exactly matches** the server address in the output of the IKEv2 helper script. For example, you cannot use a DNS name to connect if it was not specified when setting up IKEv2. To change the IKEv2 server address, read [this section](#change-ikev2-server-address).
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
+
+[Check logs and VPN status](clients.md#check-logs-and-vpn-status) for errors. If you encounter retransmission related errors and are unable to connect, there may be network issues between the VPN client and server. If you are connecting from mainland China, consider switching to alternative solutions other than IPsec VPN.
 
 ### Unable to connect multiple IKEv2 clients
 
@@ -599,9 +601,9 @@ If your VPN client device cannot open websites after successfully connecting to 
 
    This setting **does not** persist after a reboot. To change the MTU size permanently, refer to relevant articles on the web.
 
-1. If your Android or Linux VPN client can connect using IKEv2 mode, but cannot open websites, try the fix in [Android MTU/MSS issues](clients.md#android-mtumss-issues).
+1. If your Android or Linux VPN client can connect using IKEv2 mode, but cannot open websites, try the fix in [Android/Linux MTU/MSS issues](clients.md#androidlinux-mtumss-issues).
 
-1. In certain circumstances, Windows does not use the DNS servers specified by IKEv2 after connecting. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4.
+1. Windows VPN clients may not use the DNS servers specified by IKEv2 after connecting, if the client's configured DNS servers on the Internet adapter are from the local network segment. This can be fixed by manually entering DNS servers such as Google Public DNS (8.8.8.8, 8.8.4.4) in network interface properties -> TCP/IPv4. For more information, see [Windows DNS leaks and IPv6](clients.md#windows-dns-leaks-and-ipv6).
 
 ### Windows 10 connecting
 

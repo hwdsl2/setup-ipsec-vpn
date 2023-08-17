@@ -467,7 +467,7 @@ strongswan down myvpn
 * [Windows 10 正在连接](#windows-10-正在连接)
 * [Windows 10/11 升级](#windows-1011-升级)
 * [Windows DNS 泄漏和 IPv6](#windows-dns-泄漏和-ipv6)
-* [Android MTU/MSS 问题](#android-mtumss-问题)
+* [Android/Linux MTU/MSS 问题](#androidlinux-mtumss-问题)
 * [macOS 通过 VPN 发送通信](#macos-通过-vpn-发送通信)
 * [iOS/Android 睡眠模式](#iosandroid-睡眠模式)
 * [Debian 内核](#debian-内核)
@@ -589,7 +589,7 @@ Windows 8, 10 和 11 默认使用 "smart multi-homed name resolution" （智能�
 
 另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md)。
 
-### Android MTU/MSS 问题
+### Android/Linux MTU/MSS 问题
 
 某些 Android 设备和 Linux 系统有 MTU/MSS 问题，表现为使用 IPsec/XAuth ("Cisco IPsec") 或者 IKEv2 模式可以连接到 VPN 但是无法打开网站。如果你遇到该问题，尝试在 VPN 服务器上运行以下命令。如果成功解决，你可以将这些命令添加到 `/etc/rc.local` 以使它们重启后继续有效。
 

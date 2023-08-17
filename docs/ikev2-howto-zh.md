@@ -552,9 +552,11 @@ sudo chmod 600 ca.cer client.cer client.key
 
 ### 无法连接到 VPN 服务器
 
-首先，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。参见下面的小节以及 [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)。
+首先，请确保你的 VPN 客户端设备上指定的 VPN 服务器地址与 IKEv2 辅助脚本输出中的服务器地址**完全一致**。例如，如果在配置 IKEv2 时未指定域名，则不可以使用域名进行连接。要更改 IKEv2 服务器地址，参见[这一小节](#更改-ikev2-服务器地址)。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
+
+[检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)是否有错误。如果你遇到 retransmission 相关错误并且无法连接，说明 VPN 客户端和服务器之间的网络可能有问题。如果你从中国大陆进行连接，请考虑改用 IPsec VPN 以外的其他解决方案。
 
 ### 无法连接多个 IKEv2 客户端
 
@@ -597,9 +599,9 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Services\RasMan\Parameters /v NegotiateDH2
 
    此设置 **不会** 在重启后保持。要永久更改 MTU 大小，请参阅网络上的相关文章。
 
-1. 如果你的 Android 或 Linux VPN 客户端可以连接到 IKEv2 但是无法打开网站，请尝试 [Android MTU/MSS 问题](clients-zh.md#android-mtumss-问题) 中的解决方案。
+1. 如果你的 Android 或 Linux VPN 客户端可以连接到 IKEv2 但是无法打开网站，请尝试 [Android/Linux MTU/MSS 问题](clients-zh.md#androidlinux-mtumss-问题) 中的解决方案。
 
-1. 在某些情况下，Windows 在连接后不使用 IKEv2 指定的 DNS 服务器。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。
+1. Windows VPN 客户端在连接后可能不使用 IKEv2 指定的 DNS 服务器，如果该客户端的因特网适配器的 DNS 服务器在本地网段上。要解决此问题，可以在网络连接属性 -> TCP/IPv4 中手动输入 DNS 服务器，例如 Google Public DNS (8.8.8.8, 8.8.4.4)。更多信息请参见 [Windows DNS 泄漏和 IPv6](clients-zh.md#windows-dns-泄漏和-ipv6)。
 
 ### Windows 10 正在连接
 
