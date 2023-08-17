@@ -54,7 +54,7 @@ Simply click on the link to download a compressed package named `profiles.zip`. 
 
 It's important to note that the link provided for downloading the credential package **will expire in 1 day** following the successful deployment of the stack. If you delete the stack, the bucket that stores the crendentials will not be deleted.
 
-To learn more about how to configure your clients using IKEv2 mode, please refer to: [Guide: How to Set Up and Use IKEv2 VPN](/docs/ikev2-howto.md#configure-ikev2-vpn-vlients).
+To learn more about how to configure your clients using IKEv2 mode, please refer to: [Guide: How to Set Up and Use IKEv2 VPN](../docs/ikev2-howto.md#configure-ikev2-vpn-vlients).
 
 ![Credentials](images/credentials.png)
 
