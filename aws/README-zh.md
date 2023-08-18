@@ -54,7 +54,7 @@
 
 值得注意的是，配置文件下载链接将会在**1天后过期**，从堆栈部署完成时算起。如果你将堆栈删除，存放配置文件的储存桶不会被删除。
 
-关于如何在 IKEv2 模式下配置你的客户端，请参见: [IKEv2 VPN 配置和使用指南](../docs/ikev2-howto-zh.md#管理-ikev2-客户端)。
+关于如何在 IKEv2 模式下配置你的客户端，请参见: [IKEv2 VPN 配置和使用指南](../docs/ikev2-howto-zh.md)。
 
 ![IKEv2 配置文件](images/credentials.png)
 
