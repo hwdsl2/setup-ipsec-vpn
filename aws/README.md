@@ -39,11 +39,26 @@ Click the icon below to start:
 
 You may choose an AWS region using the selector to the right of your account information on the navigation bar. After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
 
-> **Note:** Client configuration files for IKEv2 mode can be found in the `/root` folder of your VPN server. To connect to the VPN server using SSH, refer to the FAQs section below.
-
 > **Note:** If you delete a CloudFormation stack deployed using this template, the key pair that was added during deployment won't be automatically cleaned up. To manage your key pairs, go to EC2 console -> Key Pairs.
 
 ## FAQs
+
+<details>
+<summary>
+How to retrieve the IKEv2 credentials following the deployment?
+</summary>
+
+After the deployment completes, connection credentials generated for IKEv2 mode are uploaded to a specific AWS Simple Storage Service(S3) Bucket. The download link is then provided under the **Outputs** tab.
+
+Simply click on the link to download a compressed package named `profiles.zip`. To extract the content from the file, you will be prompted to enter a password. And that password is the **same one used to connect to your VPN server.**
+
+It's important to note that the link provided for downloading the credential package **will expire in 1 day** following the successful deployment of the stack. If you delete the stack, the bucket that stores the crendentials will not be deleted.
+
+To learn more about how to configure your clients using IKEv2 mode, please refer to: [Guide: How to Set Up and Use IKEv2 VPN](../docs/ikev2-howto.md#configure-ikev2-vpn-vlients).
+
+![Credentials](images/credentials.png)
+
+</details>
 
 <details>
 <summary>
@@ -85,4 +100,4 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 
 ## Author
 
-Copyright (C) 2020-2023 [S. X. Liang](https://github.com/scottpedia)
+Copyright (C) 2020-2023 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
