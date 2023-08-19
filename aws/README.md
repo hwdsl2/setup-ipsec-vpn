@@ -17,29 +17,30 @@ Available customization parameters:
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
 
-> **Note:** DO NOT use these special characters within values: `\ " '`
+> **Note:** A secure IPsec PSK should consist of at least 20 random characters. DO NOT use these special characters within values: `\ " '`
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
 Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new). Continue creating the stack, and in the final step make sure to confirm that this template may create IAM resources.
 
-<details>
-<summary>
-Click here to view screenshots
-</summary>
-
-![Upload the template](images/upload-the-template.png)
-![Specify parameters](images/specify-parameters.png)
-![Confirm IAM](images/confirm-iam.png)
-</details>
+You may choose an AWS region using the selector to the right of your account information on the navigation bar. After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
 
 Click the icon below to start:
 
 [![Launch stack](images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new)
 
-You may choose an AWS region using the selector to the right of your account information on the navigation bar. After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
+## Screenshots
 
-> **Note:** If you delete a CloudFormation stack deployed using this template, the key pair that was added during deployment won't be automatically cleaned up. To manage your key pairs, go to EC2 console -> Key Pairs.
+<details>
+<summary>
+Click here to view screenshots.
+</summary>
+
+![Upload the template](images/upload-the-template.png)
+![Specify parameters](images/specify-parameters.png)
+![Confirm IAM](images/confirm-iam.png)
+![Show key](images/show-key.png)
+</details>
 
 ## FAQs
 
@@ -48,7 +49,7 @@ You may choose an AWS region using the selector to the right of your account inf
 How to retrieve the IKEv2 credentials following the deployment?
 </summary>
 
-After the deployment completes, connection credentials generated for IKEv2 mode are uploaded to a specific AWS Simple Storage Service(S3) Bucket. The download link is then provided under the **Outputs** tab.
+After the deployment completes, connection credentials generated for IKEv2 mode are uploaded to a newly created AWS Simple Storage Service (S3) Bucket. The download link is then provided under the **Outputs** tab.
 
 Simply click on the link to download a compressed package named `profiles.zip`. To extract the content from the file, you will be prompted to enter a password. And that password is the **same one used to connect to your VPN server.**
 
@@ -96,6 +97,17 @@ Example command to login to your EC2 instance using SSH:
 ```bash
 $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 ```
+</details>
+
+<details>
+<summary>
+How to delete the CloudFormation stack?
+</summary>
+
+You may use the "Delete" button on the CloudFormation stack page to delete the CloudFormation stack you created and its associated resources. Note that when deleting the stack, the following resources will not be automatically deleted, you may manually delete them:
+
+1. The EC2 key pair that was added during deployment. To manage your key pairs, go to EC2 console -> Key Pairs.
+1. The S3 bucket that stores the generated IKEv2 credentials. Refer to "How to retrieve the IKEv2 credentials following the deployment" above.
 </details>
 
 ## Author

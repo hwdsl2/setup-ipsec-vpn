@@ -17,29 +17,30 @@
 - 你的 VPN 密码
 - 你的 VPN IPsec PSK（预共享密钥）
 
-> **注：** \*不要\* 在值中使用这些字符： `\ " '`
+> **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。\*不要\* 在值中使用这些字符： `\ " '`
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
 右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。继续创建堆栈，在最后一步你需要确认（选择）此模板可以创建 IAM 资源。
 
-<details>
-<summary>
-点这里查看屏幕截图
-</summary>
-
-![上传模板](images/upload-the-template.png)
-![指定参数](images/specify-parameters.png)
-![确认 IAM](images/confirm-iam.png)
-</details>
+要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
 点击下面的图标开始：
 
 [![Launch stack](images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new)
 
-要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
+## 屏幕截图
 
-> **注：** 如果你删除使用此模板部署的 CloudFormation 堆栈，在部署期间添加的密钥对将不会自动被清理。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
+<details>
+<summary>
+点这里查看屏幕截图。
+</summary>
+
+![上传模板](images/upload-the-template.png)
+![指定参数](images/specify-parameters.png)
+![确认 IAM](images/confirm-iam.png)
+![显示密钥](images/show-key.png)
+</details>
 
 ## 常见问题
 
@@ -48,7 +49,7 @@
 如何在部署结束后提取 IKEv2 连接配置文件？
 </summary>
 
-部署结束以后，生成的 IKEv2 配置文件已经被上传到了一个预先创建好的 AWS Simple Storage Service(S3) 储存桶。下载配置文件的链接可以在 **Outputs** 页面下找到。
+部署结束以后，生成的 IKEv2 配置文件已经被上传到了一个新创建的 AWS Simple Storage Service(S3) 储存桶。下载配置文件的链接可以在 **Outputs** 页面下找到。
 
 点击下载链接下载名为 `profiles.zip` 的压缩包文件。解压密码为**你之前配置好的 VPN 连接密码。**
 
@@ -96,6 +97,17 @@ $ sudo chmod 400 key-file.pem
 ```bash
 $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 ```
+</details>
+
+<details>
+<summary>
+如何删除 CloudFormation 堆栈？
+</summary>
+
+你可以使用 CloudFormation 堆栈页面上的 "Delete" 按钮删除你创建的 CloudFormation 堆栈和它相关的资源。请注意，删除堆栈时以下资源不会被自动删除，你可以手动删除：
+
+1. 在部署期间添加的 EC2 密钥对。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
+1. 存放生成的 IKEv2 配置文件的 S3 储存桶。参见上面的 "如何在部署结束后提取 IKEv2 连接配置文件"。
 </details>
 
 ## 作者
