@@ -401,7 +401,7 @@
                                 "'''",
                                 "def handler(event, context):",
                                 "   try:",
-                                "       keyName = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10)).lower()",
+                                "       keyName = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
                                 "       region = event['ResourceProperties']['Region']",
                                 "       ec2 = boto3.client('ec2',region)",
                                 "       response = ec2.create_key_pair(",
@@ -724,7 +724,14 @@
                                 "RegionalDomainName"
                             ]
                         },
-                        "/profiles.zip"
+                        "/",
+                        {
+                            "Fn::GetAtt": [
+                                "KeyPairInfo",
+                                "KeyName"
+                            ]
+                        },
+                        "-profiles.zip"
                     ]
                 ]
             }
