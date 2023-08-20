@@ -667,7 +667,7 @@
         }
     },
     "Outputs": {
-        "VPNAddress": {
+        "1VPNAddress": {
             "Description": "This is the public IP of your newly-launched VPN server.",
             "Value": {
                 "Fn::GetAtt": [
@@ -676,25 +676,25 @@
                 ]
             }
         },
-        "VPNUsername": {
+        "2VPNUsername": {
             "Description": "Your VPN username",
             "Value": {
                 "Ref": "VpnUser"
             }
         },
-        "VPNPassword": {
+        "3VPNPassword": {
             "Description": "Your VPN password",
             "Value": {
                 "Ref": "VpnPassword"
             }
         },
-        "VPNKey": {
+        "4VPNKey": {
             "Description": "Your VPN IPsec PSK (pre-shared key)",
             "Value": {
                 "Ref": "VpnIpsecPsk"
             }
         },
-        "EC2PrivateKeyMaterial": {
+        "5EC2PrivateKeyMaterial": {
             "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file for use when connecting.",
             "Value": {
                 "Fn::GetAtt": [
@@ -703,15 +703,15 @@
                 ]
             }
         },
-        "NextStep": {
+        "6NextStep": {
             "Description": "Learn how to configure VPN clients.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         },
-        "WarningForDebianUsers": {
+        "7WarningForDebianUsers": {
             "Description": "Please be noted that due to Debian images on AWS EC2 using cloud kernels, you are unable to use IPSec/L2TP mode if your server is running Debian. For more information, please refer to the link to the left.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#debian-kernel"
         },
-        "RetrieveYourIkev2Credentials": {
+        "8RetrieveYourIkev2Credentials": {
             "Description": "Please use the following link to download your IKEv2 connection credentials. The password to the ZIP file that stores the credentials, is the same password used to connect to your VPN server. The download link for the credentials will expire in ONE day.",
             "Value": {
                 "Fn::Join": [
