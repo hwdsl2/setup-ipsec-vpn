@@ -21,9 +21,9 @@ Available customization parameters:
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
-Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new). Continue creating the stack, and in the final step make sure to confirm that this template may create IAM resources.
+Right-click this [**template link**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new). You may choose an AWS region using the selector to the right of your account information on the navigation bar. Continue creating the stack, and in the final step make sure to confirm that this template may create IAM resources.
 
-You may choose an AWS region using the selector to the right of your account information on the navigation bar. After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
+After you click "create stack" in the final step, please wait for the stack creation and VPN setup to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you are ready to connect to the VPN server. Click the **Outputs** tab to view your VPN login details. Then continue to [Next steps: Configure VPN Clients](../README.md#next-steps).
 
 Click the icon below to start:
 
@@ -49,11 +49,11 @@ Click here to view screenshots.
 How to retrieve the IKEv2 credentials following the deployment?
 </summary>
 
-After the deployment completes, connection credentials generated for IKEv2 mode are uploaded to a newly created AWS Simple Storage Service (S3) Bucket. The download link is then provided under the **Outputs** tab.
+After the deployment completes, connection credentials generated for IKEv2 mode are uploaded to a newly created AWS Simple Storage Service (S3) bucket. The download link is then provided under the **Outputs** tab.
 
-Simply click on the link to download a compressed package named `profiles.zip`. To extract the content from the file, you will be prompted to enter a password. And that password is the **same one used to connect to your VPN server.**
+Simply click on the link to download an archive named `profiles.zip`. To extract the contents from the archive, you will be prompted to enter a password, which is the **VPN password you specified when creating the stack**.
 
-It's important to note that the link provided for downloading the credential package **will expire in 1 day** following the successful deployment of the stack. If you delete the stack, the bucket that stores the crendentials will not be deleted.
+It's important to note that the link provided for downloading the IKEv2 credentials **will expire in 1 day** following the successful deployment of the stack. If you delete the stack, the bucket that stores the IKEv2 crendentials will not be automatically deleted.
 
 To learn more about how to configure your clients using IKEv2 mode, please refer to: [Guide: How to Set Up and Use IKEv2 VPN](../docs/ikev2-howto.md).
 

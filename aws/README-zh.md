@@ -21,9 +21,9 @@
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
-右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。继续创建堆栈，在最后一步你需要确认（选择）此模板可以创建 IAM 资源。
+右键单击这个 [**模板链接**](https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/aws/cloudformation-template-ipsec.json)，并将它保存到你的计算机上的一个新文件。然后在 ["创建堆栈" 向导](https://console.aws.amazon.com/cloudformation/home#/stacks/new)中将其作为模板源上传。要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。继续创建堆栈，在最后一步你需要确认（选择）此模板可以创建 IAM 资源。
 
-要指定一个 AWS 区域，你可以使用导航栏上你的帐户信息右侧的选择器。当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
+当你在最后一步中点击 "create stack" 之后，请等待堆栈创建和 VPN 安装完成，可能需要最多 15 分钟。一旦堆栈的部署状态变成 **"CREATE_COMPLETE"** ，你就可以连接到 VPN 服务器了。单击 **Outputs** 选项卡以查看你的 VPN 登录信息，然后继续下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
 点击下面的图标开始：
 
@@ -49,11 +49,11 @@
 如何在部署结束后提取 IKEv2 连接配置文件？
 </summary>
 
-部署结束以后，生成的 IKEv2 配置文件已经被上传到了一个新创建的 AWS Simple Storage Service(S3) 储存桶。下载配置文件的链接可以在 **Outputs** 页面下找到。
+部署完成之后，生成的 IKEv2 配置文件已经被上传到了一个新创建的 AWS Simple Storage Service (S3) 储存桶。下载配置文件的链接可以在 **Outputs** 页面下找到。
 
-点击下载链接下载名为 `profiles.zip` 的压缩包文件。解压密码为**你之前配置好的 VPN 连接密码。**
+点击下载链接下载名为 `profiles.zip` 的压缩包文件。解压密码为**你在创建堆栈时输入的 VPN 连接密码**。
 
-值得注意的是，配置文件下载链接将会在**1天后过期**，从堆栈部署完成时算起。如果你将堆栈删除，存放配置文件的储存桶不会被删除。
+值得注意的是，IKEv2 配置文件的下载链接将会在**1天后过期**，从堆栈部署完成时算起。如果你将堆栈删除，存放 IKEv2 配置文件的储存桶不会被自动删除。
 
 关于如何在 IKEv2 模式下配置你的客户端，请参见: [IKEv2 VPN 配置和使用指南](../docs/ikev2-howto-zh.md)。
 
