@@ -724,14 +724,7 @@
                                 "RegionalDomainName"
                             ]
                         },
-                        "/",
-                        {
-                            "Fn::GetAtt": [
-                                "KeyPairInfo",
-                                "KeyName"
-                            ]
-                        },
-                        "-profiles.zip"
+                        "/profiles.zip"
                     ]
                 ]
             }
