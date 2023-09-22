@@ -52,10 +52,7 @@
             "Type": "AWS::IAM::InstanceProfile",
             "Properties": {
                 "InstanceProfileName": {
-                    "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
-                    ]
+                    "Ref": "KeyPair"
                 },
                 "Path": "/setup-ipsec-vpn/",
                 "Roles": [
@@ -66,7 +63,7 @@
             },
             "DependsOn": [
                 "S3ExecutionRole",
-                "KeyPairInfo"
+                "KeyPair"
             ]
         },
         "Ikev2S3Bucket": {
@@ -89,15 +86,20 @@
                     ]
                 },
                 "BucketName": {
-                    "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "setup-ipsec-vpn",
+                            {
+                                "Ref": "AWS::StackName"
+                            }
+                        ]
                     ]
                 }
             },
             "Metadata": {},
             "DependsOn": [
-                "KeyPairInfo"
+                "KeyPair"
             ]
         },
         "OpenBucketPolicy": {
@@ -295,10 +297,7 @@
                     "Ref": "InstanceType"
                 },
                 "KeyName": {
-                    "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
-                    ]
+                    "Ref": "KeyPair"
                 },
                 "ImageId": {
                     "Fn::GetAtt": [
@@ -310,12 +309,28 @@
             "Metadata": {},
             "DependsOn": [
                 "VpnRouteTable",
-                "KeyPairCreation",
+                "KeyPair",
                 "AMIInfoFunction",
                 "VpnSecurityGroup",
                 "Ikev2S3Bucket",
                 "IAMInstanceProfile"
             ]
+        },
+        "KeyPair": {
+            "Type": "AWS::EC2::KeyPair",
+            "Properties": {
+                "KeyName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "setup-ipsec-vpn",
+                            {
+                                "Ref": "AWS::StackName"
+                            }
+                        ]
+                    ]
+                }
+            }
         },
         "VpnSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
@@ -373,53 +388,6 @@
                 }
             },
             "Metadata": {}
-        },
-        "KeyPairCreation": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-                "Handler": "index.handler",
-                "Runtime": "python3.8",
-                "Role": {
-                    "Fn::GetAtt": [
-                        "LambdaExecutionRole",
-                        "Arn"
-                    ]
-                },
-                "Timeout": 30,
-                "Code": {
-                    "ZipFile": {
-                        "Fn::Join": [
-                            "\n",
-                            [
-                                "import boto3",
-                                "import cfnresponse",
-                                "import string",
-                                "import random",
-                                "'''",
-                                "This python program should be embedded into its designated cloudformation",
-                                "template as the inline code of one of the lambda functions.",
-                                "'''",
-                                "def handler(event, context):",
-                                "   try:",
-                                "       keyName = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
-                                "       region = event['ResourceProperties']['Region']",
-                                "       ec2 = boto3.client('ec2',region)",
-                                "       response = ec2.create_key_pair(",
-                                "           KeyName=keyName",
-                                "       )",
-                                "       keyMaterial = response['KeyMaterial']",
-                                "       cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'KeyName':keyName}, 'KeyPairInfo')",
-                                "   except Exception:",
-                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {})"
-                            ]
-                        ]
-                    }
-                }
-            },
-            "Metadata": {},
-            "DependsOn": [
-                "LambdaExecutionRole"
-            ]
         },
         "AMIInfo": {
             "Type": "Custom::AMIInfo",
@@ -588,24 +556,6 @@
             },
             "Metadata": {}
         },
-        "KeyPairInfo": {
-            "Type": "Custom::KeyPairInfo",
-            "Properties": {
-                "Region": {
-                    "Ref": "AWS::Region"
-                },
-                "ServiceToken": {
-                    "Fn::GetAtt": [
-                        "KeyPairCreation",
-                        "Arn"
-                    ]
-                }
-            },
-            "Metadata": {},
-            "DependsOn": [
-                "KeyPairCreation"
-            ]
-        },
         "InternetGatewayAttachment": {
             "Type": "AWS::EC2::VPCGatewayAttachment",
             "Properties": {
@@ -694,12 +644,12 @@
                 "Ref": "VpnIpsecPsk"
             }
         },
-        "5EC2PrivateKeyMaterial": {
-            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file for use when connecting.",
+        "5EC2PrivateKeyId": {
+            "Description": "The ID of the key pair created. For more information regarding how to retrieve the private key for authentication, please refer to: https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/aws/README.md#faqs",
             "Value": {
                 "Fn::GetAtt": [
-                    "KeyPairInfo",
-                    "KeyMaterial"
+                    "KeyPair",
+                    "KeyPairId"
                 ]
             }
         },
