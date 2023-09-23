@@ -80,17 +80,19 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 | CentOS (`CentOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
-此模板在部署期间为你生成一个密钥对，并且在成功创建堆栈后，其中的私钥将在 **Outputs** 选项卡下以文本形式提供。
+此模板在部署期间为你生成一个密钥对，并且在成功创建堆栈后，按照以下步骤来提取私钥。
 
-如果要通过 SSH 访问 VPN 服务器，则需要将 **Outputs** 选项卡中的私钥保存到你的计算机上的一个新文件。
+从 **Outputs** 页面拷贝私钥对 ID ，然后使用以下命令来提取私钥内容，并且将其保存到一个证书文件中。
 
-> **注：** 在保存到你的计算机之前，你可能需要修改私钥的格式，比如用换行符替换所有的空格。在保存后，需要为该私钥文件设置[适当的权限](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key)才能使用。
+```
+$ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-pair.pem
+```
 
-![显示密钥](images/show-key.png)
+![显示密钥 ID ](images/show-key-id.png)
 
 要为私钥文件设置适当的权限，请在该文件所在的目录下运行以下命令：
 ```bash
-$ sudo chmod 400 key-file.pem
+$ sudo chmod 400 new-key-file.pem
 ```
 
 使用 SSH 登录到 EC2 实例的示例命令：
@@ -104,10 +106,7 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 如何删除 CloudFormation 堆栈？
 </summary>
 
-你可以使用 CloudFormation 堆栈页面上的 "Delete" 按钮删除你创建的 CloudFormation 堆栈和它相关的资源。请注意，删除堆栈时以下资源不会被自动删除，你可以手动删除：
-
-1. 在部署期间添加的 EC2 密钥对。要管理你的密钥对，请转到 EC2 控制台 -> 密钥对。
-1. 存放生成的 IKEv2 配置文件的 S3 储存桶。参见上面的 "如何在部署结束后提取 IKEv2 连接配置文件"。
+你可以使用 CloudFormation 堆栈页面上的 "Delete" 按钮删除你创建的 CloudFormation 堆栈和它相关的资源。请注意，删除堆栈时存放生成的 IKEv2 配置文件的 S3 储存桶不会被自动删除。参见上面的 "如何在部署结束后提取 IKEv2 连接配置文件"。
 </details>
 
 ## 作者

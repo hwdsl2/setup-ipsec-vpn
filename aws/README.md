@@ -80,22 +80,24 @@ List of default usernames:
 | CentOS (`CentOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
-This template generates a key pair for you during deployment, and the private key will be available as text under the **Outputs** tab after the stack is successfully created.
+This template generates a key pair for you during deployment, and to acquire the private key you need to follow the following procedures.
 
-You will need to save the private key from the **Outputs** tab to a file on your computer, if you want to access the VPN server via SSH.
+Copy the key pair ID displayed under the **Outputs** tab, and use the following command to retrieve the private key material and save it into a certificate file:
 
-> **Note:** You may need to format the private key by replacing all spaces with newlines, before saving to a file. The file will need to be set with [proper permissions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key) before using.
+```
+$ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-pair.pem
+```
 
-![Show key](images/show-key.png)
+![Show key ID](images/show-key-id.png)
 
 To apply proper permissions to your private key file, run the following command under the directory where the file is located:
 ```bash
-$ sudo chmod 400 key-file.pem
+$ sudo chmod 400 new-key-file.pem
 ```
 
 Example command to login to your EC2 instance using SSH:
 ```bash
-$ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
+$ ssh -i path/to/your/new-key-file.pem instance-username@instance-ip-address
 ```
 </details>
 
@@ -104,10 +106,7 @@ $ ssh -i path/to/your/key-file.pem instance-username@instance-ip-address
 How to delete the CloudFormation stack?
 </summary>
 
-You may use the "Delete" button on the CloudFormation stack page to delete the CloudFormation stack you created and its associated resources. Note that when deleting the stack, the following resources will not be automatically deleted, you may manually delete them:
-
-1. The EC2 key pair that was added during deployment. To manage your key pairs, go to EC2 console -> Key Pairs.
-1. The S3 bucket that stores the generated IKEv2 credentials. Refer to "How to retrieve the IKEv2 credentials following the deployment" above.
+You may use the "Delete" button on the CloudFormation stack page to delete the CloudFormation stack you created and its associated resources. Note that when deleting the stack, the S3 bucket that stores the generated IKEv2 credentials will not be automatically deleted. Refer to "How to retrieve the IKEv2 credentials following the deployment" above.
 </details>
 
 ## Author
