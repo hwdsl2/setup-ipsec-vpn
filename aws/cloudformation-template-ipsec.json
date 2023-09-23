@@ -86,14 +86,9 @@
                     ]
                 },
                 "BucketName": {
-                    "Fn::Join": [
-                        "-",
-                        [
-                            "setup-ipsec-vpn",
-                            {
-                                "Ref": "AWS::StackName"
-                            }
-                        ]
+                    "Fn::GetAtt": [
+                        "KeyPairDisplayFunctionInfo",
+                        "Combination"
                     ]
                 }
             },
@@ -389,6 +384,92 @@
             },
             "Metadata": {}
         },
+        "KeyPairDisplayFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "index.handler",
+                "Runtime": "python3.8",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "ZipFile": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "import boto3",
+                                "import cfnresponse",
+                                "import string",
+                                "import random",
+                                "import traceback",
+                                "'''",
+                                "This python program should be embedded into its designated cloudformation",
+                                "template as the inline code of one of the lambda functions.",
+                                "'''",
+                                "def handler(event, context):",
+                                "   try:",
+                                "       if event['RequestType'] == 'Delete':",
+                                "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {})",
+                                "       elif event['RequestType'] == 'Create':",
+                                "           rCombination = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
+                                "           region = event['ResourceProperties']['Region']",
+                                "           ssm = boto3.client('ssm',region)",
+                                "           response = ssm.get_parameter(",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                "               Name='/ec2/keypair/",
+                                            {
+                                                "Fn::GetAtt":[
+                                                    "KeyPair",
+                                                    "KeyPairId"
+                                                ]
+                                            },
+                                            "',"
+                                        ]
+                                    ]
+                                },
+                                "               WithDecryption=True",
+                                "           )",
+                                "           keyMaterial = response['Parameter']['Value']",
+                                "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'Combination':rCombination}, 'KeyPairDisplayFunctionInfo')",
+                                "   except Exception as e:",
+                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
+                            ]
+                        ]
+                    }
+                },
+                "Timeout": 30
+            },
+            "Metadata": {},
+            "DependsOn": [
+                "LambdaExecutionRole",
+                "KeyPair"
+            ]
+        },
+        "KeyPairDisplayFunctionInfo": {
+            "Type": "Custom::KeyPairDisplayFunctionInfo",
+            "Properties": {
+                "Region": {
+                    "Ref": "AWS::Region"
+                },
+                "ServiceToken": {
+                    "Fn::GetAtt": [
+                        "KeyPairDisplayFunction",
+                        "Arn"
+                    ]
+                }
+            },
+            "Metadata": {},
+            "DependsOn": [
+                "KeyPairDisplayFunction",
+                "KeyPair"
+            ]
+        },
         "AMIInfo": {
             "Type": "Custom::AMIInfo",
             "Properties": {
@@ -653,15 +734,24 @@
                 ]
             }
         },
-        "6NextStep": {
+        "6EC2PrivateKeyMaterial": {
+            "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file for use when connecting.",
+            "Value": {
+                "Fn::GetAtt": [
+                    "KeyPairDisplayFunctionInfo",
+                    "KeyMaterial"
+                ]
+            }
+        },
+        "7NextStep": {
             "Description": "Learn how to configure VPN clients.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         },
-        "7WarningForDebianUsers": {
+        "8WarningForDebianUsers": {
             "Description": "Please be noted that due to Debian images on AWS EC2 using cloud kernels, you are unable to use IPSec/L2TP mode if your server is running Debian. For more information, please refer to the link to the left.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#debian-kernel"
         },
-        "8RetrieveYourIkev2Credentials": {
+        "9RetrieveYourIkev2Credentials": {
             "Description": "Please use the following link to download your IKEv2 connection credentials. The password to the ZIP file that stores the credentials, is the same password used to connect to your VPN server. The download link for the credentials will expire in ONE day.",
             "Value": {
                 "Fn::Join": [
