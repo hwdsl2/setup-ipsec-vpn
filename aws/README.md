@@ -80,15 +80,21 @@ List of default usernames:
 | CentOS (`CentOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
-This template generates a key pair for you during deployment, and to acquire the private key you need to follow the following procedures.
+This template generates a key pair for you during deployment, and to acquire the private key you can choose one of the following two methods.
 
-Copy the key pair ID displayed under the **Outputs** tab, and use the following command to retrieve the private key material and save it into a certificate file:
+1. Copy the key pair ID displayed under the **Outputs** tab, and use the following command to retrieve the private key material and save it into a certificate file:
 
-```
-$ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-pair.pem
-```
+  > **Note:** You need to first properly set up the AWS CLI on your computer before using the following command. For more information on how to get started with AWS CLI, please refer to [Get started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
-![Show key ID](images/show-key-id.png)
+  ```
+  $ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-file.pem
+  ```
+
+  ![Show key ID](images/show-key-id.png)
+
+2. Copy the private key material directly from the **Outputs** tab, and save it into a certificate file. Note that You may need to format the private key by replacing all spaces with newlines, before saving to a file. The file will need to be set with [proper permissions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key) before using.
+
+  ![Show key material](images/show-key.png)
 
 To apply proper permissions to your private key file, run the following command under the directory where the file is located:
 ```bash
