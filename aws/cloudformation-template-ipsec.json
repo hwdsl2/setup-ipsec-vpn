@@ -408,6 +408,8 @@
                                 "'''",
                                 "This python program should be embedded into its designated cloudformation",
                                 "template as the inline code of one of the lambda functions.",
+                                "Its function is to create a random combination of 20 characters for the naming of the Ikev2S3Bucket, and",
+                                "to retrieve the private key material for display under the Outputs tab.",
                                 "'''",
                                 "def handler(event, context):",
                                 "   try:",
@@ -422,9 +424,9 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                "               Name='/ec2/keypair/",
+                                            "               Name='/ec2/keypair/",
                                             {
-                                                "Fn::GetAtt":[
+                                                "Fn::GetAtt": [
                                                     "KeyPair",
                                                     "KeyPairId"
                                                 ]
@@ -509,6 +511,7 @@
                             [
                                 "import boto3",
                                 "import cfnresponse",
+                                "import traceback",
                                 "'''",
                                 "This python script should be embeded into its designated cloudformation template.",
                                 "Its function is to sort out the correct AMI image to use for each of the distribution options available.",
@@ -536,7 +539,7 @@
                                 "       AMIId = images[0]['ImageId']",
                                 "       cfnresponse.send(event, context, cfnresponse.SUCCESS, {'AMIId':AMIId}, 'AMIInfo')",
                                 "   except Exception:",
-                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {})"
+                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
                             ]
                         ]
                     }
