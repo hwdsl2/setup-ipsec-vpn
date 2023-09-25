@@ -682,7 +682,7 @@
         },
         "InstanceType": {
             "Type": "String",
-            "Description": "The instance type of your VPN server. Using t2.micro may qualify for the AWS Free Tier.",
+            "Description": "The instance type of your VPN server. Using t2.micro or t3.micro may qualify for the AWS Free Tier.",
             "AllowedValues": [
                 "t2.micro",
                 "t3.nano",
