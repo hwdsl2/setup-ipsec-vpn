@@ -84,24 +84,26 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 
 1. 在 **Outputs** 页面下拷贝密钥对 ID ，然后使用以下命令来提取私钥内容并且将其保存为一个证书文件：
 
-  > **注:** 在使用以下命令前，你需要在你的电脑上正确的安装和配置好 AWS 命令行。更多关于开始使用 AWS 命令行的信息，请参照 [Get started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) 。
+   > **注:** 在使用以下命令前，你需要在你的电脑上正确的安装和配置好 AWS 命令行。更多关于开始使用 AWS 命令行的信息，请参照 [Get started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) 。
 
-  ```
-  $ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-pair.pem
-  ```
+   ```
+   $ aws ssm get-parameter --region your-region --name /ec2/keypair/your-key-pair-id --with-decryption --query Parameter.Value --output text > new-key-file.pem
+   ```
 
-  ![显示密钥 ID](images/show-key-id.png)
+   ![显示密钥 ID](images/show-key-id.png)
 
 2. 直接从 **Outputs** 页面拷贝私钥对内容 ，然后将其保存入一个证书文件。请注意在保存到你的计算机之前，你可能需要修改私钥的格式，比如用换行符替换所有的空格。在保存后，需要为该私钥文件设置[适当的权限](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/connection-prereqs.html#connection-prereqs-private-key)才能使用。
 
-  ![显示密钥内容](images/show-key-id.png)
+   ![显示密钥内容](images/show-key-id.png)
 
 要为私钥文件设置适当的权限，请在该文件所在的目录下运行以下命令：
+
 ```bash
 $ sudo chmod 400 new-key-file.pem
 ```
 
 使用 SSH 登录到 EC2 实例的示例命令：
+
 ```bash
 $ ssh -i path/to/your/new-key-file.pem instance-username@instance-ip-address
 ```
