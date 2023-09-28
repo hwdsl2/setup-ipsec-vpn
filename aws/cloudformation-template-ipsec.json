@@ -52,10 +52,7 @@
             "Type": "AWS::IAM::InstanceProfile",
             "Properties": {
                 "InstanceProfileName": {
-                    "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
-                    ]
+                    "Ref": "KeyPair"
                 },
                 "Path": "/setup-ipsec-vpn/",
                 "Roles": [
@@ -66,7 +63,7 @@
             },
             "DependsOn": [
                 "S3ExecutionRole",
-                "KeyPairInfo"
+                "KeyPair"
             ]
         },
         "Ikev2S3Bucket": {
@@ -90,14 +87,14 @@
                 },
                 "BucketName": {
                     "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
+                        "KeyPairDisplayFunctionInfo",
+                        "Combination"
                     ]
                 }
             },
             "Metadata": {},
             "DependsOn": [
-                "KeyPairInfo"
+                "KeyPair"
             ]
         },
         "OpenBucketPolicy": {
@@ -295,10 +292,7 @@
                     "Ref": "InstanceType"
                 },
                 "KeyName": {
-                    "Fn::GetAtt": [
-                        "KeyPairInfo",
-                        "KeyName"
-                    ]
+                    "Ref": "KeyPair"
                 },
                 "ImageId": {
                     "Fn::GetAtt": [
@@ -310,12 +304,28 @@
             "Metadata": {},
             "DependsOn": [
                 "VpnRouteTable",
-                "KeyPairCreation",
+                "KeyPair",
                 "AMIInfoFunction",
                 "VpnSecurityGroup",
                 "Ikev2S3Bucket",
                 "IAMInstanceProfile"
             ]
+        },
+        "KeyPair": {
+            "Type": "AWS::EC2::KeyPair",
+            "Properties": {
+                "KeyName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "setup-ipsec-vpn",
+                            {
+                                "Ref": "AWS::StackName"
+                            }
+                        ]
+                    ]
+                }
+            }
         },
         "VpnSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
@@ -374,7 +384,7 @@
             },
             "Metadata": {}
         },
-        "KeyPairCreation": {
+        "KeyPairDisplayFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "Handler": "index.handler",
@@ -385,7 +395,6 @@
                         "Arn"
                     ]
                 },
-                "Timeout": 30,
                 "Code": {
                     "ZipFile": {
                         "Fn::Join": [
@@ -395,30 +404,72 @@
                                 "import cfnresponse",
                                 "import string",
                                 "import random",
+                                "import traceback",
                                 "'''",
                                 "This python program should be embedded into its designated cloudformation",
                                 "template as the inline code of one of the lambda functions.",
+                                "Its function is to create a random combination of 20 characters for the naming of the Ikev2S3Bucket, and",
+                                "to retrieve the private key material for display under the Outputs tab.",
                                 "'''",
                                 "def handler(event, context):",
                                 "   try:",
-                                "       keyName = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
-                                "       region = event['ResourceProperties']['Region']",
-                                "       ec2 = boto3.client('ec2',region)",
-                                "       response = ec2.create_key_pair(",
-                                "           KeyName=keyName",
-                                "       )",
-                                "       keyMaterial = response['KeyMaterial']",
-                                "       cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'KeyName':keyName}, 'KeyPairInfo')",
-                                "   except Exception:",
-                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {})"
+                                "       if event['RequestType'] == 'Delete':",
+                                "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {})",
+                                "       elif event['RequestType'] == 'Create':",
+                                "           rCombination = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
+                                "           region = event['ResourceProperties']['Region']",
+                                "           ssm = boto3.client('ssm',region)",
+                                "           response = ssm.get_parameter(",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "               Name='/ec2/keypair/",
+                                            {
+                                                "Fn::GetAtt": [
+                                                    "KeyPair",
+                                                    "KeyPairId"
+                                                ]
+                                            },
+                                            "',"
+                                        ]
+                                    ]
+                                },
+                                "               WithDecryption=True",
+                                "           )",
+                                "           keyMaterial = response['Parameter']['Value']",
+                                "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'Combination':rCombination}, 'KeyPairDisplayFunctionInfo')",
+                                "   except Exception as e:",
+                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
                             ]
                         ]
                     }
+                },
+                "Timeout": 30
+            },
+            "Metadata": {},
+            "DependsOn": [
+                "LambdaExecutionRole",
+                "KeyPair"
+            ]
+        },
+        "KeyPairDisplayFunctionInfo": {
+            "Type": "Custom::KeyPairDisplayFunctionInfo",
+            "Properties": {
+                "Region": {
+                    "Ref": "AWS::Region"
+                },
+                "ServiceToken": {
+                    "Fn::GetAtt": [
+                        "KeyPairDisplayFunction",
+                        "Arn"
+                    ]
                 }
             },
             "Metadata": {},
             "DependsOn": [
-                "LambdaExecutionRole"
+                "KeyPairDisplayFunction",
+                "KeyPair"
             ]
         },
         "AMIInfo": {
@@ -460,6 +511,7 @@
                             [
                                 "import boto3",
                                 "import cfnresponse",
+                                "import traceback",
                                 "'''",
                                 "This python script should be embeded into its designated cloudformation template.",
                                 "Its function is to sort out the correct AMI image to use for each of the distribution options available.",
@@ -487,7 +539,7 @@
                                 "       AMIId = images[0]['ImageId']",
                                 "       cfnresponse.send(event, context, cfnresponse.SUCCESS, {'AMIId':AMIId}, 'AMIInfo')",
                                 "   except Exception:",
-                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {})"
+                                "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
                             ]
                         ]
                     }
@@ -588,24 +640,6 @@
             },
             "Metadata": {}
         },
-        "KeyPairInfo": {
-            "Type": "Custom::KeyPairInfo",
-            "Properties": {
-                "Region": {
-                    "Ref": "AWS::Region"
-                },
-                "ServiceToken": {
-                    "Fn::GetAtt": [
-                        "KeyPairCreation",
-                        "Arn"
-                    ]
-                }
-            },
-            "Metadata": {},
-            "DependsOn": [
-                "KeyPairCreation"
-            ]
-        },
         "InternetGatewayAttachment": {
             "Type": "AWS::EC2::VPCGatewayAttachment",
             "Properties": {
@@ -648,7 +682,7 @@
         },
         "InstanceType": {
             "Type": "String",
-            "Description": "The instance type of your VPN server. Using t2.micro may qualify for the AWS Free Tier.",
+            "Description": "The instance type of your VPN server. Using t2.micro or t3.micro may qualify for the AWS Free Tier.",
             "AllowedValues": [
                 "t2.micro",
                 "t3.nano",
@@ -694,24 +728,33 @@
                 "Ref": "VpnIpsecPsk"
             }
         },
-        "5EC2PrivateKeyMaterial": {
+        "5EC2PrivateKeyId": {
+            "Description": "The ID of the key pair created. For more information regarding how to retrieve the private key for authentication, please refer to: https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/aws/README.md#faqs",
+            "Value": {
+                "Fn::GetAtt": [
+                    "KeyPair",
+                    "KeyPairId"
+                ]
+            }
+        },
+        "6EC2PrivateKeyMaterial": {
             "Description": "The content of your private key for accessing the VPN server via SSH. Save it as a file for use when connecting.",
             "Value": {
                 "Fn::GetAtt": [
-                    "KeyPairInfo",
+                    "KeyPairDisplayFunctionInfo",
                     "KeyMaterial"
                 ]
             }
         },
-        "6NextStep": {
+        "7NextStep": {
             "Description": "Learn how to configure VPN clients.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn#next-steps"
         },
-        "7WarningForDebianUsers": {
+        "8WarningForDebianUsers": {
             "Description": "Please be noted that due to Debian images on AWS EC2 using cloud kernels, you are unable to use IPSec/L2TP mode if your server is running Debian. For more information, please refer to the link to the left.",
             "Value": "https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#debian-kernel"
         },
-        "8RetrieveYourIkev2Credentials": {
+        "9RetrieveYourIkev2Credentials": {
             "Description": "Please use the following link to download your IKEv2 connection credentials. The password to the ZIP file that stores the credentials, is the same password used to connect to your VPN server. The download link for the credentials will expire in ONE day.",
             "Value": {
                 "Fn::Join": [
