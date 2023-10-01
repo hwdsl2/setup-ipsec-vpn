@@ -221,14 +221,14 @@ In certain circumstances, you may want to forward port(s) on the VPN server to a
 
 **Warning:** Port forwarding will expose port(s) on the VPN client to the entire Internet, which could be a **security risk**! This is NOT recommended, unless your use case requires it.
 
-**Note:** The internal VPN IPs assigned to VPN clients are dynamic, and firewalls on client devices may block forwarded traffic. To assign static IPs to VPN clients, refer to the previous section. To check which IP is assigned to a client, view the connection status on the VPN client.
+**Note:** The internal VPN IPs assigned to VPN clients are dynamic, and firewalls on client devices may block forwarded traffic. To assign static IPs to VPN clients, see [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic). To check which IP is assigned to a client, view the connection status on the VPN client.
 
 Example 1: Forward TCP port 443 on the VPN server to the IPsec/L2TP client at `192.168.42.10`.
 ```
 # Get default network interface name
 netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
+iptables -t nat -A PREROUTING -i "$netif" -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
 
 Example 2: Forward UDP port 123 on the VPN server to the IKEv2 (or IPsec/XAuth) client at `192.168.43.10`.
@@ -236,7 +236,7 @@ Example 2: Forward UDP port 123 on the VPN server to the IKEv2 (or IPsec/XAuth) 
 # Get default network interface name
 netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
-iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
+iptables -t nat -A PREROUTING -i "$netif" ! -s 192.168.43.0/24 -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
 
 If you want the rules to persist after reboot, you may add these commands to `/etc/rc.local`. To remove the added IPTables rules, run the commands again, but replace `-I FORWARD 2` with `-D FORWARD`, and replace `-A PREROUTING` with `-D PREROUTING`.

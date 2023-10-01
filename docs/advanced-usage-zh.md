@@ -221,14 +221,14 @@ sh vpn.sh
 
 **警告：** 端口转发会将 VPN 客户端上的端口暴露给整个因特网，这可能会带来**安全风险**！**不建议**这样做，除非你的用例需要它。
 
-**注：** 为 VPN 客户端分配的内网 IP 是动态的，而且客户端设备上的防火墙可能会阻止转发的流量。如果要将静态 IP 分配给 VPN 客户端，请参见上一节。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+**注：** 为 VPN 客户端分配的内网 IP 是动态的，而且客户端设备上的防火墙可能会阻止转发的流量。如果要将静态 IP 分配给 VPN 客户端，请参见 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
 
 示例 1：将 VPN 服务器上的 TCP 端口 443 转发到位于 `192.168.42.10` 的 IPsec/L2TP 客户端。
 ```
 # 获取默认网络接口名称
 netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -o ppp+ -p tcp --dport 443 -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
+iptables -t nat -A PREROUTING -i "$netif" -p tcp --dport 443 -j DNAT --to 192.168.42.10
 ```
 
 示例 2：将 VPN 服务器上的 UDP 端口 123 转发到位于 `192.168.43.10` 的 IKEv2（或 IPsec/XAuth）客户端。
@@ -236,7 +236,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.42.10
 # 获取默认网络接口名称
 netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
 iptables -I FORWARD 2 -i "$netif" -d 192.168.43.0/24 -p udp --dport 123 -j ACCEPT
-iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT --to 192.168.43.10
+iptables -t nat -A PREROUTING -i "$netif" ! -s 192.168.43.0/24 -p udp --dport 123 -j DNAT --to 192.168.43.10
 ```
 
 如果你想要这些规则在重启后仍然有效，可以将这些命令添加到 `/etc/rc.local`。要删除添加的 IPTables 规则，请再次运行这些命令，但是将 `-I FORWARD 2` 替换为 `-D FORWARD`，并且将 `-A PREROUTING` 替换为 `-D PREROUTING`。
