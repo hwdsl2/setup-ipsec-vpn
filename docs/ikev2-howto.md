@@ -550,6 +550,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 * [Parameter is incorrect](#parameter-is-incorrect)
 * [Cannot open websites after connecting to IKEv2](#cannot-open-websites-after-connecting-to-ikev2)
 * [Windows 10 connecting](#windows-10-connecting)
+* [NetworkManager-strongswan-gnome-asks-for-decrypted-password-after-click-connect](#NetworkManager-strongswan-gnome-asks-for-decrypted-password-after-click-connect)
 * [Other known issues](#other-known-issues)
 
 ### Cannot connect to the VPN server
@@ -612,6 +613,20 @@ If using Windows 10 and the VPN is stuck on "connecting" for more than a few min
 1. Right-click on the wireless/network icon in your system tray.
 1. Select **Open Network & Internet settings**, then on the page that opens, click **VPN** on the left.
 1. Select the new VPN entry, then click **Connect**.
+
+### NetworkManager-strongswan-gnome-asks-for-decrypted-password-after-click-connect
+
+On fedora 38 detected. NetworkManager-strongswan-gnome-1.6.0-3.fc38.x86_64 package. It hapens because some troubles with the SELinux permissions (charon-nm cant read certs).
+
+1. mkdir /.cert/
+2. mv ca.cer client.cer client.key /.cert/
+3. chown root:root /.cert/ /.cert/*
+4. chmod 0750 /.cert/
+5. chmod 0640 /.cert/*
+6. setenforce permissive
+7. try to connect
+
+After connection You can return SELinux's enforcing policy back by running: setenforce enforcing
 
 ### Other known issues
 
