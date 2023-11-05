@@ -16,6 +16,8 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 First, prepare your Linux server\* with an install of Ubuntu, Debian or CentOS.
 
+Make sure, **ports 500 and 4500** are open for UDP by the firewall on your server.
+
 Use this one-liner to set up an IPsec VPN server:
 
 ```bash
