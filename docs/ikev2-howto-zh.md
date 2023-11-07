@@ -433,7 +433,7 @@ rm vpnclient.p12
 
 # （重要）保护证书和私钥文件
 # 注：这一步是可选的，但强烈推荐。
-sudo chown root.root ca.cer client.cer client.key
+sudo chown root:root ca.cer client.cer client.key
 sudo chmod 600 ca.cer client.cer client.key
 ```
 

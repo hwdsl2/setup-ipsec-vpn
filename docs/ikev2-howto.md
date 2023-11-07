@@ -435,7 +435,7 @@ rm vpnclient.p12
 
 # (Important) Protect certificate and private key files
 # Note: This step is optional, but strongly recommended.
-sudo chown root.root ca.cer client.cer client.key
+sudo chown root:root ca.cer client.cer client.key
 sudo chmod 600 ca.cer client.cer client.key
 ```
 
