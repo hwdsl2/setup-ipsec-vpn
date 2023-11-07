@@ -40,7 +40,6 @@ jobs:
           $wg vpnsetup_amzn.sh     "$gi/vpnsetup_amzn.sh"; $sl
           $wg vpnsetup_ubuntu.sh   "$gi/vpnsetup_ubuntu.sh"; $sl
           $wg vpnsetup_alpine.sh   "$gi/vpnsetup_alpine.sh"; $sl
-          $wg quickstart.sh        "$gi/extras/quickstart.sh"; $sl
           $wg ikev2setup.sh        "$gi/extras/ikev2setup.sh"; $sl
           $wg vpnupgrade.sh        "$gi/extras/vpnupgrade.sh"; $sl
           $wg vpnupgrade_centos.sh "$gi/extras/vpnupgrade_centos.sh"; $sl
@@ -59,7 +58,6 @@ jobs:
           $wg vpnsetup_amzn2.sh     "$gh/vpnsetup_amzn.sh"; $sl
           $wg vpnsetup_ubuntu2.sh   "$gh/vpnsetup_ubuntu.sh"; $sl
           $wg vpnsetup_alpine2.sh   "$gh/vpnsetup_alpine.sh"; $sl
-          $wg quickstart2.sh        "$gh/extras/quickstart.sh"; $sl
           $wg ikev2setup2.sh        "$gh/extras/ikev2setup.sh"; $sl
           $wg vpnupgrade2.sh        "$gh/extras/vpnupgrade.sh"; $sl
           $wg vpnupgrade_centos2.sh "$gh/extras/vpnupgrade_centos.sh"; $sl
@@ -78,7 +76,6 @@ jobs:
           diff vpnsetup_amzn.sh     ../vpnsetup_amzn.sh
           diff vpnsetup_ubuntu.sh   ../vpnsetup_ubuntu.sh
           diff vpnsetup_alpine.sh   ../vpnsetup_alpine.sh
-          diff quickstart.sh        ../extras/quickstart.sh
           diff ikev2setup.sh        ../extras/ikev2setup.sh
           diff vpnupgrade.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos.sh ../extras/vpnupgrade_centos.sh
@@ -97,7 +94,6 @@ jobs:
           diff vpnsetup_amzn2.sh     ../vpnsetup_amzn.sh
           diff vpnsetup_ubuntu2.sh   ../vpnsetup_ubuntu.sh
           diff vpnsetup_alpine2.sh   ../vpnsetup_alpine.sh
-          diff quickstart2.sh        ../extras/quickstart.sh
           diff ikev2setup2.sh        ../extras/ikev2setup.sh
           diff vpnupgrade2.sh        ../extras/vpnupgrade.sh
           diff vpnupgrade_centos2.sh ../extras/vpnupgrade_centos.sh
