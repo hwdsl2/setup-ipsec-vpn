@@ -6,6 +6,7 @@
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 * [IKEv2-only VPN](#ikev2-only-vpn)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
+* [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 * [Customize VPN subnets](#customize-vpn-subnets)
 * [Port forwarding to VPN clients](#port-forwarding-to-vpn-clients)
 * [Split tunneling](#split-tunneling)
@@ -182,9 +183,36 @@ iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
 
+## Specify VPN server's public IP
+
+On servers with multiple public IP addresses, advanced users can specify a public IP for the VPN server using variable `VPN_PUBLIC_IP`. For example, if the server has IPs `192.0.2.1` and `192.0.2.2`, and you want the VPN server to use `192.0.2.2`:
+
+```
+sudo VPN_PUBLIC_IP=192.0.2.2 sh vpn.sh
+```
+
+Note that this variable has no effect for IKEv2 mode, if IKEv2 is already set up on the server. In this case, you may remove IKEv2 and set it up again using custom options. Refer to [Set up IKEv2 using helper script](ikev2-howto.md#set-up-ikev2-using-helper-script).
+
+Additional configuration may be required if you want VPN clients to use the specified public IP as their "outgoing IP" when the VPN connection is active, and the specified IP is NOT the main IP (or default route) on the server. In this case, you may need to change IPTables rules on the server. To persist after reboot, you can add these commands to `/etc/rc.local`.
+
+Continuing with the example above, if you want the "outgoing IP" to be `192.0.2.2`:
+
+```
+# Get default network interface name
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
+# Remove MASQUERADE rules
+iptables -t nat -D POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
+iptables -t nat -D POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
+# Add SNAT rules
+iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j SNAT --to 192.0.2.2
+iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j SNAT --to 192.0.2.2
+```
+
+To check the "outgoing IP" for a connected VPN client, you may open a browser on the client and [look up the IP address on Google](https://www.google.com/search?q=my+ip).
+
 ## Customize VPN subnets
 
-By default, IPsec/L2TP VPN clients will use internal VPN subnet `192.168.42.0/24`, while IPsec/XAuth ("Cisco IPsec") and IKEv2 VPN clients will use internal VPN subnet `192.168.43.0/24`. For more details, read the previous section.
+By default, IPsec/L2TP VPN clients will use internal VPN subnet `192.168.42.0/24`, while IPsec/XAuth ("Cisco IPsec") and IKEv2 VPN clients will use internal VPN subnet `192.168.43.0/24`. For more details, see [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic).
 
 For most use cases, it is NOT necessary and NOT recommended to customize these subnets. If your use case requires it, however, you may specify custom subnet(s) when installing the VPN.
 

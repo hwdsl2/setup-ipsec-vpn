@@ -336,6 +336,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [IKEv2-only VPN](docs/advanced-usage.md#ikev2-only-vpn)
 - [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
+- [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
 - [Port forwarding to VPN clients](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)

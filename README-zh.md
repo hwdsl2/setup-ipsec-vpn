@@ -336,6 +336,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [域名和更改服务器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
 - [仅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)
 - [VPN 内网 IP 和流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
+- [指定 VPN 服务器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)
 - [转发端口到 VPN 客户端](docs/advanced-usage-zh.md#转发端口到-vpn-客户端)
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)

@@ -6,6 +6,7 @@
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
 * [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
+* [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 * [自定义 VPN 子网](#自定义-vpn-子网)
 * [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
@@ -182,9 +183,36 @@ iptables -I FORWARD 4 -i ppp+ -d 192.168.43.0/24 -j DROP
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o ppp+ -j DROP
 ```
 
+## 指定 VPN 服务器的公有 IP
+
+在具有多个公有 IP 地址的服务器上，高级用户可以使用变量 `VPN_PUBLIC_IP` 为 VPN 服务器指定一个公有 IP。例如，如果服务器的 IP 为 `192.0.2.1` 和 `192.0.2.2`，并且你想要 VPN 服务器使用 `192.0.2.2`：
+
+```
+sudo VPN_PUBLIC_IP=192.0.2.2 sh vpn.sh
+```
+
+请注意，如果在服务器上已经配置了 IKEv2，则此变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [使用辅助脚本配置 IKEv2](ikev2-howto-zh.md#使用辅助脚本配置-ikev2)。
+
+如果你想要 VPN 客户端在 VPN 连接处于活动状态时使用指定的公有 IP 作为其 "出站 IP"，并且指定的 IP **不是** 服务器上的主 IP（或默认路由），则可能需要额外的配置。在这种情况下，你可能需要更改服务器上的 IPTables 规则。如果要在重启后继续有效，你可以将这些命令添加到 `/etc/rc.local`。
+
+继续上面的例子，如果你希望 "出站 IP" 为 `192.0.2.2`：
+
+```
+# 获取默认网络接口名称
+netif=$(ip -4 route list 0/0 | grep -m 1 -Po '(?<=dev )(\S+)')
+# 移除 MASQUERADE 规则
+iptables -t nat -D POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j MASQUERADE
+iptables -t nat -D POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
+# 添加 SNAT 规则
+iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir out --pol none -j SNAT --to 192.0.2.2
+iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j SNAT --to 192.0.2.2
+```
+
+要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到 [这里](https://www.ipchicken.com) 检测 IP 地址。
+
 ## 自定义 VPN 子网
 
-默认情况下，IPsec/L2TP VPN 客户端将使用内部 VPN 子网 `192.168.42.0/24`，而 IPsec/XAuth ("Cisco IPsec") 和 IKEv2 VPN 客户端将使用内部 VPN 子网 `192.168.43.0/24`。有关更多详细信息，请阅读上一节。
+默认情况下，IPsec/L2TP VPN 客户端将使用内部 VPN 子网 `192.168.42.0/24`，而 IPsec/XAuth ("Cisco IPsec") 和 IKEv2 VPN 客户端将使用内部 VPN 子网 `192.168.43.0/24`。有关更多详细信息，请参见 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)。
 
 对于大多数用例，没有必要也 **不建议** 自定义这些子网。但是，如果你的用例需要它，你可以在安装 VPN 时指定自定义子网。
 
