@@ -544,6 +544,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#ikev1-troubleshooting) and [Advanced usage](advanced-usage.md).
 
 * [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
+* [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
 * [Policy match error](#policy-match-error)
@@ -559,6 +560,49 @@ First, make sure that the VPN server address specified on your VPN client device
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
 [Check logs and VPN status](clients.md#check-logs-and-vpn-status) for errors. If you encounter retransmission related errors and are unable to connect, there may be network issues between the VPN client and server. If you are connecting from mainland China, consider switching to alternative solutions other than IPsec VPN.
+
+### macOS Sonoma clients disconnect
+
+macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) which could cause the IKEv2 VPN to disconnect every 24-48 minutes. To work around this issue:
+
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. Find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
+
+   ```
+     ike=aes256-sha2_256;dh19,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+     phase2alg=aes256-sha2_256,aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+   ```
+1. Also in `/etc/ipsec.d/ikev2.conf`, change `pfs=no` to `pfs=yes`.
+1. Save the file and run `sudo service ipsec restart`.
+1. In the generated `.mobileconfig` client config file, find and replace the following sections with these new values:
+   ```
+           <key>ChildSecurityAssociationParameters</key>
+           <dict>
+             <key>DiffieHellmanGroup</key>
+             <integer>19</integer>
+             <key>EncryptionAlgorithm</key>
+             <string>AES-256</string>
+             <key>IntegrityAlgorithm</key>
+             <string>SHA2-256</string>
+             <key>LifeTimeInMinutes</key>
+             <integer>1410</integer>
+           </dict>
+   ```
+   ```
+           <key>EnablePFS</key>
+           <integer>1</integer>
+           <key>IKESecurityAssociationParameters</key>
+           <dict>
+             <key>DiffieHellmanGroup</key>
+             <integer>19</integer>
+             <key>EncryptionAlgorithm</key>
+             <string>AES-256</string>
+             <key>IntegrityAlgorithm</key>
+             <string>SHA2-256</string>
+             <key>LifeTimeInMinutes</key>
+             <integer>1410</integer>
+           </dict>
+   ```
+1. Remove the previously imported IKEv2 profile from your Mac (if any), then import the updated `.mobileconfig` file.
 
 ### Unable to connect multiple IKEv2 clients
 
