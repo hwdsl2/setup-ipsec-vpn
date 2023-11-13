@@ -209,7 +209,7 @@ sudo VPN_SKIP_IKEV2=yes sh vpn.sh
 
 （可选）如需为 VPN 客户端指定另外的 DNS 服务器，你可以定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。有关详细信息，参见上面的选项 1。
 
-然后运行 IKEv2 [辅助脚本](docs/ikev2-howto-zh.md#使用辅助脚本配置-ikev2) 使用自定义选项以交互方式配置 IKEv2:
+然后运行 IKEv2 辅助脚本以使用自定义选项以交互方式配置 IKEv2:
 
 ```bash
 sudo ikev2.sh

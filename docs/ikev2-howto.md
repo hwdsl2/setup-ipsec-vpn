@@ -142,6 +142,8 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 [[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
+**Note:** macOS 14 (Sonoma) has an issue that may cause IKEv2 VPN to disconnect every 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). For more details and a workaround, see [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect).
+
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. For macOS Ventura and newer, open System Settings and search for Profiles. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
 To connect to the VPN:
@@ -563,17 +565,16 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 ### macOS Sonoma clients disconnect
 
-macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) which could cause the IKEv2 VPN to disconnect every 24-48 minutes. To work around this issue:
+macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect every 24-48 minutes. Other macOS versions are not affected. [Check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue:
 
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. Find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
-
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. First change `pfs=no` to `pfs=yes`. Then find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
    ```
      ike=aes256-sha2_256;dh19,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
      phase2alg=aes256-sha2_256,aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
    ```
-1. Also in `/etc/ipsec.d/ikev2.conf`, change `pfs=no` to `pfs=yes`.
-1. Save the file and run `sudo service ipsec restart`.
-1. In the generated `.mobileconfig` client config file, find and replace the following sections with these new values:
+   **Note:** Docker users should first [open a Bash shell inside the container](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#bash-shell-inside-container).
+1. Save the file and run `service ipsec restart`. Docker users: After step 4 below, `exit` the container and run `docker restart ipsec-vpn-server`.
+1. Edit `/opt/src/ikev2.sh` on the VPN server. Find and replace the following sections with these new values:
    ```
            <key>ChildSecurityAssociationParameters</key>
            <dict>
@@ -590,6 +591,8 @@ macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issue
    ```
            <key>EnablePFS</key>
            <integer>1</integer>
+   ```
+   ```
            <key>IKESecurityAssociationParameters</key>
            <dict>
              <key>DiffieHellmanGroup</key>
@@ -602,7 +605,10 @@ macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issue
              <integer>1410</integer>
            </dict>
    ```
-1. Remove the previously imported IKEv2 profile from your Mac (if any), then import the updated `.mobileconfig` file.
+1. Run `sudo ikev2.sh` to export (or add) updated client config files for each macOS and iOS (iPhone/iPad) device you have.
+1. Remove the previously imported IKEv2 profile (if any) from your macOS and iOS device(s), then import the updated `.mobileconfig` file(s). See [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
+
+**Note:** The updated VPN server configuration may not work with Windows or Android clients. For those clients, you may need to change `pfs=yes` back to `pfs=no` in `ikev2.conf`, then run `service ipsec restart` or restart the Docker container.
 
 ### Unable to connect multiple IKEv2 clients
 
@@ -856,7 +862,7 @@ wget https://get.vpnsetup.net/ikev2addr -O ikev2addr.sh
 sudo bash ikev2addr.sh
 ```
 
-**Important:** After running this script, you must manually update the server address (and remote ID, if applicable) on any existing IKEv2 client devices. For iOS clients, you'll need to export and re-import client configuration using the IKEv2 [helper script](#set-up-ikev2-using-helper-script).
+**Important:** After running this script, you must manually update the server address (and remote ID, if applicable) on any existing IKEv2 client devices. For iOS clients, you'll need to run `sudo ikev2.sh` to export the updated client config file and import it to the iOS device.
 
 ## Update IKEv2 helper script
 

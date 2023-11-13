@@ -142,6 +142,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 [[支持者] **屏幕录影：** 在 macOS 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
+**注：** macOS 14 (Sonoma) 存在一个问题，可能会导致 IKEv2 VPN 每 24-48 分钟断开连接。其他 macOS 版本不受影响。首先[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。有关详细信息和解决方法，请参阅 [macOS Sonoma 客户端断开连接](#macos-sonoma-客户端断开连接)。
+
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。如果你的 Mac 运行 macOS Big Sur 或更新版本，打开系统偏好设置并转到描述文件部分以完成导入。对于 macOS Ventura 和更新版本，打开系统设置并搜索描述文件。在完成之后，检查并确保 "IKEv2 VPN" 显示在系统偏好设置 -> 描述文件中。
 
 要连接到 VPN：
@@ -542,6 +544,7 @@ sudo chmod 600 ca.cer client.cer client.key
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#ikev1-故障排除) 和 [高级用法](advanced-usage-zh.md)。
 
 * [无法连接到 VPN 服务器](#无法连接到-vpn-服务器)
+* [macOS Sonoma 客户端断开连接](#macos-sonoma-客户端断开连接)
 * [无法连接多个 IKEv2 客户端](#无法连接多个-ikev2-客户端)
 * [IKE 身份验证凭证不可接受](#ike-身份验证凭证不可接受)
 * [参数错误 policy match error](#参数错误-policy-match-error)
@@ -557,6 +560,53 @@ sudo chmod 600 ca.cer client.cer client.key
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
 [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)是否有错误。如果你遇到 retransmission 相关错误并且无法连接，说明 VPN 客户端和服务器之间的网络可能有问题。如果你从中国大陆进行连接，请考虑改用 IPsec VPN 以外的其他解决方案。
+
+### macOS Sonoma 客户端断开连接
+
+macOS 14 (Sonoma) 存在[一个问题](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486)，可能会导致 IKEv2 VPN 每 24-48 分钟断开连接。其他 macOS 版本不受影响。[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。要解决此问题：
+
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。首先将 `pfs=no` 替换为 `pfs=yes`。然后找到这些行 `ike=...` 和 `phase2alg=...`，并将它们替换为以下内容，开头必须空两格：
+   ```
+     ike=aes256-sha2_256;dh19,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+     phase2alg=aes256-sha2_256,aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+   ```
+   **注：** Docker 用户需要首先[在容器中运行 Bash shell](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#在容器中运行-bash-shell)。
+1. 保存文件并运行 `service ipsec restart`。Docker 用户：在下面的第 4 步之后退出 (`exit`) 容器并运行 `docker restart ipsec-vpn-server`。
+1. 编辑 VPN 服务器上的 `/opt/src/ikev2.sh`。找到以下部分并将其替换为这些新值：
+   ```
+           <key>ChildSecurityAssociationParameters</key>
+           <dict>
+             <key>DiffieHellmanGroup</key>
+             <integer>19</integer>
+             <key>EncryptionAlgorithm</key>
+             <string>AES-256</string>
+             <key>IntegrityAlgorithm</key>
+             <string>SHA2-256</string>
+             <key>LifeTimeInMinutes</key>
+             <integer>1410</integer>
+           </dict>
+   ```
+   ```
+           <key>EnablePFS</key>
+           <integer>1</integer>
+   ```
+   ```
+           <key>IKESecurityAssociationParameters</key>
+           <dict>
+             <key>DiffieHellmanGroup</key>
+             <integer>19</integer>
+             <key>EncryptionAlgorithm</key>
+             <string>AES-256</string>
+             <key>IntegrityAlgorithm</key>
+             <string>SHA2-256</string>
+             <key>LifeTimeInMinutes</key>
+             <integer>1410</integer>
+           </dict>
+   ```
+1. 运行 `sudo ikev2.sh` 为你的每个 macOS 和 iOS (iPhone/iPad) 设备导出（或添加）更新后的客户端配置文件。
+1. 从你的 macOS 和 iOS 设备中移除之前导入的 IKEv2 配置文件（如果有），然后导入更新后的 `.mobileconfig` 文件。请参阅[配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。Docker 用户请看[配置并使用 IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。
+
+**注：** 更新后的 VPN 服务器配置可能不适用于 Windows 或 Android 客户端。对于这些客户端，你可能需要在 `ikev2.conf` 中将 `pfs=yes` 更改回 `pfs=no`，然后运行 `service ipsec restart` 或重启 Docker 容器。
 
 ### 无法连接多个 IKEv2 客户端
 
@@ -810,7 +860,7 @@ wget https://get.vpnsetup.net/ikev2addr -O ikev2addr.sh
 sudo bash ikev2addr.sh
 ```
 
-**重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要使用 IKEv2 [辅助脚本](#使用辅助脚本配置-ikev2) 导出然后重新导入客户端配置。
+**重要：** 运行此脚本后，你必须手动更新任何现有 IKEv2 客户端设备上的服务器地址以及 Remote ID（如果适用）。对于 iOS 客户端，你需要运行 `sudo ikev2.sh` 以导出更新后的客户端配置文件并导入 iOS 设备。
 
 ## 更新 IKEv2 辅助脚本
 
