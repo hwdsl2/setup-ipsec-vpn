@@ -142,7 +142,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 [[支持者] **屏幕录影：** 在 macOS 上导入 IKEv2 配置并连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
-**注：** macOS 14 (Sonoma) 存在一个问题，可能会导致 IKEv2 VPN 每 24-48 分钟断开连接。其他 macOS 版本不受影响。首先[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。有关详细信息和解决方法，请参阅 [macOS Sonoma 客户端断开连接](#macos-sonoma-客户端断开连接)。
+**注：** macOS 14 (Sonoma) 存在一个问题，可能会导致 IKEv2 VPN 在 24-48 分钟之后断开连接。其他 macOS 版本不受影响。首先[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。有关详细信息和解决方法，请参阅 [macOS Sonoma 客户端断开连接](#macos-sonoma-客户端断开连接)。
 
 首先，将生成的 `.mobileconfig` 文件安全地传送到你的 Mac，然后双击并按提示操作，以导入为 macOS 配置描述文件。如果你的 Mac 运行 macOS Big Sur 或更新版本，打开系统偏好设置并转到描述文件部分以完成导入。对于 macOS Ventura 和更新版本，打开系统设置并搜索描述文件。在完成之后，检查并确保 "IKEv2 VPN" 显示在系统偏好设置 -> 描述文件中。
 
@@ -563,7 +563,7 @@ sudo chmod 600 ca.cer client.cer client.key
 
 ### macOS Sonoma 客户端断开连接
 
-macOS 14 (Sonoma) 存在[一个问题](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486)，可能会导致 IKEv2 VPN 每 24-48 分钟断开连接。其他 macOS 版本不受影响。[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。要解决此问题：
+macOS 14 (Sonoma) 存在[一个问题](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486)，可能会导致 IKEv2 VPN 在 24-48 分钟之后断开连接。其他 macOS 版本不受影响。首先[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。要解决此问题：
 
 1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。首先将 `pfs=no` 替换为 `pfs=yes`。然后找到这些行 `ike=...` 和 `phase2alg=...`，并将它们替换为以下内容，开头必须空两格：
    ```

@@ -142,7 +142,7 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 [[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
-**Note:** macOS 14 (Sonoma) has an issue that may cause IKEv2 VPN to disconnect every 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). For more details and a workaround, see [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect).
+**Note:** macOS 14 (Sonoma) has an issue that may cause IKEv2 VPN to disconnect after 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). For more details and a workaround, see [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect).
 
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. For macOS Ventura and newer, open System Settings and search for Profiles. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
@@ -565,7 +565,7 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 ### macOS Sonoma clients disconnect
 
-macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect every 24-48 minutes. Other macOS versions are not affected. [Check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue:
+macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect after 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue:
 
 1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. First change `pfs=no` to `pfs=yes`. Then find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
    ```
