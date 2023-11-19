@@ -51,7 +51,7 @@ jobs:
           }
 
           restart_ipsec() {
-            if grep -qs -E 'release (8|9)' /etc/oracle-release; then
+            if [ -f /etc/oracle-release ]; then
               sleep 3
             fi
             if ! command -v amazon-linux-extras; then
