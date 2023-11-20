@@ -142,8 +142,6 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 [[Supporters] **Screencast:** IKEv2 Import Configuration and Connect on macOS](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
-**Note:** macOS 14 (Sonoma) has an issue that may cause IKEv2 VPN to disconnect after 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). For more details and a workaround, see [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect).
-
 First, securely transfer the generated `.mobileconfig` file to your Mac, then double-click and follow the prompts to import as a macOS profile. If your Mac runs macOS Big Sur or newer, open System Preferences and go to the Profiles section to finish importing. For macOS Ventura and newer, open System Settings and search for Profiles. When finished, check to make sure "IKEv2 VPN" is listed under System Preferences -> Profiles.
 
 To connect to the VPN:
@@ -189,6 +187,8 @@ When finished, check to make sure both the new client certificate and `IKEv2 VPN
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
 If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
+
+**Note:** macOS 14 (Sonoma) has a minor issue that may cause IKEv2 VPN to disconnect and reconnect once every 24-48 minutes. Other macOS versions are not affected. For more details and a workaround, see [macOS Sonoma clients reconnect](#macos-sonoma-clients-reconnect).
 
 <details>
 <summary>
@@ -546,7 +546,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#ikev1-troubleshooting) and [Advanced usage](advanced-usage.md).
 
 * [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
-* [macOS Sonoma clients disconnect](#macos-sonoma-clients-disconnect)
+* [macOS Sonoma clients reconnect](#macos-sonoma-clients-reconnect)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
 * [Policy match error](#policy-match-error)
@@ -563,9 +563,11 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 [Check logs and VPN status](clients.md#check-logs-and-vpn-status) for errors. If you encounter retransmission related errors and are unable to connect, there may be network issues between the VPN client and server. If you are connecting from mainland China, consider switching to alternative solutions other than IPsec VPN.
 
-### macOS Sonoma clients disconnect
+### macOS Sonoma clients reconnect
 
-macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect after 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue:
+macOS 14 (Sonoma) has [a minor issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect and reconnect once every 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue, follow the steps below.
+
+**Note:** After applying this workaround, the updated VPN server configuration may not work with Windows or Android clients. For those clients, you may need to change `pfs=yes` back to `pfs=no` in `ikev2.conf`, then run `service ipsec restart` or restart the Docker container.
 
 1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. First change `pfs=no` to `pfs=yes`. Then find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
    ```
@@ -607,8 +609,6 @@ macOS 14 (Sonoma) has [an issue](https://github.com/hwdsl2/setup-ipsec-vpn/issue
    ```
 1. Run `sudo ikev2.sh` to export (or add) updated client config files for each macOS and iOS (iPhone/iPad) device you have.
 1. Remove the previously imported IKEv2 profile (if any) from your macOS and iOS device(s), then import the updated `.mobileconfig` file(s). See [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
-
-**Note:** The updated VPN server configuration may not work with Windows or Android clients. For those clients, you may need to change `pfs=yes` back to `pfs=no` in `ikev2.conf`, then run `service ipsec restart` or restart the Docker container.
 
 ### Unable to connect multiple IKEv2 clients
 
