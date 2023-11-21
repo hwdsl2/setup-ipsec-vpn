@@ -204,7 +204,7 @@
                             "\n",
                             [
                                 "#!/bin/bash -xe",
-                                { "Fn::Sub": "trap 'cfn-signal -e 1 --stack ${AWS::StackName} --region ${AWS::Region}' ERR" },
+                                { "Fn::Sub": "trap 'cfn-signal -e 1 --resource VpnInstance --stack ${AWS::StackName} --region ${AWS::Region}' ERR" },
                                 "sleep 60",
                                 {
                                     "Fn::FindInMap": [
