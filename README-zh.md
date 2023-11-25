@@ -163,13 +163,64 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 如果无法下载，打开 [vpnsetup.sh](vpnsetup.sh)，然后点击右边的 `Raw` 按钮。按快捷键 `Ctrl/Cmd+A` 全选，`Ctrl/Cmd+C` 复制，然后粘贴到你喜欢的编辑器。
 </details>
 
-## 自定义 IKEv2 选项
+## 自定义 VPN 选项
+
+### 使用其他的 DNS 服务器
+
+在 VPN 已连接时，客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。在安装 VPN 时，你可以为所有的 VPN 模式指定另外的 DNS 服务器。这是可选的。示例如下：
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+```
+
+使用 `VPN_DNS_SRV1` 指定主 DNS 服务器，使用 `VPN_DNS_SRV2` 指定辅助 DNS 服务器（可选）。
+
+以下是一些流行的公共 DNS 提供商的列表，供你参考。
+
+| 提供商 | 主 DNS | 辅助 DNS | 注释 |
+| ----- | ------ | ------- | ---- |
+| [Google Public DNS](https://developers.google.com/speed/public-dns) | 8.8.8.8 | 8.8.4.4 | 本项目默认 |
+| [Cloudflare](https://1.1.1.1/dns/) | 1.1.1.1 | 1.0.0.1 | 另见：[Cloudflare for families](https://1.1.1.1/family/) |
+| [Quad9](https://www.quad9.net) | 9.9.9.9 | 149.112.112.112 | 阻止恶意域 |
+| [OpenDNS](https://www.opendns.com/home-internet-security/) | 208.67.222.222 | 208.67.220.220 | 阻止网络钓鱼域，可配置。 |
+| [CleanBrowsing](https://cleanbrowsing.org/filters/) | 185.228.168.9 | 185.228.169.9 | [域过滤器](https://cleanbrowsing.org/filters/)可用 |
+| [NextDNS](https://nextdns.io/?from=bg25bwmp) | 按需选择 | 按需选择 | 广告拦截，免费套餐可用。[了解更多](https://nextdns.io/?from=bg25bwmp)。 |
+| [Control D](https://controld.com/free-dns) | 按需选择 | 按需选择 | 广告拦截，可配置。[了解更多](https://controld.com/free-dns)。 |
+
+如果你需要在安装 VPN 之后更改 DNS 服务器，参见[高级用法](docs/advanced-usage-zh.md)。
+
+**注：** 如果服务器上已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，如需自定义 IKEv2 选项（例如 DNS 服务器），你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
+
+### 自定义 IKEv2 选项
 
 在安装 VPN 时，高级用户可以自定义 IKEv2 选项。这是可选的。
 
+<details open>
+<summary>
+选项 1: 在安装 VPN 时跳过 IKEv2，然后使用自定义选项配置 IKEv2。
+</summary>
+
+在安装 VPN 时，你可以跳过 IKEv2，仅安装 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式：
+
+```bash
+sudo VPN_SKIP_IKEV2=yes sh vpn.sh
+```
+
+（可选）如需为 VPN 客户端指定另外的 DNS 服务器，你可以定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。有关详细信息，参见[使用其他的 DNS 服务器](#使用其他的-dns-服务器)。
+
+然后运行 IKEv2 辅助脚本以使用自定义选项以交互方式配置 IKEv2:
+
+```bash
+sudo ikev2.sh
+```
+
+你可以自定义以下选项：VPN 服务器的域名，第一个客户端的名称和证书有效期，VPN 客户端的 DNS 服务器以及是否对客户端配置文件进行密码保护。
+
+**注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
+</details>
 <details>
 <summary>
-选项 1: 使用环境变量自定义 IKEv2 选项。
+选项 2: 使用环境变量自定义 IKEv2 选项。
 </summary>
 
 在安装 VPN 时，你可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
@@ -195,27 +246,6 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 ```
-</details>
-<details>
-<summary>
-选项 2: 在安装 VPN 时跳过 IKEv2，然后使用自定义选项配置 IKEv2。
-</summary>
-
-在安装 VPN 时，你可以跳过 IKEv2，仅安装 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式：
-
-```bash
-sudo VPN_SKIP_IKEV2=yes sh vpn.sh
-```
-
-（可选）如需为 VPN 客户端指定另外的 DNS 服务器，你可以定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选）。有关详细信息，参见上面的选项 1。
-
-然后运行 IKEv2 辅助脚本以使用自定义选项以交互方式配置 IKEv2:
-
-```bash
-sudo ikev2.sh
-```
-
-**注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 </details>
 <details>
 <summary>

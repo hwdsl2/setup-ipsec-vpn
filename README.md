@@ -163,13 +163,64 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-## Customize IKEv2 options
+## Customize VPN options
+
+### Use alternative DNS servers
+
+By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. When installing the VPN, you may optionally specify custom DNS server(s) for all VPN modes. Example:
+
+```bash
+sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
+```
+
+Use `VPN_DNS_SRV1` to specify the primary DNS server, and `VPN_DNS_SRV2` to specify the secondary DNS server (optional).
+
+Below is a list of some popular public DNS providers for your reference.
+
+| Provider | Primary DNS | Secondary DNS | Notes |
+| -------- | ----------- | ------------- | ----- |
+| [Google Public DNS](https://developers.google.com/speed/public-dns) | 8.8.8.8 | 8.8.4.4 | Default in this project |
+| [Cloudflare](https://1.1.1.1/dns/) | 1.1.1.1 | 1.0.0.1 | See also: [Cloudflare for families](https://1.1.1.1/family/) |
+| [Quad9](https://www.quad9.net) | 9.9.9.9 | 149.112.112.112 | Blocks malicious domains |
+| [OpenDNS](https://www.opendns.com/home-internet-security/) | 208.67.222.222 | 208.67.220.220 | Blocks phishing domains, configurable. |
+| [CleanBrowsing](https://cleanbrowsing.org/filters/) | 185.228.168.9 | 185.228.169.9 | [Domain filters](https://cleanbrowsing.org/filters/) available |
+| [NextDNS](https://nextdns.io/?from=bg25bwmp) | Varies | Varies | Ad blocking, free tier available. [Learn more](https://nextdns.io/?from=bg25bwmp). |
+| [Control D](https://controld.com/free-dns) | Varies | Varies | Ad blocking, configurable. [Learn more](https://controld.com/free-dns). |
+
+If you need to change DNS servers after VPN setup, see [Advanced usage](docs/advanced-usage.md).
+
+**Note:** If IKEv2 is already set up on the server, the variables above have no effect for IKEv2 mode. In that case, to customize IKEv2 options such as DNS servers, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
+
+### Customize IKEv2 options
 
 When installing the VPN, advanced users can optionally customize IKEv2 options.
 
+<details open>
+<summary>
+Option 1: Skip IKEv2 during VPN setup, then set up IKEv2 using custom options.
+</summary>
+
+When installing the VPN, you can skip IKEv2 and only install the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes:
+
+```bash
+sudo VPN_SKIP_IKEV2=yes sh vpn.sh
+```
+
+(Optional) If you want to specify custom DNS server(s) for VPN clients, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2`. See [Use alternative DNS servers](#use-alternative-dns-servers) for details.
+
+After that, run the IKEv2 helper script to set up IKEv2 interactively using custom options:
+
+```bash
+sudo ikev2.sh
+```
+
+You can customize the following options: VPN server's DNS name, name and validity period of the first client, DNS server for VPN clients and whether to password protect client config files.
+
+**Note:** The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
+</details>
 <details>
 <summary>
-Option 1: Customize IKEv2 options using environment variables.
+Option 2: Customize IKEv2 options using environment variables.
 </summary>
 
 When installing the VPN, you can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
@@ -195,27 +246,6 @@ By default, no password is required when importing IKEv2 client configuration. Y
 ```bash
 sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 ```
-</details>
-<details>
-<summary>
-Option 2: Skip IKEv2 during VPN setup, then set up IKEv2 using custom options.
-</summary>
-
-When installing the VPN, you can skip IKEv2 and only install the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes:
-
-```bash
-sudo VPN_SKIP_IKEV2=yes sh vpn.sh
-```
-
-(Optional) If you want to specify custom DNS server(s) for VPN clients, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2`. See option 1 above for details.
-
-After that, run the IKEv2 helper script to set up IKEv2 interactively using custom options:
-
-```bash
-sudo ikev2.sh
-```
-
-**Note:** The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
 </details>
 <details>
 <summary>
