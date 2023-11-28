@@ -262,7 +262,11 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 ### Android
 
+#### 使用 strongSwan VPN 客户端
+
 [[支持者] **屏幕录影：** 使用 Android strongSwan VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+
+Android 用户可以使用 strongSwan VPN 客户端连接（推荐）。
 
 1. 将生成的 `.sswan` 文件安全地传送到你的 Android 设备。
 1. 从 [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android)，[**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) 或 [**strongSwan 下载网站**](https://download.strongswan.org/Android/)下载并安装 strongSwan VPN 客户端。
@@ -275,33 +279,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. 单击 **导入**。
 1. 单击新的 VPN 配置文件以开始连接。
 
-<details open>
-<summary>
-或者，Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
-</summary>
-
-[[支持者] **屏幕录影：** 使用 Android 11+ 系统自带的 VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
-
-1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
-1. 启动 **设置** App。
-1. 进入 安全 -> 高级 -> 加密与凭据。
-1. 单击 **安装证书**。
-1. 单击 **VPN 和应用用户证书**。
-1. 选择你从服务器传送过来的 `.p12` 文件。   
-   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后浏览到你保存文件的目录。
-1. 为证书输入名称，然后单击 **确定**。
-1. 进入 设置 -> 网络和互联网 -> VPN，然后单击 "+" 按钮。
-1. 为 VPN 配置文件输入名称。
-1. 在 **类型** 下拉菜单选择 **IKEv2/IPSec RSA**。
-1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
-   **注：** 它必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。
-1. 在 **IPSec 标识符** 字段中输入任意内容（例如 `empty`）。   
-   **注：** 该字段不应该为必填。它是 Android 的一个 bug。
-1. 在 **IPSec 用户证书** 下拉菜单选择你导入的证书。
-1. 在 **IPSec CA 证书** 下拉菜单选择你导入的证书。
-1. 在 **IPSec 服务器证书** 下拉菜单选择 **(来自服务器)**。
-1. 单击 **保存**。然后单击新的 VPN 连接并单击 **连接**。
-</details>
+（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** App，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
 
 <details>
 <summary>
@@ -310,9 +288,6 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 如果你的设备运行 Android 6.0 (Marshmallow) 或更早版本，要使用 strongSwan VPN 客户端连接，你必须更改 VPN 服务器上的以下设置：编辑服务器上的 `/etc/ipsec.d/ikev2.conf`。在 `conn ikev2-cp` 小节的末尾添加 `authby=rsa-sha1`，开头必须空两格。保存文件并运行 `service ipsec restart`。
 </details>
-
-（可选功能）你可以选择启用 Android 上的 "始终开启的 VPN" 功能。启动 **设置** App，进入 网络和互联网 -> 高级 -> VPN，单击 "strongSwan VPN 客户端" 右边的设置图标，然后启用 **始终开启的 VPN** 以及 **屏蔽未使用 VPN 的所有连接** 选项。
-
 <details>
 <summary>
 如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
@@ -350,6 +325,36 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 1. **（重要）** 单击 **显示高级设置**。向下滚动，找到并启用 **Use RSA/PSS signatures** 选项。
 1. 保存新的 VPN 连接，然后单击它以开始连接。
 </details>
+
+连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+
+如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
+
+#### 使用系统自带的 IKEv2 客户端
+
+[[支持者] **屏幕录影：** 使用 Android 11+ 系统自带的 VPN 客户端连接](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
+
+Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
+
+1. 将生成的 `.p12` 文件安全地传送到你的 Android 设备。
+1. 启动 **设置** App。
+1. 进入 安全 -> 高级 -> 加密与凭据。
+1. 单击 **安装证书**。
+1. 单击 **VPN 和应用用户证书**。
+1. 选择你从服务器传送过来的 `.p12` 文件。   
+   **注：** 要查找 `.p12` 文件，单击左上角的抽拉式菜单，然后浏览到你保存文件的目录。
+1. 为证书输入名称，然后单击 **确定**。
+1. 进入 设置 -> 网络和互联网 -> VPN，然后单击 "+" 按钮。
+1. 为 VPN 配置文件输入名称。
+1. 在 **类型** 下拉菜单选择 **IKEv2/IPSec RSA**。
+1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
+   **注：** 它必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。
+1. 在 **IPSec 标识符** 字段中输入任意内容（例如 `empty`）。   
+   **注：** 该字段不应该为必填。它是 Android 的一个 bug。
+1. 在 **IPSec 用户证书** 下拉菜单选择你导入的证书。
+1. 在 **IPSec CA 证书** 下拉菜单选择你导入的证书。
+1. 在 **IPSec 服务器证书** 下拉菜单选择 **(来自服务器)**。
+1. 单击 **保存**。然后单击新的 VPN 连接并单击 **连接**。
 
 连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 

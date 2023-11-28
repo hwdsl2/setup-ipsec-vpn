@@ -262,7 +262,11 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 
 ### Android
 
+#### Using strongSwan VPN client
+
 [[Supporters] **Screencast:** Connect using Android strongSwan VPN Client](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+
+Android users can connect using strongSwan VPN client (recommended).
 
 1. Securely transfer the generated `.sswan` file to your Android device.
 1. Install strongSwan VPN Client from [**Google Play**](https://play.google.com/store/apps/details?id=org.strongswan.android), [**F-Droid**](https://f-droid.org/en/packages/org.strongswan.android/) or [**strongSwan download server**](https://download.strongswan.org/Android/).
@@ -275,33 +279,7 @@ To remove the IKEv2 VPN connection, open Settings -> General -> VPN & Device Man
 1. Tap **IMPORT**.
 1. Tap the new VPN profile to connect.
 
-<details open>
-<summary>
-Alternatively, Android 11+ users can also connect using the native IKEv2 client.
-</summary>
-
-[[Supporters] **Screencast:** Connect using Native VPN Client on Android 11+](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
-
-1. Securely transfer the generated `.p12` file to your Android device.
-1. Launch the **Settings** application.
-1. Go to Security -> Advanced -> Encryption & credentials.
-1. Tap **Install a certificate**.
-1. Tap **VPN & app user certificate**.
-1. Choose the `.p12` file you transferred from the VPN server.   
-   **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
-1. Enter a name for the certificate, then tap **OK**.
-1. Go to Settings -> Network & internet -> VPN, then tap the "+" button.
-1. Enter a name for the VPN profile.
-1. Select **IKEv2/IPSec RSA** from the **Type** drop-down menu.
-1. Enter `Your VPN Server IP` (or DNS name) in the **Server address** field.   
-   **Note:** This must **exactly match** the server address in the output of the IKEv2 helper script.
-1. Enter anything (e.g. `empty`) in the **IPSec identifier** field.   
-   **Note:** This field should not be required. It is a bug in Android.
-1. Select the certificate you imported from the **IPSec user certificate** drop-down menu.
-1. Select the certificate you imported from the **IPSec CA certificate** drop-down menu.
-1. Select **(receive from server)** from the **IPSec server certificate** drop-down menu.
-1. Tap **Save**. Then tap the new VPN connection and tap **Connect**.
-</details>
+(Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the **Always-on VPN** and **Block connections without VPN** options.
 
 <details>
 <summary>
@@ -310,9 +288,6 @@ If your device runs Android 6.0 or older, click here for additional instructions
 
 If your device runs Android 6.0 (Marshmallow) or older, in order to connect using the strongSwan VPN client, you must make the following change on the VPN server: Edit `/etc/ipsec.d/ikev2.conf` on the server. Append `authby=rsa-sha1` to the end of the `conn ikev2-cp` section, indented by two spaces. Save the file and run `service ipsec restart`.
 </details>
-
-(Optional feature) You can choose to enable the "Always-on VPN" feature on Android. Launch the **Settings** app, go to Network & internet -> Advanced -> VPN, click the gear icon on the right of "strongSwan VPN Client", then enable the **Always-on VPN** and **Block connections without VPN** options.
-
 <details>
 <summary>
 If you manually set up IKEv2 without using the helper script, click here for instructions.
@@ -350,6 +325,36 @@ If you manually set up IKEv2 without using the helper script, click here for ins
 1. **(Important)** Tap **Show advanced settings**. Scroll down, find and enable the **Use RSA/PSS signatures** option.
 1. Save the new VPN connection, then tap to connect.
 </details>
+
+Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
+
+If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
+
+#### Using native IKEv2 client
+
+[[Supporters] **Screencast:** Connect using Native VPN Client on Android 11+](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
+
+Android 11+ users can also connect using the native IKEv2 client.
+
+1. Securely transfer the generated `.p12` file to your Android device.
+1. Launch the **Settings** application.
+1. Go to Security -> Advanced -> Encryption & credentials.
+1. Tap **Install a certificate**.
+1. Tap **VPN & app user certificate**.
+1. Choose the `.p12` file you transferred from the VPN server.   
+   **Note:** To find the `.p12` file, tap the three-line menu button, then browse to the location you saved the file.
+1. Enter a name for the certificate, then tap **OK**.
+1. Go to Settings -> Network & internet -> VPN, then tap the "+" button.
+1. Enter a name for the VPN profile.
+1. Select **IKEv2/IPSec RSA** from the **Type** drop-down menu.
+1. Enter `Your VPN Server IP` (or DNS name) in the **Server address** field.   
+   **Note:** This must **exactly match** the server address in the output of the IKEv2 helper script.
+1. Enter anything (e.g. `empty`) in the **IPSec identifier** field.   
+   **Note:** This field should not be required. It is a bug in Android.
+1. Select the certificate you imported from the **IPSec user certificate** drop-down menu.
+1. Select the certificate you imported from the **IPSec CA certificate** drop-down menu.
+1. Select **(receive from server)** from the **IPSec server certificate** drop-down menu.
+1. Tap **Save**. Then tap the new VPN connection and tap **Connect**.
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
