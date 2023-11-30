@@ -216,6 +216,8 @@ iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir ou
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j SNAT --to 192.0.2.2
 ```
 
+**Note:** The method above only applies if the VPN server's default network interface maps to multiple public IPs. This method may not work if the server has multiple network interfaces, each with a different public IP.
+
 To check the "outgoing IP" for a connected VPN client, you may open a browser on the client and [look up the IP address on Google](https://www.google.com/search?q=my+ip).
 
 ## Customize VPN subnets

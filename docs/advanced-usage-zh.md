@@ -216,6 +216,8 @@ iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o "$netif" -m policy --dir ou
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j SNAT --to 192.0.2.2
 ```
 
+**注：** 以上方法仅适用于服务器的默认网络接口对应多个公有 IP 的情况。如果服务器有多个网络接口，对应不同的公有 IP，则此方法无效。
+
 要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到 [这里](https://www.ipchicken.com) 检测 IP 地址。
 
 ## 自定义 VPN 子网
