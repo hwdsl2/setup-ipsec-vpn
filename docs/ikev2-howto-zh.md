@@ -570,48 +570,45 @@ sudo chmod 600 ca.cer client.cer client.key
 
 macOS 14 (Sonoma) 存在[一个小问题](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486)，可能会导致 IKEv2 VPN 每 24-48 分钟断开并重新连接一次。其他 macOS 版本不受影响。首先[检查你的 macOS 版本](https://support.apple.com/zh-cn/HT201260)。要解决此问题，请按以下步骤操作。
 
-**注：** 应用此解决方案后，更新后的 VPN 服务器配置可能不适用于 Windows 或 Android 客户端。对于这些客户端，你可能需要在 `ikev2.conf` 中将 `pfs=yes` 更改回 `pfs=no`，然后运行 `service ipsec restart` 或重启 Docker 容器。
+**注：** 如果你在 2023 年 12 月 10 日之后安装了 IPsec VPN，则无需执行任何操作，因为已经包含以下修复。
 
-1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。首先将 `pfs=no` 替换为 `pfs=yes`。然后找到这些行 `ike=...` 和 `phase2alg=...`，并将它们替换为以下内容，开头必须空两格：
+1. 编辑 VPN 服务器上的 `/etc/ipsec.d/ikev2.conf`。找到这一行：
    ```
-     ike=aes256-sha2_256;dh19,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
-     phase2alg=aes256-sha2_256,aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+   ```
+   并将它替换为以下内容：
+   ```
+     ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
    ```
    **注：** Docker 用户需要首先[在容器中运行 Bash shell](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#在容器中运行-bash-shell)。
 1. 保存文件并运行 `service ipsec restart`。Docker 用户：在下面的第 4 步之后退出 (`exit`) 容器并运行 `docker restart ipsec-vpn-server`。
 1. 编辑 VPN 服务器上的 `/opt/src/ikev2.sh`。找到以下部分并将其替换为这些新值：
    ```
-           <key>ChildSecurityAssociationParameters</key>
-           <dict>
-             <key>DiffieHellmanGroup</key>
-             <integer>19</integer>
-             <key>EncryptionAlgorithm</key>
-             <string>AES-256</string>
-             <key>IntegrityAlgorithm</key>
-             <string>SHA2-256</string>
-             <key>LifeTimeInMinutes</key>
-             <integer>1410</integer>
-           </dict>
+     <key>ChildSecurityAssociationParameters</key>
+     <dict>
+       <key>DiffieHellmanGroup</key>
+       <integer>19</integer>
+       <key>EncryptionAlgorithm</key>
+       <string>AES-256-GCM</string>
+       <key>LifeTimeInMinutes</key>
+       <integer>1410</integer>
+     </dict>
    ```
    ```
-           <key>EnablePFS</key>
-           <integer>1</integer>
+     <key>IKESecurityAssociationParameters</key>
+     <dict>
+       <key>DiffieHellmanGroup</key>
+       <integer>19</integer>
+       <key>EncryptionAlgorithm</key>
+       <string>AES-256-GCM</string>
+       <key>IntegrityAlgorithm</key>
+       <string>SHA2-256</string>
+       <key>LifeTimeInMinutes</key>
+       <integer>1410</integer>
+     </dict>
    ```
-   ```
-           <key>IKESecurityAssociationParameters</key>
-           <dict>
-             <key>DiffieHellmanGroup</key>
-             <integer>19</integer>
-             <key>EncryptionAlgorithm</key>
-             <string>AES-256</string>
-             <key>IntegrityAlgorithm</key>
-             <string>SHA2-256</string>
-             <key>LifeTimeInMinutes</key>
-             <integer>1410</integer>
-           </dict>
-   ```
-1. 运行 `sudo ikev2.sh` 为你的每个 macOS 和 iOS (iPhone/iPad) 设备导出（或添加）更新后的客户端配置文件。
-1. 从你的 macOS 和 iOS 设备中移除之前导入的 IKEv2 配置文件（如果有），然后导入更新后的 `.mobileconfig` 文件。请参阅[配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。Docker 用户请看[配置并使用 IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。
+1. 运行 `sudo ikev2.sh` 为你的每个 macOS 设备导出（或添加）更新后的客户端配置文件。
+1. 从你的 macOS 设备中移除之前导入的 IKEv2 配置文件（如果有），然后导入更新后的 `.mobileconfig` 文件。请参阅[配置 IKEv2 VPN 客户端](#配置-ikev2-vpn-客户端)。Docker 用户请看[配置并使用 IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。
 
 ### 无法连接多个 IKEv2 客户端
 
@@ -1017,7 +1014,7 @@ To customize IKEv2 or client options, run this script without arguments.
      ikev2=insist
      rekey=no
      pfs=no
-     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+     ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
      ikelifetime=24h
      salifetime=24h

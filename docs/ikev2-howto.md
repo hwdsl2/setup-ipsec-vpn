@@ -572,48 +572,45 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 macOS 14 (Sonoma) has [a minor issue](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1486) that may cause IKEv2 VPN to disconnect and reconnect once every 24-48 minutes. Other macOS versions are not affected. First [check your macOS version](https://support.apple.com/en-us/HT201260). To work around this issue, follow the steps below.
 
-**Note:** After applying this workaround, the updated VPN server configuration may not work with Windows or Android clients. For those clients, you may need to change `pfs=yes` back to `pfs=no` in `ikev2.conf`, then run `service ipsec restart` or restart the Docker container.
+**Note:** If you installed IPsec VPN after December 10, 2023, no action is required because the following fixes are already included.
 
-1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. First change `pfs=no` to `pfs=yes`. Then find the lines `ike=...` and `phase2alg=...`, and replace them with the following, indented by two spaces:
+1. Edit `/etc/ipsec.d/ikev2.conf` on the VPN server. Find the line:
    ```
-     ike=aes256-sha2_256;dh19,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
-     phase2alg=aes256-sha2_256,aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
+     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+   ```
+   and replace it with the following:
+   ```
+     ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
    ```
    **Note:** Docker users should first [open a Bash shell inside the container](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#bash-shell-inside-container).
 1. Save the file and run `service ipsec restart`. Docker users: After step 4 below, `exit` the container and run `docker restart ipsec-vpn-server`.
 1. Edit `/opt/src/ikev2.sh` on the VPN server. Find and replace the following sections with these new values:
    ```
-           <key>ChildSecurityAssociationParameters</key>
-           <dict>
-             <key>DiffieHellmanGroup</key>
-             <integer>19</integer>
-             <key>EncryptionAlgorithm</key>
-             <string>AES-256</string>
-             <key>IntegrityAlgorithm</key>
-             <string>SHA2-256</string>
-             <key>LifeTimeInMinutes</key>
-             <integer>1410</integer>
-           </dict>
+     <key>ChildSecurityAssociationParameters</key>
+     <dict>
+       <key>DiffieHellmanGroup</key>
+       <integer>19</integer>
+       <key>EncryptionAlgorithm</key>
+       <string>AES-256-GCM</string>
+       <key>LifeTimeInMinutes</key>
+       <integer>1410</integer>
+     </dict>
    ```
    ```
-           <key>EnablePFS</key>
-           <integer>1</integer>
+     <key>IKESecurityAssociationParameters</key>
+     <dict>
+       <key>DiffieHellmanGroup</key>
+       <integer>19</integer>
+       <key>EncryptionAlgorithm</key>
+       <string>AES-256-GCM</string>
+       <key>IntegrityAlgorithm</key>
+       <string>SHA2-256</string>
+       <key>LifeTimeInMinutes</key>
+       <integer>1410</integer>
+     </dict>
    ```
-   ```
-           <key>IKESecurityAssociationParameters</key>
-           <dict>
-             <key>DiffieHellmanGroup</key>
-             <integer>19</integer>
-             <key>EncryptionAlgorithm</key>
-             <string>AES-256</string>
-             <key>IntegrityAlgorithm</key>
-             <string>SHA2-256</string>
-             <key>LifeTimeInMinutes</key>
-             <integer>1410</integer>
-           </dict>
-   ```
-1. Run `sudo ikev2.sh` to export (or add) updated client config files for each macOS and iOS (iPhone/iPad) device you have.
-1. Remove the previously imported IKEv2 profile (if any) from your macOS and iOS device(s), then import the updated `.mobileconfig` file(s). See [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
+1. Run `sudo ikev2.sh` to export (or add) updated client config files for each macOS device you have.
+1. Remove the previously imported IKEv2 profile (if any) from your macOS device(s), then import the updated `.mobileconfig` file(s). See [Configure IKEv2 VPN clients](#configure-ikev2-vpn-clients). Docker users, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn).
 
 ### Unable to connect multiple IKEv2 clients
 
@@ -1019,7 +1016,7 @@ View example steps for manually configuring IKEv2 with Libreswan.
      ikev2=insist
      rekey=no
      pfs=no
-     ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+     ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
      phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
      ikelifetime=24h
      salifetime=24h
