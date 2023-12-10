@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2023 Lin Song   11 Aug 2023
+IKEv2 Script   Copyright (c) 2020-2023 Lin Song   9 Dec 2023
 
 EOF
 }
@@ -872,6 +872,20 @@ install_uuidgen() {
   fi
 }
 
+update_ikev2_conf() {
+  if grep -qs 'ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1$' "$IKEV2_CONF"; then
+    bigecho2 "Updating IKEv2 configuration..."
+    sed -i \
+      "/ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1$/s/ike=/ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,/" \
+      "$IKEV2_CONF"
+    if [ "$os_type" = "alpine" ]; then
+      ipsec auto --add ikev2-cp >/dev/null
+    else
+      restart_ipsec_service >/dev/null
+    fi
+  fi
+}
+
 create_mobileconfig() {
   [ -z "$server_addr" ] && get_server_address
   p12_file_enc="$export_dir$client_name.enc.p12"
@@ -898,9 +912,9 @@ cat > "$mc_file" <<EOF
         <key>ChildSecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>14</integer>
+          <integer>19</integer>
           <key>EncryptionAlgorithm</key>
-          <string>AES-128-GCM</string>
+          <string>AES-256-GCM</string>
           <key>LifeTimeInMinutes</key>
           <integer>1410</integer>
         </dict>
@@ -915,9 +929,9 @@ cat > "$mc_file" <<EOF
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>14</integer>
+          <integer>19</integer>
           <key>EncryptionAlgorithm</key>
-          <string>AES-256</string>
+          <string>AES-256-GCM</string>
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
@@ -1093,6 +1107,7 @@ export_client_config() {
   else
     install_uuidgen
   fi
+  update_ikev2_conf
   export_p12_file
   create_mobileconfig
   create_android_profile
@@ -1174,7 +1189,7 @@ conn ikev2-cp
   ikev2=insist
   rekey=no
   pfs=no
-  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+  ike=aes_gcm_c_256-hmac_sha2_256-ecp_256,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes128-sha2,aes256-sha2
   ikelifetime=24h
   salifetime=24h
