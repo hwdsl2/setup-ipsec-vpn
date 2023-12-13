@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2023 Lin Song   9 Dec 2023
+IKEv2 Script   Copyright (c) 2020-2023 Lin Song   13 Dec 2023
 
 EOF
 }
@@ -178,6 +178,7 @@ Options:
   --revokeclient [client name]  revoke an existing client
   --deleteclient [client name]  delete an existing client
   --removeikev2                 remove IKEv2 and delete all certificates and keys from the IPsec database
+  -y, --yes                     assume "yes" as answer to prompts when revoking/deleting a client or removing IKEv2
   -h, --help                    show this help message and exit
 
 To customize IKEv2 or client options, run this script without arguments.
@@ -1454,7 +1455,9 @@ WARNING: You have selected to revoke IKEv2 client certificate '$client_name'.
          to connect to this VPN server.
 
 EOF
-  confirm_or_abort "Are you sure you want to revoke '$client_name'? [y/N] "
+  if [ "$assume_yes" != 1 ]; then
+    confirm_or_abort "Are you sure you want to revoke '$client_name'? [y/N] "
+  fi
 }
 
 confirm_delete_cert() {
@@ -1465,7 +1468,9 @@ WARNING: Deleting a client certificate from the IPsec database *WILL NOT* preven
          This *cannot* be undone!
 
 EOF
-  confirm_or_abort "Are you sure you want to delete '$client_name'? [y/N] "
+  if [ "$assume_yes" != 1 ]; then
+    confirm_or_abort "Are you sure you want to delete '$client_name'? [y/N] "
+  fi
 }
 
 confirm_remove_ikev2() {
@@ -1476,7 +1481,9 @@ WARNING: This option will remove IKEv2 from this VPN server, but keep the IPsec/
          This *cannot* be undone!
 
 EOF
-  confirm_or_abort "Are you sure you want to remove IKEv2? [y/N] "
+  if [ "$assume_yes" != 1 ]; then
+    confirm_or_abort "Are you sure you want to remove IKEv2? [y/N] "
+  fi
 }
 
 delete_ikev2_conf() {
@@ -1514,12 +1521,14 @@ ikev2setup() {
   check_utils_exist
 
   use_defaults=0
+  assume_yes=0
   add_client=0
   export_client=0
   list_clients=0
   revoke_client=0
   delete_client=0
   remove_ikev2=0
+
   while [ "$#" -gt 0 ]; do
     case $1 in
       --auto)
@@ -1556,6 +1565,10 @@ ikev2setup() {
         ;;
       --removeikev2)
         remove_ikev2=1
+        shift
+        ;;
+      -y|--yes)
+        assume_yes=1
         shift
         ;;
       -h|--help)
