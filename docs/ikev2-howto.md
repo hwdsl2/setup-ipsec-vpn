@@ -153,7 +153,7 @@ To connect to the VPN:
 
 (Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your Mac is on Wi-Fi. To enable, check the **Connect on demand** checkbox for the VPN connection, and click **Apply**. To find this setting on macOS Ventura and newer, click on the "i" icon on the right of the VPN connection.
 
-You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
+You can customize VPN On Demand rules to exclude certain Wi-Fi networks (such as your home network). For more information, see the chapter "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 
 <details>
 <summary>
@@ -217,8 +217,36 @@ To connect to the VPN:
 
 (Optional feature) Enable **VPN On Demand** to automatically start a VPN connection when your iOS device is on Wi-Fi. To enable, tap the "i" icon on the right of the VPN connection, and enable **Connect On Demand**.
 
-You can customize VPN On Demand rules to exclude certain Wi-Fi network(s) such as your home network, or to start the VPN connection both on Wi-Fi and cellular. See "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
+You can customize VPN On Demand rules to exclude certain Wi-Fi networks (such as your home network). For more information, see the chapter "Guide: Customize IKEv2 VPN On Demand rules for macOS and iOS" in [:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).
 
+<details>
+<summary>
+Customize VPN On Demand rules: Connect on Wi-Fi and cellular networks.
+</summary>
+
+The default VPN On Demand configuration only starts a VPN connection on Wi-Fi networks, but not on cellular networks. If you want the VPN to connect on both Wi-Fi and cellular networks:
+
+1. Edit `/opt/src/ikev2.sh` on the VPN server. Find the lines:
+   ```
+     <dict>
+       <key>InterfaceTypeMatch</key>
+       <string>Cellular</string>
+       <key>Action</key>
+       <string>Disconnect</string>
+     </dict>
+   ```
+   and replace "Disconnect" with "Connect":
+   ```
+     <dict>
+       <key>InterfaceTypeMatch</key>
+       <string>Cellular</string>
+       <key>Action</key>
+       <string>Connect</string>
+     </dict>
+   ```
+2. Save the file, then run `sudo ikev2.sh` to export updated client config files for your iOS device(s).
+3. Remove the previously imported VPN profile from your iOS device(s), then import the new `.mobileconfig` file(s) from step 2.
+</details>
 <details>
 <summary>
 If you manually set up IKEv2 without using the helper script, click here for instructions.

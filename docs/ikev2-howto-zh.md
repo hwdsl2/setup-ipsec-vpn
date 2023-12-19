@@ -153,7 +153,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 （可选功能）启用 **VPN On Demand（按需连接）** 以在你的 Mac 连接到 Wi-Fi 时自动启动 VPN 连接。要启用它，选中 VPN 连接的 **按需连接** 复选框，然后单击 **应用**。对于 macOS Ventura 和更新版本，首先单击 VPN 连接右边的 "i" 图标，然后配置该选项。
 
-你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络）。参见 [:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC) 中的 "指南：为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则"。
+你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络）。有关更多详细信息，请参阅 [:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC) 中的 "指南：为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则" 一章。
 
 <details>
 <summary>
@@ -217,8 +217,36 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 （可选功能）启用 **VPN On Demand（按需连接）** 以在你的 iOS 设备连接到 Wi-Fi 时自动启动 VPN 连接。要启用它，单击 VPN 连接右边的 "i" 图标，然后启用 **按需连接**。
 
-你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络），或者在 Wi-Fi 和蜂窝网络上都启动 VPN 连接。参见 [:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC) 中的 "指南：为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则"。
+你可以自定义按需连接规则，以排除某些 Wi-Fi 网络（例如你的家庭网络）。有关更多详细信息，请参阅 [:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC) 中的 "指南：为 macOS 和 iOS 自定义 IKEv2 VPN On Demand 规则" 一章。
 
+<details>
+<summary>
+自定义按需连接规则：在 Wi-Fi 和蜂窝网络上连接。
+</summary>
+
+默认的 VPN On Demand 配置仅在 Wi-Fi 网络上启动 VPN 连接，而不会在蜂窝网络上启动 VPN 连接。如果你希望 VPN 在 Wi-Fi 和蜂窝网络上都启动连接：
+
+1. 编辑 VPN 服务器上的 `/opt/src/ikev2.sh`。找到以下行：
+   ```
+     <dict>
+       <key>InterfaceTypeMatch</key>
+       <string>Cellular</string>
+       <key>Action</key>
+       <string>Disconnect</string>
+     </dict>
+   ```
+   并将 "Disconnect" 替换为 "Connect"：
+   ```
+     <dict>
+       <key>InterfaceTypeMatch</key>
+       <string>Cellular</string>
+       <key>Action</key>
+       <string>Connect</string>
+     </dict>
+   ```
+2. 保存文件，然后运行 `sudo ikev2.sh` 为你的 iOS 设备导出更新后的客户端配置文件。
+3. 从你的 iOS 设备中移除之前导入的 VPN 配置文件，然后导入步骤 2 中生成的新 `.mobileconfig` 文件。
+</details>
 <details>
 <summary>
 如果你手动配置 IKEv2 而不是使用辅助脚本，点这里查看步骤。
