@@ -5,7 +5,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2022-2023 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2022-2024 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/

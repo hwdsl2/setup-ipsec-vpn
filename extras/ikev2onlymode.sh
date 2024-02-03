@@ -2,7 +2,7 @@
 #
 # Script to enable or disable IKEv2-only mode
 #
-# Copyright (C) 2022-2023 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2022-2024 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/

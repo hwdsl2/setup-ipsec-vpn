@@ -25,7 +25,7 @@
 ## 作者
 
 版权所有 (C) 2016 [Daniel Falkner](https://github.com/derdanu)   
-版权所有 (C) 2017-2023 [Lin Song](https://github.com/hwdsl2)
+版权所有 (C) 2017-2024 [Lin Song](https://github.com/hwdsl2)
 
 ## 屏幕截图
 
