@@ -8,7 +8,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2020-2023 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2020-2024 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -96,8 +96,8 @@ EOF
     esac
     if [ "$os_type" = "alpine" ]; then
       os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-      if [ "$os_ver" != "3.17" ] && [ "$os_ver" != "3.18" ]; then
-        exiterr "This script only supports Alpine Linux 3.17/3.18."
+      if [ "$os_ver" != "3.18" ] && [ "$os_ver" != "3.19" ]; then
+        exiterr "This script only supports Alpine Linux 3.18/3.19."
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
@@ -157,7 +157,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2023 Lin Song   13 Dec 2023
+IKEv2 Script   Copyright (c) 2020-2024 Lin Song   3 Feb 2024
 
 EOF
 }

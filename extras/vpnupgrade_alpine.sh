@@ -5,7 +5,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2021-2023 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2021-2024 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -51,8 +51,8 @@ check_os() {
       ;;
   esac
   os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-  if [ "$os_ver" != "3.17" ] && [ "$os_ver" != "3.18" ]; then
-    exiterr "This script only supports Alpine Linux 3.17/3.18."
+  if [ "$os_ver" != "3.18" ] && [ "$os_ver" != "3.19" ]; then
+    exiterr "This script only supports Alpine Linux 3.18/3.19."
   fi
 }
 
@@ -146,8 +146,8 @@ install_pkgs() {
   bigecho "Installing required packages..."
   (
     set -x
-    apk add -U -q bash bind-tools coreutils openssl wget iproute2 sed grep \
-    libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
+    apk add -U -q bash bind-tools coreutils openssl wget iptables iproute2 \
+    sed grep libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
     bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev nss-dev \
     libcap-ng-dev libevent-dev curl-dev nspr-dev uuidgen openrc
   ) || exiterr2
