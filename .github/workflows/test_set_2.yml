@@ -17,13 +17,13 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["ubuntu:22.04", "ubuntu:20.04", "ubuntu:18.04", "debian:12", "debian:11", "debian:10", "alpine:3.17", "alpine:3.18"]
+        os_version: ["ubuntu:22.04", "ubuntu:20.04", "debian:12", "debian:11", "debian:10", "alpine:3.19", "alpine:3.18"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
       options: --cap-add=NET_ADMIN --device=/dev/ppp
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Test
