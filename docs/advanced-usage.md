@@ -283,9 +283,9 @@ If you want the rules to persist after reboot, you may add these commands to `/e
 
 With split tunneling, VPN clients will only send traffic for a specific destination subnet through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has some limitations, and is not supported by all VPN clients.
 
-Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) and/or [IKEv2](ikev2-howto.md) modes. Expand for details. IPsec/L2TP mode does NOT support this feature.
+Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) and/or [IKEv2](ikev2-howto.md) modes. IPsec/L2TP mode does not support this feature (except on Windows, see below).
 
-<details>
+<details open>
 <summary>
 IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
 </summary>
@@ -302,7 +302,7 @@ The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands
    ```
 </details>
 
-<details>
+<details open>
 <summary>
 IKEv2 mode: Enable split tunneling
 </summary>
@@ -320,6 +320,28 @@ The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`
 
 **Note:** Advanced users can set a different split tunneling configuration for specific IKEv2 client(s). Refer to section [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic) and expand "IKEv2 mode: Assign static IPs to VPN clients". Based on the example in that section, you may add the `leftsubnet=...` option to the `conn` section of the specific IKEv2 client, then restart the IPsec service.
 </details>
+
+Alternatively, Windows users can enable split tunneling by manually adding routes:
+
+1. Right-click on the wireless/network icon in your system tray.
+1. **Windows 11:** Select **Network and Internet settings**, then on the page that opens, click **Advanced network settings**. Click **More network adapter options**.   
+   **Windows 10:** Select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**. On the left, click **Change adapter settings**.   
+   **Windows 8/7:** Select **Open Network and Sharing Center**. On the left, click **Change adapter settings**.
+1. Right-click on the new VPN connection, and choose **Properties**.
+1. Click the **Network** tab. Select **Internet Protocol Version 4 (TCP/IPv4)**, then click **Properties**.
+1. Click **Advanced**. Uncheck **Use default gateway on remote network**.
+1. Click **OK** to close the **Properties** window.
+1. **(Important)** Disconnect the VPN, then re-connect.
+1. Assume that the subnet you want VPN clients to send traffic through the VPN tunnel is `10.123.123.0/24`. Open an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/) and run the following commands:   
+   For IKEv2 and IPsec/XAuth ("Cisco IPsec") modes:
+   ```
+   route add -p 10.123.123.0 mask 255.255.255.0 192.168.43.1
+   ```
+   For IPsec/L2TP mode:
+   ```
+   route add -p 10.123.123.0 mask 255.255.255.0 192.168.42.1
+   ```
+1. When finished, VPN clients will send traffic through the VPN tunnel for the specified subnet only. Other traffic will bypass the VPN.
 
 ## Access VPN server's subnet
 

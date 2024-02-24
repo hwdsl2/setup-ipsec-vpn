@@ -560,8 +560,10 @@ For error 789, click [here](https://documentation.meraki.com/MX/Client_VPN/Troub
 To fix these errors, please follow these steps:
 
 1. Right-click on the wireless/network icon in your system tray.
-1. Select **Open Network and Sharing Center**. Or, if using Windows 10 version 1709 or newer, select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**.
-1. On the left, click **Change adapter settings**. Right-click on the new VPN and choose **Properties**.
+1. **Windows 11:** Select **Network and Internet settings**, then on the page that opens, click **Advanced network settings**. Click **More network adapter options**.   
+   **Windows 10:** Select **Open Network & Internet settings**, then on the page that opens, click **Network and Sharing Center**. On the left, click **Change adapter settings**.   
+   **Windows 8/7:** Select **Open Network and Sharing Center**. On the left, click **Change adapter settings**.
+1. Right-click on the new VPN connection, and choose **Properties**.
 1. Click the **Security** tab. Select "Layer 2 Tunneling Protocol with IPsec (L2TP/IPSec)" for **Type of VPN**.
 1. Click **Allow these protocols**. Check the "Challenge Handshake Authentication Protocol (CHAP)" and "Microsoft CHAP Version 2 (MS-CHAP v2)" checkboxes.
 1. Click the **Advanced settings** button.
