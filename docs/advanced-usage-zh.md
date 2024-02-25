@@ -281,11 +281,11 @@ iptables -t nat -A PREROUTING -i "$netif" ! -s 192.168.43.0/24 -p udp --dport 12
 
 ## VPN 分流
 
-在启用 VPN 分流 (split tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。VPN 分流有一些局限性，而且并非所有的 VPN 客户端都支持。
+在启用 VPN 分流 (split tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。这允许你通过 VPN 安全访问指定的网络，而无需通过 VPN 发送所有客户端的流量。VPN 分流有一些局限性，而且并非所有的 VPN 客户端都支持。
 
-高级用户可以为 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 和/或 [IKEv2](ikev2-howto-zh.md) 模式启用 VPN 分流。这是可选的。IPsec/L2TP 模式不支持此功能（Windows 除外，见下文）。
+高级用户可以为 [IPsec/XAuth ("Cisco IPsec")](clients-xauth-zh.md) 和/或 [IKEv2](ikev2-howto-zh.md) 模式启用 VPN 分流。这是可选的。展开查看详情。IPsec/L2TP 模式不支持此功能（Windows 除外，见下文）。
 
-<details open>
+<details>
 <summary>
 IPsec/XAuth ("Cisco IPsec") 模式：启用 VPN 分流 (split tunneling)
 </summary>
@@ -302,7 +302,7 @@ IPsec/XAuth ("Cisco IPsec") 模式：启用 VPN 分流 (split tunneling)
    ```
 </details>
 
-<details open>
+<details>
 <summary>
 IKEv2 模式：启用 VPN 分流 (split tunneling)
 </summary>
@@ -332,7 +332,7 @@ IKEv2 模式：启用 VPN 分流 (split tunneling)
 1. 单击 **高级**，然后取消选中 **在远程网络上使用默认网关**。
 1. 单击 **确定** 以关闭 **属性** 对话框。
 1. **（重要）** 断开 VPN 连接，然后重新连接。
-1. 假设你想要 VPN 客户端通过 VPN 隧道发送流量的子网是 `10.123.123.0/24`。打开[提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html)并运行以下命令。   
+1. 假设你想要 VPN 客户端通过 VPN 隧道发送流量的子网是 `10.123.123.0/24`。打开[提升权限命令提示符](http://www.cnblogs.com/xxcanghai/p/4610054.html)并运行以下命令之一。   
    对于 IKEv2 和 IPsec/XAuth ("Cisco IPsec") 模式：
    ```
    route add -p 10.123.123.0 mask 255.255.255.0 192.168.43.1

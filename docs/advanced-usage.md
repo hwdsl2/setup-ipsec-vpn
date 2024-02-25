@@ -281,11 +281,11 @@ If you want the rules to persist after reboot, you may add these commands to `/e
 
 ## Split tunneling
 
-With split tunneling, VPN clients will only send traffic for a specific destination subnet through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. Split tunneling has some limitations, and is not supported by all VPN clients.
+With split tunneling, VPN clients will only send traffic for a specific destination subnet through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. This allows you to gain secure access to a network through your VPN, without routing all your client's traffic through the VPN. Split tunneling has some limitations, and is not supported by all VPN clients.
 
-Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) and/or [IKEv2](ikev2-howto.md) modes. IPsec/L2TP mode does not support this feature (except on Windows, see below).
+Advanced users can optionally enable split tunneling for the [IPsec/XAuth ("Cisco IPsec")](clients-xauth.md) and/or [IKEv2](ikev2-howto.md) modes. Expand for details. IPsec/L2TP mode does not support this feature (except on Windows, see below).
 
-<details open>
+<details>
 <summary>
 IPsec/XAuth ("Cisco IPsec") mode: Enable split tunneling
 </summary>
@@ -302,7 +302,7 @@ The example below **ONLY** applies to IPsec/XAuth ("Cisco IPsec") mode. Commands
    ```
 </details>
 
-<details open>
+<details>
 <summary>
 IKEv2 mode: Enable split tunneling
 </summary>
@@ -332,7 +332,7 @@ Alternatively, Windows users can enable split tunneling by manually adding route
 1. Click **Advanced**. Uncheck **Use default gateway on remote network**.
 1. Click **OK** to close the **Properties** window.
 1. **(Important)** Disconnect the VPN, then re-connect.
-1. Assume that the subnet you want VPN clients to send traffic through the VPN tunnel is `10.123.123.0/24`. Open an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/) and run the following commands:   
+1. Assume that the subnet you want VPN clients to send traffic through the VPN tunnel is `10.123.123.0/24`. Open an [elevated command prompt](http://www.winhelponline.com/blog/open-elevated-command-prompt-windows/) and run one of the following commands:   
    For IKEv2 and IPsec/XAuth ("Cisco IPsec") modes:
    ```
    route add -p 10.123.123.0 mask 255.255.255.0 192.168.43.1
