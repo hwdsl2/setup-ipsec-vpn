@@ -69,7 +69,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=4.12
+  swan_ver_cur=4.14
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -80,8 +80,8 @@ get_swan_ver() {
 }
 
 check_swan_ver() {
-  if [ "$SWAN_VER" = "4.8" ]; then
-    exiterr "Libreswan version 4.8 is not supported."
+  if [ "$SWAN_VER" = "4.8" ] || [ "$SWAN_VER" = "4.13" ]; then
+    exiterr "Libreswan version $SWAN_VER is not supported."
   fi
   if ! printf '%s\n%s' "4.5" "$SWAN_VER" | sort -C -V \
     || ! printf '%s\n%s' "$SWAN_VER" "$swan_ver_cur" | sort -C -V; then
