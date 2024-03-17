@@ -119,4 +119,4 @@ $ ssh -i path/to/your/new-key-file.pem instance-username@instance-ip-address
 
 ## 作者
 
-版权所有 (C) 2020-2023 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
+版权所有 (C) 2020-2024 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
