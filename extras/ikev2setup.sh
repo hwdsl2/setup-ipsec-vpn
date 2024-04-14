@@ -60,6 +60,9 @@ check_os() {
     elif grep -q "release 8" "$rh_file"; then
       os_ver=8
       grep -qi stream "$rh_file" && os_ver=8s
+      if [ "$os_type$os_ver" = "centos8" ]; then
+        exiterr "CentOS Linux 8 is EOL and not supported."
+      fi
     elif grep -q "release 9" "$rh_file"; then
       os_ver=9
       grep -qi stream "$rh_file" && os_ver=9s
@@ -101,6 +104,14 @@ EOF
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+      if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "jessiesid" ] \
+        || [ "$os_ver" = "bustersid" ]; then
+cat 1>&2 <<EOF
+Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
+       This version of Ubuntu/Debian is too old and not supported.
+EOF
+        exit 1
+      fi
     fi
   fi
 }
@@ -157,7 +168,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2024 Lin Song   10 Apr 2024
+IKEv2 Script   Copyright (c) 2020-2024 Lin Song   14 Apr 2024
 
 EOF
 }
@@ -1221,40 +1232,6 @@ EOF
   fi
 }
 
-apply_ubuntu1804_nss_fix() {
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
-    && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
-    base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
-    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
-    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
-    deb1="libnss3_3.49.1-1ubuntu1.9_amd64.deb"
-    deb2="libnss3-dev_3.49.1-1ubuntu1.9_amd64.deb"
-    deb3="libnss3-tools_3.49.1-1ubuntu1.9_amd64.deb"
-    bigecho2 "Applying fix for NSS bug on Ubuntu 18.04..."
-    mkdir -p /opt/src
-    cd /opt/src || exit 1
-    nss_dl=0
-    /bin/rm -f "$deb1" "$deb2" "$deb3"
-    export DEBIAN_FRONTEND=noninteractive
-    if wget -t 3 -T 30 -q "$base_url/$deb1" "$base_url/$deb2" "$base_url/$deb3"; then
-      apt-get -yqq update || apt-get -yqq update
-      apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
-    else
-      /bin/rm -f "$deb1" "$deb2" "$deb3"
-      if wget -t 3 -T 30 -q "$nss_url1/$deb1" "$nss_url1/$deb2" "$nss_url2/$deb3"; then
-        apt-get -yqq update || apt-get -yqq update
-        apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
-      else
-        nss_dl=1
-        echo "Error: Could not download NSS packages." >&2
-      fi
-    fi
-    /bin/rm -f "$deb1" "$deb2" "$deb3"
-    [ "$nss_dl" = 1 ] && exit 1
-  fi
-}
-
 restart_ipsec_service() {
   if [ "$in_container" = 0 ] || { [ "$in_container" = 1 ] && service ipsec status >/dev/null 2>&1; }; then
     bigecho2 "Restarting IPsec service..."
@@ -1748,7 +1725,6 @@ ikev2setup() {
     mobike_enable="$mobike_support"
   fi
 
-  apply_ubuntu1804_nss_fix
   create_ca_server_certs
   create_client_cert
   export_client_config

@@ -41,7 +41,6 @@ check_vz() {
 
 check_os() {
   os_type=$(lsb_release -si 2>/dev/null)
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
   case $os_type in
     [Uu]buntu)
@@ -58,14 +57,11 @@ check_os() {
       ;;
   esac
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-  if [ "$os_ver" = 8 ] || [ "$os_ver" = "jessiesid" ]; then
-    exiterr "Debian 8 or Ubuntu < 16.04 is not supported."
-  fi
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] \
-    && [ "$os_arch" != "x86_64" ]; then
+  if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "jessiesid" ] \
+    || [ "$os_ver" = "bustersid" ]; then
 cat 1>&2 <<EOF
-Error: For Ubuntu 18.04, this script supports only the x86_64 architecture.
-       This system runs on $os_arch and is unsupported.
+Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
+       This version of Ubuntu/Debian is too old and not supported.
 EOF
     exit 1
   fi
@@ -178,35 +174,6 @@ install_pkgs() {
       libcurl4-nss-dev libnss3-tools libevent-dev libsystemd-dev \
       flex bison gcc make wget sed >/dev/null
   ) || exiterr2
-}
-
-install_nss_pkgs() {
-  if [ "$os_type" = "ubuntu" ] && [ "$os_ver" = "bustersid" ] && [ "$os_arch" = "x86_64" ] \
-    && ! dpkg -l libnss3-dev 2>/dev/null | grep -qF '3.49.1'; then
-    base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
-    nss_url1="https://mirrors.kernel.org/ubuntu/pool/main/n/nss"
-    nss_url2="https://mirrors.kernel.org/ubuntu/pool/universe/n/nss"
-    deb1="libnss3_3.49.1-1ubuntu1.9_amd64.deb"
-    deb2="libnss3-dev_3.49.1-1ubuntu1.9_amd64.deb"
-    deb3="libnss3-tools_3.49.1-1ubuntu1.9_amd64.deb"
-    bigecho "Installing NSS packages on Ubuntu 18.04..."
-    cd /opt/src || exit 1
-    nss_dl=0
-    /bin/rm -f "$deb1" "$deb2" "$deb3"
-    if wget -t 3 -T 30 -q "$base_url/$deb1" "$base_url/$deb2" "$base_url/$deb3"; then
-      apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
-    else
-      /bin/rm -f "$deb1" "$deb2" "$deb3"
-      if wget -t 3 -T 30 -q "$nss_url1/$deb1" "$nss_url1/$deb2" "$nss_url2/$deb3"; then
-        apt-get -yqq install "./$deb1" "./$deb2" "./$deb3" >/dev/null
-      else
-        nss_dl=1
-        echo "Error: Could not download NSS packages." >&2
-      fi
-    fi
-    /bin/rm -f "$deb1" "$deb2" "$deb3"
-    [ "$nss_dl" = 1 ] && exit 1
-  fi
 }
 
 get_libreswan() {
@@ -356,7 +323,6 @@ vpnupgrade() {
   start_setup
   update_apt_cache
   install_pkgs
-  install_nss_pkgs
   get_libreswan
   install_libreswan
   update_ikev2_script
