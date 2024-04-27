@@ -167,11 +167,13 @@ update_apt_cache() {
 }
 
 install_pkgs() {
+  p1=libcurl4-nss-dev
+  [ "$os_ver" = "trixiesid" ] && p1=libcurl4-gnutls-dev
   (
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
       libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-      libcurl4-nss-dev libnss3-tools libevent-dev libsystemd-dev \
+      $p1 libnss3-tools libevent-dev libsystemd-dev \
       flex bison gcc make wget sed >/dev/null
   ) || exiterr2
 }
