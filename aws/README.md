@@ -12,7 +12,7 @@ Available customization parameters:
 > 
 > For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).</details>
 
-- OS for your VPN server (Ubuntu 22.04/20.04, Debian 10/11/12, CentOS 7, Amazon Linux 2)
+- OS for your VPN server (Ubuntu 24.04/**22.04**/20.04, Debian 12/11/10, CentOS 7, Amazon Linux 2)
 - Your VPN username
 - Your VPN password
 - Your VPN IPsec PSK (pre-shared key)
@@ -65,6 +65,10 @@ To learn more about how to configure your clients using IKEv2 mode, please refer
 <summary>
 How to connect to the server via SSH after deployment?
 </summary>
+
+**Option 1:** Connect using [EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html).
+
+**Option 2:** Connect to the server using SSH. See details below.
 
 You need to know the username and the private key for your Amazon EC2 instance in order to login to it via SSH.
 
