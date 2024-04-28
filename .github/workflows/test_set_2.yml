@@ -17,7 +17,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["ubuntu:22.04", "ubuntu:20.04", "debian:12", "debian:11", "debian:10", "alpine:3.19", "alpine:3.18"]
+        os_version: ["ubuntu:24.04", "ubuntu:22.04", "ubuntu:20.04", "debian:12", "debian:11", "debian:10", "alpine:3.19", "alpine:3.18"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
@@ -42,7 +42,8 @@ jobs:
           fi
 
           restart_ipsec() {
-            if [ "$os_type" = "alpine" ]; then
+            if [ "$os_type" = "alpine" ] \
+              || grep -qs trixie /etc/debian_version; then
               ipsec whack --shutdown || true
               ipsec pluto --config /etc/ipsec.conf
             fi
@@ -84,7 +85,7 @@ jobs:
             apt-get -yqq update
             apt-get -yqq dist-upgrade
             apt-get -yqq install wget rsyslog
-            if grep -qs bookworm /etc/debian_version \
+            if grep -qs -e bookworm -e trixie /etc/debian_version \
               || [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "12" ]; then
               rsyslogd
             else
@@ -105,8 +106,10 @@ jobs:
             restart_ipsec
           else
             restart_ipsec
-            restart_fail2ban
-            cat /var/log/fail2ban.log
+            if ! grep -qs trixie /etc/debian_version; then
+              restart_fail2ban
+              cat /var/log/fail2ban.log
+            fi
           fi
 
           netstat -anpu | grep pluto
