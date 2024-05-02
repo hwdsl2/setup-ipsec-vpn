@@ -624,7 +624,11 @@ update_iptables() {
     if [ "$use_nft" != 1 ]; then
       iptables -A FORWARD -j DROP
     fi
-    $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+    if [ "$use_nft" = 1 ]; then
+      $ipp -s "$XAUTH_NET" -o "$NET_IFACE" ! -d "$XAUTH_NET" -j MASQUERADE
+    else
+      $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+    fi
     $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
     echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
     if [ "$use_nft" = 1 ]; then
