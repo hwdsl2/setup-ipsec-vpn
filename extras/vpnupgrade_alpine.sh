@@ -69,7 +69,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=4.15
+  swan_ver_cur=5.0
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -177,6 +177,7 @@ WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
 USE_DH2=true
 FINALNSSDIR=/etc/ipsec.d
+NSSDIR=/etc/ipsec.d
 EOF
   if [ "$SWAN_VER" = "4.5" ] || [ "$SWAN_VER" = "4.6" ] \
     || [ "$SWAN_VER" = "4.7" ]; then
@@ -186,7 +187,7 @@ EOF
   [ -z "$NPROCS" ] && NPROCS=1
   (
     set -x
-    make "-j$((NPROCS+1))" -s base >/dev/null && make -s install-base >/dev/null
+    make "-j$((NPROCS+1))" -s base >/dev/null 2>&1 && make -s install-base >/dev/null 2>&1
   )
   cd /opt/src || exit 1
   /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
@@ -243,6 +244,9 @@ update_config() {
   fi
   sed -i "/ikev2=never/d" /etc/ipsec.conf
   sed -i "/conn shared/a \  ikev2=never" /etc/ipsec.conf
+  if ! grep -qs "ikev1-policy" /etc/ipsec.conf; then
+    sed -i "/config setup/a \  ikev1-policy=accept" /etc/ipsec.conf
+  fi
   if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
     sed -i".old-$SYS_DT" 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
   fi
