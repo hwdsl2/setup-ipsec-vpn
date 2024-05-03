@@ -116,6 +116,7 @@ toggle_ikev2_only() {
     confirm_disable_ikev2_only
     bigecho "Disabling IKEv2-only mode..."
     sed -i".old-$SYS_DT" "/ikev1-policy=/d" /etc/ipsec.conf
+    sed -i "/config setup/a \  ikev1-policy=accept" /etc/ipsec.conf
   elif [ "$ikev2_only_status" = "DISABLED" ]; then
     confirm_enable_ikev2_only
     bigecho "Enabling IKEv2-only mode..."
