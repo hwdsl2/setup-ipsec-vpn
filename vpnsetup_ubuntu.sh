@@ -321,6 +321,18 @@ get_swan_ver() {
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'; then
     SWAN_VER="$swan_ver_latest"
   fi
+  if [ -n "$VPN_SWAN_VER" ]; then
+    if ! printf '%s\n%s' "4.15" "$VPN_SWAN_VER" | sort -C -V \
+      || ! printf '%s\n%s' "$VPN_SWAN_VER" "$SWAN_VER" | sort -C -V; then
+cat 1>&2 <<EOF
+Error: Libreswan version '$VPN_SWAN_VER' is not supported.
+       This script can install Libreswan 4.15+ or $SWAN_VER.
+EOF
+      exit 1
+    else
+      SWAN_VER="$VPN_SWAN_VER"
+    fi
+  fi
 }
 
 check_libreswan() {
