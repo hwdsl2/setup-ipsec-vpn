@@ -162,6 +162,20 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
+<details>
+<summary>
+I want to install the older Libreswan version 4.
+</summary>
+
+It is generally recommended to use the latest [Libreswan](https://libreswan.org/) version 5, which is the default version in this project. However, if you want to install the older Libreswan version 4:
+
+```bash
+wget https://get.vpnsetup.net -O vpn.sh
+sudo VPN_SWAN_VER=4.15 sh vpn.sh
+```
+
+**Note:** If Libreswan version 5 is already installed, you may need to first [Uninstall the VPN](docs/uninstall.md) before installing Libreswan version 4. Alternatively, download the [update script](#upgrade-libreswan), edit it to specify `SWAN_VER=4.15`, then run the script.
+</details>
 
 ## Customize VPN options
 
