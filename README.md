@@ -74,7 +74,7 @@ A cloud server, virtual private server (VPS) or dedicated server, with an instal
 
 - Ubuntu 24.04, 22.04 or 20.04
 - Debian 12, 11 or 10
-- CentOS 7 or CentOS Stream 9/8
+- CentOS 7 or CentOS Stream 9
 - Rocky Linux or AlmaLinux 9/8
 - Oracle Linux 9, 8 or 7
 - Amazon Linux 2
