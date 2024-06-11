@@ -50,6 +50,13 @@ EOF
   fi
   VPN_USER=$1
   VPN_PASSWORD=$2
+  
+  #get ip address parametrs
+  IP_CLIENT=$3
+  if [ -z "$IP_CLIENT" ]; then
+    IP_CLIENT="*"
+  fi
+
   if [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
     show_intro
     echo
@@ -113,15 +120,30 @@ EOF
   conf_bk "/etc/ipsec.d/passwd"
   # Add or update VPN user
   sed -i "/^\"$VPN_USER\" /d" /etc/ppp/chap-secrets
+  # Set static ip to l2tp
 cat >> /etc/ppp/chap-secrets <<EOF
-"$VPN_USER" l2tpd "$VPN_PASSWORD" *
+"$VPN_USER" l2tpd "$VPN_PASSWORD" $IP_CLIENT
 EOF
   # shellcheck disable=SC2016
   sed -i '/^'"$VPN_USER"':\$1\$/d' /etc/ipsec.d/passwd
   VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-cat >> /etc/ipsec.d/passwd <<EOF
+  # Set static ip to ipsec
+  if [ $IP_CLIENT != "*" ]; then
+  cat > /etc/ipsec.d/$VPN_USER.conf <<EOF
+conn $VPN_USER
+  rightid=@$VPN_USER
+  rightaddresspool=$IP_CLIENT-$IP_CLIENT
+  also=ikev2-cp
+EOF
+
+    cat >> /etc/ipsec.d/passwd <<EOF
+$VPN_USER:$VPN_PASSWORD_ENC:xauth-psk:$IP_CLIENT
+EOF
+  else
+    cat >> /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
+  fi
   # Update file attributes
   chmod 600 /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 cat <<'EOF'
