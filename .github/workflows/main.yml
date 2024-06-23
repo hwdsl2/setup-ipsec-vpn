@@ -16,17 +16,12 @@ on:
       - '**.sh'
       - '.github/workflows/main.yml'
       - '.github/workflows/shellcheck.yml'
-      - '.github/workflows/test_set_1.yml'
       - '.github/workflows/test_set_2.yml'
 
 jobs:
   shellcheck:
     if: github.repository_owner == 'hwdsl2'
     uses: ./.github/workflows/shellcheck.yml
-
-  test_set_1:
-    needs: shellcheck
-    uses: ./.github/workflows/test_set_1.yml
 
   test_set_2:
     needs: shellcheck

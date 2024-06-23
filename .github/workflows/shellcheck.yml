@@ -13,7 +13,7 @@ on: workflow_call
 
 jobs:
   shellcheck:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository_owner == 'hwdsl2'
     steps:
       - uses: actions/checkout@v4
