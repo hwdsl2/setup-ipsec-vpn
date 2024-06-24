@@ -579,6 +579,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#ikev1-troubleshooting) and [Advanced usage](advanced-usage.md).
 
 * [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
+* [Ubuntu 20.04 cannot import client config](#ubuntu-2004-cannot-import-client-config)
 * [macOS Sonoma clients reconnect](#macos-sonoma-clients-reconnect)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
 * [IKE authentication credentials are unacceptable](#ike-authentication-credentials-are-unacceptable)
@@ -595,6 +596,12 @@ First, make sure that the VPN server address specified on your VPN client device
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
 [Check logs and VPN status](clients.md#check-logs-and-vpn-status) for errors. If you encounter retransmission related errors and are unable to connect, there may be network issues between the VPN client and server. If you are connecting from mainland China, consider switching to alternative solutions other than IPsec VPN.
+
+### Ubuntu 20.04 cannot import client config
+
+If you installed the IPsec VPN before 2024-04-10, and your VPN server runs Ubuntu Linux version 20.04, you may have encountered an issue where newly generated client configuration files (`.mobileconfig`) fail to import on iOS or macOS device(s) with errors like "incorrect password". This could be caused by updates to libnss3 related packages on Ubuntu 20.04, which required some changes ([25670f3](https://github.com/hwdsl2/setup-ipsec-vpn/commit/25670f3)) in the IKEv2 script.
+
+To fix this issue, first update the IKEv2 script on your server to the latest version using [these instructions](#update-ikev2-helper-script). After that, run `sudo ikev2.sh` and select "export" to re-create the client configuration files.
 
 ### macOS Sonoma clients reconnect
 

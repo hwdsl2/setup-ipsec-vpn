@@ -35,6 +35,8 @@
 
 你可以为特定的 IKEv2 客户端设置不同的 DNS 服务器。对于此用例，请参见 [#1562](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1562#issuecomment-2151361658)。
 
+如果你的用例需要使用 IPTables 规则将 DNS 流量重定向到另一台服务器，请参见 [#1565](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1565)。
+
 在某些情况下，你可能希望 VPN 客户端仅使用指定的 DNS 服务器来解析内部域名，并使用其本地配置的 DNS 服务器来解析所有其他域名。这可以使用 `modecfgdomains` 选项进行配置，例如 `modecfgdomains="internal.example.com, home"`。对于 IKEv2，将此选项添加到 `/etc/ipsec.d/ikev2.conf` 中的 `conn ikev2-cp` 小节。对于 IPsec/XAuth ("Cisco IPsec")，将此选项添加到 `/etc/ipsec.conf` 中的 `conn xauth-psk` 小节。然后运行 `service ipsec restart`。IPsec/L2TP 模式不支持此选项。
 
 ## 域名和更改服务器 IP
