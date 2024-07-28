@@ -73,8 +73,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，安装以下操作系统之一：
 
 - Ubuntu 24.04, 22.04 或者 20.04
-- Debian 12, 11 或者 10
-- CentOS 7 或者 CentOS Stream 9
+- Debian 12 或者 11
+- CentOS Stream 9
 - Rocky Linux 或者 AlmaLinux 9/8
 - Oracle Linux 9, 8 或者 7
 - Amazon Linux 2

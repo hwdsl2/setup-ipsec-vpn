@@ -12,7 +12,7 @@ To learn more about the Google BBR algorithm, see this [official blog](https://c
 
 You can check the current Linux kernel version with the command `uname -r`. When the version is greater than or equal to 4.9, you can deploy BBR directly by referring to the [instructions below](#deploy-google-bbr).
 
-Generally speaking, the kernel versions of Ubuntu 18.04+, Debian 10+, CentOS 8+ and RHEL 8+ are greater than 4.9. But for CentOS 7 or Amazon Linux 2, you need to update the kernel in the following ways before deploying Google BBR.
+Generally speaking, the kernel versions of Ubuntu 18.04+, Debian 10+, CentOS 8+ and RHEL 8+ are greater than 4.9. But for Amazon Linux 2, you need to update the kernel in the following ways before deploying Google BBR.
 
 ### Amazon Linux 2
 
@@ -31,47 +31,6 @@ Amazon Linux 2 provides newer versions of the verified Linux kernel, which can b
    sudo reboot
    ```
 4. Check the Linux kernel version
-   ```bash
-   uname -r
-   ```
-
-### CentOS 7
-
-When using CentOS 7, a newer Linux kernel provided by the ELRepo Project needs to be installed. More information about the Linux kernels provided by the ELRepo Project can be found at [this page](http://elrepo.org/tiki/kernel-ml).
-
-Refer to the installation instructions below.
-
-1. Import ELRepo Project's public key.
-   ```bash
-   sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
-   ```
-2. Install ELRepo for RHEL-7, SL-7 or CentOS-7.
-   ```bash
-   sudo yum install https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm
-   ```
-3. Install `kernel-ml`.
-   ```bash
-   sudo yum --enablerepo=elrepo-kernel install kernel-ml
-   ```
-4. Confirm the result.
-   ```bash
-   rpm -qa | grep kernel
-   ```
-   You should see `kernel-ml-xxx` in output.
-5. Show all entries in the grub2 menu and setup `kernel-ml`.
-   ```bash
-   sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
-   ```
-   **Indexing starts at `0`.**   
-   For example, when the `kernel-ml` is located at `1`, use the command below to activate `kernel-ml`.
-   ```bash
-   sudo grub2-set-default 1
-   ```
-6. Reboot.
-   ```bash
-   sudo reboot
-   ```
-7. Check Linux kernel version.
    ```bash
    uname -r
    ```
