@@ -33,17 +33,11 @@
             "Ubuntu2404": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\nadd-apt-repository ppa:deadsnakes/ppa\napt-get -yq update\napt-get -yq install python3.11 python3-pip zip\npython3 -m pip install awscli\npython3.11 -m pip install -U pip setuptools\npython3.11 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
-            "Debian10": {
-                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
-            },
             "Debian11": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "Debian12": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
-            },
-            "CentOS7": {
-                "HelperInstallationCommands": "yum -y install python3 wget zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "AmazonLinux2": {
                 "HelperInstallationCommands": "export PATH=\"$PATH:/opt/aws/bin\""
@@ -491,13 +485,11 @@
                                 "           'Ubuntu2004': 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',",
                                 "           'Ubuntu2204': 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',",
                                 "           'Ubuntu2404': 'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*',",
-                                "           'Debian10': 'debian-10-amd64-*',",
                                 "           'Debian11': 'debian-11-amd64-*',",
                                 "           'Debian12': 'debian-12-amd64-*',",
-                                "           'CentOS7': 'CentOS Linux 7 x86_64 - *',",
                                 "           'AmazonLinux2': 'amzn2-ami-hvm-*.*-x86_64-gp2',",
                                 "       }[distribution]",
-                                "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '136693071363', '125523088429', 'amazon'])",
+                                "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '136693071363', 'amazon'])",
                                 "       images = response['Images']",
                                 "       images.sort(key=creation_date,reverse=True)",
                                 "       AMIId = images[0]['ImageId']",
@@ -640,8 +632,6 @@
                 "Ubuntu2004",
                 "Debian12",
                 "Debian11",
-                "Debian10",
-                "CentOS7",
                 "AmazonLinux2"
             ]
         },
