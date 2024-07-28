@@ -86,14 +86,15 @@ check_os() {
     elif grep -q "release 8" "$rh_file"; then
       os_ver=8
       grep -qi stream "$rh_file" && os_ver=8s
-      if [ "$os_type$os_ver" = "centos8" ]; then
-        exiterr "CentOS Linux 8 is EOL and not supported."
-      fi
     elif grep -q "release 9" "$rh_file"; then
       os_ver=9
       grep -qi stream "$rh_file" && os_ver=9s
     else
       exiterr "This script only supports CentOS/RHEL 7-9."
+    fi
+    if [ "$os_type" = "centos" ] \
+      && { [ "$os_ver" = 7 ] || [ "$os_ver" = 8 ] || [ "$os_ver" = 8s ]; }; then
+      exiterr "CentOS Linux $os_ver is EOL and not supported."
     fi
   else
 cat 1>&2 <<'EOF'

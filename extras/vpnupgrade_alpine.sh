@@ -51,8 +51,8 @@ check_os() {
       ;;
   esac
   os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-  if [ "$os_ver" != "3.18" ] && [ "$os_ver" != "3.19" ]; then
-    exiterr "This script only supports Alpine Linux 3.18/3.19."
+  if [ "$os_ver" != "3.19" ] && [ "$os_ver" != "3.20" ]; then
+    exiterr "This script only supports Alpine Linux 3.19/3.20."
   fi
 }
 
