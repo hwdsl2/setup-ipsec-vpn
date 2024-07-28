@@ -17,7 +17,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["centos:9s", "centos:7", "rockylinux:8", "almalinux:9", "almalinux:8", "amazonlinux:2", "oraclelinux:9", "oraclelinux:8", "oraclelinux:7"]
+        os_version: ["centos:9s", "rockylinux:8", "almalinux:9", "almalinux:8", "amazonlinux:2", "oraclelinux:9", "oraclelinux:8", "oraclelinux:7"]
       fail-fast: false
     env:
       OS_VERSION: ${{ matrix.os_version }}
