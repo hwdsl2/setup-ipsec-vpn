@@ -12,7 +12,7 @@
 > 
 > 比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://instances.vantage.sh/](https://instances.vantage.sh/)。</details>
 
-- VPN 服务器的操作系统（Ubuntu 24.04/**22.04**/20.04, Debian 12/11/10, CentOS 7, Amazon Linux 2）
+- VPN 服务器的操作系统（Ubuntu 24.04/**22.04**/20.04, Debian 12/11, Amazon Linux 2）
 - 你的 VPN 用户名
 - 你的 VPN 密码
 - 你的 VPN IPsec PSK（预共享密钥）
@@ -81,7 +81,6 @@ EC2 上的每个 Linux 服务器发行版本都有它自己的默认登录用户
 | --- | --- |
 | Ubuntu |  `ubuntu` |
 | Debian | `admin` |
-| CentOS (`CentOS 7`) | `centos` |
 | Amazon Linux 2 | `ec2-user` |
 
 此模板在部署期间为你生成一个密钥对。在成功创建堆栈后，你可以使用以下的其中一种方式来获取私钥。
