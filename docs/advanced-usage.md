@@ -166,15 +166,21 @@ The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`
      left=%defaultroute
      ... ...
 
+   conn ikev2-shared
+     # COPY everything from the ikev2-cp section, EXCEPT FOR:
+     # rightid, rightaddresspool, auto=add
+
    conn client1
      rightid=@client1
      rightaddresspool=192.168.43.4-192.168.43.4
-     also=ikev2-cp
+     auto=add
+     also=ikev2-shared
 
    conn client2
      rightid=@client2
      rightaddresspool=192.168.43.5-192.168.43.5
-     also=ikev2-cp
+     auto=add
+     also=ikev2-shared
    ```
 
    **Note:** Add a new `conn` section for each client that you want to assign a static IP to. You must add a `@` prefix to the client name for `rightid=`. The client name must exactly match the name you specified when [adding the client certificate](ikev2-howto.md#add-a-client-certificate). The assigned static IP(s) must be from the subnet `192.168.43.0/24`, and must NOT be from the pool of auto-assigned IPs (see `rightaddresspool` above). In the example above, you can only assign static IP(s) from the range `192.168.43.1-192.168.43.99`.

@@ -166,15 +166,21 @@ IKEv2 模式：为 VPN 客户端分配静态 IP
      left=%defaultroute
      ... ...
 
+   conn ikev2-shared
+     # 复制/粘贴 ikev2-cp 小节中 *除了下面三项之外* 的所有内容
+     # rightid, rightaddresspool, auto=add
+
    conn client1
      rightid=@client1
      rightaddresspool=192.168.43.4-192.168.43.4
-     also=ikev2-cp
+     auto=add
+     also=ikev2-shared
 
    conn client2
      rightid=@client2
      rightaddresspool=192.168.43.5-192.168.43.5
-     also=ikev2-cp
+     auto=add
+     also=ikev2-shared
    ```
 
    **注：** 为要分配静态 IP 的每个客户端添加一个新的 `conn` 小节。`rightid=` 右边的客户端名称必须添加 `@` 前缀。该客户端名称必须与你在[添加客户端证书](ikev2-howto-zh.md#添加客户端证书)时指定的名称完全一致。分配的静态 IP 必须来自子网 `192.168.43.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `rightaddresspool`）。在上面的示例中，你只能分配 `192.168.43.1-192.168.43.99` 范围内的静态 IP。
