@@ -75,8 +75,8 @@ A cloud server, virtual private server (VPS) or dedicated server, with an instal
 - Ubuntu 24.04, 22.04 or 20.04
 - Debian 12 or 11
 - CentOS Stream 9
-- Rocky Linux or AlmaLinux 9/8
-- Oracle Linux 9, 8 or 7
+- Rocky Linux or AlmaLinux
+- Oracle Linux
 - Amazon Linux 2
 
 <details>
@@ -294,7 +294,7 @@ For reference: List of IKEv1 and IKEv2 parameters.
 
 \* These IKEv2 parameters are for IKEv2 mode.   
 \*\* Define these as environment variables when running vpn(setup).sh, or when setting up IKEv2 in auto mode (`sudo ikev2.sh --auto`).   
-\*\*\* Can be customized during interactive IKEv2 setup (`sudo ikev2.sh`). Refer to option 2 above.   
+\*\*\* Can be customized during interactive IKEv2 setup (`sudo ikev2.sh`). Refer to option 1 above.   
 \*\*\*\* Use `VPN_CLIENT_VALIDITY` to specify the client cert validity period in months. Must be an integer between 1 and 120.
 
 In addition to these parameters, advanced users can also [customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets) during VPN setup.

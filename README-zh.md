@@ -75,8 +75,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - Ubuntu 24.04, 22.04 或者 20.04
 - Debian 12 或者 11
 - CentOS Stream 9
-- Rocky Linux 或者 AlmaLinux 9/8
-- Oracle Linux 9, 8 或者 7
+- Rocky Linux 或者 AlmaLinux
+- Oracle Linux
 - Amazon Linux 2
 
 <details>
@@ -294,7 +294,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 \* 这些 IKEv2 参数适用于 IKEv2 模式。   
 \*\* 在运行 vpn(setup).sh 时，或者在自动模式下配置 IKEv2 时 (`sudo ikev2.sh --auto`) 将这些定义为环境变量。   
-\*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 2。   
+\*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 1。   
 \*\*\*\* 使用 `VPN_CLIENT_VALIDITY` 定义客户端证书的有效期（单位：月）。它必须是 1 到 120 之间的整数。
 
 除了这些参数，高级用户还可以在安装时 [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)。

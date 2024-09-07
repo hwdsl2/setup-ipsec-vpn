@@ -238,11 +238,6 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j SNAT --to 192.0
 
 **重要：** 你只能在 **初始 VPN 安装时** 指定自定义子网。如果 IPsec VPN 已安装，你 **必须** 首先 [卸载 VPN](uninstall-zh.md)，然后指定自定义子网并重新安装。否则，VPN 可能会停止工作。
 
-<details>
-<summary>
-首先，请阅读上面的重要说明。然后点这里查看示例。
-</summary>
-
 ```
 # 示例：为 IPsec/L2TP 模式指定自定义 VPN 子网
 # 注：必须指定所有三个变量。
@@ -261,7 +256,6 @@ sh vpn.sh
 ```
 
 在上面的例子中，`VPN_L2TP_LOCAL` 是在 IPsec/L2TP 模式下的 VPN 服务器的内网 IP。`VPN_L2TP_POOL` 和 `VPN_XAUTH_POOL` 是为 VPN 客户端自动分配的 IP 地址池。
-</details>
 
 ## 转发端口到 VPN 客户端
 
@@ -396,7 +390,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 
 如果你想要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
 
-**注：** 如果使用 Rocky Linux, AlmaLinux, Oracle Linux 8 或者 CentOS/RHEL 8 并且在安装 VPN 时 firewalld 正在运行，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
+**注：** 如果你的服务器运行 CentOS Linux（或类似系统），并且在安装 VPN 时 firewalld 处于活动状态，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
 
 ## 部署 Google BBR 拥塞控制
 

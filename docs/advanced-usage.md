@@ -238,11 +238,6 @@ For most use cases, it is NOT necessary and NOT recommended to customize these s
 
 **Important:** You may only specify custom subnets **during initial VPN install**. If the IPsec VPN is already installed, you **must** first [uninstall the VPN](uninstall.md), then specify custom subnets and re-install. Otherwise, the VPN may stop working.
 
-<details>
-<summary>
-First, read the important note above. Then click here for examples.
-</summary>
-
 ```
 # Example: Specify custom VPN subnet for IPsec/L2TP mode
 # Note: All three variables must be specified.
@@ -261,7 +256,6 @@ sh vpn.sh
 ```
 
 In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPsec/L2TP mode. `VPN_L2TP_POOL` and `VPN_XAUTH_POOL` are the pools of auto-assigned IP addresses for VPN clients.
-</details>
 
 ## Port forwarding to VPN clients
 
@@ -395,9 +389,9 @@ Learn more about internal VPN IPs in [Internal VPN IPs and traffic](#internal-vp
 
 ## Modify IPTables rules
 
-If you want to modify the IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
+If you want to modify IPTables rules after install, edit `/etc/iptables.rules` and/or `/etc/iptables/rules.v4` (Ubuntu/Debian), or `/etc/sysconfig/iptables` (CentOS/RHEL). Then reboot your server.
 
-**Note:** If using Rocky Linux, AlmaLinux, Oracle Linux 8 or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
+**Note:** If your server runs CentOS Linux (or similar), and firewalld was active during VPN setup, nftables may be configured. In this case, edit `/etc/sysconfig/nftables.conf` instead of `/etc/sysconfig/iptables`.
 
 ## Deploy Google BBR congestion control
 
