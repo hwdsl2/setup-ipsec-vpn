@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md)
+[English](README.md) | [中文](README-zh.md) | [Libro en Español](https://books2read.com/vpnguidees?store=amazon)
 
 # IPsec VPN 服务器一键安装脚本
 
