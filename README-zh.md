@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md) | [Libro en Español](https://books2read.com/vpnguidees?store=amazon)
+[English](README.md) | [中文](README-zh.md)
 
 # IPsec VPN 服务器一键安装脚本
 
@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](https://books2read.com/vpnguidezh)**
+**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](https://books2read.com/vpnguidezh)** [[中文](https://books2read.com/vpnguidezh) | [English](https://books2read.com/vpnguide?store=amazon) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon)]
 
 ## 快速开始
 
