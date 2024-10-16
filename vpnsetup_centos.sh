@@ -693,9 +693,7 @@ apply_gcp_mtu_fix() {
 enable_on_boot() {
   bigecho "Enabling services on boot..."
   systemctl --now mask firewalld 2>/dev/null
-  if [ "$os_type$os_ver" = "ol9" ]; then
-    systemctl enable nftables 2>/dev/null
-  elif [ "$use_nft" = 1 ]; then
+  if [ "$use_nft" = 1 ]; then
     systemctl enable nftables 2>/dev/null
     systemctl enable fail2ban 2>/dev/null
   else
@@ -823,9 +821,7 @@ vpnsetup() {
   install_vpn_pkgs_1
   install_vpn_pkgs_2
   install_vpn_pkgs_3
-  if [ "$os_type$os_ver" != "ol9" ]; then
-    install_fail2ban
-  fi
+  install_fail2ban
   get_helper_scripts
   get_libreswan
   install_libreswan
