@@ -728,6 +728,9 @@ start_services() {
   restorecon /usr/local/sbin -Rv 2>/dev/null
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
   if [ "$use_nft" = 1 ]; then
+    if ! nft -c -f "$IPT_FILE" >/dev/null 2>&1; then
+      sed -i '/ip6 saddr fddd:\(2c4\|1194\):/s/xt target "MASQUERADE"/masquerade/' "$IPT_FILE"
+    fi
     nft -f "$IPT_FILE"
   else
     iptables-restore < "$IPT_FILE"
