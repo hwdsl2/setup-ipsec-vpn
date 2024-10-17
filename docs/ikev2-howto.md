@@ -40,8 +40,6 @@ Learn how to change the IKEv2 server address.
 In certain circumstances, you may need to change the IKEv2 server address. For example, to switch to use a DNS name, or after server IP changes. Learn more in [this section](#change-ikev2-server-address).
 </details>
 
-**Read [:book: VPN book](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
-
 ### Windows 7, 8, 10 and 11
 
 #### Auto-import configuration
