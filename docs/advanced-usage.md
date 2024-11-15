@@ -185,7 +185,7 @@ The example below **ONLY** applies to IKEv2 mode. Commands must be run as `root`
 
    **Note:** Add a new `conn` section for each client that you want to assign a static IP to. You must add a `@` prefix to the client name for `rightid=`. The client name must exactly match the name you specified when [adding the client certificate](ikev2-howto.md#add-a-client-certificate). The assigned static IP(s) must be from the subnet `192.168.43.0/24`, and must NOT be from the pool of auto-assigned IPs (see `rightaddresspool` above). In the example above, you can only assign static IP(s) from the range `192.168.43.1-192.168.43.99`.
 
-   **Note:** For Windows 7/8/10/11 clients, you must use a different syntax for `rightid=`. For example, if the client name is `client1`, set `rightid="CN=client1, O=IKEv2 VPN"` in the example above.
+   **Note:** For Windows 7/8/10/11 and [RouterOS](ikev2-howto.md#routeros) clients, you must use a different syntax for `rightid=`. For example, if the client name is `client1`, set `rightid="CN=client1, O=IKEv2 VPN"` in the example above.
 1. **(Important)** Restart the IPsec service:
    ```
    service ipsec restart

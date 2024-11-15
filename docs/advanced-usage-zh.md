@@ -185,7 +185,7 @@ IKEv2 模式：为 VPN 客户端分配静态 IP
 
    **注：** 为要分配静态 IP 的每个客户端添加一个新的 `conn` 小节。`rightid=` 右边的客户端名称必须添加 `@` 前缀。该客户端名称必须与你在[添加客户端证书](ikev2-howto-zh.md#添加客户端证书)时指定的名称完全一致。分配的静态 IP 必须来自子网 `192.168.43.0/24`，并且必须 **不是** 来自自动分配的 IP 地址池（参见上面的 `rightaddresspool`）。在上面的示例中，你只能分配 `192.168.43.1-192.168.43.99` 范围内的静态 IP。
 
-   **注：** 对于 Windows 7/8/10/11 客户端，你必须对 `rightid=` 使用不同的语法。例如，如果客户端名称为 `client1`，则在上面的示例中设置 `rightid="CN=client1, O=IKEv2 VPN"`。
+   **注：** 对于 Windows 7/8/10/11 和 [RouterOS](ikev2-howto-zh.md#routeros) 客户端，你必须对 `rightid=` 使用不同的语法。例如，如果客户端名称为 `client1`，则在上面的示例中设置 `rightid="CN=client1, O=IKEv2 VPN"`。
 1. **（重要）** 重启 IPsec 服务：
    ```
    service ipsec restart
