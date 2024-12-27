@@ -105,11 +105,19 @@ EOF
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-      if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "jessiesid" ] \
+      if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "stretchsid" ] \
         || [ "$os_ver" = "bustersid" ]; then
 cat 1>&2 <<EOF
 Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
        This version of Ubuntu/Debian is too old and not supported.
+EOF
+        exit 1
+      fi
+      if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ] \
+        && [ "$(. /etc/os-release && printf '%s' "$VERSION_ID")" = "24.10" ]; then
+cat 1>&2 <<EOF
+Error: This script does not support Ubuntu 24.10.
+       You may use e.g. Ubuntu 24.04 LTS instead.
 EOF
         exit 1
       fi
@@ -169,7 +177,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2024 Lin Song   28 Jul 2024
+IKEv2 Script   Copyright (c) 2020-2024 Lin Song   27 Dec 2024
 
 EOF
 }
