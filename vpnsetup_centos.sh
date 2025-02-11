@@ -8,7 +8,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2015-2024 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2015-2025 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -618,6 +618,11 @@ update_iptables() {
   if [ "$ipt_flag" = 1 ]; then
     service fail2ban stop >/dev/null 2>&1
     if [ "$use_nft" = 1 ]; then
+      fd_conf=/etc/firewalld/firewalld.conf
+      if grep -qs '^NftablesTableOwner=yes' "$fd_conf"; then
+        sed -i '/NftablesTableOwner/s/yes/no/' "$fd_conf"
+        firewall-cmd --reload >/dev/null 2>&1
+      fi
       nft list ruleset > "$IPT_FILE.old-$SYS_DT"
       chmod 600 "$IPT_FILE.old-$SYS_DT"
     else
