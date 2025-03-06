@@ -359,7 +359,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 If you are unable to download, open [vpnupgrade.sh](extras/vpnupgrade.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-The latest supported Libreswan version is `5.1`. Check installed version: `ipsec --version`.
+The latest supported Libreswan version is `5.2`. Check installed version: `ipsec --version`.
 
 **Note:** `xl2tpd` can be updated using your system's package manager, such as `apt-get` on Ubuntu/Debian.
 
@@ -429,7 +429,7 @@ For more information, see [Uninstall the VPN](docs/uninstall.md).
 
 ## License
 
-Copyright (C) 2014-2024 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Copyright (C) 2014-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
