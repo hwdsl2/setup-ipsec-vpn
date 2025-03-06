@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020-2024 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2020-2025 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -518,13 +518,13 @@ jobs:
           cp -f /opt/src/scripts/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 4.15 ""; do
+          for ver in 5.0 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
 
           ANSWERS
             restart_ipsec
-            [ -z "$ver" ] && ver=5.1
+            [ -z "$ver" ] && ver=5.2
             ipsec --version | grep "$ver"
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
@@ -538,13 +538,13 @@ jobs:
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          for ver in 5.0 ""; do
+          for ver in 5.1 ""; do
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
 
           ANSWERS
             restart_ipsec
-            [ -z "$ver" ] && ver=5.1
+            [ -z "$ver" ] && ver=5.2
             ipsec --version | grep "$ver"
             ipsec status | grep -q l2tp-psk
             ipsec status | grep -q xauth-psk
