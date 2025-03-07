@@ -10,7 +10,7 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-**[&raquo; :book: Book: Build Your Own VPN Server](https://books2read.com/vpnguide?store=amazon)** [[English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
+**[&raquo; :book: Book: Build Your Own VPN Server](https://books2read.com/vpnguide?store=amazon)** [[Intro Video](https://www.tiktok.com/@annalisereads/video/7478816401462005023) | [English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [ES](https://books2read.com/vpnguidees?store=amazon) | [DE](https://books2read.com/vpnguidede?store=amazon) | [FR](https://books2read.com/vpnguidefr?store=amazon) | [IT](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
 
 ## Quick start
 
