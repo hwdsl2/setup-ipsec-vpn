@@ -10,6 +10,8 @@ Also available: A [comprehensive guide](https://books2read.com/vpn) to building 
 
 Author page: https://amazon.com/author/linsong
 
-## Intro Video (YouTube)
+## Intro Videos (YouTube)
 
-[![Intro video on YouTube](images/video-thumbnail.jpg)](https://www.youtube.com/watch?v=e5mbQCk-XPc)
+[![Intro video 1 on YouTube](images/video-thumbnail-1.jpg)](https://www.youtube.com/watch?v=e5mbQCk-XPc)
+
+[![Intro video 2 on YouTube](images/video-thumbnail-2.jpg)](https://www.youtube.com/watch?v=e8S_MQ_bdcA)
