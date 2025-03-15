@@ -122,4 +122,4 @@ You may use the "Delete" button on the CloudFormation stack page to delete the C
 
 ## Author
 
-Copyright (C) 2020-2024 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
+Copyright (C) 2020-2024 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>
