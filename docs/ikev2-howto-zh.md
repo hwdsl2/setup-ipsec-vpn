@@ -30,7 +30,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 * [Android](#android)
 * [Chrome OS (Chromebook)](#chrome-os)
 * [Linux](#linux)
-* [Mikrotik RouterOS](#routeros)
+* [MikroTik RouterOS](#routeros)
 
 <details>
 <summary>

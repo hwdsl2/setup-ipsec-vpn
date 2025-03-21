@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**[&raquo; :book: Book: Build Your Own VPN Server](docs/vpn-book.md)** [[English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
+**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](docs/vpn-book-zh.md)** [[中文](https://books2read.com/vpnguidezh) | [English](https://books2read.com/vpnguide?store=amazon) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
 
 ## 快速开始
 
@@ -312,7 +312,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**阅读 [:book: VPN book](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC) 以访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
+**阅读 [:book: VPN book](docs/vpn-book-zh.md) 以访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 

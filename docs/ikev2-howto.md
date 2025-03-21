@@ -30,7 +30,7 @@ By default, IKEv2 is automatically set up when running the VPN setup script. If 
 * [Android](#android)
 * [Chrome OS (Chromebook)](#chrome-os)
 * [Linux](#linux)
-* [Mikrotik RouterOS](#routeros)
+* [MikroTik RouterOS](#routeros)
 
 <details>
 <summary>

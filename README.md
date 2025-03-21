@@ -312,7 +312,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](docs/clients-xauth.md)**
 
-**Read [:book: VPN book](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
+**Read [:book: VPN book](docs/vpn-book.md) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
