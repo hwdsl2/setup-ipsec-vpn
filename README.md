@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md)
+[English](README.md) | [中文](README-zh.md) | [日本語](README-ja.md)
 
 # IPsec VPN Server Auto Setup Scripts
 
