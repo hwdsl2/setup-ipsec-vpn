@@ -17,7 +17,7 @@ assignees: ''
 - [ ] 这个 bug 是关于 VPN 安装脚本，而不是 IPsec VPN 本身
 
 <!---
-如果你发现了 IPsec VPN 的一个可重复的程序漏洞，请在 https://github.com/libreswan/libreswan 提交一个错误报告。VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 用户邮件列表提问，或者搜索比如 [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn) 等网站。
+如果你发现了 IPsec VPN 的一个可重复的程序漏洞，请在 https://github.com/libreswan/libreswan 提交一个错误报告。VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org) 或 [strongSwan](https://lists.strongswan.org) 用户邮件列表提问，或者搜索比如 [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn) 等网站。
 --->
 
 **问题描述**

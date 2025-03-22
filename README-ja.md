@@ -10,7 +10,7 @@ IPsec VPNはネットワークトラフィックを暗号化し、インター�
 
 IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TPプロバイダーとして[xl2tpd](https://github.com/xelerance/xl2tpd)を使用します。
 
-**[&raquo; :book: 本: 自分のVPNサーバーを構築する](docs/vpn-book.md)** [[English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
+**[&raquo; :book: 本: VPNサーバーの構築方法](docs/vpn-book.md)** [[日本語](https://books2read.com/vpnguideja?store=amazon) | [English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon)]
 
 ## クイックスタート
 
@@ -102,7 +102,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
+:warning: これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
 
 ## インストール
 
@@ -302,7 +302,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## 次のステップ
 
-*他の言語で読む：[English](README.md#next-steps)、[中文](README-zh.md#下一步)。*
+*他の言語で読む：[English](README.md#next-steps)、[中文](README-zh.md#下一步)、[日本語](README-ja.md#次のステップ)。*
 
 コンピュータやデバイスをVPNに接続します。以下を参照してください：
 
@@ -312,9 +312,9 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[IPsec/XAuth（"Cisco IPsec"）VPNクライアントの設定](docs/clients-xauth.md)**
 
-**[:book: VPN本を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
+**:book: [VPN本](docs/vpn-book.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
 
-自分のVPNを楽しんでください！:sparkles::tada::rocket::sparkles:
+自分のVPNを楽しんでください！ :sparkles::tada::rocket::sparkles:
 
 ## 重要な注意事項
 
@@ -425,7 +425,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 - このプロジェクトに提案がありますか？[改善リクエスト](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)を開いてください。[プルリクエスト](https://github.com/hwdsl2/setup-ipsec-vpn/pulls)も歓迎します。
 - 再現可能なバグを見つけた場合、[IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue)または[VPNスクリプト](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)のバグレポートを開いてください。
 - 質問がありますか？まず、[既存の問題](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue)と、この[Gist](https://gist.github.com/hwdsl2/9030462#comments)および[私のブログ](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread)のコメントを検索してください。
-- VPNに関連する質問は、[Libreswan](https://lists.libreswan.org/mailman/listinfo/swan)または[strongSwan](https://lists.strongswan.org/mailman/listinfo/users)のメーリングリストで質問するか、次のウィキを参照してください：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
+- VPNに関連する質問は、[Libreswan](https://lists.libreswan.org)または[strongSwan](https://lists.strongswan.org)のメーリングリストで質問するか、次のウィキを参照してください：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
 
 ## ライセンス
 
