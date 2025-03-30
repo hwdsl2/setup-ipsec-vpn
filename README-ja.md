@@ -304,7 +304,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 *他の言語で読む：[English](README.md#next-steps)、[中文](README-zh.md#下一步)、[日本語](README-ja.md#次のステップ)。*
 
-コンピュータやデバイスをVPNに接続します。以下を参照してください：
+コンピュータやデバイスをVPNに接続します。詳細は以下のリンク（英語）をご覧ください。
 
 **[IKEv2 VPNクライアントの設定（推奨）](docs/ikev2-howto.md)**
 
@@ -365,7 +365,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 ## VPNユーザーの管理
 
-[VPNユーザーの管理](docs/manage-users.md)を参照してください。
+[VPNユーザーの管理](docs/manage-users.md)（英語）を参照してください。
 
 - [ヘルパースクリプトを使用してVPNユーザーを管理する](docs/manage-users.md#manage-vpn-users-using-helper-scripts)
 - [VPNユーザーを表示する](docs/manage-users.md#view-vpn-users)
@@ -374,7 +374,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 ## 高度な使用法
 
-[高度な使用法](docs/advanced-usage.md)を参照してください。
+[高度な使用法](docs/advanced-usage.md)（英語）を参照してください。
 
 - [代替DNSサーバーの使用](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS名とサーバーIPの変更](docs/advanced-usage.md#dns-name-and-server-ip-changes)
