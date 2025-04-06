@@ -57,6 +57,8 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 如果在连接过程中遇到错误，请参见 [故障排除](#ikev2-故障排除)。
 
+**注：** 如果你重新安装了 VPN 服务器，你可能需要先删除现有的 IKEv2 客户端和 CA 证书，然后按照上述步骤导入新的 `.p12` 文件。这有助于确保 Windows 在连接到 VPN 时使用正确的客户端证书。有关详细信息，请参阅下面的 "删除 IKEv2 VPN 连接"。
+
 #### 手动导入配置
 
 [[支持者] **屏幕录影：** 在 Windows 上手动导入 IKEv2 配置](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
@@ -121,17 +123,16 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. （可选）删除 IKEv2 证书。
 
-   1. 按 Win+R 或在开始菜单中搜索 `mmc` 打开 *Microsoft Management Console*。
+   1. **Windows 8, 10 和 11:** 按 Win+R 然后输入 `certlm.msc`，或在开始菜单中搜索 `certlm.msc`。打开 *证书 - 本地计算机*。   
+      **Windows 7:** 按 Win+R 然后输入 `mmc`，或在开始菜单中搜索 `mmc`。打开 *管理控制台*。在 `文件 - 添加/删除管理单元` 的窗口中，选择添加 `证书` 并在弹出的窗口中选择 `计算机帐户 -> 本地计算机`。点击 `完成 -> 确定` 以保存设置。
 
-   1. 在 `File - Add/Remove Snap-In` 的窗口中，选择添加 `Certificates` 并在弹出的窗口中选择 `Computer account -> Local Computer`。点击 `Finish -> OK` 以保存设置。
+   1. 在 `证书 - 个人 - 证书` 中删除 IKEv2 客户端证书。该证书的名称与你指定的 IKEv2 客户端名称一致，默认为 `vpnclient`，该证书由 `IKEv2 VPN CA` 颁发。
 
-   1. 在 `Certificates - Personal - Certificates` 中删除 IKEv2 客户端证书。该证书的名称与你指定的 IKEv2 客户端名称一致，默认为 `vpnclient`，该证书由 `IKEv2 VPN CA` 颁发。
-
-   1. 在 `Certificates - Trusted Root Certification Authorities - Certificates` 中删除 IKEv2 VPN CA 证书。该证书是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，`Certificates - Personal - Certificates` 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
+   1. 在 `证书 - 受信任的根证书颁发机构 - 证书` 中删除 IKEv2 VPN CA 证书。该证书是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，`证书 - 个人 - 证书` 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
 
 1. （可选，适用于手动创建了 VPN 连接的用户）还原注册表配置。注意，在编辑注册表前应备份。
 
-   1. 按 Win+R 或在开始菜单中搜索 `regedit` 打开 *Registry Editor*。
+   1. 按 Win+R 或在开始菜单中搜索 `regedit` 打开 *注册表编辑器*。
 
    1. 在 `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Rasman\Parameters` 中删除名为 `NegotiateDH2048_AES256` 的项目，如果它存在。
 </details>

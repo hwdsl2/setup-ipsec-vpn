@@ -57,6 +57,8 @@ To connect to the VPN: Click on the wireless/network icon in your system tray, s
 
 If you get an error when trying to connect, see [Troubleshooting](#ikev2-troubleshooting).
 
+**Note:** If you reinstalled the VPN server, you may want to first remove existing IKEv2 client and CA certificates, then follow the steps above to import the new `.p12` file. This helps make sure that Windows uses the correct client certificate when connecting to the VPN. See "Remove the IKEv2 VPN connection" below for more details.
+
 #### Manually import configuration
 
 [[Supporters] **Screencast:** IKEv2 Manually Import Configuration on Windows](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
@@ -121,9 +123,8 @@ Using the following steps, you can remove the VPN connection and optionally rest
 
 1. (Optional) Remove IKEv2 certificates.
 
-   1. Press Win+R, or search for `mmc` in the Start Menu. Open *Microsoft Management Console*.
-
-   1. Open `File - Add/Remove Snap-In`. Select to add `Certificates` and in the window that opens, select `Computer account -> Local Computer`. Click on `Finish -> OK` to save the settings.
+   1. **Windows 8, 10 and 11:** Press Win+R and enter `certlm.msc`, or search for `certlm.msc` in the Start Menu. Open *Certificates - Local Computer*.   
+      **Windows 7:** Press Win+R and enter `mmc`, or search for `mmc` in the Start Menu. Open *Management Console*. Open `File - Add/Remove Snap-In`. Select to add `Certificates` and in the window that opens, select `Computer account -> Local Computer`. Click on `Finish -> OK` to save the settings.
 
    1. Go to `Certificates - Personal - Certificates` and delete the IKEv2 client certificate. The name of the certificate is the same as the IKEv2 client name you specified (default: `vpnclient`). The certificate was issued by `IKEv2 VPN CA`.
 
