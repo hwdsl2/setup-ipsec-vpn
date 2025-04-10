@@ -282,6 +282,7 @@ EOF
 
 check_libreswan() {
   check_result=0
+  [ ! -d /etc/ipsec.d ] && { get_swan_ver; return 0; }
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver_old=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   ipsec_bin="/usr/local/sbin/ipsec"
