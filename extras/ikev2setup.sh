@@ -177,7 +177,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2025 Lin Song   05 Mar 2025
+IKEv2 Script   Copyright (c) 2020-2025 Lin Song   09 May 2025
 
 EOF
 }
@@ -428,8 +428,8 @@ get_server_ip() {
 }
 
 get_server_address() {
-  server_addr=$(grep -s "leftcert=" "$IKEV2_CONF" | cut -f2 -d=)
-  [ -z "$server_addr" ] && server_addr=$(grep -s "leftcert=" "$IPSEC_CONF" | cut -f2 -d=)
+  server_addr=$(grep -s "leftcert=" "$IKEV2_CONF" | cut -f2 -d= | head -n 1)
+  [ -z "$server_addr" ] && server_addr=$(grep -s "leftcert=" "$IPSEC_CONF" | cut -f2 -d= | head -n 1)
   check_ip "$server_addr" || check_dns_name "$server_addr" || exiterr "Could not get VPN server address."
 }
 
