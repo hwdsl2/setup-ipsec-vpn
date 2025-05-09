@@ -101,7 +101,7 @@ check_ca_cert_exists() {
 }
 
 get_server_address() {
-  server_addr_old=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+  server_addr_old=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d= | head -n 1)
   check_ip "$server_addr_old" || check_dns_name "$server_addr_old" || exiterr "Could not get current VPN server address."
 }
 
