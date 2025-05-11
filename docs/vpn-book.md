@@ -2,7 +2,7 @@
 
 # Build Your Own VPN Server: A Step by Step Guide
 
-This book is a step-by-step guide to building your own IPsec VPN, OpenVPN and WireGuard server. Available on Amazon, Google Play and Apple Books in eBook, audiobook and paperback formats.
+This book is a step-by-step guide to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://amazon.com/author/linsong), [Google Play](https://play.google.com/store/books/details?id=Rae_EAAAQBAJ) and [Apple Books](http://books.apple.com/us/book/id6449340753) in eBook, audiobook and paperback formats.
 
 This book is available in: [English](https://books2read.com/vpnguide?store=amazon), [简体中文](https://books2read.com/vpnguidezh), [繁體中文](https://books2read.com/vpnguidezht), [Español](https://books2read.com/vpnguidees?store=amazon), [Deutsch](https://books2read.com/vpnguidede?store=amazon), [Français](https://books2read.com/vpnguidefr?store=amazon), [Italiano](https://books2read.com/vpnguideit?store=amazon), [Nederlands](https://books2read.com/vpnguidenl?store=amazon), [Português](https://books2read.com/vpnguidept?store=amazon), [日本語](https://books2read.com/vpnguideja?store=amazon).
 
