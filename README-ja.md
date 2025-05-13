@@ -74,7 +74,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 - Ubuntu 24.04、22.04、または20.04
 - Debian 12または11
-- CentOS Stream 9
+- CentOS Stream 10または9
 - Rocky LinuxまたはAlmaLinux
 - Oracle Linux
 - Amazon Linux 2
