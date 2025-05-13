@@ -57,8 +57,11 @@ check_os() {
     elif grep -q "release 9" "$rh_file"; then
       os_ver=9
       grep -qi stream "$rh_file" && os_ver=9s
+    elif grep -q "release 10" "$rh_file"; then
+      os_ver=10
+      grep -qi stream "$rh_file" && os_ver=10s
     else
-      exiterr "This script only supports CentOS/RHEL 7-9."
+      exiterr "This script only supports CentOS/RHEL 7-10."
     fi
     if [ "$os_type" = "centos" ] \
       && { [ "$os_ver" = 7 ] || [ "$os_ver" = 8 ] || [ "$os_ver" = 8s ]; }; then

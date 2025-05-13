@@ -63,8 +63,11 @@ check_os() {
     elif grep -q "release 9" "$rh_file"; then
       os_ver=9
       grep -qi stream "$rh_file" && os_ver=9s
+    elif grep -q "release 10" "$rh_file"; then
+      os_ver=10
+      grep -qi stream "$rh_file" && os_ver=10s
     else
-      exiterr "This script only supports CentOS/RHEL 7-9."
+      exiterr "This script only supports CentOS/RHEL 7-10."
     fi
     if [ "$os_type" = "centos" ] \
       && { [ "$os_ver" = 7 ] || [ "$os_ver" = 8 ] || [ "$os_ver" = 8s ]; }; then
@@ -110,14 +113,6 @@ EOF
 cat 1>&2 <<EOF
 Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
        This version of Ubuntu/Debian is too old and not supported.
-EOF
-        exit 1
-      fi
-      if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ] \
-        && [ "$(. /etc/os-release && printf '%s' "$VERSION_ID")" = "24.10" ]; then
-cat 1>&2 <<EOF
-Error: This script does not support Ubuntu 24.10.
-       You may use e.g. Ubuntu 24.04 LTS instead.
 EOF
         exit 1
       fi
@@ -177,7 +172,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2025 Lin Song   09 May 2025
+IKEv2 Script   Copyright (c) 2020-2025 Lin Song   12 May 2025
 
 EOF
 }

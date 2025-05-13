@@ -43,8 +43,8 @@ check_os() {
     [ -f /etc/oracle-release ] && os_type=ol
     grep -qi rocky "$rh_file" && os_type=rocky
     grep -qi alma "$rh_file" && os_type=alma
-    if ! grep -q -E "release (7|8|9)" "$rh_file"; then
-      exiterr "This script only supports CentOS/RHEL 7-9."
+    if ! grep -q -E "release (7|8|9|10)" "$rh_file"; then
+      exiterr "This script only supports CentOS/RHEL 7-10."
     fi
   elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
     os_type=amzn

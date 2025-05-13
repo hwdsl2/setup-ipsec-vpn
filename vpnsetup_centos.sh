@@ -89,8 +89,11 @@ check_os() {
     elif grep -q "release 9" "$rh_file"; then
       os_ver=9
       grep -qi stream "$rh_file" && os_ver=9s
+    elif grep -q "release 10" "$rh_file"; then
+      os_ver=10
+      grep -qi stream "$rh_file" && os_ver=10s
     else
-      exiterr "This script only supports CentOS/RHEL 7-9."
+      exiterr "This script only supports CentOS/RHEL 7-10."
     fi
     if [ "$os_type" = "centos" ] \
       && { [ "$os_ver" = 7 ] || [ "$os_ver" = 8 ] || [ "$os_ver" = 8s ]; }; then
@@ -282,6 +285,7 @@ install_vpn_pkgs_3() {
       yum -y -q install $p1 $p2 >/dev/null
     ) || exiterr2
     if [ "$os_ver" = 9 ] || [ "$os_ver" = 9s ] \
+      || [ "$os_ver" = 10 ] || [ "$os_ver" = 10s ] \
       || systemctl is-active --quiet firewalld \
       || systemctl is-active --quiet nftables \
       || grep -qs "hwdsl2 VPN script" /etc/sysconfig/nftables.conf; then

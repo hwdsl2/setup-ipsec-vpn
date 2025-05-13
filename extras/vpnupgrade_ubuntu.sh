@@ -65,13 +65,15 @@ Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
 EOF
     exit 1
   fi
-  if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ] \
-    && [ "$(. /etc/os-release && printf '%s' "$VERSION_ID")" = "24.10" ]; then
+  if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ]; then
+    ubuntu_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID")
+    if [ "$ubuntu_ver" = "24.10" ] || [ "$ubuntu_ver" = "25.04" ]; then
 cat 1>&2 <<EOF
-Error: This script does not support Ubuntu 24.10.
+Error: This script does not support Ubuntu 24.10 or 25.04.
        You may use e.g. Ubuntu 24.04 LTS instead.
 EOF
-    exit 1
+      exit 1
+    fi
   fi
 }
 
