@@ -186,13 +186,13 @@ check_creds() {
     return 0
   fi
   if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-    exiterr "All VPN credentials must be specified. Edit the script and re-enter them."
+    exiterr "One or more VPN credentials (YOUR_IPSEC_PSK, YOUR_USERNAME, YOUR_PASSWORD) are missing. Please edit the script and provide all three."
   fi
   if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
     exiterr "VPN credentials must not contain non-ASCII characters."
   fi
   case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
-    *[\\\"\']*)
+    *[\\\"\	keystore']*)
       exiterr "VPN credentials must not contain these special characters: \\ \" '"
       ;;
   esac
@@ -326,3 +326,4 @@ vpnsetup() {
 vpnsetup "$@"
 
 exit "$status"
+
