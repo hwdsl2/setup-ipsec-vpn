@@ -317,7 +317,8 @@ EOF
     )
     cd /opt/src || exit 1
     /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-    if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+    if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER" \
+      || [ ! -d /etc/ipsec.d ]; then
       exiterr "Libreswan $SWAN_VER failed to build."
     fi
   fi
