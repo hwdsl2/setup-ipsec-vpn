@@ -377,7 +377,7 @@ touch /var/run/xl2tpd/l2tp-control
 ```bash
 service strongswan restart
 
-# 适用于 Ubuntu 20.04，如果 strongswan 服务不存在
+# 适用于 Ubuntu，如果 strongswan 服务不存在
 ipsec restart
 
 service xl2tpd restart

@@ -376,7 +376,7 @@ Restart services:
 ```bash
 service strongswan restart
 
-# For Ubuntu 20.04, if strongswan service not found
+# For Ubuntu, if strongswan service not found
 ipsec restart
 
 service xl2tpd restart
