@@ -24,9 +24,6 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Mappings": {
         "OS": {
-            "Ubuntu2004": {
-                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
-            },
             "Ubuntu2204": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
@@ -482,7 +479,6 @@
                                 "       distribution = event['ResourceProperties']['Distribution']",
                                 "       ec2 = boto3.client('ec2',regionName)",
                                 "       AMIName = {",
-                                "           'Ubuntu2004': 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',",
                                 "           'Ubuntu2204': 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',",
                                 "           'Ubuntu2404': 'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*',",
                                 "           'Debian11': 'debian-11-amd64-*',",
@@ -624,12 +620,11 @@
         },
         "OS": {
             "Type": "String",
-            "Description": "The OS of your VPN server. Default: Ubuntu 22.04",
-            "Default": "Ubuntu2204",
+            "Description": "The OS of your VPN server. Default: Ubuntu 24.04",
+            "Default": "Ubuntu2404",
             "AllowedValues": [
                 "Ubuntu2404",
                 "Ubuntu2204",
-                "Ubuntu2004",
                 "Debian12",
                 "Debian11",
                 "AmazonLinux2"
