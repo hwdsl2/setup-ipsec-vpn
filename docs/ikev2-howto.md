@@ -537,7 +537,7 @@ sudo chmod 600 ca.cer client.cer client.key
 >    sudo mv /path/to/client.key /etc/ipsec.d/private/
 >    ```
 >
->5.  **Apply SELinux Contexts (Only for distributions actively running SELinux)**
+>5.  **Apply SELinux Contexts (Only for distributions actively running SELinux, like Fedora)**
 >    
 >
 >    This final command updates the security context of the files, ensuring they are correctly labeled for use by the VPN service.
@@ -555,7 +555,7 @@ sudo chmod 600 ca.cer client.cer client.key
 >    ```
 >    sudo nm-connection-editor
 >    ```
->    Proceed with instructions given below. When you need to select the certificate and key files, you must provide the full paths to the files you just moved. You can press **`Ctrl+L`** in the file selection dialog to type the paths directly.
+>    Proceed with the instructions given below. When you need to select the certificate and key files, you must provide the full paths to the files you just moved. You can press **`Ctrl+L`** in the file selection dialog to type the paths directly.
 >
 >The paths, for your convenience, are:
 >
