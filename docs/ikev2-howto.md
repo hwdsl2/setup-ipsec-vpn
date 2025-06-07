@@ -435,21 +435,21 @@ Before configuring Linux VPN clients, you must make the following change on the 
 
 To configure your Linux computer to connect to IKEv2 as a VPN client, first install the strongSwan plugin for NetworkManager:
 
-##### Ubuntu and Debian
+#### Ubuntu and Debian
 
 ```bash
 sudo apt-get update
 sudo apt-get install network-manager-strongswan
 ```
 
-##### Arch Linux
+#### Arch Linux
 
 ```bash
 sudo pacman -Syu  # upgrade all packages
 sudo pacman -S networkmanager-strongswan
 ```
 
-##### Fedora
+#### Fedora
 
 
 For KDE Plasma/LXQt users:
@@ -463,7 +463,7 @@ sudo dnf install NetworkManager-strongswan-gnome
 ```
 
 
-##### CentOS
+#### CentOS
 
 ```bash
 sudo yum install epel-release
