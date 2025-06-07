@@ -490,6 +490,81 @@ rm vpnclient.p12
 sudo chown root:root ca.cer client.cer client.key
 sudo chmod 600 ca.cer client.cer client.key
 ```
+>[!IMPORTANT]
+>
+>Clients running **Fedora** and its derivatives require a few extra steps to setup due to their default security policies.
+><details markdown="1">
+><summary>For <b>Fedora/Nobara 39+</b> clients:</summary>
+><br>
+>
+>
+>1.  **Enable SHA1 Support**
+>
+>    Modern Fedora versions disable certain legacy cryptographic algorithms, including SHA-1, which is used by this script to generate client certificates and keys. Re-enable support for SHA1-signed certificates by running:
+>
+>    ```
+>    sudo update-crypto-policies --set DEFAULT:SHA1
+>    ```
+>    **Reboot your system** after running this command.
+>
+>2.  **Set Secure File Ownership**
+>
+>    Fedora requires keys and certificates to be owned by root. Use the `chown` command to do so.
+>
+>    ```
+>    sudo chown root:root ca.cer client.cer client.key
+>    ```
+>
+>3.  **Create System Directories**
+>
+>    Create the official directories where the strongSwan service looks for certificates and private keys.
+>
+>    ```
+>    sudo mkdir -p /etc/ipsec.d/{certs,private}
+>    ```
+>
+>4.  **Move Files into Place**
+>
+>    Move the certificate and key files from your current location into the newly created system directories.
+>
+>    <br>
+>
+>    ```
+>    # Move certificates
+>    sudo mv /path/to/ca.cer /path/to/client.cer /etc/ipsec.d/certs/
+>
+>    # Move private key
+>    sudo mv /path/to/client.key /etc/ipsec.d/private/
+>    ```
+>
+>5.  **Apply SELinux Contexts (Only for distributions actively running SELinux)**
+>    
+>
+>    This final command updates the security context of the files, ensuring they are correctly labeled for use by the VPN service.
+>>⚠️
+>> **Do NOT run the following command on Nobara.**
+>
+>    ```
+>    sudo restorecon -R -v /etc/ipsec.d/
+>    ```
+>
+>5.  **Continue to NetworkManager Setup**
+>
+>    You are now ready to configure the connection using the graphical editor. Open it with:
+>
+>    ```
+>    sudo nm-connection-editor
+>    ```
+>    Proceed with instructions given below. When you need to select the certificate and key files, you must provide the full paths to the files you just moved. You can press **`Ctrl+L`** in the file selection dialog to type the paths directly.
+>
+>The paths, for your convenience, are:
+>
+>`/etc/ipsec.d/certs/` & `/etc/ipsec.d/private/`
+></details>
+
+>[!TIP]
+> If you're using the KDE Plasma desktop, you might encounter issues when configuring the VPN through the graphical System Settings. To ensure a smooth setup, we recommend launching the dedicated connection editor instead by running `sudo nm-connection-editor` in a terminal.
+
 
 You can then set up and enable the VPN connection:
 
