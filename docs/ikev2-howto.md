@@ -562,10 +562,6 @@ sudo chmod 600 ca.cer client.cer client.key
 >`/etc/ipsec.d/certs/` & `/etc/ipsec.d/private/`
 ></details>
 
->[!TIP]
-> If you're using the KDE Plasma desktop, you might encounter issues when configuring the VPN through the graphical System Settings. To ensure a smooth setup, we recommend launching the dedicated connection editor instead by running `sudo nm-connection-editor` in a terminal.
-
-
 You can then set up and enable the VPN connection:
 
 1. Go to Settings -> Network -> VPN. Click the **+** button.
@@ -583,6 +579,11 @@ You can then set up and enable the VPN connection:
 1. Enter `aes128gcm16` in the **ESP** field.
 1. Click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
+
+
+>[!TIP]
+> If you're using the KDE Plasma desktop, you might encounter issues when configuring the VPN through the graphical System Settings. To ensure a smooth setup, we recommend launching the dedicated connection editor instead by running `sudo nm-connection-editor` in a terminal.
+
 
 Alternatively, you may connect using the command line. See [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) and [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007) for example steps. If you encounter error `Could not find source connection`, edit `/etc/netplan/01-netcfg.yaml` and replace `renderer: networkd` with `renderer: NetworkManager`, then run `sudo netplan apply`. To connect to the VPN, run `sudo nmcli c up VPN`. To disconnect: `sudo nmcli c down VPN`.
 
