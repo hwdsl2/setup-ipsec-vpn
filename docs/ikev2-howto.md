@@ -435,19 +435,37 @@ Before configuring Linux VPN clients, you must make the following change on the 
 
 To configure your Linux computer to connect to IKEv2 as a VPN client, first install the strongSwan plugin for NetworkManager:
 
+#### Ubuntu and Debian
+
 ```bash
-# Ubuntu and Debian
 sudo apt-get update
 sudo apt-get install network-manager-strongswan
+```
 
-# Arch Linux
+#### Arch Linux
+
+```bash
 sudo pacman -Syu  # upgrade all packages
 sudo pacman -S networkmanager-strongswan
+```
 
-# Fedora
-sudo yum install NetworkManager-strongswan-gnome
+#### Fedora
 
-# CentOS
+
+For KDE Plasma/LXQt users:
+
+```bash
+sudo dnf install NetworkManager-strongswan-gnome plasma-nm-strongswan
+```
+Other DEs:
+```bash
+sudo dnf install NetworkManager-strongswan-gnome
+```
+
+
+#### CentOS
+
+```bash
 sudo yum install epel-release
 sudo yum --enablerepo=epel install NetworkManager-strongswan-gnome
 ```
@@ -472,6 +490,81 @@ rm vpnclient.p12
 sudo chown root:root ca.cer client.cer client.key
 sudo chmod 600 ca.cer client.cer client.key
 ```
+>[!IMPORTANT]
+>
+>**_Fedora_** and its derivatives require a few extra steps to setup due to their default security policies.
+><details markdown="1">
+><summary>For <b>Fedora/Nobara 39+</b> clients:</summary>
+><br>
+>
+>
+>## 1. Enable SHA1 Support
+>
+>Fedora 39+ disables SHA-1 cryptographic support by default. Since this VPN setup uses SHA-1 for certificate generation, you need to re-enable it system-wide. Run the following command:
+>
+>```
+>sudo update-crypto-policies --set DEFAULT:SHA1
+>```
+>**<ins>Reboot your system</ins>** after running this command. <br/>
+>    
+>## 2. Set Secure File Ownership
+>
+>Fedora systems require that certificate and key files be owned by root. You can set the correct ownership using the `chown` command.
+>
+>```
+>sudo chown root:root ca.cer client.cer client.key
+>```
+>
+>## 3. Create System Directories
+>
+>Create the official directories where the strongSwan service looks for certificates and private keys.
+>
+>```
+>sudo mkdir -p /etc/ipsec.d/{certs,private}
+>```
+>
+>## 4. Move Files into Place
+>
+>Move the certificate and key files from your current location into the newly created system directories.
+>
+>
+>```
+># Move certificates
+>sudo mv /path/to/ca.cer /path/to/client.cer /etc/ipsec.d/certs/
+>
+># Move private key
+>sudo mv /path/to/client.key /etc/ipsec.d/private/
+>```
+>
+>## 5. Apply SELinux Contexts (If SELinux is Active)
+>    
+>This command updates the security context of the files, ensuring they are correctly labeled for use by the VPN service. It will only run if SELinux is enabled on your system (_à la_ Fedora).
+>
+>```bash
+> bash -c '
+># Check if SELinux is enabled and apply contexts if necessary
+>if command -v sestatus >/dev/null 2>&1 && sestatus | grep -q "SELinux status:.*enabled"; then
+>    sudo restorecon -R -v /etc/ipsec.d/
+>    echo "SELinux contexts applied successfully. Proceed to step 6."
+>else
+>    echo "SELinux not active or not found - skipping context restoration. Proceed to step 6."
+>fi'
+>```
+>
+>## 6. Continue to NetworkManager Setup
+>
+>You are now ready to configure the connection using the graphical editor. Open it with:
+>
+>```
+>sudo nm-connection-editor
+>```
+>Proceed with the general Linux instructions below. When prompted to select certificate and key files during setup, use the files you just transferred to `/etc/ipsec.d/`. (Press **`Ctrl+L`** in the file picker to type the full paths directly.)
+>
+>The paths, for your convenience, are:
+>
+>`/etc/ipsec.d/certs/` & `/etc/ipsec.d/private/`
+></details>
+
 
 You can then set up and enable the VPN connection:
 
@@ -490,6 +583,11 @@ You can then set up and enable the VPN connection:
 1. Enter `aes128gcm16` in the **ESP** field.
 1. Click **Add** to save the VPN connection information.
 1. Turn the **VPN** switch ON.
+
+
+>[!TIP]
+> If you're using the KDE Plasma desktop, you might encounter issues when configuring the VPN through the graphical System Settings. To ensure a smooth setup, we recommend launching the dedicated connection editor instead by running `sudo nm-connection-editor` in a terminal.
+
 
 Alternatively, you may connect using the command line. See [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) and [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007) for example steps. If you encounter error `Could not find source connection`, edit `/etc/netplan/01-netcfg.yaml` and replace `renderer: networkd` with `renderer: NetworkManager`, then run `sudo netplan apply`. To connect to the VPN, run `sudo nmcli c up VPN`. To disconnect: `sudo nmcli c down VPN`.
 
