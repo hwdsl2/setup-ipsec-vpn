@@ -46,7 +46,7 @@ In certain circumstances, you may need to change the IKEv2 server address. For e
 
 [**Screencast:** IKEv2 Auto Import Configuration on Windows](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
 
-**Windows 8, 10 and 11** users can automatically import IKEv2 configuration:
+**Windows 8, 10 and 11+** users can automatically import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer.
 1. Right-click on [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) and save this helper script to the **same folder** as the `.p12` file.
@@ -63,7 +63,7 @@ If you get an error when trying to connect, see [Troubleshooting](#ikev2-trouble
 
 [[Supporters] **Screencast:** IKEv2 Manually Import Configuration on Windows](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)
 
-Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 configuration:
+Alternatively, **Windows 7, 8, 10 and 11+** users can manually import IKEv2 configuration:
 
 1. Securely transfer the generated `.p12` file to your computer, then import it into the certificate store.
 
@@ -80,7 +80,7 @@ Alternatively, **Windows 7, 8, 10 and 11** users can manually import IKEv2 confi
 
 1. On the Windows computer, add a new IKEv2 VPN connection.
 
-   For **Windows 8, 10 and 11**, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
+   For **Windows 8, 10 and 11+**, it is recommended to create the VPN connection using the following commands from a command prompt, for improved security and performance.
 
    ```console
    # Create VPN connection (replace server address with your own value)
@@ -119,16 +119,16 @@ Remove the IKEv2 VPN connection.
 
 Using the following steps, you can remove the VPN connection and optionally restore the computer to the status before IKEv2 configuration import.
 
-1. Remove the added VPN connection in Windows Settings - Network - VPN. Windows 7 users can remove the VPN connection in Network and Sharing Center - Change adapter settings.
+1. Remove the added VPN connection in Windows Settings -> Network -> VPN. Windows 7 users can remove the VPN connection in Network and Sharing Center -> Change adapter settings.
 
 1. (Optional) Remove IKEv2 certificates.
 
    1. **Windows 8, 10 and 11:** Press Win+R and enter `certlm.msc`, or search for `certlm.msc` in the Start Menu. Open *Certificates - Local Computer*.   
       **Windows 7:** Press Win+R and enter `mmc`, or search for `mmc` in the Start Menu. Open *Management Console*. Open `File - Add/Remove Snap-In`. Select to add `Certificates` and in the window that opens, select `Computer account -> Local Computer`. Click on `Finish -> OK` to save the settings.
 
-   1. Go to `Certificates - Personal - Certificates` and delete the IKEv2 client certificate. The name of the certificate is the same as the IKEv2 client name you specified (default: `vpnclient`). The certificate was issued by `IKEv2 VPN CA`.
+   1. Go to Certificates -> Personal -> Certificates and delete the IKEv2 client certificate. The name of the certificate is the same as the IKEv2 client name you specified (default: `vpnclient`). The certificate was issued by `IKEv2 VPN CA`.
 
-   1. Go to `Certificates - Trusted Root Certification Authorities - Certificates` and delete the IKEv2 VPN CA certificate. The certificate was issued to `IKEv2 VPN CA` by `IKEv2 VPN CA`. Before deleting, make sure that there are no other certificate(s) issued by `IKEv2 VPN CA` in `Certificates - Personal - Certificates`.
+   1. Go to Certificates -> Trusted Root Certification Authorities -> Certificates and delete the IKEv2 VPN CA certificate. The certificate was issued to `IKEv2 VPN CA` by `IKEv2 VPN CA`. Before deleting, make sure that there are no other certificate(s) issued by `IKEv2 VPN CA` in Certificates -> Personal -> Certificates.
 
 1. (Optional. For users who manually created the VPN connection) Restore registry settings. Note that you should backup the registry before editing.
 
@@ -376,7 +376,7 @@ Android 11+ users can also connect using the native IKEv2 client.
 1. Select **IKEv2/IPSec RSA** from the **Type** drop-down menu.
 1. Enter `Your VPN Server IP` (or DNS name) in the **Server address** field.   
    **Note:** This must **exactly match** the server address in the output of the IKEv2 helper script.
-1. Enter anything (e.g. `empty`) in the **IPSec identifier** field.   
+1. Enter anything you like for the **IPSec identifier**.   
    **Note:** This field should not be required. It is a bug in Android.
 1. Select the certificate you imported from the **IPSec user certificate** drop-down menu.
 1. Select the certificate you imported from the **IPSec CA certificate** drop-down menu.

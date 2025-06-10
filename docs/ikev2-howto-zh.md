@@ -46,7 +46,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 [**屏幕录影：** 在 Windows 上自动导入 IKEv2 配置](https://ko-fi.com/post/IKEv2-Auto-Import-Configuration-on-Windows-8-10-a-K3K1DQCHW)
 
-**Windows 8, 10 和 11** 用户可以自动导入 IKEv2 配置：
+**Windows 8, 10 和 11+** 用户可以自动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机。
 1. 右键单击 [ikev2_config_import.cmd](https://github.com/hwdsl2/vpn-extras/releases/latest/download/ikev2_config_import.cmd) 并保存这个辅助脚本到与 `.p12` 文件 **相同的文件夹**。
@@ -63,7 +63,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 [[支持者] **屏幕录影：** 在 Windows 上手动导入 IKEv2 配置](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)
 
-或者，**Windows 7, 8, 10 和 11** 用户可以手动导入 IKEv2 配置：
+或者，**Windows 7, 8, 10 和 11+** 用户可以手动导入 IKEv2 配置：
 
 1. 将生成的 `.p12` 文件安全地传送到你的计算机，然后导入到证书存储。
 
@@ -80,7 +80,7 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 1. 在 Windows 计算机上添加一个新的 IKEv2 VPN 连接。
 
-   对于 **Windows 8, 10 和 11**，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
+   对于 **Windows 8, 10 和 11+**，推荐从命令提示符运行以下命令创建 VPN 连接，以达到更佳的安全性和性能。
 
    ```console
    # 创建 VPN 连接（将服务器地址换成你自己的值）
@@ -119,16 +119,16 @@ Libreswan 支持通过使用 RSA 签名算法的 X.509 Machine Certificates 来�
 
 通过以下的步骤，可以删除添加的 VPN 连接，并将计算机恢复到导入 IKEv2 配置之前的状态（可选）。
 
-1. 在系统设置 - 网络 - VPN 中删除添加的 VPN 连接。Windows 7 用户可以在网络和共享中心 - 更改适配器设置中删除 VPN 连接。
+1. 在系统设置 -> 网络 -> VPN 中删除添加的 VPN 连接。Windows 7 用户可以在网络和共享中心 -> 更改适配器设置中删除 VPN 连接。
 
 1. （可选）删除 IKEv2 证书。
 
    1. **Windows 8, 10 和 11:** 按 Win+R 然后输入 `certlm.msc`，或在开始菜单中搜索 `certlm.msc`。打开 *证书 - 本地计算机*。   
       **Windows 7:** 按 Win+R 然后输入 `mmc`，或在开始菜单中搜索 `mmc`。打开 *管理控制台*。在 `文件 - 添加/删除管理单元` 的窗口中，选择添加 `证书` 并在弹出的窗口中选择 `计算机帐户 -> 本地计算机`。点击 `完成 -> 确定` 以保存设置。
 
-   1. 在 `证书 - 个人 - 证书` 中删除 IKEv2 客户端证书。该证书的名称与你指定的 IKEv2 客户端名称一致，默认为 `vpnclient`，该证书由 `IKEv2 VPN CA` 颁发。
+   1. 在 证书 -> 个人 -> 证书 中删除 IKEv2 客户端证书。该证书的名称与你指定的 IKEv2 客户端名称一致，默认为 `vpnclient`，该证书由 `IKEv2 VPN CA` 颁发。
 
-   1. 在 `证书 - 受信任的根证书颁发机构 - 证书` 中删除 IKEv2 VPN CA 证书。该证书是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，`证书 - 个人 - 证书` 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
+   1. 在 证书 -> 受信任的根证书颁发机构 -> 证书 中删除 IKEv2 VPN CA 证书。该证书是由 `IKEv2 VPN CA` 颁发的，颁发给 `IKEv2 VPN CA` 的证书。需要注意，删除这一步的证书时，证书 -> 个人 -> 证书 中应不存在其他由 `IKEv2 VPN CA` 颁发的证书。
 
 1. （可选，适用于手动创建了 VPN 连接的用户）还原注册表配置。注意，在编辑注册表前应备份。
 
@@ -376,8 +376,8 @@ Android 11+ 用户也可以使用系统自带的 IKEv2 客户端连接。
 1. 在 **类型** 下拉菜单选择 **IKEv2/IPSec RSA**。
 1. 在 **服务器地址** 字段中输入 `你的 VPN 服务器 IP` （或者域名）。   
    **注：** 它必须与 IKEv2 辅助脚本输出中的服务器地址 **完全一致**。
-1. 在 **IPSec 标识符** 字段中输入任意内容（例如 `empty`）。   
-   **注：** 该字段不应该为必填。它是 Android 的一个 bug。
+1. 在 **IPSec 标识符** 字段中输入任意内容。   
+   **注：** 该字段不应该为必填项。它是 Android 的一个 bug。
 1. 在 **IPSec 用户证书** 下拉菜单选择你导入的证书。
 1. 在 **IPSec CA 证书** 下拉菜单选择你导入的证书。
 1. 在 **IPSec 服务器证书** 下拉菜单选择 **(来自服务器)**。
