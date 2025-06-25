@@ -29,6 +29,12 @@
 
 [![Launch stack](images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new)
 
+## 延伸阅读
+
+了解有关此 CloudFormation 模板设计的更多信息：
+
+[Introduction to AWS CloudFormation with Example Project Walk-Through](https://nixsanctuary.com/introduction-to-aws-cloudformation-with-example-project-walk-through/)
+
 ## 屏幕截图
 
 <details>
@@ -122,4 +128,4 @@ $ ssh -i path/to/your/new-key-file.pem instance-username@instance-ip-address
 
 ## 作者
 
-版权所有 (C) 2020-2024 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>
+版权所有 (C) 2020-2025 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>

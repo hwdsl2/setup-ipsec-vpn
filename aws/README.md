@@ -29,6 +29,12 @@ Click the icon below to start:
 
 [![Launch stack](images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new)
 
+## Further reading
+
+Learn more about the design of this CloudFormation template:
+
+[Introduction to AWS CloudFormation with Example Project Walk-Through](https://nixsanctuary.com/introduction-to-aws-cloudformation-with-example-project-walk-through/)
+
 ## Screenshots
 
 <details>
@@ -122,4 +128,4 @@ You may use the "Delete" button on the CloudFormation stack page to delete the C
 
 ## Author
 
-Copyright (C) 2020-2024 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>
+Copyright (C) 2020-2025 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>
