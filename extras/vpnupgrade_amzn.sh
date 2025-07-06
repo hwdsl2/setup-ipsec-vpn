@@ -52,7 +52,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=5.2
+  swan_ver_cur=5.3
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-amzn-2-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
