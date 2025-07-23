@@ -589,7 +589,7 @@ You can then set up and enable the VPN connection:
 > If you're using the KDE Plasma desktop, you might encounter issues when configuring the VPN through the graphical System Settings. To ensure a smooth setup, we recommend launching the dedicated connection editor instead by running `sudo nm-connection-editor` in a terminal.
 
 
-Alternatively, you may connect using the command line. See [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399) and [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007) for example steps. If you encounter error `Could not find source connection`, edit `/etc/netplan/01-netcfg.yaml` and replace `renderer: networkd` with `renderer: NetworkManager`, then run `sudo netplan apply`. To connect to the VPN, run `sudo nmcli c up VPN`. To disconnect: `sudo nmcli c down VPN`.
+Alternatively, you may connect using the command line. See [#1399](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1399), [#1007](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1007) and [#1789](https://github.com/hwdsl2/setup-ipsec-vpn/issues/1789) for example steps. If you encounter error `Could not find source connection`, edit `/etc/netplan/01-netcfg.yaml` and replace `renderer: networkd` with `renderer: NetworkManager`, then run `sudo netplan apply`. If using `nmcli` to connect to the VPN, run `sudo nmcli c up VPN`. To disconnect: `sudo nmcli c down VPN`.
 
 Once connected, you can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
 
