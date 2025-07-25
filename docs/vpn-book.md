@@ -12,13 +12,13 @@ This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN an
 | Google Play | [✅](https://books2read.com/vpnguide?store=google) | [✅](https://books2read.com/vpnguidezh?store=google) | [✅](https://books2read.com/vpnguidezht?store=google) | [✅](https://books2read.com/vpnguidees?store=google) | [✅](https://books2read.com/vpnguidede?store=google) | [✅](https://books2read.com/vpnguidefr?store=google) | [✅](https://books2read.com/vpnguideit?store=google) | [✅](https://books2read.com/vpnguidenl?store=google) | [✅](https://books2read.com/vpnguidept?store=google) | |
 | Apple Books | [✅](https://books2read.com/vpnguide?store=apple) | [✅](https://books2read.com/vpnguidezh?store=apple) | [✅](https://books2read.com/vpnguidezht?store=apple) | [✅](https://books2read.com/vpnguidees?store=apple) | [✅](https://books2read.com/vpnguidede?store=apple) | [✅](https://books2read.com/vpnguidefr?store=apple) | [✅](https://books2read.com/vpnguideit?store=apple) | [✅](https://books2read.com/vpnguidenl?store=apple) | [✅](https://books2read.com/vpnguidept?store=apple) | |
 | Audiobook | [✅](https://www.amazon.com/dp/B0C2LZX2VY) | | | [✅](https://www.amazon.com/dp/B0DF6628F6) | [✅](https://play.google.com/store/audiobooks/details?id=AQAAAEAKGCpYMM) | [✅](https://play.google.com/store/audiobooks/details?id=AQAAAEAKGDVYLM) | [✅](https://play.google.com/store/audiobooks/details?id=AQAAAEAKVAAUGM) | | [✅](https://play.google.com/store/audiobooks/details?id=AQAAAEBK2UeZHM) | |
-| Other Platforms | [✅](https://books2read.com/vpnguide) | [✅](https://books2read.com/vpnguidezh) | [✅](https://books2read.com/vpnguidezht) | [✅](https://books2read.com/vpnguidees) | [✅](https://books2read.com/vpnguidede) | [✅](https://books2read.com/vpnguidefr) | [✅](https://books2read.com/vpnguideit) | | | |
+| Other Platforms | [✅](https://books2read.com/vpnguide) | [✅](https://books2read.com/vpnguidezh) | [✅](https://books2read.com/vpnguidezht) | [✅](https://books2read.com/vpnguidees) | [✅](https://books2read.com/vpnguidede) | [✅](https://books2read.com/vpnguidefr) | [✅](https://books2read.com/vpnguideit) | [✅](https://books2read.com/vpnguidenl) | [✅](https://books2read.com/vpnguidept) | [✅](https://books2read.com/vpnguideja) |
 
 Author page: https://amazon.com/author/linsong
 
 ## VPN Server Complete Guide: Create Your Own VPN in the Cloud
 
-This book is a **complete guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpn?store=amazon), [Google Play](https://books2read.com/vpn?store=google) and [Apple Books](https://books2read.com/vpn?store=apple) in eBook, paperback and audiobook formats.
+This book is a **complete guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpn?store=amazon), [Google Play](https://books2read.com/vpn?store=google), [Apple Books](https://books2read.com/vpn?store=apple) and [Hoopla](https://books2read.com/vpn?store=hoopla) in eBook, paperback and audiobook formats.
 
 **Note:** Click on a checkmark ✅ in the table to go to the selected book. Book title for English/中文: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server.
 
@@ -28,7 +28,7 @@ This book is a **complete guide** to building your own IPsec VPN, OpenVPN and Wi
 | Google Play | [✅](https://books2read.com/vpn?store=google) | [✅](https://books2read.com/vpnzh?store=google) | [✅](https://books2read.com/vpnzht?store=google) | [✅](https://books2read.com/vpnes?store=google) | [✅](https://books2read.com/vpnde?store=google) | [✅](https://books2read.com/vpnfr?store=google) | [✅](https://books2read.com/vpnit?store=google) | |
 | Apple Books | [✅](https://books2read.com/vpn?store=apple) | [✅](https://books2read.com/vpnzh?store=apple) | [✅](https://books2read.com/vpnzht?store=apple) | [✅](https://books2read.com/vpnes?store=apple) | [✅](https://books2read.com/vpnde?store=apple) | [✅](https://books2read.com/vpnfr?store=apple) | [✅](https://books2read.com/vpnit?store=apple) | |
 | Audiobook | [✅](https://www.amazon.com/dp/B0CVS23KQG) | | | | | | | |
-| Other Platforms | [✅](https://books2read.com/vpn) | [✅](https://books2read.com/vpnzh) | [✅](https://books2read.com/vpnzht) | [✅](https://books2read.com/vpnes) | [✅](https://books2read.com/vpnde) | [✅](https://books2read.com/vpnfr) | [✅](https://books2read.com/vpnit) | |
+| Other Platforms | [✅](https://books2read.com/vpn) | [✅](https://books2read.com/vpnzh) | [✅](https://books2read.com/vpnzht) | [✅](https://books2read.com/vpnes) | [✅](https://books2read.com/vpnde) | [✅](https://books2read.com/vpnfr) | [✅](https://books2read.com/vpnit) | [✅](https://books2read.com/vpnja) |
 
 ## Book Intro Videos
 
