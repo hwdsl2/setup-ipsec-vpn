@@ -28,7 +28,7 @@
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "Ubuntu2404": {
-                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\nadd-apt-repository ppa:deadsnakes/ppa\napt-get -yq update\napt-get -yq install python3.11 python3-pip zip\npython3 -m pip install awscli\npython3.11 -m pip install -U pip setuptools\npython3.11 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip\nsnap install aws-cli --classic\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "Debian11": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
