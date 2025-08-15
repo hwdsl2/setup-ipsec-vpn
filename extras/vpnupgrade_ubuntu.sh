@@ -57,6 +57,13 @@ check_os() {
       ;;
   esac
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+  if [ "$os_ver" = 13 ]; then
+cat 1>&2 <<EOF
+Error: This script does not currently support Debian 13.
+       You may use e.g. Debian 12 instead.
+EOF
+    exit 1
+  fi
   if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "stretchsid" ] \
     || [ "$os_ver" = "bustersid" ]; then
 cat 1>&2 <<EOF
