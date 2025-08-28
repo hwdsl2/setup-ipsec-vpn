@@ -55,11 +55,8 @@ check_os() {
       [Uu]buntu)
         os_type=ubuntu
         ;;
-      [Dd]ebian|[Kk]ali)
+      [Dd]ebian|[Kk]ali|[Rr]aspbian)
         os_type=debian
-        ;;
-      [Rr]aspbian)
-        os_type=raspbian
         ;;
       [Aa]lpine)
         os_type=alpine
@@ -92,7 +89,7 @@ check_iface() {
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
   if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
     check_wl=0
-    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
       if ! uname -m | grep -qi -e '^arm' -e '^aarch64'; then
         check_wl=1
       fi
@@ -161,7 +158,7 @@ remove_ipsec() {
 
 remove_xl2tpd() {
   bigecho "Removing xl2tpd..."
-  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
     export DEBIAN_FRONTEND=noninteractive
     apt-get -yqq purge xl2tpd >/dev/null
   elif [ "$os_type" = "alpine" ]; then
@@ -232,7 +229,7 @@ get_vpn_subnets() {
 
 update_iptables_rules() {
   use_nft=0
-  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ] \
+  if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] \
     || [ "$os_type" = "alpine" ]; then
     IPT_FILE=/etc/iptables.rules
     IPT_FILE2=/etc/iptables/rules.v4
@@ -273,7 +270,7 @@ update_iptables_rules() {
       $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
       $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
       iptables-save > "$IPT_FILE"
-      if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+      if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
         if [ -f "$IPT_FILE2" ]; then
           conf_bk "$IPT_FILE2"
           /bin/cp -f "$IPT_FILE" "$IPT_FILE2"

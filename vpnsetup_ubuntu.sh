@@ -88,31 +88,15 @@ check_os() {
       ;;
   esac
   os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
-  if [ "$os_ver" = 13 ]; then
-cat 1>&2 <<EOF
-Error: This script does not currently support Debian 13.
-       You may use e.g. Debian 12 instead.
-EOF
-    exit 1
-  fi
   if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "stretchsid" ] \
-    || [ "$os_ver" = "bustersid" ]; then
+    || [ "$os_ver" = "bustersid" ] || [ -z "$os_ver" ]; then
 cat 1>&2 <<EOF
 Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
        This version of Ubuntu/Debian is too old and not supported.
 EOF
     exit 1
   fi
-  if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ]; then
-    ubuntu_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID")
-    if [ "$ubuntu_ver" = "24.10" ] || [ "$ubuntu_ver" = "25.04" ]; then
-cat 1>&2 <<EOF
-Error: This script does not support Ubuntu 24.10 or 25.04.
-       You may use e.g. Ubuntu 24.04 LTS instead.
-EOF
-      exit 1
-    fi
-  fi
+  [ -f /etc/os-release ] && ubuntu_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID")
 }
 
 check_iface() {
@@ -224,7 +208,7 @@ wait_for_apt() {
   while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
     || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
     [ "$count" = 0 ] && echo "## Waiting for apt to be available..."
-    [ "$count" -ge 100 ] && exiterr "Could not get apt/dpkg lock."
+    [ "$count" -ge 200 ] && exiterr "Could not get apt/dpkg lock."
     count=$((count+1))
     printf '%s' '.'
     sleep 3
@@ -272,7 +256,9 @@ detect_ip() {
 install_vpn_pkgs() {
   bigecho "Installing packages required for the VPN..."
   p1=libcurl4-nss-dev
-  [ "$os_ver" = "trixiesid" ] && p1=libcurl4-gnutls-dev
+  if [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
+    p1=libcurl4-gnutls-dev
+  fi
   (
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
@@ -280,7 +266,15 @@ install_vpn_pkgs() {
       $p1 flex bison gcc make libnss3-tools \
       libevent-dev libsystemd-dev uuid-runtime ppp xl2tpd >/dev/null
   ) || exiterr2
-  if [ "$os_type" = "debian" ] && [ "$os_ver" = 12 ]; then
+  if { [ "$os_type" = "ubuntu" ] && [ -n "$ubuntu_ver" ] \
+    && printf '%s\n%s' "24.10" "$ubuntu_ver" | sort -C -V; } \
+    || [ "$os_ver" = 13 ]; then
+    (
+      set -x
+      apt-get -yqq install systemd-dev >/dev/null
+    ) || exiterr2
+  fi
+  if [ "$os_type" = "debian" ] && printf '%s\n%s' "12" "$os_ver" | sort -C -V; then
     (
       set -x
       apt-get -yqq install rsyslog >/dev/null

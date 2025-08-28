@@ -106,11 +106,8 @@ check_os() {
       [Uu]buntu)
         os_type=ubuntu
         ;;
-      [Dd]ebian|[Kk]ali)
+      [Dd]ebian|[Kk]ali|[Rr]aspbian)
         os_type=debian
-        ;;
-      [Rr]aspbian)
-        os_type=raspbian
         ;;
       [Aa]lpine)
         os_type=alpine
@@ -132,22 +129,12 @@ EOF
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
       if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "stretchsid" ] \
-        || [ "$os_ver" = "bustersid" ]; then
+        || [ "$os_ver" = "bustersid" ] || [ -z "$os_ver" ]; then
 cat 1>&2 <<EOF
 Error: This script requires Debian >= 10 or Ubuntu >= 20.04.
        This version of Ubuntu/Debian is too old and not supported.
 EOF
         exit 1
-      fi
-      if [ "$os_ver" = "trixiesid" ] && [ -f /etc/os-release ]; then
-        ubuntu_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID")
-        if [ "$ubuntu_ver" = "24.10" ] || [ "$ubuntu_ver" = "25.04" ]; then
-cat 1>&2 <<EOF
-Error: This script does not support Ubuntu 24.10 or 25.04.
-       You may use e.g. Ubuntu 24.04 LTS instead.
-EOF
-          exit 1
-        fi
       fi
     fi
   fi
@@ -161,7 +148,7 @@ check_iface() {
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
   check_wl=0
   if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
-    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
       if ! uname -m | grep -qi -e '^arm' -e '^aarch64'; then
         check_wl=1
       fi
@@ -228,7 +215,7 @@ wait_for_apt() {
   while fuser "$apt_lk" "$pkg_lk" >/dev/null 2>&1 \
     || lsof "$apt_lk" >/dev/null 2>&1 || lsof "$pkg_lk" >/dev/null 2>&1; do
     [ "$count" = 0 ] && echo "## Waiting for apt to be available..."
-    [ "$count" -ge 100 ] && exiterr "Could not get apt/dpkg lock."
+    [ "$count" -ge 200 ] && exiterr "Could not get apt/dpkg lock."
     count=$((count+1))
     printf '%s' '.'
     sleep 3
@@ -237,7 +224,7 @@ wait_for_apt() {
 
 install_pkgs() {
   if ! command -v wget >/dev/null 2>&1; then
-    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] || [ "$os_type" = "raspbian" ]; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
       wait_for_apt
       export DEBIAN_FRONTEND=noninteractive
       (
