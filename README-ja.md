@@ -73,7 +73,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 以下のいずれかのインストールを備えたクラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー：
 
 - Ubuntu 24.04または22.04
-- Debian 12または11
+- Debian 13、12、または11
 - CentOS Stream 10または9
 - Rocky LinuxまたはAlmaLinux
 - Oracle Linux

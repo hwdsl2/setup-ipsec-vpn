@@ -73,7 +73,7 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 A cloud server, virtual private server (VPS) or dedicated server, with an install of:
 
 - Ubuntu 24.04 or 22.04
-- Debian 12 or 11
+- Debian 13, 12 or 11
 - CentOS Stream 10 or 9
 - Rocky Linux or AlmaLinux
 - Oracle Linux
