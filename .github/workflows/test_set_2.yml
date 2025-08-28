@@ -17,7 +17,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["ubuntu:24.04", "ubuntu:22.04", "debian:12", "debian:11", "alpine:3.21", "alpine:3.20"]
+        os_version: ["ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "debian:11", "alpine:3.21", "alpine:3.20"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
@@ -33,6 +33,9 @@ jobs:
           os_type=""
           [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
           [ -z "$os_type" ] && exit 1
+          if [ "$os_type" != "alpine" ]; then
+            os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
+          fi
 
           log1=/var/log/auth.log
           if [ "$os_type" = "alpine" ]; then
@@ -42,8 +45,7 @@ jobs:
           fi
 
           restart_ipsec() {
-            if [ "$os_type" = "alpine" ] \
-              || grep -qs trixie /etc/debian_version; then
+            if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
               ipsec whack --shutdown || true
               ipsec pluto --config /etc/ipsec.conf
             fi
@@ -85,8 +87,8 @@ jobs:
             apt-get -yqq update
             apt-get -yqq dist-upgrade
             apt-get -yqq install wget rsyslog
-            if grep -qs -e bookworm -e trixie /etc/debian_version \
-              || [ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" = "12" ]; then
+            if [ "$os_ver" = "bookwormsid" ] || [ "$os_ver" = "trixiesid" ] \
+              || [ "$os_ver" = 13 ] || [ "$os_ver" = 12 ]; then
               rsyslogd
             else
               service rsyslog start
@@ -106,10 +108,8 @@ jobs:
             restart_ipsec
           else
             restart_ipsec
-            if ! grep -qs trixie /etc/debian_version; then
-              restart_fail2ban
-              cat /var/log/fail2ban.log
-            fi
+            restart_fail2ban
+            cat /var/log/fail2ban.log
           fi
 
           netstat -anpu | grep pluto
@@ -495,8 +495,7 @@ jobs:
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
           for ver in 5.1 ""; do
-            if [ "$os_type" = "alpine" ] \
-              || grep -qs trixie /etc/debian_version; then
+            if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
               ipsec whack --shutdown || true
             fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
@@ -519,8 +518,7 @@ jobs:
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           for ver in 5.2 ""; do
-            if [ "$os_type" = "alpine" ] \
-              || grep -qs trixie /etc/debian_version; then
+            if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
               ipsec whack --shutdown || true
             fi
             sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
