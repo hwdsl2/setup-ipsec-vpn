@@ -89,12 +89,7 @@ EOF
         exit 1
         ;;
     esac
-    if [ "$os_type" = "alpine" ]; then
-      os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-      if [ "$os_ver" != "3.20" ] && [ "$os_ver" != "3.21" ]; then
-        exiterr "This script only supports Alpine Linux 3.20/3.21."
-      fi
-    else
+    if [ "$os_type" != "alpine" ]; then
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
       if [ "$os_ver" = 8 ] || [ "$os_ver" = 9 ] || [ "$os_ver" = "stretchsid" ] \
         || [ "$os_ver" = "bustersid" ] || [ -z "$os_ver" ]; then
