@@ -17,7 +17,7 @@ jobs:
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
-        os_version: ["ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "debian:11", "alpine:3.21", "alpine:3.20"]
+        os_version: ["ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "debian:11", "alpine:3.22", "alpine:3.21"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
