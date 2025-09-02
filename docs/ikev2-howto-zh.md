@@ -1044,7 +1044,6 @@ To customize IKEv2 or client options, run this script without arguments.
      narrowing=yes
      dpddelay=30
      retransmit-timeout=300s
-     dpdaction=clear
      auto=add
      ikev2=insist
      rekey=no

@@ -1144,7 +1144,6 @@ View example steps for manually configuring IKEv2 with Libreswan.
      narrowing=yes
      dpddelay=30
      retransmit-timeout=300s
-     dpdaction=clear
      auto=add
      ikev2=insist
      rekey=no
