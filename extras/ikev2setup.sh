@@ -169,7 +169,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2025 Lin Song   1 Sep 2025
+IKEv2 Script   Copyright (c) 2020-2025 Lin Song   2 Sep 2025
 
 EOF
 }
@@ -1197,7 +1197,6 @@ conn ikev2-cp
   narrowing=yes
   dpddelay=30
   retransmit-timeout=300s
-  dpdaction=clear
   auto=add
   ikev2=insist
   rekey=no
