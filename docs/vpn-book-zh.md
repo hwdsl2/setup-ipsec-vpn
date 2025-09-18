@@ -1,5 +1,9 @@
 [&laquo; 返回主页](../README-zh.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md)
 
+## 新书：Privacy in the Age of AI
+
+了解如何在人工智能时代构建更高级别的隐私保护。在 [Amazon](https://books2read.com/privacy?store=amazon) 上提供本书的英文版。
+
 ## 搭建自己的 VPN 服务器分步指南
 
 本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**分步指南**。在 [Amazon](https://books2read.com/vpnguidezh?store=amazon)、[Google Play](https://books2read.com/vpnguidezh?store=google) 和 [Apple Books](https://books2read.com/vpnguidezh?store=apple) 上提供电子书、平装本和有声读物格式。

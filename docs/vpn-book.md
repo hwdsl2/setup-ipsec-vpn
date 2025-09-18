@@ -1,5 +1,9 @@
 [&laquo; Back to home page](../README.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md)
 
+## New book: Privacy in the Age of AI
+
+Learn how to build your next-level privacy in the age of AI. [Available on Amazon](https://books2read.com/privacy?store=amazon).
+
 ## Build Your Own VPN Server: A Step by Step Guide
 
 This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpnguide?store=amazon), [Google Play](https://books2read.com/vpnguide?store=google) and [Apple Books](https://books2read.com/vpnguide?store=apple) in eBook, paperback and audiobook formats.
