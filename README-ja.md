@@ -10,7 +10,7 @@ IPsec VPNはネットワークトラフィックを暗号化し、インター�
 
 IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TPプロバイダーとして[xl2tpd](https://github.com/xelerance/xl2tpd)を使用します。
 
-**[&raquo; :book: 本: VPNサーバーの構築方法](docs/vpn-book.md)** [[日本語](https://books2read.com/vpnguideja?store=amazon) | [English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon)]
+**[&raquo; :book: 本：Privacy in the Age of AI](https://books2read.com/privacy?store=amazon) &nbsp;[VPNサーバーの構築方法](docs/vpn-book.md)**
 
 ## クイックスタート
 
