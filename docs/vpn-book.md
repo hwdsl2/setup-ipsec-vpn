@@ -1,6 +1,6 @@
 [&laquo; Back to home page](../README.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md)
 
-## FREE eBook (limited time): Privacy Tools in the Age of AI
+## New: Privacy Tools in the Age of AI
 
 Learn how to build your next-level privacy in the age of AI. [Available on Amazon](https://books2read.com/privacy?store=amazon) in eBook, paperback and audiobook formats.
 

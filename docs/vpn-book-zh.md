@@ -1,6 +1,6 @@
 [&laquo; 返回主页](../README-zh.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md)
 
-## 限时免费电子书：Privacy Tools in the Age of AI
+## 新：Privacy Tools in the Age of AI
 
 了解如何在人工智能时代构建更高级别的隐私保护。[在 Amazon 上提供电子书](https://books2read.com/privacy?store=amazon)、平装本和有声读物格式。
 
