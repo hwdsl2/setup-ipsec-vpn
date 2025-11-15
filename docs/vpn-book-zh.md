@@ -2,7 +2,10 @@
 
 ## 新：Privacy Tools in the Age of AI
 
-了解如何在人工智能时代构建更高级别的隐私保护。[在 Amazon 上提供电子书](https://books2read.com/privacy?store=amazon)、平装本和有声读物格式。
+了解如何在人工智能时代构建更高级别的隐私保护。本书提供电子书、精装本、平装本和有声读物格式。
+
+**&raquo; [Amazon](https://books2read.com/privacy?store=amazon)**   
+**&raquo; [其他平台](https://books2read.com/privacy)**
 
 作者页面：https://amazon.com/author/linsong
 

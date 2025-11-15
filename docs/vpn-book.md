@@ -2,13 +2,16 @@
 
 ## New: Privacy Tools in the Age of AI
 
-Learn how to build your next-level privacy in the age of AI. [Available on Amazon](https://books2read.com/privacy?store=amazon) in eBook, paperback and audiobook formats.
+Learn how to build your next-level privacy in the age of AI. This book is available in eBook, print and audiobook formats on:
+
+**&raquo; [Amazon](https://books2read.com/privacy?store=amazon)**   
+**&raquo; [Other Platforms](https://books2read.com/privacy)**
 
 Author page: https://amazon.com/author/linsong
 
 ## Build Your Own VPN Server: A Step by Step Guide
 
-This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpnguide?store=amazon), [Google Play](https://books2read.com/vpnguide?store=google), [Apple Books](https://books2read.com/vpnguide?store=apple) and [Hoopla](https://books2read.com/vpnguide?store=hoopla) in eBook, paperback and audiobook formats.
+This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpnguide?store=amazon), [Google Play](https://books2read.com/vpnguide?store=google), [Apple Books](https://books2read.com/vpnguide?store=apple) and [Hoopla](https://books2read.com/vpnguide?store=hoopla) in eBook, print and audiobook formats.
 
 **Note:** Click on a checkmark ✅ in the table to go to the selected book.
 
@@ -22,7 +25,7 @@ This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN an
 
 ## VPN Server Complete Guide: Create Your Own VPN in the Cloud
 
-This book is a **complete guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpn?store=amazon), [Google Play](https://books2read.com/vpn?store=google), [Apple Books](https://books2read.com/vpn?store=apple) and [Hoopla](https://books2read.com/vpn?store=hoopla) in eBook, paperback and audiobook formats.
+This book is a **complete guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpn?store=amazon), [Google Play](https://books2read.com/vpn?store=google), [Apple Books](https://books2read.com/vpn?store=apple) and [Hoopla](https://books2read.com/vpn?store=hoopla) in eBook, print and audiobook formats.
 
 **Note:** Click on a checkmark ✅ in the table to go to the selected book. Book title for English/中文: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server.
 
