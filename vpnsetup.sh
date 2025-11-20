@@ -23,6 +23,47 @@
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these special characters within values: \ " '
 
+# -----------------------------
+# Security Hardening (safe)
+# -----------------------------
+
+# 1) Sysctl hardening (CIS-friendly, safe defaults)
+cat >/etc/sysctl.d/99-ipsec-hardening.conf <<EOF
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.all.secure_redirects = 0
+net.ipv4.conf.default.secure_redirects = 0
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+EOF
+
+sysctl --system >/dev/null 2>&1 || echo "[WARN] Failed to reload sysctl"
+echo "[+] Applied safe sysctl hardening"
+
+# 2) Stronger PSK and password generation
+if command -v openssl >/dev/null 2>&1; then
+  IKE_PSK=$(openssl rand -base64 48)
+  VPN_USER_PASS=$(openssl rand -base64 24)
+else
+  IKE_PSK=$(head -c 48 /dev/urandom | base64 | tr -d '\n')
+  VPN_USER_PASS=$(head -c 24 /dev/urandom | base64 | tr -d '\n')
+fi
+echo "[+] Generated strong random secrets"
+
+# 3) StrongSwan version detection (non-breaking)
+if command -v ipsec >/dev/null 2>&1; then
+  VER=$(ipsec --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -n1)
+  echo "[+] StrongSwan version detected: $VER"
+fi
+
+# -----------------------------
+# End security hardening block
+# -----------------------------
+
+
 YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
