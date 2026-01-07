@@ -1,11 +1,13 @@
-[&laquo; 返回主页](../README-zh.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md)
+[&laquo; 返回主页](../README-zh.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md) | [日本語](vpn-book-ja.md)
 
 ## 新：Privacy Tools in the Age of AI
 
 了解如何在人工智能时代构建更高级别的隐私保护。本书提供电子书、精装本、平装本和有声读物格式。
 
-**&raquo; [Amazon](https://books2read.com/privacy?store=amazon)**   
-**&raquo; [其他平台](https://books2read.com/privacy)**
+&raquo; [Amazon](https://books2read.com/privacy?store=amazon)   
+&raquo; [Google Play](https://books2read.com/privacy?store=google)   
+&raquo; [Apple Books](https://books2read.com/privacy?store=apple)   
+&raquo; [其他平台](https://books2read.com/privacy)
 
 作者页面：https://amazon.com/author/linsong
 
@@ -23,9 +25,9 @@
 | 有声读物 | [✅](https://books2read.com/vpnguide?store=audible-audio&format=AUDIOBOOK) | | | [✅](https://books2read.com/vpnguidees?store=audible-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguidede?store=google-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguidefr?store=audible-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguideit?store=audible-audio&format=AUDIOBOOK) | | [✅](https://books2read.com/vpnguidept?store=google-audio&format=AUDIOBOOK) | |
 | 其他平台 | [✅](https://books2read.com/vpnguide) | [✅](https://books2read.com/vpnguidezh) | [✅](https://books2read.com/vpnguidezht) | [✅](https://books2read.com/vpnguidees) | [✅](https://books2read.com/vpnguidede) | [✅](https://books2read.com/vpnguidefr) | [✅](https://books2read.com/vpnguideit) | [✅](https://books2read.com/vpnguidenl) | [✅](https://books2read.com/vpnguidept) | [✅](https://books2read.com/vpnguideja) |
 
-## VPN 服务器完整指南：在云端搭建自己的 VPN
+## VPN 服务器完全指南：在云端搭建自己的 VPN
 
-本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**完整指南**。在 [Amazon](https://books2read.com/vpnzh?store=amazon)、[Google Play](https://books2read.com/vpnzh?store=google)、[Apple Books](https://books2read.com/vpnzh?store=apple) 和 [Hoopla](https://books2read.com/vpn?store=hoopla) 上提供电子书、平装本和有声读物格式。
+本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**完全指南**。在 [Amazon](https://books2read.com/vpnzh?store=amazon)、[Google Play](https://books2read.com/vpnzh?store=google)、[Apple Books](https://books2read.com/vpnzh?store=apple) 和 [Hoopla](https://books2read.com/vpn?store=hoopla) 上提供电子书、平装本和有声读物格式。
 
 **注：** 单击表格中的 ✅ 标记即可转到选定的书籍。本书英文和中文版书名：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器。
 
