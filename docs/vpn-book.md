@@ -9,32 +9,30 @@ Learn how to build next-level privacy protection in the age of AI. This book is 
 &raquo; [Apple Books](https://books2read.com/privacy?store=apple)   
 &raquo; [Other Platforms](https://books2read.com/privacy)
 
+Other language versions: [Español](https://books2read.com/privacyes), [Deutsch](https://books2read.com/privacyde), [Français](https://books2read.com/privacyfr), [Italiano](https://books2read.com/privacyit).
+
 Author page: https://amazon.com/author/linsong
 
 ## Build Your Own VPN Server: A Step by Step Guide
 
-This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpnguide?store=amazon), [Google Play](https://books2read.com/vpnguide?store=google), [Apple Books](https://books2read.com/vpnguide?store=apple) and [Hoopla](https://books2read.com/vpnguide?store=hoopla) in eBook, print and audiobook formats.
+This book is a **step-by-step guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available in eBook, print and audiobook formats on:
 
-**Note:** Click on a checkmark ✅ in the table to go to the selected book.
+&raquo; [Amazon](https://books2read.com/vpnguide?store=amazon)   
+&raquo; [Google Play](https://books2read.com/vpnguide?store=google)   
+&raquo; [Apple Books](https://books2read.com/vpnguide?store=apple)   
+&raquo; [Hoopla](https://books2read.com/vpnguide?store=hoopla)   
+&raquo; [Other Platforms](https://books2read.com/vpnguide)
 
-| | English | 简体中文 | 繁體中文 | Español | Deutsch | Français | Italiano | Nederlands | Português | 日本語 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Amazon | [✅](https://books2read.com/vpnguide?store=amazon) | [✅](https://books2read.com/vpnguidezh?store=amazon) | [✅](https://books2read.com/vpnguidezht?store=amazon) | [✅](https://books2read.com/vpnguidees?store=amazon) | [✅](https://books2read.com/vpnguidede?store=amazon) | [✅](https://books2read.com/vpnguidefr?store=amazon) | [✅](https://books2read.com/vpnguideit?store=amazon) | [✅](https://books2read.com/vpnguidenl?store=amazon) | [✅](https://books2read.com/vpnguidept?store=amazon) | [✅](https://books2read.com/vpnguideja?store=amazon) |
-| Google Play | [✅](https://books2read.com/vpnguide?store=google) | [✅](https://books2read.com/vpnguidezh?store=google) | [✅](https://books2read.com/vpnguidezht?store=google) | [✅](https://books2read.com/vpnguidees?store=google) | [✅](https://books2read.com/vpnguidede?store=google) | [✅](https://books2read.com/vpnguidefr?store=google) | [✅](https://books2read.com/vpnguideit?store=google) | [✅](https://books2read.com/vpnguidenl?store=google) | [✅](https://books2read.com/vpnguidept?store=google) | |
-| Apple Books | [✅](https://books2read.com/vpnguide?store=apple) | [✅](https://books2read.com/vpnguidezh?store=apple) | [✅](https://books2read.com/vpnguidezht?store=apple) | [✅](https://books2read.com/vpnguidees?store=apple) | [✅](https://books2read.com/vpnguidede?store=apple) | [✅](https://books2read.com/vpnguidefr?store=apple) | [✅](https://books2read.com/vpnguideit?store=apple) | [✅](https://books2read.com/vpnguidenl?store=apple) | [✅](https://books2read.com/vpnguidept?store=apple) | |
-| Audiobook | [✅](https://books2read.com/vpnguide?store=audible-audio&format=AUDIOBOOK) | | | [✅](https://books2read.com/vpnguidees?store=audible-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguidede?store=google-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguidefr?store=audible-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnguideit?store=audible-audio&format=AUDIOBOOK) | | [✅](https://books2read.com/vpnguidept?store=google-audio&format=AUDIOBOOK) | |
-| Other Platforms | [✅](https://books2read.com/vpnguide) | [✅](https://books2read.com/vpnguidezh) | [✅](https://books2read.com/vpnguidezht) | [✅](https://books2read.com/vpnguidees) | [✅](https://books2read.com/vpnguidede) | [✅](https://books2read.com/vpnguidefr) | [✅](https://books2read.com/vpnguideit) | [✅](https://books2read.com/vpnguidenl) | [✅](https://books2read.com/vpnguidept) | [✅](https://books2read.com/vpnguideja) |
+Other language versions: [简体中文](https://books2read.com/vpnguidezh), [繁體中文](https://books2read.com/vpnguidezht), [Español](https://books2read.com/vpnguidees), [Deutsch](https://books2read.com/vpnguidede), [Français](https://books2read.com/vpnguidefr), [Italiano](https://books2read.com/vpnguideit), [Nederlands](https://books2read.com/vpnguidenl), [Português](https://books2read.com/vpnguidept), [日本語](https://books2read.com/vpnguideja).
 
-## VPN Server Complete Guide: Create Your Own VPN in the Cloud
+## Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server
 
-This book is a **complete guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available on [Amazon](https://books2read.com/vpn?store=amazon), [Google Play](https://books2read.com/vpn?store=google), [Apple Books](https://books2read.com/vpn?store=apple) and [Hoopla](https://books2read.com/vpn?store=hoopla) in eBook, print and audiobook formats.
+This book is a **comprehensive guide** to building your own IPsec VPN, OpenVPN and WireGuard server. Available in eBook, print and audiobook formats on:
 
-**Note:** Click on a checkmark ✅ in the table to go to the selected book. Book title for English/中文: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server.
+&raquo; [Amazon](https://books2read.com/vpn?store=amazon)   
+&raquo; [Google Play](https://books2read.com/vpn?store=google)   
+&raquo; [Apple Books](https://books2read.com/vpn?store=apple)   
+&raquo; [Hoopla](https://books2read.com/vpn?store=hoopla)   
+&raquo; [Other Platforms](https://books2read.com/vpn)
 
-| | English | 简体中文 | 繁體中文 | Español | Deutsch | Français | Italiano | 日本語 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Amazon | [✅](https://books2read.com/vpn?store=amazon) | [✅](https://books2read.com/vpnzh?store=amazon) | [✅](https://books2read.com/vpnzht?store=amazon) | [✅](https://books2read.com/vpnes?store=amazon) | [✅](https://books2read.com/vpnde?store=amazon) | [✅](https://books2read.com/vpnfr?store=amazon) | [✅](https://books2read.com/vpnit?store=amazon) | [✅](https://books2read.com/vpnja?store=amazon) |
-| Google Play | [✅](https://books2read.com/vpn?store=google) | [✅](https://books2read.com/vpnzh?store=google) | [✅](https://books2read.com/vpnzht?store=google) | [✅](https://books2read.com/vpnes?store=google) | [✅](https://books2read.com/vpnde?store=google) | [✅](https://books2read.com/vpnfr?store=google) | [✅](https://books2read.com/vpnit?store=google) | |
-| Apple Books | [✅](https://books2read.com/vpn?store=apple) | [✅](https://books2read.com/vpnzh?store=apple) | [✅](https://books2read.com/vpnzht?store=apple) | [✅](https://books2read.com/vpnes?store=apple) | [✅](https://books2read.com/vpnde?store=apple) | [✅](https://books2read.com/vpnfr?store=apple) | [✅](https://books2read.com/vpnit?store=apple) | |
-| Audiobook | [✅](https://books2read.com/vpn?store=audible-audio&format=AUDIOBOOK) | | | [✅](https://books2read.com/vpnes?store=audible-audio&format=AUDIOBOOK) | | [✅](https://books2read.com/vpnfr?store=audible-audio&format=AUDIOBOOK) | [✅](https://books2read.com/vpnit?store=audible-audio&format=AUDIOBOOK) | |
-| Other Platforms | [✅](https://books2read.com/vpn) | [✅](https://books2read.com/vpnzh) | [✅](https://books2read.com/vpnzht) | [✅](https://books2read.com/vpnes) | [✅](https://books2read.com/vpnde) | [✅](https://books2read.com/vpnfr) | [✅](https://books2read.com/vpnit) | [✅](https://books2read.com/vpnja) |
+Other language versions: [简体中文](https://books2read.com/vpnzh), [繁體中文](https://books2read.com/vpnzht), [Español](https://books2read.com/vpnes), [Deutsch](https://books2read.com/vpnde), [Français](https://books2read.com/vpnfr), [Italiano](https://books2read.com/vpnit), [日本語](https://books2read.com/vpnja).

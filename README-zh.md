@@ -10,7 +10,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 我们将使用 [Libreswan](https://libreswan.org/) 作为 IPsec 服务器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作为 L2TP 提供者。
 
-**[&raquo; :book: Book: Privacy Tools in the Age of AI](https://books2read.com/privacy?store=amazon) &nbsp;[搭建自己的 VPN 服务器分步指南](docs/vpn-book-zh.md)**
+**[&raquo; :book: Book: Privacy Tools in the Age of AI](docs/vpn-book-zh.md) &nbsp;[搭建自己的 VPN 服务器分步指南](docs/vpn-book-zh.md)**
 
 ## 快速开始
 
