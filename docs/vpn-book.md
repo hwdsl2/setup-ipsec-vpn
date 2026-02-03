@@ -7,6 +7,7 @@ Learn how to build next-level privacy protection in the age of AI. This book is 
 &raquo; [Amazon](https://books2read.com/privacy?store=amazon)   
 &raquo; [Google Play](https://books2read.com/privacy?store=google)   
 &raquo; [Apple Books](https://books2read.com/privacy?store=apple)   
+&raquo; [Hoopla](https://books2read.com/privacy?store=hoopla)   
 &raquo; [Other Platforms](https://books2read.com/privacy)
 
 Other language versions: [Español](https://books2read.com/privacyes), [Deutsch](https://books2read.com/privacyde), [Français](https://books2read.com/privacyfr), [Italiano](https://books2read.com/privacyit).
