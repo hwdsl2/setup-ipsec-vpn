@@ -14,9 +14,11 @@
 
 作者页面：https://amazon.com/author/linsong
 
-## 搭建自己的 VPN 服务器分步指南
+## 搭建自己的 VPN 服务器：IPsec VPN、OpenVPN 与 WireGuard 实战指南
 
-本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**分步指南**。提供电子书和平装本格式。
+本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**实战指南**。提供电子书和平装本格式。
+
+简体中文版：
 
 &raquo; [Amazon](https://books2read.com/vpnguidezh?store=amazon)   
 &raquo; [Amazon 平装本](https://books2read.com/vpnguidezh?store=amazon-paperback&format=PAPERBACK)   
@@ -24,11 +26,21 @@
 &raquo; [Apple Books](https://books2read.com/vpnguidezh?store=apple)   
 &raquo; [其他平台](https://books2read.com/vpnguidezh)
 
-其他语言版本：[繁體中文](https://books2read.com/vpnguidezht)、[English](https://books2read.com/vpnguide)、[Español](https://books2read.com/vpnguidees)、[Deutsch](https://books2read.com/vpnguidede)、[Français](https://books2read.com/vpnguidefr)、[Italiano](https://books2read.com/vpnguideit)、[Nederlands](https://books2read.com/vpnguidenl)、[Português](https://books2read.com/vpnguidept)、[日本語](https://books2read.com/vpnguideja)。
+繁體中文版：
 
-## 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器
+&raquo; [Amazon](https://books2read.com/vpnguidezht?store=amazon)   
+&raquo; [Amazon 平装本](https://books2read.com/vpnguidezht?store=amazon-paperback&format=PAPERBACK)   
+&raquo; [Google Play](https://books2read.com/vpnguidezht?store=google)   
+&raquo; [Apple Books](https://books2read.com/vpnguidezht?store=apple)   
+&raquo; [其他平台](https://books2read.com/vpnguidezht)
 
-本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**综合指南**。提供电子书和平装本格式。
+其他语言版本：[English](https://books2read.com/vpnguide)、[Español](https://books2read.com/vpnguidees)、[Deutsch](https://books2read.com/vpnguidede)、[Français](https://books2read.com/vpnguidefr)、[Italiano](https://books2read.com/vpnguideit)、[Nederlands](https://books2read.com/vpnguidenl)、[Português](https://books2read.com/vpnguidept)、[日本語](https://books2read.com/vpnguideja)。
+
+## 搭建自己的 VPN 服务器：IPsec VPN、OpenVPN 与 WireGuard 完整指南
+
+本书是搭建你自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器的**完整指南**。提供电子书和平装本格式。
+
+简体中文版：
 
 &raquo; [Amazon](https://books2read.com/vpnzh?store=amazon)   
 &raquo; [Amazon 平装本](https://books2read.com/vpnzh?store=amazon-paperback&format=PAPERBACK)   
@@ -36,4 +48,12 @@
 &raquo; [Apple Books](https://books2read.com/vpnzh?store=apple)   
 &raquo; [其他平台](https://books2read.com/vpnzh)
 
-其他语言版本：[繁體中文](https://books2read.com/vpnzht)、[English](https://books2read.com/vpn)、[Español](https://books2read.com/vpnes)、[Deutsch](https://books2read.com/vpnde)、[Français](https://books2read.com/vpnfr)、[Italiano](https://books2read.com/vpnit)、[日本語](https://books2read.com/vpnja)。
+繁體中文版：
+
+&raquo; [Amazon](https://books2read.com/vpnzht?store=amazon)   
+&raquo; [Amazon 平装本](https://books2read.com/vpnzht?store=amazon-paperback&format=PAPERBACK)   
+&raquo; [Google Play](https://books2read.com/vpnzht?store=google)   
+&raquo; [Apple Books](https://books2read.com/vpnzht?store=apple)   
+&raquo; [其他平台](https://books2read.com/vpnzht)
+
+其他语言版本：[English](https://books2read.com/vpn)、[Español](https://books2read.com/vpnes)、[Deutsch](https://books2read.com/vpnde)、[Français](https://books2read.com/vpnfr)、[Italiano](https://books2read.com/vpnit)、[日本語](https://books2read.com/vpnja)。
