@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md) | [日本語](README-ja.md)
+[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [日本語](README-ja.md)
 
 # IPsec VPN サーバー自動セットアップスクリプト
 
@@ -302,7 +302,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## 次のステップ
 
-*他の言語で読む：[English](README.md#next-steps)、[中文](README-zh.md#下一步)、[日本語](README-ja.md#次のステップ)。*
+*他の言語で読む：[English](README.md#next-steps)、[简体中文](README-zh.md#下一步)、[繁體中文](README-zh-Hant.md#下一步)、[日本語](README-ja.md#次のステップ)。*
 
 コンピュータやデバイスをVPNに接続します。詳細は以下のリンク（英語）をご覧ください。
 

@@ -1,4 +1,4 @@
-[&laquo; Back to home page](../README.md) | [English](vpn-book.md) | [中文](vpn-book-zh.md) | [日本語](vpn-book-ja.md)
+[&laquo; Back to home page](../README.md) | [English](vpn-book.md) | [简体中文](vpn-book-zh.md) | [繁體中文](vpn-book-zh-Hant.md) | [日本語](vpn-book-ja.md)
 
 ## New: Privacy Tools in the Age of AI
 
@@ -11,8 +11,6 @@ Learn how to build next-level privacy protection in the age of AI. This book is 
 &raquo; [Other Platforms](https://books2read.com/privacy)
 
 Other language versions: [Español](https://books2read.com/privacyes), [Deutsch](https://books2read.com/privacyde), [Français](https://books2read.com/privacyfr), [Italiano](https://books2read.com/privacyit).
-
-Author page: https://amazon.com/author/linsong
 
 ## Build Your Own VPN Server: A Step by Step Guide
 
@@ -37,3 +35,5 @@ This book is a **comprehensive guide** to building your own IPsec VPN, OpenVPN a
 &raquo; [Other Platforms](https://books2read.com/vpn)
 
 Other language versions: [简体中文](https://books2read.com/vpnzh), [繁體中文](https://books2read.com/vpnzht), [Español](https://books2read.com/vpnes), [Deutsch](https://books2read.com/vpnde), [Français](https://books2read.com/vpnfr), [Italiano](https://books2read.com/vpnit), [日本語](https://books2read.com/vpnja).
+
+Author page: [amazon.com/author/linsong](https://amazon.com/author/linsong)
