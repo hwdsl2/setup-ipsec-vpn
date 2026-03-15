@@ -22,7 +22,7 @@ jobs:
     env:
       OS_VERSION: ${{ matrix.os_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Build
