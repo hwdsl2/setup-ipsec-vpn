@@ -1,4 +1,4 @@
-[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [日本語](README-ja.md)
+[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [日本語](README-ja.md) | [Русский](README-ru.md)
 
 # IPsec VPN 服务器一键安装脚本
 
@@ -302,7 +302,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## 下一步
 
-*其他语言版本: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [日本語](README-ja.md#次のステップ)。*
+*其他语言版本: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [日本語](README-ja.md#次のステップ), [Русский](README-ru.md#следующие-шаги)。*
 
 配置你的计算机或其它设备使用 VPN。请参见：
 

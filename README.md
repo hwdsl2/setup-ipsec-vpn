@@ -1,4 +1,4 @@
-[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [日本語](README-ja.md)
+[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [日本語](README-ja.md) | [Русский](README-ru.md)
 
 # IPsec VPN Server Auto Setup Scripts
 
@@ -302,7 +302,7 @@ In addition to these parameters, advanced users can also [customize VPN subnets]
 
 ## Next steps
 
-*Read this in other languages: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [日本語](README-ja.md#次のステップ).*
+*Read this in other languages: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [日本語](README-ja.md#次のステップ), [Русский](README-ru.md#следующие-шаги).*
 
 Get your computer or device to use the VPN. Please refer to:
 
