@@ -175,5 +175,3 @@ ikev2onlymode() {
 
 ## Defer until we have the complete script
 ikev2onlymode "$@"
-
-exit 0

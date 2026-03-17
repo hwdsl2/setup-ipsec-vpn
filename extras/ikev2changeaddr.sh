@@ -79,19 +79,6 @@ abort_and_exit() {
   exit 1
 }
 
-confirm_or_abort() {
-  printf '%s' "$1"
-  read -r response
-  case $response in
-    [yY][eE][sS]|[yY])
-      echo
-      ;;
-    *)
-      abort_and_exit
-      ;;
-  esac
-}
-
 check_cert_exists() {
   certutil -L -d sql:/etc/ipsec.d -n "$1" >/dev/null 2>&1
 }
