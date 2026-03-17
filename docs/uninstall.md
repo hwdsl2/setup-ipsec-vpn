@@ -78,11 +78,15 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
 
 #### Ubuntu, Debian & Alpine Linux
 
-Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`. In addition, edit `/etc/iptables/rules.v4` if the file exists.   
+Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/iptables.rules.old-date-time`. In addition, edit `/etc/iptables/rules.v4` if the file exists.
+
+If IPv6 support was enabled, also edit `/etc/ip6tables.rules` and `/etc/iptables/rules.v6` (if it exists) and remove unneeded rules.
 
 #### CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
 
 Edit `/etc/sysconfig/iptables` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.
+
+If IPv6 support was enabled, also edit `/etc/sysconfig/ip6tables` and remove unneeded rules.
 
 **Note:** If using Rocky Linux, AlmaLinux, Oracle Linux 8 or CentOS/RHEL 8 and firewalld was active during VPN setup, nftables may be configured. Edit `/etc/sysconfig/nftables.conf` and remove unneeded rules. Your original rules are backed up as `/etc/sysconfig/nftables.conf.old-date-time`.
 

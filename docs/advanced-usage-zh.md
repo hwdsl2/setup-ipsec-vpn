@@ -8,6 +8,7 @@
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
 * [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 * [自定义 VPN 子网](#自定义-vpn-子网)
+* [IPv6 支持](#ipv6-支持)
 * [转发端口到 VPN 客户端](#转发端口到-vpn-客户端)
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
@@ -257,6 +258,31 @@ sh vpn.sh
 
 在上面的例子中，`VPN_L2TP_LOCAL` 是在 IPsec/L2TP 模式下的 VPN 服务器的内网 IP。`VPN_L2TP_POOL` 和 `VPN_XAUTH_POOL` 是为 VPN 客户端自动分配的 IP 地址池。
 
+## IPv6 支持
+
+如果你的 VPN 服务器拥有公共（全局单播）IPv6 地址，IKEv2 客户端的 IPv6 支持将在 VPN 安装时自动启用，无需手动配置。
+
+**注：** IPv6 支持已在 Android 上使用 strongSwan VPN 客户端进行测试。其他平台（例如 Windows、macOS、iOS）可能存在限制，或者需要进行额外配置才能使 IPv6 通过 IKEv2 VPN 正常工作。
+
+启用 IPv6 后，IKEv2 VPN 客户端将同时获得来自 `192.168.43.0/24` 地址池的 IPv4 地址和来自 `fddd:500:500:500::/64` 地址池的 IPv6 地址。VPN 服务器通过将客户端地址池的 IPv6 流量伪装（NAT）为服务器自身的 IPv6 地址，从而使 VPN 客户端能够通过该隧道获得完整的 IPv6 互联网访问。
+
+**要求：**
+- VPN 服务器必须拥有可路由的全局单播 IPv6 地址（即以 `2` 或 `3` 开头的地址）。链路本地地址 (`fe80::/10`) 和 ULA 地址 (`fc00::/7`) 不满足要求。
+- Libreswan 5.0 或更新版本（VPN 安装脚本默认使用 5.x）。
+- IPv6 仅支持 **IKEv2 模式**。IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式不支持 IPv6。
+
+要验证 IPv6 是否正常工作，请使用 IKEv2 连接到 VPN，然后检查你的 IPv6 地址，例如使用 [test-ipv6.com](https://test-ipv6.com)。
+
+你可以在安装 VPN 时选择指定自定义 IPv6 地址池子网，这是可选的。该子网必须是 `/64` ULA 范围内的子网（推荐使用 `fddd::/16`）。
+
+```
+# 示例：为 IKEv2 模式指定自定义 IPv6 地址池子网
+sudo VPN_IP6_NET=fddd:1234:5678:9012::/64 \
+sh vpn.sh
+```
+
+**注：** `VPN_IP6_NET` 变量只能在初始 VPN 安装时指定。
+
 ## 转发端口到 VPN 客户端
 
 在某些情况下，你可能想要将 VPN 服务器上的端口转发到一个已连接的 VPN 客户端。这可以通过在 VPN 服务器上添加 IPTables 规则来实现。
@@ -399,6 +425,8 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 ## 更改 IPTables 规则
 
 如果你想要在安装后更改 IPTables 规则，请编辑 `/etc/iptables.rules` 和/或 `/etc/iptables/rules.v4` (Ubuntu/Debian)，或者 `/etc/sysconfig/iptables` (CentOS/RHEL)。然后重启服务器。
+
+如果启用了 [IPv6 支持](#ipv6-支持)，相应的 ip6tables 规则将保存在 `/etc/ip6tables.rules` 和 `/etc/iptables/rules.v6` (Ubuntu/Debian)，或者 `/etc/sysconfig/ip6tables` (CentOS/RHEL)。
 
 **注：** 如果你的服务器运行 CentOS Linux（或类似系统），并且在安装 VPN 时 firewalld 处于活动状态，则可能已配置 nftables。在这种情况下，编辑 `/etc/sysconfig/nftables.conf` 而不是 `/etc/sysconfig/iptables`。
 

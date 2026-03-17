@@ -589,7 +589,9 @@ ipsec trafficstatus
 
 Windows 8, 10 和 11 默认使用 "smart multi-homed name resolution" （智能多宿主名称解析）。如果你的因特网适配器的 DNS 服务器在本地网段上，在使用 Windows 自带的 IPsec VPN 客户端时可能会导致 "DNS 泄漏"。要解决这个问题，你可以 [禁用智能多宿主名称解析](https://www.neowin.net/news/guide-prevent-dns-leakage-while-using-a-vpn-on-windows-10-and-windows-8/)，或者配置你的因特网适配器以使用在你的本地网段之外的 DNS 服务器（比如 8.8.8.8 和 8.8.4.4）。在完成后重启计算机。
 
-另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。如果你需要支持 IPv6 的 VPN，可以另外尝试 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 或 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md)。
+另外，如果你的计算机启用了 IPv6，所有的 IPv6 流量（包括 DNS 请求）都将绕过 VPN。要在 Windows 上禁用 IPv6，请看[这里](https://support.microsoft.com/zh-cn/help/929852/guidance-for-configuring-ipv6-in-windows-for-advanced-users)。
+
+如果你需要支持 IPv6 的 VPN，请尝试 [IKEv2 模式](ikev2-howto-zh.md)（参见 [IPv6 支持](advanced-usage-zh.md#ipv6-支持)，需要具有公共 IPv6 地址的 VPN 服务器），或者尝试 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 或 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md)。
 
 ### Android/Linux MTU/MSS 问题
 
