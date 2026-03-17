@@ -7,7 +7,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2020-2025 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2020-2026 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -39,6 +39,11 @@ bigecho() { echo "## $1"; }
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
+
+check_ip6() {
+  IP6_REGEX='^[0-9a-fA-F]{0,4}(:[0-9a-fA-F]{0,4}){1,7}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP6_REGEX"
 }
 
 check_dns_name() {
@@ -173,6 +178,20 @@ detect_ip() {
   check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
   check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
   check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it as variable 'VPN_PUBLIC_IP' and re-run this script."
+}
+
+detect_ipv6() {
+  ip6=""
+  if ! printf '%s\n%s' "5.0" "$SWAN_VER" | sort -C -V; then
+    return 0
+  fi
+  if [ -n "$VPN_PUBLIC_IP6" ]; then
+    ip6="$VPN_PUBLIC_IP6"
+    check_ip6 "$ip6" || exiterr "Invalid IPv6 address. Check variable 'VPN_PUBLIC_IP6'."
+  else
+    ip6_addr=$(ip -6 addr 2>/dev/null | awk '/inet6 [23]/ {print $2}' | cut -d'/' -f1 | head -n1)
+    [ -n "$ip6_addr" ] && ip6="$ip6_addr"
+  fi
 }
 
 add_epel_repo() {
@@ -359,6 +378,9 @@ create_vpn_config() {
   DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
   DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
   [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
+  IP6_NET=${VPN_IP6_NET:-'fddd:500:500:500::/64'}
+  vp_ip6=""
+  [ -n "$ip6" ] && vp_ip6=",%v6:fc00::/7,%v6:!$IP6_NET"
   # Create IPsec config
   conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
@@ -366,7 +388,7 @@ version 2.0
 
 config setup
   ikev1-policy=accept
-  virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
+  virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET$vp_ip6
   uniqueids=no
 
 conn shared
@@ -487,6 +509,11 @@ net.core.rmem_max = 16777216
 net.ipv4.tcp_rmem = 4096 87380 16777216
 net.ipv4.tcp_wmem = 4096 87380 16777216
 EOF
+    if [ -n "$ip6" ]; then
+cat >> /etc/sysctl.conf <<'EOF'
+net.ipv6.conf.all.forwarding = 1
+EOF
+    fi
   fi
 }
 
@@ -522,6 +549,23 @@ update_iptables() {
     $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
     echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
     iptables-save >> "$IPT_FILE"
+    if [ -n "$ip6" ]; then
+      IP6_NET=${VPN_IP6_NET:-'fddd:500:500:500::/64'}
+      IPT6_FILE=/etc/sysconfig/ip6tables
+      ip6tables-save > "$IPT6_FILE.old-$SYS_DT"
+      ip6ti='ip6tables -I INPUT'
+      ip6tf='ip6tables -I FORWARD'
+      ip6tp='ip6tables -t nat -I POSTROUTING'
+      $ip6ti 1 -m conntrack --ctstate INVALID -j DROP
+      $ip6ti 2 -m conntrack --ctstate "$res" -j ACCEPT
+      $ip6ti 3 -p udp -m multiport --dports 500,4500 -j ACCEPT
+      $ip6tf 1 -m conntrack --ctstate INVALID -j DROP
+      $ip6tf 2 -i "$NET_IFACE" -d "$IP6_NET" -m conntrack --ctstate "$res" -j ACCEPT
+      $ip6tf 3 -s "$IP6_NET" -o "$NET_IFACE" -j ACCEPT
+      $ip6tp -s "$IP6_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+      echo "# Modified by hwdsl2 VPN script" > "$IPT6_FILE"
+      ip6tables-save >> "$IPT6_FILE"
+    fi
   fi
 }
 
@@ -606,6 +650,7 @@ set_up_ikev2() {
       VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
       VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
       VPN_CLIENT_VALIDITY="$VPN_CLIENT_VALIDITY" \
+      VPN_PUBLIC_IP6="$ip6" \
       /bin/bash /opt/src/ikev2.sh --auto || status=1
     fi
   elif [ -s /opt/src/ikev2.sh ]; then
@@ -638,6 +683,7 @@ vpnsetup() {
   start_setup
   install_setup_pkgs
   detect_ip
+  detect_ipv6
   add_epel_repo
   install_vpn_pkgs_1
   install_vpn_pkgs_2

@@ -143,7 +143,7 @@ install_pkgs() {
   bigecho "Installing required packages..."
   (
     set -x
-    apk add -U -q bash bind-tools coreutils openssl wget iptables iproute2 \
+    apk add -U -q bash bind-tools coreutils openssl wget iptables ip6tables iproute2 \
     sed grep libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
     bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev nss-dev \
     libcap-ng-dev libevent-dev curl-dev nspr-dev uuidgen openrc

@@ -8,7 +8,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2020-2025 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2020-2026 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -169,7 +169,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2025 Lin Song   2 Sep 2025
+IKEv2 Script   Copyright (c) 2020-2026 Lin Song   16 Mar 2026
 
 EOF
 }
@@ -1177,6 +1177,13 @@ EOF
 add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
   XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
+  IP6_NET=${VPN_IP6_NET:-'fddd:500:500:500::/64'}
+  lsubnet="0.0.0.0/0"
+  rpool="$XAUTH_POOL"
+  if [ -n "$VPN_PUBLIC_IP6" ]; then
+    lsubnet="0.0.0.0/0,::/0"
+    rpool="$XAUTH_POOL,$IP6_NET"
+  fi
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' "$IPSEC_CONF"; then
     echo >> "$IPSEC_CONF"
     echo 'include /etc/ipsec.d/*.conf' >> "$IPSEC_CONF"
@@ -1187,11 +1194,11 @@ conn ikev2-cp
   left=%defaultroute
   leftcert=$server_addr
   leftsendcert=always
-  leftsubnet=0.0.0.0/0
+  leftsubnet=$lsubnet
   leftrsasigkey=%cert
   right=%any
   rightid=%fromcert
-  rightaddresspool=$XAUTH_POOL
+  rightaddresspool=$rpool
   rightca=%same
   rightrsasigkey=%cert
   narrowing=yes

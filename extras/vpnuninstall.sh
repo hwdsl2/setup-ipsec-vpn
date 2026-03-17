@@ -184,9 +184,15 @@ update_sysctl() {
     count=17
     line1=$(grep -A 18 "hwdsl2 VPN script" /etc/sysctl.conf | tail -n 1)
     line2=$(grep -A 19 "hwdsl2 VPN script" /etc/sysctl.conf | tail -n 1)
+    line3=$(grep -A 20 "hwdsl2 VPN script" /etc/sysctl.conf | tail -n 1)
     if [ "$line1" = "net.core.default_qdisc = fq" ] \
       && [ "$line2" = "net.ipv4.tcp_congestion_control = bbr" ]; then
-        count=19
+      count=19
+      if [ "$line3" = "net.ipv6.conf.all.forwarding = 1" ]; then
+        count=20
+      fi
+    elif [ "$line1" = "net.ipv6.conf.all.forwarding = 1" ]; then
+      count=18
     fi
     if [ "$os_type" = "alpine" ]; then
       sed -i "/# Added by hwdsl2 VPN script/,+${count}d" /etc/sysctl.conf
@@ -219,8 +225,8 @@ get_vpn_subnets() {
     if ! grep -q "$L2TP_NET" /etc/ipsec.conf \
       || ! grep -q "$XAUTH_NET" /etc/ipsec.conf; then
       vipr=$(grep "virtual-private=" /etc/ipsec.conf)
-      l2tpnet=$(printf '%s' "$vipr" | cut -f2 -d '!' | sed 's/,%v4://')
-      xauthnet=$(printf '%s' "$vipr" | cut -f3 -d '!')
+      l2tpnet=$(printf '%s' "$vipr" | cut -f2 -d '!' | cut -f1 -d ',')
+      xauthnet=$(printf '%s' "$vipr" | cut -f3 -d '!' | cut -f1 -d ',')
       check_cidr "$l2tpnet" && L2TP_NET="$l2tpnet"
       check_cidr "$xauthnet" && XAUTH_NET="$xauthnet"
     fi
@@ -275,6 +281,30 @@ update_iptables_rules() {
           conf_bk "$IPT_FILE2"
           /bin/cp -f "$IPT_FILE" "$IPT_FILE2"
         fi
+      fi
+      if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] \
+        || [ "$os_type" = "alpine" ]; then
+        IPT6_FILE=/etc/ip6tables.rules
+        IPT6_FILE2=/etc/iptables/rules.v6
+      else
+        IPT6_FILE=/etc/sysconfig/ip6tables
+        IPT6_FILE2=""
+      fi
+      if grep -qs "hwdsl2 VPN script" "$IPT6_FILE" 2>/dev/null; then
+        IP6_NET=$(grep 'FORWARD.*-d ' "$IPT6_FILE" \
+          | sed -n 's/.* -d \([^ ]*\).*/\1/p' | head -n 1)
+        [ -z "$IP6_NET" ] && IP6_NET='fddd:500:500:500::/64'
+        ip6tables -D INPUT -m conntrack --ctstate INVALID -j DROP 2>/dev/null
+        ip6tables -D INPUT -m conntrack --ctstate "$res" -j ACCEPT 2>/dev/null
+        ip6tables -D INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT 2>/dev/null
+        ip6tables -D FORWARD -m conntrack --ctstate INVALID -j DROP 2>/dev/null
+        ip6tables -D FORWARD -i "$NET_IFACE" -d "$IP6_NET" \
+          -m conntrack --ctstate "$res" -j ACCEPT 2>/dev/null
+        ip6tables -D FORWARD -s "$IP6_NET" -o "$NET_IFACE" -j ACCEPT 2>/dev/null
+        ip6tables -t nat -D POSTROUTING -s "$IP6_NET" -o "$NET_IFACE" \
+          -m policy --dir out --pol none -j MASQUERADE 2>/dev/null
+        /bin/rm -f "$IPT6_FILE"
+        [ -n "$IPT6_FILE2" ] && /bin/rm -f "$IPT6_FILE2"
       fi
     else
       nft_bk=$(find /etc/sysconfig -maxdepth 1 -name 'nftables.conf.old-*-*-*-*_*_*' -print0 \
