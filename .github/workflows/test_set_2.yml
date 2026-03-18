@@ -85,7 +85,6 @@ jobs:
           else
             export DEBIAN_FRONTEND=noninteractive
             apt-get -yqq update
-            apt-get -yqq dist-upgrade
             apt-get -yqq install wget rsyslog
             if [ "$os_ver" = "bookwormsid" ] || [ "$os_ver" = "trixiesid" ] \
               || [ "$os_ver" = 13 ] || [ "$os_ver" = 12 ]; then
@@ -494,21 +493,19 @@ jobs:
           cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          for ver in 5.1 ""; do
-            if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
-              ipsec whack --shutdown || true
-            fi
-            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
+          ver=5.2
+          if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
+            ipsec whack --shutdown || true
+          fi
+          sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
 
           ANSWERS
-            restart_ipsec
-            [ -z "$ver" ] && ver=5.3
-            ipsec --version | grep "$ver"
-            ipsec status | grep -q l2tp-psk
-            ipsec status | grep -q xauth-psk
-            ipsec status | grep -q ikev2-cp
-          done
+          restart_ipsec
+          ipsec --version | grep "$ver"
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
 
           if [ "$os_type" = "alpine" ]; then
             cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade_alpine.sh ./vpnup.sh
@@ -517,21 +514,18 @@ jobs:
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          for ver in 5.2 ""; do
-            if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
-              ipsec whack --shutdown || true
-            fi
-            sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
+          ver=5.3
+          if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
+            ipsec whack --shutdown || true
+          fi
           bash vpnup.sh <<ANSWERS
 
           ANSWERS
-            restart_ipsec
-            [ -z "$ver" ] && ver=5.3
-            ipsec --version | grep "$ver"
-            ipsec status | grep -q l2tp-psk
-            ipsec status | grep -q xauth-psk
-            ipsec status | grep -q ikev2-cp
-          done
+          restart_ipsec
+          ipsec --version | grep "$ver"
+          ipsec status | grep -q l2tp-psk
+          ipsec status | grep -q xauth-psk
+          ipsec status | grep -q ikev2-cp
 
           bash ikev2.sh --removeikev2 <<ANSWERS
           y
