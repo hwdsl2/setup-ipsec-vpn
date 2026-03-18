@@ -2,7 +2,7 @@
 
 # 管理 VPN 用户
 
-在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见 [管理 IKEv2 客户端](ikev2-howto-zh.md#管理-ikev2-客户端)。
+在默认情况下，将只创建一个用于 VPN 登录的用户账户。如果你需要查看或管理 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户，请阅读本文档。对于 IKEv2，参见[管理 IKEv2 客户端](ikev2-howto-zh.md#管理-ikev2-客户端)。
 
 * [使用辅助脚本管理 VPN 用户](#使用辅助脚本管理-vpn-用户)
 * [查看 VPN 用户](#查看-vpn-用户)
@@ -11,7 +11,7 @@
 
 ## 使用辅助脚本管理 VPN 用户
 
-你可以使用辅助脚本添加，删除或者更新 VPN 用户。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。对于 IKEv2，参见 [管理 IKEv2 客户端](ikev2-howto-zh.md#管理-ikev2-客户端)。
+你可以使用辅助脚本添加，删除或者更新 VPN 用户。它们将同时更新 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式的用户。对于 IKEv2，参见[管理 IKEv2 客户端](ikev2-howto-zh.md#管理-ikev2-客户端)。
 
 **注：** 将下面的命令的参数换成你自己的值。VPN 用户信息保存在文件 `/etc/ppp/chap-secrets` 和 `/etc/ipsec.d/passwd`。脚本在修改这些文件之前会先做备份，使用 `.old-日期-时间` 为后缀。
 
@@ -129,7 +129,7 @@ bash updateusers.sh
 ... ...
 ```
 
-对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见 [手动管理 VPN 用户](#手动管理-vpn-用户)。
+对于 IPsec/XAuth ("Cisco IPsec")，VPN 用户信息保存在文件 `/etc/ipsec.d/passwd`。这个文件中的密码以加盐哈希值的形式保存。更多详情请见[手动管理 VPN 用户](#手动管理-vpn-用户)。
 
 ## 查看或更改 IPsec PSK
 
@@ -178,8 +178,8 @@ openssl passwd -1 '密码1'
 
 ## 授权协议
 
-版权所有 (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版权所有 (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
-这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
+这个项目是以[知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！

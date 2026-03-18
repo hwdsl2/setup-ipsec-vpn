@@ -382,6 +382,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [内部VPN IPとトラフィック](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [VPNサーバーのパブリックIPを指定する](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [VPNサブネットのカスタマイズ](docs/advanced-usage.md#customize-vpn-subnets)
+- [IPv6サポート](docs/advanced-usage.md#ipv6-support)
 - [VPNクライアントへのポートフォワーディング](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [スプリットトンネリング](docs/advanced-usage.md#split-tunneling)
 - [VPNサーバーのサブネットにアクセスする](docs/advanced-usage.md#access-vpn-servers-subnet)

@@ -203,7 +203,7 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 如果你需要在安装 VPN 之后更改 DNS 服务器，参见[高级用法](docs/advanced-usage-zh.md)。
 
-**注：** 如果服务器上已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，如需自定义 IKEv2 选项（例如 DNS 服务器），你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
+**注：** 如果服务器上已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，如需自定义 IKEv2 选项（例如 DNS 服务器），你可以首先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 
 ### 自定义 IKEv2 选项
 
@@ -230,7 +230,7 @@ sudo ikev2.sh
 
 你可以自定义以下选项：VPN 服务器的域名，第一个客户端的名称和证书有效期，VPN 客户端的 DNS 服务器以及是否对客户端配置文件进行密码保护。
 
-**注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先 [移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
+**注：** 如果服务器上已经配置了 IKEv2，则 `VPN_SKIP_IKEV2` 变量无效。在这种情况下，如需自定义 IKEv2 选项，你可以首先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然后运行 `sudo ikev2.sh` 重新配置。
 </details>
 <details>
 <summary>
@@ -297,7 +297,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 \*\*\* 可以在交互式配置 IKEv2 期间自定义 (`sudo ikev2.sh`)。参见上面的选项 1。   
 \*\*\*\* 使用 `VPN_CLIENT_VALIDITY` 定义客户端证书的有效期（单位：月）。它必须是 1 到 120 之间的整数。
 
-除了这些参数，高级用户还可以在安装时 [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)。
+除了这些参数，高级用户还可以在安装时[自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)。
 </details>
 
 ## 下一步
@@ -312,21 +312,21 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](docs/clients-xauth-zh.md)**
 
-**阅读 [:book: VPN book](docs/vpn-book-zh.md) 以访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
+**阅读 [:book: VPN book](docs/vpn-book-zh.md) 以访问[额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
+**Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要[修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要连接在同一个 NAT（比如家用路由器）后面的多个设备，你必须使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。要查看或更改 VPN 用户账户，请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要连接在同一个 NAT（比如家用路由器）后面的多个设备，你必须使用 [IKEv2](docs/ikev2-howto-zh.md) 或者 [IPsec/XAuth](docs/clients-xauth-zh.md) 模式。要查看或更改 VPN 用户账户，请参见[管理 VPN 用户](docs/manage-users-zh.md)。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请参见 [高级用法](docs/advanced-usage-zh.md)。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请参见[高级用法](docs/advanced-usage-zh.md)。
 
-使用内核支持有助于提高 IPsec/L2TP 性能。它在所有 [受支持的系统](#系统要求) 上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)` 软件包并运行 `service xl2tpd restart`。
+使用内核支持有助于提高 IPsec/L2TP 性能。它在所有[受支持的系统](#系统要求)上可用。Ubuntu 系统需要安装 `linux-modules-extra-$(uname -r)` 软件包并运行 `service xl2tpd restart`。
 
 这些脚本在更改现有的配置文件之前会先做备份，使用 `.old-日期-时间` 为文件名后缀。
 
@@ -365,7 +365,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 ## 管理 VPN 用户
 
-请参见 [管理 VPN 用户](docs/manage-users-zh.md)。
+请参见[管理 VPN 用户](docs/manage-users-zh.md)。
 
 - [使用辅助脚本管理 VPN 用户](docs/manage-users-zh.md#使用辅助脚本管理-vpn-用户)
 - [查看 VPN 用户](docs/manage-users-zh.md#查看-vpn-用户)
@@ -374,7 +374,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 ## 高级用法
 
-请参见 [高级用法](docs/advanced-usage-zh.md)。
+请参见[高级用法](docs/advanced-usage-zh.md)。
 
 - [使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [域名和更改服务器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
@@ -382,6 +382,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [VPN 内网 IP 和流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
 - [指定 VPN 服务器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)
+- [IPv6 支持](docs/advanced-usage-zh.md#ipv6-支持)
 - [转发端口到 VPN 客户端](docs/advanced-usage-zh.md#转发端口到-vpn-客户端)
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
@@ -418,20 +419,20 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 ```
 </details>
 
-更多信息请参见 [卸载 VPN](docs/uninstall-zh.md)。
+更多信息请参见[卸载 VPN](docs/uninstall-zh.md)。
 
 ## 问题和反馈
 
-- 如果你有对本项目的建议，请提交一个 [改进建议](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)，或者欢迎提交 [Pull request](https://github.com/hwdsl2/setup-ipsec-vpn/pulls)。
-- 如果你发现了一个可重复的程序漏洞，请为 [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) 或者 [VPN 脚本](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose) 提交一个错误报告。
-- 有问题需要提问？请先搜索 [已有的 issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) 以及在 [这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 和 [我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread) 上已有的留言。
+- 如果你有对本项目的建议，请提交一个[改进建议](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)，或者欢迎提交 [Pull request](https://github.com/hwdsl2/setup-ipsec-vpn/pulls)。
+- 如果你发现了一个可重复的程序漏洞，请为 [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) 或者 [VPN 脚本](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose)提交一个错误报告。
+- 有问题需要提问？请先搜索[已有的 issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) 以及在[这个 Gist](https://gist.github.com/hwdsl2/9030462#comments) 和[我的博客](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread)上已有的留言。
 - VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org) 或 [strongSwan](https://lists.strongswan.org) 邮件列表提问，或者参考这些网站：[[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup)。
 
 ## 授权协议
 
-版权所有 (C) 2014-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版权所有 (C) 2014-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基于 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy) (版权所有 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
-这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
+这个项目是以[知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！

@@ -2,7 +2,7 @@
 
 # 配置 IPsec/XAuth VPN 客户端
 
-在成功 [搭建自己的 VPN 服务器](../README-zh.md) 之后，按照下面的步骤来配置你的设备。IPsec/XAuth ("Cisco IPsec") 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 [Shrew Soft 客户端](https://www.shrew.net/download/vpn)。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
+在成功[搭建自己的 VPN 服务器](../README-zh.md)之后，按照下面的步骤来配置你的设备。IPsec/XAuth ("Cisco IPsec") 在 Android, iOS 和 OS X 上均受支持，无需安装额外的软件。Windows 用户可以使用免费的 [Shrew Soft 客户端](https://www.shrew.net/download/vpn)。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
 IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP **更高效**地传输数据（较低的额外开销）。
 
@@ -34,9 +34,9 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 1. 在 **Password** 字段中输入`你的 VPN 密码`。
 1. 单击 **Connect**。
 
-连接成功后，你会在 VPN Connect 状态窗口中看到 **tunnel enabled** 字样。单击 "Network" 选项卡，并确认 **Established - 1** 显示在 "Security Associations" 下面。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你会在 VPN Connect 状态窗口中看到 **tunnel enabled** 字样。单击 "Network" 选项卡，并确认 **Established - 1** 显示在 "Security Associations" 下面。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+如果在连接过程中遇到错误，请参见[故障排除](clients-zh.md#ikev1-故障排除)。
 
 ## OS X (macOS)
 
@@ -57,9 +57,9 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 1. 单击 **创建** 保存 VPN 连接信息。
 1. 如果要在菜单栏显示 VPN 状态并快速访问相关设置，你可以转到系统设置的控制中心部分，滚动到页面底部并在 **VPN** 下拉菜单选择 **在菜单栏中显示**。
 
-要连接到 VPN：使用菜单栏中的图标，或者打开系统设置的 **VPN** 部分并启用 VPN 连接。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN：使用菜单栏中的图标，或者打开系统设置的 **VPN** 部分并启用 VPN 连接。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+如果在连接过程中遇到错误，请参见[故障排除](clients-zh.md#ikev1-故障排除)。
 
 ### macOS 12 (Monterey) 及以下
 
@@ -81,17 +81,17 @@ IPsec/XAuth 模式也称为 "Cisco IPsec"。该模式通常能够比 IPsec/L2TP 
 1. 选中 **在菜单栏中显示 VPN 状态** 复选框。
 1. 单击 **应用** 保存 VPN 连接信息。
 
-要连接到 VPN：使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+要连接到 VPN：使用菜单栏中的图标，或者打开系统偏好设置的网络部分，选择 VPN 并单击 **连接**。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+如果在连接过程中遇到错误，请参见[故障排除](clients-zh.md#ikev1-故障排除)。
 
 ## Android
 
-**重要：** Android 用户应该使用更安全的 [IKEv2 模式](ikev2-howto-zh.md) 连接（推荐）。Android 12+ 仅支持 IKEv2 模式。Android 系统自带的 VPN 客户端对 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式使用安全性较低的 `modp1024` (DH group 2)。
+**重要：** Android 用户应该使用更安全的 [IKEv2 模式](ikev2-howto-zh.md)连接（推荐）。Android 12+ 仅支持 IKEv2 模式。Android 系统自带的 VPN 客户端对 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式使用安全性较低的 `modp1024` (DH group 2)。
 
 如果你仍然想用 IPsec/XAuth 模式连接，你必须首先编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=...` 一行的末尾加上 `,aes256-sha2;modp1024,aes128-sha1;modp1024` 字样。保存文件并运行 `service ipsec restart`。
 
-Docker 用户：在 [你的 env 文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#如何使用本镜像) 中添加 `VPN_ENABLE_MODP1024=yes`，然后重新创建 Docker 容器。
+Docker 用户：在[你的 env 文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#如何使用本镜像)中添加 `VPN_ENABLE_MODP1024=yes`，然后重新创建 Docker 容器。
 
 然后在你的 Android 设备上进行以下步骤：
 
@@ -111,9 +111,9 @@ Docker 用户：在 [你的 env 文件](https://github.com/hwdsl2/docker-ipsec-v
 1. 选中 **保存帐户信息** 复选框。
 1. 单击 **连接**。
 
-连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，会在通知栏显示图标。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+如果在连接过程中遇到错误，请参见[故障排除](clients-zh.md#ikev1-故障排除)。
 
 ## iOS
 
@@ -131,9 +131,9 @@ Docker 用户：在 [你的 env 文件](https://github.com/hwdsl2/docker-ipsec-v
 1. 单击右上角的 **完成**。
 1. 启用 **VPN** 连接。
 
-连接成功后，会在通知栏显示图标。最后你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，会在通知栏显示图标。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
-如果在连接过程中遇到错误，请参见 [故障排除](clients-zh.md#ikev1-故障排除)。
+如果在连接过程中遇到错误，请参见[故障排除](clients-zh.md#ikev1-故障排除)。
 
 ## Linux
 
@@ -158,7 +158,7 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用 `yum` 安装 `N
 1. 单击 **Add** 保存 VPN 连接信息。
 1. 启用 **VPN** 连接。
 
-连接成功后，你可以到 [这里](https://www.ipchicken.com) 检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
+连接成功后，你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
 
 ### 其它 Linux
 
@@ -168,8 +168,8 @@ Fedora 28 （和更新版本）和 CentOS 8/7 用户可以使用 `yum` 安装 `N
 
 注： 这个协议仅适用于本文档。
 
-版权所有 (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
-受到 [Joshua Lund 的工作](https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2) 的启发
+版权所有 (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+受到 [Joshua Lund 的工作](https://github.com/StreisandEffect/streisand/blob/6aa6b6b2735dd829ca8c417d72eb2768a89b6639/playbooks/roles/l2tp-ipsec/templates/instructions.md.j2)的启发
 
 本程序为自由软件，在自由软件联盟发布的[ GNU 通用公共许可协议](https://www.gnu.org/licenses/gpl.html)的约束下，你可以对其进行再发布及修改。协议版本为第三版或（随你）更新的版本。
 

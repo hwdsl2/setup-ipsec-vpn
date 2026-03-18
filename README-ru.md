@@ -382,6 +382,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [Внутренние IP-адреса VPN и трафик](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [Указание публичного IP-адреса VPN-сервера](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Настройка подсетей VPN](docs/advanced-usage.md#customize-vpn-subnets)
+- [Поддержка IPv6](docs/advanced-usage.md#ipv6-support)
 - [Переадресация портов клиентам VPN](docs/advanced-usage.md#port-forwarding-to-vpn-clients)
 - [Раздельная маршрутизация (Split tunneling)](docs/advanced-usage.md#split-tunneling)
 - [Доступ к подсети VPN-сервера](docs/advanced-usage.md#access-vpn-servers-subnet)
@@ -429,7 +430,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 
 ## Лицензия
 
-Copyright (C) 2014-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Copyright (C) 2014-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Основано на [работе Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   

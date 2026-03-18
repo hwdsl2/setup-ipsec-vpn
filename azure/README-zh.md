@@ -2,7 +2,7 @@
 
 # 在 Microsoft Azure 上部署
 
-使用这个模板，你可以在 Microsoft Azure Cloud 上快速搭建一个 VPN 服务器 （[定价细节](https://azure.microsoft.com/zh-cn/pricing/details/virtual-machines/)）。
+使用这个模板，你可以在 Microsoft Azure Cloud 上快速搭建一个 VPN 服务器（[定价细节](https://azure.microsoft.com/zh-cn/pricing/details/virtual-machines/)）。
 
 可根据偏好设置以下选项：
 
@@ -20,7 +20,7 @@
 
 在完成部署之后，Azure 会有提示。下一步：[配置 VPN 客户端](../README-zh.md#下一步)。
 
-**注：** 在使用 SSH 连接到服务器时，请使用你在部署模板中指定的用户名和密码。如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。如果你在输入正确的登录凭证后仍然无法使用 SSH 连接到服务器，请参见 [解决与 Azure Linux VM 的 SSH 连接失败、出错或被拒绝的问题](https://learn.microsoft.com/zh-cn/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection) 和/或 [无法 SSH 到 Azure Linux VM，因为权限太开放](https://learn.microsoft.com/zh-cn/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-permissions-too-open)。
+**注：** 在使用 SSH 连接到服务器时，请使用你在部署模板中指定的用户名和密码。如果要添加或者导出 IKEv2 客户端，运行 `sudo ikev2.sh`。如果你在输入正确的登录凭证后仍然无法使用 SSH 连接到服务器，请参见[解决与 Azure Linux VM 的 SSH 连接失败、出错或被拒绝的问题](https://learn.microsoft.com/zh-cn/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection)和/或[无法 SSH 到 Azure Linux VM，因为权限太开放](https://learn.microsoft.com/zh-cn/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-permissions-too-open)。
 
 ## 作者
 
