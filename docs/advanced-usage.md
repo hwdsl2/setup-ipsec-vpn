@@ -260,7 +260,7 @@ In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPse
 
 ## IPv6 support
 
-If your VPN server has a public (global unicast) IPv6 address, IPv6 support for IKEv2 clients is automatically enabled during VPN setup. No manual configuration is needed.
+If your VPN server has a public (global unicast) IPv6 address and the requirements below are met, IPv6 support for IKEv2 clients is automatically enabled during VPN setup. No manual configuration is needed.
 
 **Note:** IPv6 support has been tested on Android using the strongSwan VPN client. Other platforms (e.g. Windows, macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
 

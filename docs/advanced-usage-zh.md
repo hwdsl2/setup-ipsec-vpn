@@ -260,7 +260,7 @@ sh vpn.sh
 
 ## IPv6 支持
 
-如果你的 VPN 服务器拥有公共（全局单播）IPv6 地址，IKEv2 客户端的 IPv6 支持将在 VPN 安装时自动启用，无需手动配置。
+如果你的 VPN 服务器拥有公共（全局单播）IPv6 地址并且满足以下要求，IKEv2 客户端的 IPv6 支持将在 VPN 安装时自动启用，无需手动配置。
 
 **注：** IPv6 支持已在 Android 上使用 strongSwan VPN 客户端进行测试。其他平台（例如 Windows、macOS、iOS）可能存在限制，或者需要进行额外配置才能使 IPv6 通过 IKEv2 VPN 正常工作。
 
