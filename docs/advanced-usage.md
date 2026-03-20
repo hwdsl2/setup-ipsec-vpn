@@ -264,6 +264,13 @@ If your VPN server has a public (global unicast) IPv6 address and the requiremen
 
 **Note:** IPv6 support has been tested on Android using the strongSwan VPN client. Other platforms (e.g. Windows, macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
 
+**Note:** For **Windows** clients, you need to run the following commands once in a PowerShell window to route IPv6 traffic through the VPN. Replace `IKEv2 VPN X.X.X.X` with the actual name of your VPN connection. When finished, reconnect to the IKEv2 VPN.
+
+```powershell
+Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix ::/1
+Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix 8000::/1
+```
+
 When IPv6 is enabled, IKEv2 VPN clients receive both an IPv4 address from the `192.168.43.0/24` pool and an IPv6 address from the `fddd:500:500:500::/64` pool. The VPN server masquerades IPv6 traffic from the client pool through the server's own IPv6 address, giving VPN clients full IPv6 internet access through the tunnel.
 
 **Requirements:**
