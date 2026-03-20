@@ -725,13 +725,16 @@ EOF
     if uname -m | grep -qi '^arm'; then
       rc_delay=60
     fi
+    ip6_fwd_rc=""
+    [ -n "$ip6" ] && ip6_fwd_rc='
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding'
 cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
 (sleep $rc_delay
 service ipsec restart
 service xl2tpd restart
-echo 1 > /proc/sys/net/ipv4/ip_forward)&
+echo 1 > /proc/sys/net/ipv4/ip_forward${ip6_fwd_rc})&
 exit 0
 EOF
   fi

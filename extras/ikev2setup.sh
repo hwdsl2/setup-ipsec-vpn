@@ -169,7 +169,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2026 Lin Song   16 Mar 2026
+IKEv2 Script   Copyright (c) 2020-2026 Lin Song   20 Mar 2026
 
 EOF
 }
@@ -1178,11 +1178,12 @@ add_ikev2_connection() {
   bigecho2 "Adding a new IKEv2 connection..."
   XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
   IP6_NET=${VPN_IP6_NET:-'fddd:500:500:500::/64'}
+  IP6_PREFIX=$(printf '%s' "$IP6_NET" | sed 's|/[0-9]*$||; s|::$||')
   lsubnet="0.0.0.0/0"
   rpool="$XAUTH_POOL"
   if [ -n "$VPN_PUBLIC_IP6" ]; then
     lsubnet="0.0.0.0/0,::/0"
-    rpool="$XAUTH_POOL,$IP6_NET"
+    rpool="$XAUTH_POOL,${IP6_PREFIX}::1000-${IP6_PREFIX}::1fff"
   fi
   if ! grep -qs '^include /etc/ipsec\.d/\*\.conf$' "$IPSEC_CONF"; then
     echo >> "$IPSEC_CONF"

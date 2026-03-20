@@ -760,13 +760,16 @@ enable_on_boot() {
     else
       echo '#!/bin/sh' > /etc/rc.local
     fi
-cat >> /etc/rc.local <<'EOF'
+    ip6_fwd_rc=""
+    [ -n "$ip6" ] && ip6_fwd_rc='
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding'
+cat >> /etc/rc.local <<EOF
 
 # Added by hwdsl2 VPN script
 (sleep 15
 service ipsec restart
 service xl2tpd restart
-echo 1 > /proc/sys/net/ipv4/ip_forward)&
+echo 1 > /proc/sys/net/ipv4/ip_forward${ip6_fwd_rc})&
 EOF
   fi
 }

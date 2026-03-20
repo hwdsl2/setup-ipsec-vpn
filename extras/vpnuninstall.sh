@@ -211,9 +211,9 @@ update_rclocal() {
     bigecho "Updating rc.local..."
     conf_bk "/etc/rc.local"
     if [ "$os_type" = "alpine" ]; then
-      sed -i '/# Added by hwdsl2 VPN script/,+4d' /etc/rc.local
+      sed -i '/# Added by hwdsl2 VPN script/,/)&$/d' /etc/rc.local
     else
-      sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,+4d' /etc/rc.local
+      sed --follow-symlinks -i '/# Added by hwdsl2 VPN script/,/)&$/d' /etc/rc.local
     fi
   fi
 }
