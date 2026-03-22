@@ -262,9 +262,9 @@ In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPse
 
 If your VPN server has a public (global unicast) IPv6 address and the requirements below are met, IPv6 support for IKEv2 clients is automatically enabled during VPN setup. No manual configuration is needed.
 
-**Note:** IPv6 support has been tested on Android using the strongSwan VPN client. Other platforms (e.g. Windows, macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
+**Note:** IPv6 support has been tested on Android using the strongSwan VPN client, and on Windows with the additional steps in the note below. Other platforms (e.g. macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
 
-**Note:** For **Windows** clients, you need to run the following commands once in a PowerShell window to route IPv6 traffic through the VPN. Replace `IKEv2 VPN X.X.X.X` with the actual name of your VPN connection. When finished, reconnect to the IKEv2 VPN.
+**Note:** For **Windows** clients, if you used the `ikev2_config_import.cmd` script to import IKEv2 configuration, you can answer **y** when prompted to automatically add IPv6 routes. Otherwise, run the following commands once in a PowerShell window to route IPv6 traffic through the VPN. Replace `IKEv2 VPN X.X.X.X` with the actual name of your VPN connection. When finished, reconnect to the IKEv2 VPN.
 
 ```powershell
 Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix ::/1
