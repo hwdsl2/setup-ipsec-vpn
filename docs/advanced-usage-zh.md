@@ -262,14 +262,31 @@ sh vpn.sh
 
 如果你的 VPN 服务器拥有公共（全局单播）IPv6 地址并且满足以下要求，IKEv2 客户端的 IPv6 支持将在 VPN 安装时自动启用，无需手动配置。
 
-**注：** IPv6 支持已在 Android 上使用 strongSwan VPN 客户端进行测试，以及在 Windows 上使用以下注释中的额外步骤进行测试。其他平台（例如 macOS、iOS）可能存在限制，或者需要进行额外配置才能使 IPv6 通过 IKEv2 VPN 正常工作。
+**注：** 在 Android 上使用 strongSwan VPN 客户端时，IPv6 无需额外配置即可正常工作。对于 Windows 和 macOS 客户端，请按照以下平台特定步骤进行配置。iOS 客户端目前不支持通过 IKEv2 VPN 路由 IPv6 流量。
 
-**注：** 对于 **Windows** 客户端，如果你使用了 `ikev2_config_import.cmd` 脚本导入 IKEv2 配置，可以在提示时输入 **y** 以自动添加 IPv6 路由。否则，你需要在 PowerShell 窗口中运行以下命令一次，以通过 VPN 路由 IPv6 流量。将 `IKEv2 VPN X.X.X.X` 替换为你的 VPN 连接的实际名称。完成后，重新连接到 IKEv2 VPN。
+<details>
+<summary>
+Windows：通过 VPN 路由 IPv6 流量
+</summary>
+
+如果你使用了 `ikev2_config_import.cmd` 脚本导入 IKEv2 配置，可以在提示时输入 **y** 以自动添加 IPv6 路由。否则，你需要在 PowerShell 窗口中运行以下命令一次，以通过 VPN 路由 IPv6 流量。将 `IKEv2 VPN X.X.X.X` 替换为你的 VPN 连接的实际名称。完成后，重新连接到 IKEv2 VPN。
 
 ```powershell
 Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix ::/1
 Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix 8000::/1
 ```
+</details>
+<details>
+<summary>
+macOS：通过 VPN 路由 IPv6 流量
+</summary>
+
+连接到 IKEv2 VPN 后，需要在终端中运行以下命令以通过 VPN 路由 IPv6 流量。每次连接后都需要运行此命令。断开 VPN 时，该路由将自动删除。接口通常为 `ipsec0`；如果同时有多个 VPN 连接处于活动状态，可能为 `ipsec1` 等，运行 `ifconfig | grep ipsec` 确认。
+
+```
+sudo route -n add -inet6 default -interface ipsec0
+```
+</details>
 
 启用 IPv6 后，IKEv2 VPN 客户端将同时获得来自 `192.168.43.0/24` 地址池的 IPv4 地址和来自 `fddd:500:500:500::/64` 地址池的 IPv6 地址。VPN 服务器通过将客户端地址池的 IPv6 流量伪装（NAT）为服务器自身的 IPv6 地址，从而使 VPN 客户端能够通过该隧道获得完整的 IPv6 互联网访问。
 
