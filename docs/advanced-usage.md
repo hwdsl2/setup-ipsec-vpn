@@ -262,7 +262,7 @@ In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPse
 
 If your VPN server has a public (global unicast) IPv6 address and the requirements below are met, IPv6 support for IKEv2 clients is automatically enabled during VPN setup. No manual configuration is needed.
 
-**Note:** IPv6 works without additional configuration when using the strongSwan VPN client on Android. For Windows and macOS clients, follow the platform-specific steps below. iOS clients do not currently support routing IPv6 traffic through the IKEv2 VPN.
+**Note:** IPv6 works without additional configuration when using the strongSwan VPN client on Android. For Windows and macOS clients, follow the platform-specific steps below. iOS clients do not currently support routing IPv6 traffic through the IKEv2 VPN; you may instead use [OpenVPN](https://github.com/hwdsl2/openvpn-install) or [WireGuard](https://github.com/hwdsl2/wireguard-install).
 
 <details>
 <summary>
