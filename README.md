@@ -56,7 +56,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
+Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn). For other options and client setup, read the sections below.
 
 \* A cloud server, virtual private server (VPS) or dedicated server.
 
@@ -100,7 +100,7 @@ Quick deploy to:
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN.
 
-A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn). Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 

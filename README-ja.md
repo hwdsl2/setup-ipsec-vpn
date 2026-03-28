@@ -56,7 +56,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ダウンロードできない場合は、[vpnsetup.sh](vpnsetup.sh)を開き、右側の`Raw`ボタンをクリックします。`Ctrl/Cmd+A`を押してすべて選択し、`Ctrl/Cmd+C`を押してコピーし、お気に入りのエディタに貼り付けます。
 </details>
 
-事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
+事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn)。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
 
 \* クラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー。
 
@@ -100,7 +100,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 外部ファイアウォールを持つサーバー（例：[EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)）の場合、VPNのUDPポート500および4500を開きます。
 
-事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn)。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 :warning: これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
 
