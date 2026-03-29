@@ -13,6 +13,7 @@
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Access VPN clients from server's subnet](#access-vpn-clients-from-servers-subnet)
+* [Bonjour/mDNS service discovery for VPN clients](#bonjourmdns-service-discovery-for-vpn-clients)
 * [Modify IPTables rules](#modify-iptables-rules)
 * [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
@@ -446,6 +447,37 @@ Assume that the VPN server IP is `10.1.0.2`, and the IP of the device from which
    ```
 
 Learn more about internal VPN IPs in [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic).
+
+## Bonjour/mDNS service discovery for VPN clients
+
+After setting up the VPN, you can enable [Bonjour](https://developer.apple.com/bonjour/)/mDNS service discovery so that VPN clients can see devices on the server's local network. This allows VPN clients to discover printers, AirPlay devices, file shares and other services that advertise via mDNS/DNS-SD, and to resolve `.local` hostnames. This works with IKEv2, IPsec/XAuth ("Cisco IPsec"), and IPsec/L2TP modes.
+
+To enable Bonjour/mDNS service discovery, run the helper script on the VPN server:
+
+```bash
+sudo bash extras/enable_bonjour.sh
+```
+
+The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a real-time service watcher that monitors the local network for Bonjour service changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. When devices appear or disappear on the LAN, dnsmasq records are updated within seconds. The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so VPN clients use dnsmasq for `.local` queries. For IKEv2 and XAuth modes, `local` is also pushed as a search domain.
+
+After enabling, VPN clients must disconnect and reconnect to receive the updated DNS settings.
+
+**Client compatibility:**
+
+| Platform | Notes |
+| -------- | ----- |
+| macOS/iOS | Works automatically. The `local` search domain triggers unicast DNS for `.local` queries. |
+| Windows | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) for full service discovery support. |
+| Android | `.local` hostname resolution works. Full service browsing is app-dependent. |
+| Linux | Works if systemd-resolved or avahi is configured on the client. |
+
+**L2TP limitation:** The IPsec/L2TP mode does not support pushing search domains to clients. `.local` hostname resolution works, but automatic service browsing requires manual DNS configuration on the client device.
+
+To disable Bonjour/mDNS service discovery and revert all changes:
+
+```bash
+sudo bash extras/disable_bonjour.sh
+```
 
 ## Modify IPTables rules
 

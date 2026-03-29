@@ -387,6 +387,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [スプリットトンネリング](docs/advanced-usage.md#split-tunneling)
 - [VPNサーバーのサブネットにアクセスする](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [サーバーのサブネットからVPNクライアントにアクセスする](docs/advanced-usage.md#access-vpn-clients-from-servers-subnet)
+- [VPNクライアント向けBonjour/mDNSサービス検出](docs/advanced-usage.md#bonjourmdns-service-discovery-for-vpn-clients)
 - [IPTablesルールの変更](docs/advanced-usage.md#modify-iptables-rules)
 - [Google BBR輻輳制御の展開](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 
