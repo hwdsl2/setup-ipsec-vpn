@@ -457,7 +457,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 sudo bash extras/enable_bonjour.sh
 ```
 
-该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置实时服务监视器，该监视器监控本地网络上的 Bonjour 服务变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。当设备在局域网上出现或消失时，dnsmasq 记录会在几秒内更新。所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，以便 VPN 客户端使用 dnsmasq 进行 `.local` 查询。对于 IKEv2 和 XAuth 模式，还会推送 `local` 作为搜索域。
+该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置实时服务监视器，该监视器监控本地网络上的 Bonjour 服务变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。当设备在局域网上出现或消失时，dnsmasq 记录会在几秒内更新。所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，使所有 VPN 客户端的 DNS 查询都通过 dnsmasq。iptables DNAT 规则会捕获 VPN 客户端的 mDNS 多播（224.0.0.251:5353）并将其重定向到 dnsmasq 的 53 端口，从而在不泄漏 DNS 的情况下实现 Bonjour 发现。
 
 启用后，VPN 客户端必须断开并重新连接以接收更新的 DNS 设置。
 
@@ -465,12 +465,10 @@ sudo bash extras/enable_bonjour.sh
 
 | 平台 | 说明 |
 | ---- | ---- |
-| macOS/iOS | 自动工作。`local` 搜索域会触发对 `.local` 查询使用单播 DNS。 |
+| macOS/iOS | 自动工作。所有 DNS 通过 VPN 隧道路由到 dnsmasq。 |
 | Windows | 安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) 以获得完整的服务发现支持。 |
 | Android | `.local` 主机名解析可用。完整的服务浏览取决于应用。 |
 | Linux | 如果客户端配置了 systemd-resolved 或 avahi，则可用。 |
-
-**L2TP 限制：** IPsec/L2TP 模式不支持向客户端推送搜索域。`.local` 主机名解析可以正常工作，但自动服务浏览需要在客户端设备上手动配置 DNS。
 
 要禁用 Bonjour/mDNS 服务发现并恢复所有更改：
 

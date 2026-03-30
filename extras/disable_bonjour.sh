@@ -245,11 +245,15 @@ remove_iptables_rules() {
   while iptables -D INPUT -s "$VPN_SUBNET" -p udp --dport 53 -j ACCEPT 2>/dev/null; do :; done
   while iptables -D INPUT -s "$VPN_SUBNET" -p tcp --dport 53 -j ACCEPT 2>/dev/null; do :; done
   while iptables -D INPUT -s "$VPN_SUBNET" -p udp --dport 5353 -j ACCEPT 2>/dev/null; do :; done
+  # Remove mDNS capture DNAT rules for IKEv2/XAuth VPN subnet
+  while iptables -t nat -D PREROUTING -s "$VPN_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${VPN_SERVER_IP}:53" 2>/dev/null; do :; done
   # Remove DNS rules for L2TP subnet (if different from VPN subnet)
   if [ -n "$L2TP_SUBNET" ] && [ "$L2TP_SUBNET" != "$VPN_SUBNET" ]; then
     while iptables -D INPUT -s "$L2TP_SUBNET" -p udp --dport 53 -j ACCEPT 2>/dev/null; do :; done
     while iptables -D INPUT -s "$L2TP_SUBNET" -p tcp --dport 53 -j ACCEPT 2>/dev/null; do :; done
     while iptables -D INPUT -s "$L2TP_SUBNET" -p udp --dport 5353 -j ACCEPT 2>/dev/null; do :; done
+    # Remove mDNS capture DNAT rules for L2TP subnet
+    while iptables -t nat -D PREROUTING -s "$L2TP_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${L2TP_SERVER_IP}:53" 2>/dev/null; do :; done
   fi
   # Save updated iptables rules
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] \

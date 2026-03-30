@@ -442,6 +442,12 @@ no-resolv
 # Upstream DNS servers for all other queries
 ${DNS_SERVERS}
 
+# Try upstream servers in order — ensures the local/internal DNS server
+# is queried first before falling back to public DNS. Without this,
+# dnsmasq may race both servers and a faster NXDOMAIN from public DNS
+# can override a valid response from the internal DNS server.
+strict-order
+
 # Performance tuning
 cache-size=1000
 dns-forward-max=150
@@ -565,22 +571,22 @@ update_vpn_dns_config() {
     else
       sed --follow-symlinks -i "s|^[[:space:]]*modecfgdns=.*|${NEW_MODECFGDNS}|" "$IKEV2_CONF"
     fi
-    # Add modecfgdomains=local if not already present
+    # Set modecfgdomains="local, ." — the "local" triggers unicast DNS for .local
+    # names on Apple devices (required for Bonjour). The "." (root domain) acts as
+    # a catch-all so VPN DNS handles ALL queries, preventing DNS leak to the
+    # client's default (cellular/WiFi) DNS.
+    NEW_MODECFGDOMAINS='  modecfgdomains="local, ."'
     if grep -qs 'modecfgdomains=' "$IKEV2_CONF"; then
-      if ! grep -qs 'modecfgdomains=.*local' "$IKEV2_CONF"; then
-        if [ "$os_type" = "alpine" ]; then
-          sed -i 's/modecfgdomains="\([^"]*\)"/modecfgdomains="\1, local"/' "$IKEV2_CONF"
-          sed -i '/modecfgdomains=/ { /"/! s/modecfgdomains=\(.*\)/modecfgdomains="\1, local"/ }' "$IKEV2_CONF"
-        else
-          sed --follow-symlinks -i 's/modecfgdomains="\([^"]*\)"/modecfgdomains="\1, local"/' "$IKEV2_CONF"
-          sed --follow-symlinks -i '/modecfgdomains=/ { /"/! s/modecfgdomains=\(.*\)/modecfgdomains="\1, local"/ }' "$IKEV2_CONF"
-        fi
+      if [ "$os_type" = "alpine" ]; then
+        sed -i "s|^[[:space:]]*modecfgdomains=.*|${NEW_MODECFGDOMAINS}|" "$IKEV2_CONF"
+      else
+        sed --follow-symlinks -i "s|^[[:space:]]*modecfgdomains=.*|${NEW_MODECFGDOMAINS}|" "$IKEV2_CONF"
       fi
     else
       if [ "$os_type" = "alpine" ]; then
-        sed -i '/modecfgdns=/a\  modecfgdomains=local' "$IKEV2_CONF"
+        sed -i "/modecfgdns=/a\\${NEW_MODECFGDOMAINS}" "$IKEV2_CONF"
       else
-        sed --follow-symlinks -i '/modecfgdns=/a\  modecfgdomains=local' "$IKEV2_CONF"
+        sed --follow-symlinks -i "/modecfgdns=/a\\${NEW_MODECFGDOMAINS}" "$IKEV2_CONF"
       fi
     fi
     chmod 600 "$IKEV2_CONF" 2>/dev/null
@@ -611,33 +617,30 @@ update_vpn_dns_config() {
         s|^[[:space:]]*modecfgdns=.*|${NEW_XAUTH_DNS}|
       }" "$IPSEC_CONF"
     fi
-    # Add modecfgdomains=local after modecfgdns in xauth-psk section if not present
+    # Set modecfgdomains="local, ." in xauth-psk section (same as IKEv2)
+    NEW_XAUTH_DOMAINS='  modecfgdomains="local, ."'
     XAUTH_HAS_DOMAINS=$(sed -n '/conn xauth-psk/,/^conn /{ /modecfgdomains=/p; }' "$IPSEC_CONF")
-    if [ -z "$XAUTH_HAS_DOMAINS" ]; then
+    if [ -n "$XAUTH_HAS_DOMAINS" ]; then
+      if [ "$os_type" = "alpine" ]; then
+        sed -i "/conn xauth-psk/,/^conn /{
+          s|^[[:space:]]*modecfgdomains=.*|${NEW_XAUTH_DOMAINS}|
+        }" "$IPSEC_CONF"
+      else
+        sed --follow-symlinks -i "/conn xauth-psk/,/^conn /{
+          s|^[[:space:]]*modecfgdomains=.*|${NEW_XAUTH_DOMAINS}|
+        }" "$IPSEC_CONF"
+      fi
+    else
       if [ "$os_type" = "alpine" ]; then
         sed -i "/conn xauth-psk/,/^conn /{
           /modecfgdns=/a\\
-  modecfgdomains=local
+${NEW_XAUTH_DOMAINS}
         }" "$IPSEC_CONF"
       else
         sed --follow-symlinks -i "/conn xauth-psk/,/^conn /{
           /modecfgdns=/a\\
-  modecfgdomains=local
+${NEW_XAUTH_DOMAINS}
         }" "$IPSEC_CONF"
-      fi
-    else
-      if ! printf '%s' "$XAUTH_HAS_DOMAINS" | grep -q 'local'; then
-        if [ "$os_type" = "alpine" ]; then
-          sed -i "/conn xauth-psk/,/^conn /{
-            s/modecfgdomains=\"\([^\"]*\)\"/modecfgdomains=\"\1, local\"/
-            /modecfgdomains=/ { /\"/! s/modecfgdomains=\(.*\)/modecfgdomains=\"\1, local\"/ }
-          }" "$IPSEC_CONF"
-        else
-          sed --follow-symlinks -i "/conn xauth-psk/,/^conn /{
-            s/modecfgdomains=\"\([^\"]*\)\"/modecfgdomains=\"\1, local\"/
-            /modecfgdomains=/ { /\"/! s/modecfgdomains=\(.*\)/modecfgdomains=\"\1, local\"/ }
-          }" "$IPSEC_CONF"
-        fi
       fi
     fi
     chmod 600 "$IPSEC_CONF" 2>/dev/null
@@ -688,6 +691,10 @@ update_iptables() {
     if ! iptables -C INPUT -s "$VPN_SUBNET" -p udp --dport 5353 -j ACCEPT 2>/dev/null; then
       iptables -I INPUT 1 -s "$VPN_SUBNET" -p udp --dport 5353 -j ACCEPT
     fi
+    # mDNS capture: redirect multicast mDNS from VPN clients to dnsmasq
+    if ! iptables -t nat -C PREROUTING -s "$VPN_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${VPN_SERVER_IP}:53" 2>/dev/null; then
+      iptables -t nat -I PREROUTING -s "$VPN_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${VPN_SERVER_IP}:53"
+    fi
   fi
   # Add rules for L2TP subnet
   if [ "$HAS_L2TP" = 1 ]; then
@@ -699,6 +706,10 @@ update_iptables() {
     fi
     if ! iptables -C INPUT -s "$L2TP_SUBNET" -p udp --dport 5353 -j ACCEPT 2>/dev/null; then
       iptables -I INPUT 1 -s "$L2TP_SUBNET" -p udp --dport 5353 -j ACCEPT
+    fi
+    # mDNS capture: redirect multicast mDNS from L2TP clients to dnsmasq
+    if ! iptables -t nat -C PREROUTING -s "$L2TP_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${L2TP_SERVER_IP}:53" 2>/dev/null; then
+      iptables -t nat -I PREROUTING -s "$L2TP_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${L2TP_SERVER_IP}:53"
     fi
   fi
   # Save iptables rules
@@ -959,23 +970,32 @@ verify_setup() {
     fi
   fi
 
-  # Check IKEv2 DNS settings
+  # Check modecfgdomains is set correctly (local + catch-all)
   if [ "$HAS_IKEV2" = 1 ]; then
-    if grep -q "modecfgdomains=.*local" "$IKEV2_CONF" 2>/dev/null; then
-      echo "  OK: IKEv2 modecfgdomains includes 'local'"
+    if grep -q 'modecfgdomains=.*local.*\.' "$IKEV2_CONF" 2>/dev/null; then
+      echo "  OK: IKEv2 modecfgdomains set (local + catch-all)"
     else
-      echo "  WARNING: IKEv2 modecfgdomains not set in ikev2.conf"
+      echo "  WARNING: IKEv2 modecfgdomains not set correctly"
       VERIFY_PASS=0
     fi
   fi
 
-  # Check XAuth DNS settings
-  if [ "$HAS_XAUTH" = 1 ]; then
-    XAUTH_DOMAINS=$(sed -n '/conn xauth-psk/,/^conn /{ /modecfgdomains=/p; }' "$IPSEC_CONF")
-    if printf '%s' "$XAUTH_DOMAINS" | grep -q 'local'; then
-      echo "  OK: XAuth modecfgdomains includes 'local'"
+  # Check mDNS capture iptables rule for IKEv2/XAuth subnet
+  if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
+    if iptables -t nat -C PREROUTING -s "$VPN_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${VPN_SERVER_IP}:53" 2>/dev/null; then
+      echo "  OK: mDNS capture rule active for $VPN_SUBNET"
     else
-      echo "  WARNING: XAuth modecfgdomains not set in ipsec.conf"
+      echo "  WARNING: mDNS capture rule missing for $VPN_SUBNET"
+      VERIFY_PASS=0
+    fi
+  fi
+
+  # Check mDNS capture iptables rule for L2TP subnet
+  if [ "$HAS_L2TP" = 1 ] && [ -n "$L2TP_SUBNET" ]; then
+    if iptables -t nat -C PREROUTING -s "$L2TP_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${L2TP_SERVER_IP}:53" 2>/dev/null; then
+      echo "  OK: mDNS capture rule active for $L2TP_SUBNET"
+    else
+      echo "  WARNING: mDNS capture rule missing for $L2TP_SUBNET"
       VERIFY_PASS=0
     fi
   fi
@@ -1106,7 +1126,7 @@ cat <<EOF
     VPN subnet:           $VPN_SUBNET
     VPN server IP:        $VPN_SERVER_IP (on loopback)
     Primary DNS:          $VPN_SERVER_IP (dnsmasq)
-    Search domain:        local
+    mDNS capture:         VPN client Bonjour queries redirected to dnsmasq
 EOF
   fi
   if [ "$HAS_XAUTH" = 1 ]; then
@@ -1116,7 +1136,7 @@ cat <<EOF
     VPN subnet:           $VPN_SUBNET
     VPN server IP:        $XAUTH_SERVER_IP (on loopback)
     Primary DNS:          $VPN_SERVER_IP (dnsmasq)
-    Search domain:        local
+    mDNS capture:         VPN client Bonjour queries redirected to dnsmasq
 EOF
   fi
   if [ "$HAS_L2TP" = 1 ]; then
@@ -1126,30 +1146,29 @@ cat <<EOF
     VPN subnet:           $L2TP_SUBNET
     L2TP server IP:       $L2TP_SERVER_IP (on loopback)
     Primary DNS:          $L2TP_SERVER_IP (dnsmasq)
-    Search domain:        N/A (L2TP does not support pushing search domains)
+    mDNS capture:         VPN client Bonjour queries redirected to dnsmasq
 EOF
   fi
 cat <<'EOF'
+
+How it works:
+  - ALL DNS goes through the VPN tunnel to dnsmasq (no DNS leak)
+  - modecfgdomains="local, ." ensures VPN DNS handles all queries
+    ("local" triggers Bonjour unicast, "." catches everything else)
+  - mDNS capture rule provides additional fallback for multicast queries
+  - dnsmasq serves .local records discovered by the real-time service watcher
+  - Non-.local queries forwarded to upstream DNS
 
 VPN clients can now:
   - Resolve .local hostnames (e.g., printer.local)
   - Browse network services via DNS-SD (e.g., printers, AirPlay)
-  - Use standard DNS for all other queries
+  - Use standard DNS for all other queries (via dnsmasq upstream forwarding)
 EOF
-  if [ "$HAS_L2TP" = 1 ]; then
-cat <<'EOF'
-
-L2TP limitation:
-  .local hostname resolution works, but automatic service browsing requires
-  manual DNS configuration on the client (L2TP does not support pushing
-  search domains).
-EOF
-  fi
 cat <<EOF
 
 Client notes:
   - Existing VPN clients must disconnect and reconnect
-  - macOS/iOS: Works automatically (unicast DNS for .local via search domain)
+  - macOS/iOS: Works automatically (all DNS routed through VPN)
   - Windows: Install "Bonjour Print Services" or "Bonjour for Windows" for full support
   - Android: Limited mDNS support; .local hostname resolution works
   - Linux: Works if systemd-resolved or avahi is configured on the client
