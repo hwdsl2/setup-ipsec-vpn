@@ -24,7 +24,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
-**オプション:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)および/または[OpenVPN](https://github.com/hwdsl2/openvpn-install)をインストールします。
+**オプション:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールします。
 
 <details>
 <summary>
@@ -56,7 +56,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ダウンロードできない場合は、[vpnsetup.sh](vpnsetup.sh)を開き、右側の`Raw`ボタンをクリックします。`Ctrl/Cmd+A`を押してすべて選択し、`Ctrl/Cmd+C`を押してコピーし、お気に入りのエディタに貼り付けます。
 </details>
 
-事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn)。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
+事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale)。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
 
 \* クラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー。
 
@@ -100,7 +100,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 外部ファイアウォールを持つサーバー（例：[EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)）の場合、VPNのUDPポート500および4500を開きます。
 
-事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn)。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale)。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 :warning: これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
 
@@ -139,7 +139,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)および/または[OpenVPN](https://github.com/hwdsl2/openvpn-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
+同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
 
 <details>
 <summary>

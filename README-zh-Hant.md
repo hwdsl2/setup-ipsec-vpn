@@ -24,7 +24,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登入憑證將會自動隨機生成，並在安裝完成後顯示。
 
-**可選：** 在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md)。
+**可選：** 在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。
 
 <details>
 <summary>
@@ -56,7 +56,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 如果無法下載，打開 [vpnsetup.sh](vpnsetup.sh)，然後點擊右側的 `Raw` 按鈕。按快捷鍵 `Ctrl/Cmd+A` 全選，`Ctrl/Cmd+C` 複製，然後貼上到你喜歡的編輯器。
 </details>
 
-另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)。如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
+另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)。如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
 
 \* 一個雲端伺服器、虛擬專用伺服器 (VPS) 或專用伺服器。
 
@@ -100,7 +100,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 對於有外部防火牆的伺服器（例如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），請為 VPN 開啟 UDP 連接埠 500 和 4500。
 
-另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 :warning: **不要** 在你的 PC 或 Mac 上執行這些腳本！它們只能用在伺服器上！
 
@@ -139,7 +139,7 @@ VPN_PASSWORD='你的VPN密碼' \
 sh vpn.sh
 ```
 
-你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
+你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
 
 <details>
 <summary>

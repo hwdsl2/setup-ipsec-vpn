@@ -24,7 +24,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Your VPN login details will be randomly generated, and displayed when finished.
 
-**Optional:** Install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server.
+**Optional:** Install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server.
 
 <details>
 <summary>
@@ -56,7 +56,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn). For other options and client setup, read the sections below.
+Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale). For other options and client setup, read the sections below.
 
 \* A cloud server, virtual private server (VPS) or dedicated server.
 
@@ -100,7 +100,7 @@ Quick deploy to:
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN.
 
-Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn). Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale). Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 :warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
@@ -139,7 +139,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-You may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server. If your server runs CentOS Stream, Rocky Linux or AlmaLinux, first install OpenVPN/WireGuard, then install the IPsec VPN.
+You may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server. If your server runs CentOS Stream, Rocky Linux or AlmaLinux, first install OpenVPN/WireGuard, then install the IPsec VPN.
 
 <details>
 <summary>
