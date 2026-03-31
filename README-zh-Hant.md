@@ -24,7 +24,9 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登入憑證將會自動隨機生成，並在安裝完成後顯示。
 
-**可選：** 在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。
+> [!TIP]
+> 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。   
+> 預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)。
 
 <details>
 <summary>
@@ -56,7 +58,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 如果無法下載，打開 [vpnsetup.sh](vpnsetup.sh)，然後點擊右側的 `Raw` 按鈕。按快捷鍵 `Ctrl/Cmd+A` 全選，`Ctrl/Cmd+C` 複製，然後貼上到你喜歡的編輯器。
 </details>
 
-另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)。如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
+如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
 
 \* 一個雲端伺服器、虛擬專用伺服器 (VPS) 或專用伺服器。
 
@@ -102,7 +104,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 另外，你也可以使用預先建構的 Docker 映像：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **不要** 在你的 PC 或 Mac 上執行這些腳本！它們只能用在伺服器上！
+> [!WARNING]
+> **不要** 在你的 PC 或 Mac 上執行這些腳本！它們只能用在伺服器上！
 
 ## 安裝說明
 
@@ -125,7 +128,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**註：** 一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
+> [!NOTE]
+> 一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
 
 **選項 3：** 將你自己的 VPN 登入憑證定義為環境變數。
 
@@ -139,7 +143,8 @@ VPN_PASSWORD='你的VPN密碼' \
 sh vpn.sh
 ```
 
-你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
+> [!TIP]
+> 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
 
 <details>
 <summary>
@@ -203,7 +208,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 如果你需要在安裝 VPN 之後更改 DNS 伺服器，請參見[進階用法](docs/advanced-usage-zh.md)。
 
-**註：** 如果伺服器上已經設定 IKEv2，以上變數對 IKEv2 模式無效。在此情況下，如需自訂 IKEv2 選項（例如 DNS 伺服器），你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
+> [!NOTE]
+> 如果伺服器上已經設定 IKEv2，以上變數對 IKEv2 模式無效。在此情況下，如需自訂 IKEv2 選項（例如 DNS 伺服器），你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
 
 ### 自訂 IKEv2 選項
 
@@ -230,7 +236,8 @@ sudo ikev2.sh
 
 你可以自訂以下選項：VPN 伺服器的網域名稱、第一個客戶端的名稱與憑證有效期限、VPN 客戶端的 DNS 伺服器，以及是否對客戶端設定檔進行密碼保護。
 
-**註：** 如果伺服器上已經設定 IKEv2，則 `VPN_SKIP_IKEV2` 變數無效。在此情況下，如需自訂 IKEv2 選項，你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
+> [!NOTE]
+> 如果伺服器上已經設定 IKEv2，則 `VPN_SKIP_IKEV2` 變數無效。在此情況下，如需自訂 IKEv2 選項，你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
 </details>
 <details>
 <summary>
@@ -394,7 +401,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 要移除 IPsec VPN，執行[輔助腳本](extras/vpnuninstall.sh)：
 
-**警告：** 此輔助腳本將從你的伺服器中刪除 IPsec VPN。所有 VPN 設定將被**永久刪除**，並且 Libreswan 和 xl2tpd 將被移除。此操作**無法復原**！
+> [!CAUTION]
+> 此輔助腳本將從你的伺服器中刪除 IPsec VPN。所有 VPN 設定將被**永久刪除**，並且 Libreswan 和 xl2tpd 將被移除。此操作**無法復原**！
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh

@@ -24,7 +24,9 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
-**オプション:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールします。
+> [!TIP]
+> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。   
+> 事前構築されたDockerイメージ：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale)。
 
 <details>
 <summary>
@@ -56,7 +58,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ダウンロードできない場合は、[vpnsetup.sh](vpnsetup.sh)を開き、右側の`Raw`ボタンをクリックします。`Ctrl/Cmd+A`を押してすべて選択し、`Ctrl/Cmd+C`を押してコピーし、お気に入りのエディタに貼り付けます。
 </details>
 
-事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale)。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
+他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
 
 \* クラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー。
 
@@ -102,7 +104,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 事前構築されたDockerイメージも利用可能です：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale)。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
+> [!WARNING]
+> これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
 
 ## インストール
 
@@ -125,7 +128,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**注:** 安全なIPsec PSKは少なくとも20のランダムな文字で構成されるべきです。
+> [!NOTE]
+> 安全なIPsec PSKは少なくとも20のランダムな文字で構成されるべきです。
 
 **オプション3:** 環境変数として自分のVPN資格情報を定義する。
 
@@ -139,7 +143,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
+> [!TIP]
+> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
 
 <details>
 <summary>
@@ -203,7 +208,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 VPNセットアップ後にDNSサーバーを変更する必要がある場合は、[高度な使用法](docs/advanced-usage.md)を参照してください。
 
-**注:** サーバーにIKEv2がすでに設定されている場合、上記の変数はIKEv2モードには影響しません。その場合、DNSサーバーなどのIKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
+> [!NOTE]
+> サーバーにIKEv2がすでに設定されている場合、上記の変数はIKEv2モードには影響しません。その場合、DNSサーバーなどのIKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
 
 ### IKEv2オプションのカスタマイズ
 
@@ -230,7 +236,8 @@ sudo ikev2.sh
 
 次のオプションをカスタマイズできます：VPNサーバーのDNS名、最初のクライアントの名前と有効期間、VPNクライアントのDNSサーバー、およびクライアント構成ファイルをパスワードで保護するかどうか。
 
-**注:** サーバーにIKEv2がすでに設定されている場合、`VPN_SKIP_IKEV2`変数は影響しません。その場合、IKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
+> [!NOTE]
+> サーバーにIKEv2がすでに設定されている場合、`VPN_SKIP_IKEV2`変数は影響しません。その場合、IKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
 </details>
 <details>
 <summary>
@@ -394,7 +401,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 IPsec VPNをアンインストールするには、[ヘルパースクリプト](extras/vpnuninstall.sh)を実行します：
 
-**警告:** このヘルパースクリプトは、サーバーからIPsec VPNを削除します。すべてのVPN構成は**永久に削除**され、Libreswanおよびxl2tpdは削除されます。これは**元に戻すことはできません**！
+> [!CAUTION]
+> このヘルパースクリプトは、サーバーからIPsec VPNを削除します。すべてのVPN構成は**永久に削除**され、Libreswanおよびxl2tpdは削除されます。これは**元に戻すことはできません**！
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh

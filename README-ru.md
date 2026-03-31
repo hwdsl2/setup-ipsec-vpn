@@ -24,7 +24,9 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
-**Дополнительно:** Установите [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
+> [!TIP]
+> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.   
+> Также доступны готовые образы Docker: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md).
 
 <details>
 <summary>
@@ -56,7 +58,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 Если вы не можете скачать файл, откройте [vpnsetup.sh](vpnsetup.sh), затем нажмите кнопку `Raw` справа. Нажмите `Ctrl/Cmd+A`, чтобы выделить всё, `Ctrl/Cmd+C`, чтобы скопировать, затем вставьте в ваш любимый редактор.
 </details>
 
-Также доступны готовые образы Docker: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md). Для других вариантов и настройки клиентов прочитайте разделы ниже.
+Для других вариантов и настройки клиентов прочитайте разделы ниже.
 
 \* Облачный сервер, виртуальный частный сервер (VPS) или выделенный сервер.
 
@@ -102,7 +104,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 Также доступны готовые образы Docker: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md). Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
+> [!WARNING]
+> **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
 
 ## Установка
 
@@ -125,7 +128,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**Примечание:** Безопасный IPsec PSK должен состоять как минимум из 20 случайных символов.
+> [!NOTE]
+> Безопасный IPsec PSK должен состоять как минимум из 20 случайных символов.
 
 **Вариант 3:** Определите учетные данные VPN как переменные окружения.
 
@@ -139,7 +143,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
+> [!TIP]
+> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
 
 <details>
 <summary>
@@ -203,7 +208,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 Если вам нужно изменить DNS-серверы после настройки VPN, см. раздел [Расширенное использование](docs/advanced-usage.md).
 
-**Примечание:** Если IKEv2 уже настроен на сервере, переменные выше не влияют на режим IKEv2. В этом случае для настройки параметров IKEv2, таких как DNS-серверы, вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
+> [!NOTE]
+> Если IKEv2 уже настроен на сервере, переменные выше не влияют на режим IKEv2. В этом случае для настройки параметров IKEv2, таких как DNS-серверы, вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
 
 ### Настройка параметров IKEv2
 
@@ -230,7 +236,8 @@ sudo ikev2.sh
 
 Вы можете настроить следующие параметры: DNS-имя VPN-сервера, имя и срок действия первого клиента, DNS-сервер для VPN-клиентов и необходимость защиты файлов конфигурации клиента паролем.
 
-**Примечание:** Переменная `VPN_SKIP_IKEV2` не действует, если IKEv2 уже настроен на сервере. В этом случае для настройки параметров IKEv2 вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
+> [!NOTE]
+> Переменная `VPN_SKIP_IKEV2` не действует, если IKEv2 уже настроен на сервере. В этом случае для настройки параметров IKEv2 вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
 </details>
 <details>
 <summary>
@@ -394,7 +401,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 Чтобы удалить IPsec VPN, запустите [вспомогательный скрипт](extras/vpnuninstall.sh):
 
-**Предупреждение:** Этот вспомогательный скрипт удалит IPsec VPN с вашего сервера. Вся конфигурация VPN будет **безвозвратно удалена**, а Libreswan и xl2tpd будут удалены. Это **нельзя отменить**!
+> [!CAUTION]
+> Этот вспомогательный скрипт удалит IPsec VPN с вашего сервера. Вся конфигурация VPN будет **безвозвратно удалена**, а Libreswan и xl2tpd будут удалены. Это **нельзя отменить**!
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
