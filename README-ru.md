@@ -25,8 +25,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
 > [!TIP]
-> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.   
-> Также доступны готовые образы Docker: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md).
+> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
 
 <details>
 <summary>
@@ -58,7 +57,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 Если вы не можете скачать файл, откройте [vpnsetup.sh](vpnsetup.sh), затем нажмите кнопку `Raw` справа. Нажмите `Ctrl/Cmd+A`, чтобы выделить всё, `Ctrl/Cmd+C`, чтобы скопировать, затем вставьте в ваш любимый редактор.
 </details>
 
-Для других вариантов и настройки клиентов прочитайте разделы ниже.
+Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Для других вариантов и настройки клиентов прочитайте разделы ниже.
 
 \* Облачный сервер, виртуальный частный сервер (VPS) или выделенный сервер.
 
@@ -102,7 +101,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 Для серверов с внешним файрволом (например, [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)) откройте UDP-порты 500 и 4500 для VPN.
 
-Также доступны готовые образы Docker: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) | [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) | [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md). Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
 > **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
@@ -236,8 +235,7 @@ sudo ikev2.sh
 
 Вы можете настроить следующие параметры: DNS-имя VPN-сервера, имя и срок действия первого клиента, DNS-сервер для VPN-клиентов и необходимость защиты файлов конфигурации клиента паролем.
 
-> [!NOTE]
-> Переменная `VPN_SKIP_IKEV2` не действует, если IKEv2 уже настроен на сервере. В этом случае для настройки параметров IKEv2 вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
+**Примечание:** Переменная `VPN_SKIP_IKEV2` не действует, если IKEv2 уже настроен на сервере. В этом случае для настройки параметров IKEv2 вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
 </details>
 <details>
 <summary>

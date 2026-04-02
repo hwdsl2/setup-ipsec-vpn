@@ -25,8 +25,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 Your VPN login details will be randomly generated, and displayed when finished.
 
 > [!TIP]
-> Optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server.   
-> Pre-built Docker images: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale).
+> Optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server.
 
 <details>
 <summary>
@@ -58,7 +57,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-For other options and client setup, read the sections below.
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
 
 \* A cloud server, virtual private server (VPS) or dedicated server.
 
@@ -102,7 +101,7 @@ Quick deploy to:
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN.
 
-Pre-built Docker images are also available: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server) | [WireGuard](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN](https://github.com/hwdsl2/docker-openvpn) | [Headscale](https://github.com/hwdsl2/docker-headscale). Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
 > **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
@@ -236,8 +235,7 @@ sudo ikev2.sh
 
 You can customize the following options: VPN server's DNS name, name and validity period of the first client, DNS server for VPN clients and whether to password protect client config files.
 
-> [!NOTE]
-> The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
+**Note:** The `VPN_SKIP_IKEV2` variable has no effect if IKEv2 is already set up on the server. In that case, to customize IKEv2 options, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
 </details>
 <details>
 <summary>
