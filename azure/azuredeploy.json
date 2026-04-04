@@ -32,6 +32,13 @@
         "description": "OS to use. Ubuntu 24.04 or 22.04."
       }
     },
+    "vmName": {
+      "type": "string",
+      "minLength": 6,
+      "metadata": {
+        "description": "Name of the Virtual Machine"
+      }
+    },
     "VMSize": {
       "type": "string",
       "defaultValue": "Standard_B1s",
@@ -50,26 +57,27 @@
   "variables": {
     "quote": "'",
     "location": "[resourceGroup().location]",
-    "vmName": "vpnserver",
+    "vmName": "[toLower(parameters('vmName'))]",
     "virtualNetworkName": "vpnVnet",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "VPNSubnet",
     "subnetPrefix": "10.0.1.0/24",
-    "apiVersion": "2015-06-15",
+    "apiVersion": "2025-05-01",
     "storageName": "[concat(uniqueString(resourceGroup().id), 'vpnsa')]",
-    "vhdStorageType": "Standard_LRS",
+    "storageAccountSku": "Standard_LRS",
+    "managedDiskType": "StandardSSD_LRS",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "SubnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
     "ubuntu24.04": {
       "publisher": "Canonical",
-      "offer": "0001-com-ubuntu-server-noble",
-      "sku": "24_04-lts",
+      "offer": "ubuntu-24_04-lts",
+      "sku": "server",
       "version": "latest"
     },
     "ubuntu22.04": {
       "publisher": "Canonical",
       "offer": "0001-com-ubuntu-server-jammy",
-      "sku": "22_04-lts",
+      "sku": "22_04-lts-gen2",
       "version": "latest"
     },
     "installScriptURL": "https://raw.githubusercontent.com/hwdsl2/setup-ipsec-vpn/master/azure/install.sh",
@@ -79,14 +87,14 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageName')]",
-      "apiVersion": "2016-01-01",
+      "apiVersion": "2025-08-01",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "StorageAccount"
       },
       "properties": {},
       "sku": {
-        "name": "[variables('vhdStorageType')]"
+        "name": "[variables('storageAccountSku')]"
       },
       "kind": "Storage"
     },
@@ -150,7 +158,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "2025-04-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "VirtualMachine"
@@ -170,12 +178,12 @@
         "storageProfile": {
           "imageReference": "[variables(parameters('image'))]",
           "osDisk": {
-            "name": "osdisk",
-            "vhd": {
-              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageName'))).primaryEndpoints.blob, 'vmachines/', variables('vmName'), '.vhd')]"
-            },
+            "name": "[concat(variables('vmName'),'-osdisk')]",
             "caching": "ReadWrite",
-            "createOption": "FromImage"
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[variables('managedDiskType')]"
+            }
           }
         },
         "networkProfile": {
@@ -190,7 +198,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'),'/installcustomscript')]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2025-04-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "VirtualMachineCustomScriptExtension"
