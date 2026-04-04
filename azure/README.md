@@ -9,6 +9,7 @@ Customizable with the following options:
  - Username for VPN **and** SSH
  - Password for VPN **and** SSH
  - IPsec Pre-Shared Key for VPN
+ - VPN Server Name
  - Operating System Image (Ubuntu 24.04 or 22.04)
  - Virtual Machine Size (Default: Standard_B1s)
 
