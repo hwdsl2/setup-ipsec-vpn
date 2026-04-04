@@ -9,6 +9,7 @@
  - Username for VPN **and** SSH （VPN 和 SSH 用户名）
  - Password for VPN **and** SSH （VPN 和 SSH 密码）
  - IPsec Pre-Shared Key for VPN （IPsec 预共享密钥）
+ - VPN Server Name (VPN服务器名称)
  - Operating System Image （操作系统镜像，Ubuntu 24.04 或 22.04）
  - Virtual Machine Size （虚拟机大小，默认值： Standard_B1s）
 
