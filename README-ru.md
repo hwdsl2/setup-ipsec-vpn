@@ -10,11 +10,13 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 Мы будем использовать [Libreswan](https://libreswan.org/) в качестве сервера IPsec и [xl2tpd](https://github.com/xelerance/xl2tpd) в качестве поставщика L2TP.
 
+**Также доступно:** Docker-образы для [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md) и [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md).
+
 **[&raquo; :book: Книга: Privacy Tools in the Age of AI](docs/vpn-book.md) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
 
 ## Быстрый старт
 
-Сначала подготовьте ваш Linux-сервер\* с установленной системой Ubuntu, Debian или CentOS.
+Сначала подготовьте ваш Linux-сервер\* с установленной [поддерживаемой ОС](#требования).
 
 Используйте эту однострочную команду для настройки сервера IPsec VPN:
 
