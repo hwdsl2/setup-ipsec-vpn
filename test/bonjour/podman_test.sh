@@ -34,9 +34,12 @@ IMAGE="localhost/bonjour-test-base:latest"
 V4_SUBNET="10.89.0.0/24"
 V4_GATEWAY="10.89.0.1"
 
-# IPv6 subnet (used in dual-stack mode)
-V6_SUBNET="fd00:abcd::/64"
-V6_GATEWAY="fd00:abcd::1"
+# IPv6 subnet (used in dual-stack mode).
+# Uses 2001:db8::/32 documentation prefix (RFC 3849). Starts with "2" so it
+# matches the project's detect_ipv6() pattern `inet6 [23]` and triggers
+# actual IPv6 enablement in the VPN install.
+V6_SUBNET="2001:db8:aaaa::/64"
+V6_GATEWAY="2001:db8:aaaa::1"
 
 # Parse flags
 DUAL_STACK=1
@@ -181,7 +184,7 @@ trap cleanup EXIT
 # ===== Phase: Bonjour device =====
 setup_device() {
   log "Setting up Bonjour device..."
-  run_container "$DEVICE_NAME" testprinter "10.89.0.10" "fd00:abcd::10" "512m"
+  run_container "$DEVICE_NAME" testprinter "10.89.0.10" "2001:db8:aaaa::10" "512m"
 
   podman exec "$DEVICE_NAME" bash -c '
     set -e
@@ -250,7 +253,7 @@ EOF
 # ===== Phase: VPN server =====
 setup_server() {
   log "Setting up VPN server (Libreswan compile, ~2-3 min)..."
-  run_container "$SERVER_NAME" vpn-server "10.89.0.20" "fd00:abcd::20" "3g"
+  run_container "$SERVER_NAME" vpn-server "10.89.0.20" "2001:db8:aaaa::20" "3g"
 
   # Copy bonjour scripts into the container
   podman cp "$REPO_DIR/extras/enable_bonjour.sh"  "$SERVER_NAME:/tmp/enable_bonjour.sh"
@@ -281,7 +284,7 @@ ANSWERS
 # ===== Phase: IKEv2 client =====
 setup_client() {
   log "Setting up IKEv2 client..."
-  run_container "$CLIENT_NAME" vpn-client "10.89.0.30" "fd00:abcd::30" "1g"
+  run_container "$CLIENT_NAME" vpn-client "10.89.0.30" "2001:db8:aaaa::30" "1g"
 
   # Export client cert from server
   podman exec "$SERVER_NAME" ikev2.sh --exportclient vpnclient 2>&1 | tail -3
@@ -467,6 +470,37 @@ run_server_tests() {
     pass "iptables DNS rule active"
   else
     fail "iptables DNS rule missing"
+  fi
+
+  # ===== IPv6 tests — only run in dual-stack mode =====
+  if [ "$DUAL_STACK" = 1 ]; then
+    echo ""
+    echo -e "${BOLD}---- IPv6 tests ----${NC}"
+
+    # IPv6.1: VPN server has IPv6 enabled (rightaddresspool contains IPv6 range)
+    if podman exec "$SERVER_NAME" grep -q 'rightaddresspool=.*:.*-.*:' /etc/ipsec.d/ikev2.conf 2>/dev/null; then
+      pass "VPN install enabled IPv6 (rightaddresspool has IPv6 range)"
+    else
+      fail "VPN install did NOT enable IPv6 — detect_ipv6 probably failed"
+      echo "       Server container IPv6 addrs:"
+      podman exec "$SERVER_NAME" ip -6 addr show 2>/dev/null | grep 'inet6 [23]' | sed 's/^/         /'
+    fi
+
+    # IPv6.2: enable_bonjour.sh detected IPv6 and assigned the IPv6 server IP to lo
+    if podman exec "$SERVER_NAME" bash -c "ip -6 addr show dev lo | grep -qE 'inet6 f[dc]'"; then
+      pass "IPv6 VPN server IP assigned to loopback"
+    else
+      fail "IPv6 VPN server IP NOT assigned to loopback"
+    fi
+
+    # IPv6.3: dnsmasq is listening on an IPv6 address (expected after Phase 2)
+    if podman exec "$SERVER_NAME" bash -c "ss -ulnp 2>/dev/null | grep -E ':53 ' | grep -qE '\[f[dc]'"; then
+      pass "dnsmasq listening on IPv6"
+    else
+      fail "dnsmasq NOT listening on IPv6"
+      echo "       ss -ulnp :53 output:"
+      podman exec "$SERVER_NAME" bash -c "ss -ulnp 2>/dev/null | grep ':53 '" | sed 's/^/         /'
+    fi
   fi
 }
 

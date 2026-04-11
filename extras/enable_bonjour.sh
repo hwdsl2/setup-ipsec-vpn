@@ -474,6 +474,12 @@ configure_dnsmasq() {
       LISTEN_IPS="${L2TP_SERVER_IP}"
     fi
   fi
+  # Append the IPv6 server address if the VPN has IPv6 enabled. dnsmasq
+  # accepts comma-separated IPv4 and IPv6 addresses in the same
+  # listen-address directive, and bind-interfaces still works for both.
+  if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
+    LISTEN_IPS="${LISTEN_IPS},${VPN_SERVER_IP_IPV6}"
+  fi
   LISTEN_ADDR="listen-address=${LISTEN_IPS}"
   # Build upstream DNS server lines
   DNS_SERVERS=""
@@ -609,6 +615,29 @@ EOF
       RC_LOCAL="/etc/rc.local"
       if [ -f "$RC_LOCAL" ] && ! grep -q "$L2TP_SERVER_IP" "$RC_LOCAL"; then
         sed --follow-symlinks -i "/exit 0/i ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL"
+      fi
+    fi
+  fi
+  # For IPv6: add VPN_SERVER_IP_IPV6 to loopback. dnsmasq's bind-interfaces
+  # requires the address to exist before the service starts. Must match the
+  # listen-address entry added by configure_dnsmasq().
+  if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
+    if ! ip -6 addr show dev lo 2>/dev/null | grep -q "$VPN_SERVER_IP_IPV6"; then
+      bigecho "Assigning VPN server IPv6 ($VPN_SERVER_IP_IPV6) to loopback..."
+      ip -6 addr add "${VPN_SERVER_IP_IPV6}/128" dev lo \
+        || exiterr "Failed to add $VPN_SERVER_IP_IPV6 to loopback."
+    fi
+    # Persist
+    if [ "$os_type" = "alpine" ]; then
+      RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
+      if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "$VPN_SERVER_IP_IPV6" "$RC_LOCAL_ALPINE"; then
+        sed -i "$ a ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL_ALPINE"
+      fi
+    else
+      RC_LOCAL="/etc/rc.local"
+      if [ -f "$RC_LOCAL" ] && ! grep -q "$VPN_SERVER_IP_IPV6" "$RC_LOCAL"; then
+        sed --follow-symlinks -i \
+          "/exit 0/i ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL"
       fi
     fi
   fi
