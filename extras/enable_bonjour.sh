@@ -997,7 +997,216 @@ fi
 RESOLVE_EOF
   chmod +x "$RESOLVE_SCRIPT"
 
-  # --- Script 2: Event watcher (persistent, triggers resolve on changes) ---
+  # --- Script 2: IPv6 state sync (detects post-install IPv6 changes) ---
+  # Handles the case where a user installs Bonjour on an IPv4-only VPN, then
+  # later enables IPv6 on the VPN (either by re-running ikev2.sh with IPv6 or
+  # manually editing ikev2.conf). Without this script, the user would have to
+  # remember to re-run enable_bonjour.sh to pick up the new IPv6 state.
+  # Called periodically by the watcher and at watcher startup. Idempotent.
+  SYNC_SCRIPT="/usr/local/sbin/bonjour-vpn-ipv6-sync"
+  mkdir -p /var/lib/bonjour-vpn
+cat > "$SYNC_SCRIPT" <<'SYNC_EOF'
+#!/bin/bash
+# Bonjour VPN IPv6 state sync — reconciles dnsmasq/ip6tables/loopback
+# with the current VPN IPv6 configuration in /etc/ipsec.d/ikev2.conf.
+#
+# Detects transitions:
+#   - IPv6 off -> on:   assign IPv6 to lo, add dnsmasq listen, add ip6tables rules
+#   - IPv6 on  -> off:  reverse all of the above
+#   - IPv6 on  -> on':  (pool changed) tear down old, apply new
+#
+# Idempotent: running repeatedly with no state change is a no-op. Safe to
+# call from the watcher's main loop every iteration.
+
+set -uo pipefail
+
+IKEV2_CONF="/etc/ipsec.d/ikev2.conf"
+STATE_FILE="/var/lib/bonjour-vpn/ipv6-state"
+DNSMASQ_VPN_CONF="/etc/dnsmasq.d/bonjour-vpn.conf"
+BONJOUR_MARK="# Added by enable_bonjour.sh"
+
+# Only run as root
+if [ "$(id -u)" != 0 ]; then
+  exit 0
+fi
+
+check_ip6() {
+  printf '%s' "$1" | tr -d '\n' | grep -Eq '^[0-9a-fA-F:]+$' && \
+  printf '%s' "$1" | grep -q ':'
+}
+
+# ---------------- Parse current state from ikev2.conf ----------------
+HAS_IPV6=0
+VPN_POOL_IPV6=""
+VPN_POOL_IPV6_START=""
+VPN_SUBNET_IPV6=""
+VPN_SERVER_IP_IPV6=""
+
+if [ -f "$IKEV2_CONF" ]; then
+  VPN_POOL_IPV6=$(grep 'rightaddresspool=' "$IKEV2_CONF" 2>/dev/null | head -n 1 \
+    | sed 's/.*rightaddresspool=//' | tr -d '"' \
+    | awk -F, '{for (i=2; i<=NF; i++) print $i}' \
+    | awk '{print $1}' | grep ':' | head -n 1)
+fi
+
+if [ -n "$VPN_POOL_IPV6" ]; then
+  VPN_POOL_IPV6_START=$(printf '%s' "$VPN_POOL_IPV6" | cut -d '-' -f 1)
+  if check_ip6 "$VPN_POOL_IPV6_START"; then
+    VPN_SUBNET_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
+      | sed -E 's/:[0-9a-fA-F]*$/::/; s/::+/::/')
+    VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6%::*}::/64"
+    VPN_SERVER_IP_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
+      | sed -E 's/:[0-9a-fA-F]*$/:1/')
+    HAS_IPV6=1
+  fi
+fi
+
+# ---------------- Load last known state ----------------
+PREV_HAS_IPV6=0
+PREV_VPN_POOL_IPV6=""
+PREV_VPN_SERVER_IP_IPV6=""
+PREV_VPN_SUBNET_IPV6=""
+if [ -f "$STATE_FILE" ]; then
+  # shellcheck disable=SC1090
+  . "$STATE_FILE" 2>/dev/null || true
+  PREV_HAS_IPV6="${HAS_IPV6_SAVED:-0}"
+  PREV_VPN_POOL_IPV6="${VPN_POOL_IPV6_SAVED:-}"
+  PREV_VPN_SERVER_IP_IPV6="${VPN_SERVER_IP_IPV6_SAVED:-}"
+  PREV_VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6_SAVED:-}"
+fi
+
+# ---------------- Short-circuit if nothing changed ----------------
+if [ "$HAS_IPV6" = "$PREV_HAS_IPV6" ] \
+   && [ "$VPN_POOL_IPV6" = "$PREV_VPN_POOL_IPV6" ] \
+   && [ "$VPN_SERVER_IP_IPV6" = "$PREV_VPN_SERVER_IP_IPV6" ] \
+   && [ "$VPN_SUBNET_IPV6" = "$PREV_VPN_SUBNET_IPV6" ]; then
+  exit 0
+fi
+
+CHANGED=0
+
+# ---------------- Helper: tear down a previous IPv6 config ----------------
+teardown_ipv6() {
+  local old_ip="$1"
+  local old_subnet="$2"
+  [ -z "$old_ip" ] && [ -z "$old_subnet" ] && return 0
+  if [ -n "$old_ip" ]; then
+    ip -6 addr del "${old_ip}/128" dev lo 2>/dev/null || true
+    # Strip persistence lines
+    if [ -f /etc/rc.local ]; then
+      sed -i "\|${old_ip}/128|d" /etc/rc.local 2>/dev/null || true
+    fi
+    if [ -f /etc/local.d/bonjour-vpn.start ]; then
+      sed -i "\|${old_ip}/128|d" /etc/local.d/bonjour-vpn.start 2>/dev/null || true
+    fi
+    # Remove from dnsmasq listen-address line
+    if [ -f "$DNSMASQ_VPN_CONF" ]; then
+      # Match ",<ip>" or "<ip>," or bare "<ip>"
+      sed -i \
+        -e "s|,${old_ip}||g" \
+        -e "s|${old_ip},||g" \
+        -e "s|=${old_ip}$|=127.0.0.1|" \
+        "$DNSMASQ_VPN_CONF" 2>/dev/null || true
+    fi
+  fi
+  if [ -n "$old_subnet" ] && [ -n "$old_ip" ] \
+     && command -v ip6tables >/dev/null 2>&1; then
+    ip6tables -D INPUT -s "$old_subnet" -p udp --dport 53 -j ACCEPT 2>/dev/null || true
+    ip6tables -D INPUT -s "$old_subnet" -p tcp --dport 53 -j ACCEPT 2>/dev/null || true
+    ip6tables -D INPUT -s "$old_subnet" -p udp --dport 5353 -j ACCEPT 2>/dev/null || true
+    ip6tables -t nat -D PREROUTING -s "$old_subnet" -d ff02::fb -p udp --dport 5353 \
+      -j DNAT --to-destination "[${old_ip}]:53" 2>/dev/null || true
+  fi
+  CHANGED=1
+}
+
+# ---------------- Helper: apply a new IPv6 config ----------------
+apply_ipv6() {
+  local new_ip="$1"
+  local new_subnet="$2"
+  [ -z "$new_ip" ] || [ -z "$new_subnet" ] && return 0
+  # Loopback assignment
+  if ! ip -6 addr show dev lo 2>/dev/null | grep -q "$new_ip"; then
+    ip -6 addr add "${new_ip}/128" dev lo 2>/dev/null || return 1
+  fi
+  # Persistence
+  if [ -f /etc/rc.local ]; then
+    if ! grep -q "$new_ip" /etc/rc.local 2>/dev/null; then
+      sed -i "/^exit 0/i ip -6 addr add ${new_ip}/128 dev lo 2>/dev/null" /etc/rc.local 2>/dev/null || true
+    fi
+  fi
+  if [ -f /etc/local.d/bonjour-vpn.start ]; then
+    if ! grep -q "$new_ip" /etc/local.d/bonjour-vpn.start 2>/dev/null; then
+      printf 'ip -6 addr add %s/128 dev lo 2>/dev/null\n' "$new_ip" \
+        >> /etc/local.d/bonjour-vpn.start
+    fi
+  fi
+  # dnsmasq listen-address — append IPv6 to existing line if not present
+  if [ -f "$DNSMASQ_VPN_CONF" ] && ! grep -q "$new_ip" "$DNSMASQ_VPN_CONF" 2>/dev/null; then
+    sed -i "s|^listen-address=\(.*\)$|listen-address=\1,${new_ip}|" "$DNSMASQ_VPN_CONF" 2>/dev/null || true
+  fi
+  # ip6tables — only apply if kernel supports it
+  if command -v ip6tables >/dev/null 2>&1 \
+     && ip6tables -t nat -L PREROUTING -n >/dev/null 2>&1; then
+    if ! ip6tables -C INPUT -s "$new_subnet" -p udp --dport 53 -j ACCEPT 2>/dev/null; then
+      ip6tables -I INPUT 1 -s "$new_subnet" -p udp --dport 53 -j ACCEPT 2>/dev/null || true
+    fi
+    if ! ip6tables -C INPUT -s "$new_subnet" -p tcp --dport 53 -j ACCEPT 2>/dev/null; then
+      ip6tables -I INPUT 1 -s "$new_subnet" -p tcp --dport 53 -j ACCEPT 2>/dev/null || true
+    fi
+    if ! ip6tables -C INPUT -s "$new_subnet" -p udp --dport 5353 -j ACCEPT 2>/dev/null; then
+      ip6tables -I INPUT 1 -s "$new_subnet" -p udp --dport 5353 -j ACCEPT 2>/dev/null || true
+    fi
+    if ! ip6tables -t nat -C PREROUTING -s "$new_subnet" -d ff02::fb -p udp --dport 5353 \
+         -j DNAT --to-destination "[${new_ip}]:53" 2>/dev/null; then
+      ip6tables -t nat -I PREROUTING -s "$new_subnet" -d ff02::fb -p udp --dport 5353 \
+        -j DNAT --to-destination "[${new_ip}]:53" 2>/dev/null || true
+    fi
+  fi
+  CHANGED=1
+  return 0
+}
+
+# ---------------- Tear down the old config (if any) ----------------
+if [ "$PREV_HAS_IPV6" = 1 ]; then
+  teardown_ipv6 "$PREV_VPN_SERVER_IP_IPV6" "$PREV_VPN_SUBNET_IPV6"
+fi
+
+# ---------------- Apply the new config (if any) ----------------
+if [ "$HAS_IPV6" = 1 ]; then
+  apply_ipv6 "$VPN_SERVER_IP_IPV6" "$VPN_SUBNET_IPV6" || true
+fi
+
+# ---------------- Persist new state ----------------
+mkdir -p /var/lib/bonjour-vpn
+cat > "$STATE_FILE" <<STATE
+# Auto-generated by bonjour-vpn-ipv6-sync - do not edit
+HAS_IPV6_SAVED=${HAS_IPV6}
+VPN_POOL_IPV6_SAVED=${VPN_POOL_IPV6}
+VPN_SERVER_IP_IPV6_SAVED=${VPN_SERVER_IP_IPV6}
+VPN_SUBNET_IPV6_SAVED=${VPN_SUBNET_IPV6}
+STATE
+chmod 600 "$STATE_FILE" 2>/dev/null || true
+
+# ---------------- Restart dnsmasq if we changed anything ----------------
+if [ "$CHANGED" = 1 ]; then
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl restart dnsmasq 2>/dev/null || true
+  elif command -v rc-service >/dev/null 2>&1; then
+    rc-service dnsmasq restart 2>/dev/null || true
+  fi
+  # Save updated ip6tables rules for persistence across reboots
+  if [ "$HAS_IPV6" = 1 ] && command -v ip6tables-save >/dev/null 2>&1; then
+    for f in /etc/ip6tables.rules /etc/iptables/rules.v6 /etc/sysconfig/ip6tables; do
+      [ -e "$(dirname "$f")" ] && ip6tables-save > "$f" 2>/dev/null || true
+    done
+  fi
+fi
+exit 0
+SYNC_EOF
+  chmod 755 "$SYNC_SCRIPT"
+
+  # --- Script 3: Event watcher (persistent, triggers resolve on changes) ---
   WATCHER_SCRIPT="/usr/local/bin/bonjour-vpn-watch"
 cat > "$WATCHER_SCRIPT" <<'WATCHER_EOF'
 #!/bin/bash
@@ -1006,13 +1215,23 @@ cat > "$WATCHER_SCRIPT" <<'WATCHER_EOF'
 # When a change is detected, waits for the burst to settle (debounce),
 # then triggers a full resolve to regenerate dnsmasq records.
 #
+# Also periodically (at least once per IDLE_TIMEOUT seconds) runs the
+# IPv6 sync script so that post-install VPN IPv6 changes get picked up
+# automatically without requiring the user to re-run enable_bonjour.sh.
+#
 # Zero CPU/network overhead when nothing changes — avahi-browse just
 # listens to multicast packets already on the network.
 
 RESOLVE_CMD="/usr/local/bin/bonjour-vpn-resolve"
+SYNC_CMD="/usr/local/sbin/bonjour-vpn-ipv6-sync"
 DEBOUNCE_SEC=3
+# Max seconds to wait for an avahi event before looping around to
+# re-check VPN IPv6 state. Keeps the state-sync loop responsive even
+# on quiet networks with no mDNS activity.
+IDLE_TIMEOUT=60
 
-# Initial full resolve on startup
+# Initial IPv6 state sync + full resolve on startup
+[ -x "$SYNC_CMD" ] && "$SYNC_CMD" 2>/dev/null || true
 "$RESOLVE_CMD"
 
 # Watch for service changes. avahi-browse without -t runs continuously,
@@ -1021,27 +1240,26 @@ DEBOUNCE_SEC=3
 # NOT using -r (resolve) here — the watcher only needs to detect changes,
 # not resolve details. The full resolve script handles that.
 while true; do
-  # Start the watcher. It blocks until an event arrives.
-  # Read one event, then enter debounce loop.
-  EVENT=$(avahi-browse -apk 2>/dev/null | head -n 1)
+  # Re-run the IPv6 sync at the top of every loop iteration. It's
+  # idempotent and cheap (stat + compare) when nothing changed.
+  [ -x "$SYNC_CMD" ] && "$SYNC_CMD" 2>/dev/null || true
+
+  # Wait for an avahi event, but bound the wait at IDLE_TIMEOUT so the
+  # sync loop above runs periodically even when the network is quiet.
+  EVENT=$(timeout "$IDLE_TIMEOUT" avahi-browse -apk 2>/dev/null | head -n 1) || true
 
   if [ -z "$EVENT" ]; then
-    # avahi-browse exited unexpectedly (avahi-daemon restarted, etc.)
-    # Wait and retry
-    sleep 5
+    # No event within the idle window — loop back to re-sync IPv6 state.
     continue
   fi
 
   # Debounce: devices announce multiple services at once (5-10 events in
   # quick succession). Wait for the burst to settle before running resolve.
   while true; do
-    # Try to read another event with a timeout
     NEXT=$(timeout "$DEBOUNCE_SEC" avahi-browse -apk 2>/dev/null | head -n 1) || true
     if [ -z "$NEXT" ]; then
-      # No events for DEBOUNCE_SEC seconds — burst is over
       break
     fi
-    # Got another event, keep waiting
   done
 
   # Burst settled — run full resolve
@@ -1454,6 +1672,12 @@ update_vpn_dns_config
 update_iptables
 enable_services
 create_cache_warmer
+# Seed the IPv6 sync state file with the current state so the watcher's
+# first tick doesn't misfire a transition. The sync script is a no-op
+# when state matches what's in /var/lib/bonjour-vpn/ipv6-state.
+if [ -x /usr/local/sbin/bonjour-vpn-ipv6-sync ]; then
+  /usr/local/sbin/bonjour-vpn-ipv6-sync 2>/dev/null || true
+fi
 verify_setup
 print_summary
 

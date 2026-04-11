@@ -565,6 +565,105 @@ run_server_tests() {
     else
       pass "modecfgdns is IPv4-only (regression guard for Libreswan INTERNAL_IP6_DNS bug)"
     fi
+
+    # ===== Phase 7: Adaptive IPv6 sync =====
+
+    # IPv6.9: sync script is installed and executable
+    if podman exec "$SERVER_NAME" test -x /usr/local/sbin/bonjour-vpn-ipv6-sync; then
+      pass "bonjour-vpn-ipv6-sync installed and executable"
+    else
+      fail "bonjour-vpn-ipv6-sync missing or not executable"
+    fi
+
+    # IPv6.10: watcher invokes the sync script
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'bonjour-vpn-ipv6-sync' /usr/local/bin/bonjour-vpn-watch 2>/dev/null"; then
+      pass "watcher references the IPv6 sync script"
+    else
+      fail "watcher does not reference the IPv6 sync script"
+    fi
+
+    # IPv6.11: initial state file created at install time and reflects dual-stack
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+      pass "initial IPv6 sync state file reflects dual-stack install"
+    else
+      fail "initial IPv6 sync state file missing or wrong"
+      echo "       state file content:"
+      podman exec "$SERVER_NAME" cat /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | sed 's/^/         /'
+    fi
+
+    # IPv6.12: running sync again is a no-op (idempotent) — state file unchanged
+    local state_before state_after
+    state_before=$(podman exec "$SERVER_NAME" sha256sum /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | awk '{print $1}')
+    podman exec "$SERVER_NAME" /usr/local/sbin/bonjour-vpn-ipv6-sync 2>/dev/null || true
+    state_after=$(podman exec "$SERVER_NAME" sha256sum /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | awk '{print $1}')
+    if [ -n "$state_before" ] && [ "$state_before" = "$state_after" ]; then
+      pass "sync script is idempotent (state file unchanged on re-run)"
+    else
+      fail "sync script is not idempotent"
+    fi
+
+    # IPv6.13: simulate a user DISABLING IPv6 after install (transition on->off).
+    # Remove the IPv6 range from rightaddresspool, run sync, verify teardown.
+    podman exec "$SERVER_NAME" bash -c '
+      /bin/cp -f /etc/ipsec.d/ikev2.conf /etc/ipsec.d/ikev2.conf.phase7-orig
+      sed -i "s|rightaddresspool=192.168.43.10-192.168.43.250,fddd:500:500:500::1000-fddd:500:500:500::1fff|rightaddresspool=192.168.43.10-192.168.43.250|" /etc/ipsec.d/ikev2.conf
+      /usr/local/sbin/bonjour-vpn-ipv6-sync
+      sleep 1
+    ' >/dev/null 2>&1
+
+    # After transition: state file should now say HAS_IPV6_SAVED=0
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'HAS_IPV6_SAVED=0' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+      pass "sync: user-removed IPv6 pool triggers state transition to off"
+    else
+      fail "sync: state file still shows HAS_IPV6_SAVED=1 after removal"
+    fi
+
+    # After transition: IPv6 address should be gone from loopback
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "ip -6 addr show dev lo 2>/dev/null | grep -q 'fddd:500:500:500::1/'"; then
+      pass "sync: IPv6 loopback address removed on teardown"
+    else
+      fail "sync: IPv6 loopback address still present after teardown"
+    fi
+
+    # After transition: ip6tables INPUT rule should be gone
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null"; then
+      pass "sync: ip6tables INPUT rule removed on teardown"
+    else
+      fail "sync: ip6tables INPUT rule still present after teardown"
+    fi
+
+    # IPv6.14: now RESTORE the IPv6 pool and verify sync re-applies (off->on)
+    podman exec "$SERVER_NAME" bash -c '
+      /bin/cp -f /etc/ipsec.d/ikev2.conf.phase7-orig /etc/ipsec.d/ikev2.conf
+      /usr/local/sbin/bonjour-vpn-ipv6-sync
+      sleep 1
+    ' >/dev/null 2>&1
+
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+      pass "sync: restoring IPv6 pool triggers state transition to on"
+    else
+      fail "sync: state file still shows HAS_IPV6_SAVED=0 after restore"
+    fi
+
+    if podman exec "$SERVER_NAME" bash -c \
+         "ip -6 addr show dev lo 2>/dev/null | grep -q 'fddd:500:500:500::1/'"; then
+      pass "sync: IPv6 loopback address re-added on apply"
+    else
+      fail "sync: IPv6 loopback address not re-added after apply"
+    fi
+
+    if podman exec "$SERVER_NAME" bash -c \
+         "ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null"; then
+      pass "sync: ip6tables INPUT rule re-added on apply"
+    else
+      fail "sync: ip6tables INPUT rule not re-added after apply"
+    fi
   fi
 }
 
