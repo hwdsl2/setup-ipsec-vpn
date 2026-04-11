@@ -35,6 +35,14 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+check_ip6() {
+  # Minimal IPv6 sanity check: must contain ":" and only hex/colon/dot chars.
+  # Full RFC 4291 validation is overkill; we only need to filter obviously
+  # invalid strings from parsed config files.
+  printf '%s' "$1" | tr -d '\n' | grep -Eq '^[0-9a-fA-F:]+$' && \
+  printf '%s' "$1" | grep -q ':'
+}
+
 check_root() {
   if [ "$(id -u)" != 0 ]; then
     exiterr "Script must be run as root. Try 'sudo bash $0'"
@@ -251,6 +259,53 @@ detect_l2tp_subnet() {
   else
     L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | grep -oP '^\d+\.\d+\.\d+')
     L2TP_SUBNET="${L2TP_SUBNET_PREFIX}.0/24"
+  fi
+}
+
+detect_vpn_ipv6() {
+  # Detect if the VPN has IPv6 enabled by checking for an IPv6 pool in
+  # rightaddresspool. Only IKEv2 mode supports IPv6 in this project.
+  #
+  # Pool format in ikev2.conf when IPv6 is enabled:
+  #   rightaddresspool=192.168.43.10-192.168.43.250,fddd:500:500:500::1000-fddd:500:500:500::1fff
+  #
+  # We extract:
+  #   VPN_POOL_IPV6          - the raw IPv6 range (start-end)
+  #   VPN_POOL_IPV6_START    - the first IP in the pool
+  #   VPN_SUBNET_IPV6        - the /64 subnet (derived from pool prefix)
+  #   VPN_SERVER_IP_IPV6     - the server's IPv6 address (first ::1 in the subnet)
+  #
+  # Sets HAS_IPV6=1 if a valid IPv6 pool is found, otherwise HAS_IPV6=0.
+  HAS_IPV6=0
+  VPN_POOL_IPV6=""
+  VPN_POOL_IPV6_START=""
+  VPN_SUBNET_IPV6=""
+  VPN_SERVER_IP_IPV6=""
+
+  if [ "$HAS_IKEV2" = 1 ] && [ -f "$IKEV2_CONF" ]; then
+    # Grab the rightaddresspool line, take the substring after the first comma
+    # (that's where the IPv6 range lives when present), then isolate the
+    # "start-end" form by cutting at whitespace.
+    VPN_POOL_IPV6=$(grep 'rightaddresspool=' "$IKEV2_CONF" | head -n 1 \
+      | sed 's/.*rightaddresspool=//' | tr -d '"' \
+      | awk -F, '{for (i=2; i<=NF; i++) print $i}' \
+      | awk '{print $1}' | grep ':' | head -n 1)
+  fi
+
+  if [ -n "$VPN_POOL_IPV6" ]; then
+    VPN_POOL_IPV6_START=$(printf '%s' "$VPN_POOL_IPV6" | cut -d '-' -f 1)
+    if check_ip6 "$VPN_POOL_IPV6_START"; then
+      # Derive the /64 subnet by keeping everything before the last 4 hex groups.
+      # Example: fddd:500:500:500::1000 -> fddd:500:500:500::/64
+      VPN_SUBNET_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
+        | sed -E 's/:[0-9a-fA-F]*$/::/; s/::+/::/')
+      # Build /64 from the prefix
+      VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6%::*}::/64"
+      # Server IP is ::1 in the pool's /64 (outside the client range)
+      VPN_SERVER_IP_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
+        | sed -E 's/:[0-9a-fA-F]*$/:1/')
+      HAS_IPV6=1
+    fi
   fi
 }
 
@@ -1227,6 +1282,7 @@ detect_server_lan_ip
 detect_lan_subnet
 detect_vpn_subnet
 detect_l2tp_subnet
+detect_vpn_ipv6
 parse_upstream_dns
 
 # Build VPN modes display for confirmation prompt
