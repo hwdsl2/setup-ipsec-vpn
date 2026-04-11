@@ -461,6 +461,17 @@ sudo bash extras/enable_bonjour.sh
 
 启用后，VPN 客户端必须断开并重新连接以接收更新的 DNS 设置。
 
+**IPv6 / 双栈支持：**
+
+如果你的 VPN 服务器启用了 [IPv6 支持](#ipv6-支持) 并且 IKEv2 客户端从 `rightaddresspool` 接收 IPv6 地址，该脚本会在 IPv4 管道旁自动设置 IPv6 mDNS 代理管道：
+
+- dnsmasq 同时监听 IPv4 和 IPv6 的 VPN 服务器地址。
+- ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb:5353`）并重定向到 dnsmasq。
+- 缓存预热器使用 A 和 AAAA 记录填充 `/etc/bonjour-vpn-hosts`，使得 VPN 客户端的 AAAA 查询可以解析本地设备的 IPv6 地址。
+- 后台状态同步脚本（`bonjour-vpn-ipv6-sync`，由监视器调用）会检测 VPN IPv6 配置的安装后更改，并自动协调 dnsmasq/ip6tables/环回状态。如果你在运行 `enable_bonjour.sh` *之后* 才在 VPN 上启用 IPv6，无需重新运行该脚本——监视器会在下一次循环（60 秒内）中自动识别。
+
+注意：该脚本不会在 IKEv2 `modecfgdns` 配置负载中推送 IPv6 DNS 服务器，因为 Libreswan 5.3（及更早版本）对 `INTERNAL_IP6_DNS` 的属性长度编码错误，strongSwan 客户端会拒绝格式错误的 IKE_AUTH 响应。IPv6 客户端通过查询 IPv4 VPN DNS 端点来解析 AAAA 记录——dnsmasq 无论请求来源的地址族如何都会返回 IPv6 答案，因此功能上没有损失。
+
 **客户端兼容性：**
 
 | 平台 | 说明 |
@@ -470,7 +481,7 @@ sudo bash extras/enable_bonjour.sh
 | Android | `.local` 主机名解析可用。完整的服务浏览取决于应用。 |
 | Linux | 如果客户端配置了 systemd-resolved 或 avahi，则可用。 |
 
-要禁用 Bonjour/mDNS 服务发现并恢复所有更改：
+要禁用 Bonjour/mDNS 服务发现并恢复所有更改（包括 IPv6 状态）：
 
 ```bash
 sudo bash extras/disable_bonjour.sh

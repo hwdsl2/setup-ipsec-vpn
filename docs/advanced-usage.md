@@ -462,6 +462,17 @@ The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https:/
 
 After enabling, VPN clients must disconnect and reconnect to receive the updated DNS settings.
 
+**IPv6 / dual-stack support:**
+
+If your VPN server has [IPv6 support](#ipv6-support) enabled and IKEv2 clients receive IPv6 addresses from `rightaddresspool`, the script automatically sets up the IPv6 mDNS proxy pipeline alongside the IPv4 one:
+
+- dnsmasq listens on both the IPv4 and IPv6 VPN server addresses.
+- An ip6tables DNAT rule captures IPv6 mDNS multicast (`ff02::fb:5353`) from IPv6 VPN clients and redirects it to dnsmasq.
+- The cache warmer populates `/etc/bonjour-vpn-hosts` with both A and AAAA records so AAAA queries from VPN clients resolve IPv6 addresses for local devices.
+- A background state-sync script (`bonjour-vpn-ipv6-sync`, called from the watcher) detects post-install changes to the VPN's IPv6 configuration and reconciles the dnsmasq/ip6tables/loopback state automatically. If you enable IPv6 on the VPN *after* running `enable_bonjour.sh`, you do not need to re-run the script — the watcher will pick it up on its next tick (within 60 seconds).
+
+Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. IPv6 clients resolve AAAA records by querying the IPv4 VPN DNS endpoint — dnsmasq returns IPv6 answers regardless of the source address family, so functionally there is no loss.
+
 **Client compatibility:**
 
 | Platform | Notes |
@@ -471,7 +482,7 @@ After enabling, VPN clients must disconnect and reconnect to receive the updated
 | Android | `.local` hostname resolution works. Full service browsing is app-dependent. |
 | Linux | Works if systemd-resolved or avahi is configured on the client. |
 
-To disable Bonjour/mDNS service discovery and revert all changes:
+To disable Bonjour/mDNS service discovery and revert all changes (including IPv6 state):
 
 ```bash
 sudo bash extras/disable_bonjour.sh
