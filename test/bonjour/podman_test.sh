@@ -664,6 +664,36 @@ run_server_tests() {
     else
       fail "sync: ip6tables INPUT rule not re-added after apply"
     fi
+
+    # IPv6.15: after sync off->on, dnsmasq is actually listening on the
+    # restored IPv6 address (validates that the listen-address rewrite in
+    # /etc/dnsmasq.d/bonjour-vpn.conf + dnsmasq restart worked end-to-end,
+    # not just that the config file was touched). This is the most
+    # important Phase 7 test — it's the one that would have caught the
+    # "bind-interfaces requires the IP to exist first" bug from Phase 2+3.
+    sleep 2  # give dnsmasq restart a moment to settle
+    if podman exec "$SERVER_NAME" bash -c \
+         "ss -ulnp 2>/dev/null | grep -E ':53 ' | grep -qE '\[fddd:500:500:500::1\]'"; then
+      pass "sync: dnsmasq is actually listening on the restored IPv6 address"
+    else
+      fail "sync: dnsmasq NOT listening on restored IPv6 address"
+      echo "       ss -ulnp :53 output:"
+      podman exec "$SERVER_NAME" bash -c "ss -ulnp 2>/dev/null | grep ':53 '" | sed 's/^/         /'
+    fi
+
+    # IPv6.16: a real DNS query to the restored IPv6 address returns an
+    # answer for testprinter.local. This proves the full pipeline works
+    # after a sync transition: dnsmasq listens on the IPv6 address AND
+    # the ip6tables INPUT rule allows the query to reach it.
+    local post_sync_aaaa
+    post_sync_aaaa=$(podman exec "$SERVER_NAME" bash -c \
+      "dig +short +time=3 @fddd:500:500:500::1 testprinter.local AAAA 2>/dev/null | grep -v '^;;'" \
+      2>/dev/null || true)
+    if [ -n "$post_sync_aaaa" ]; then
+      pass "sync: post-transition DNS query over IPv6 returns $post_sync_aaaa"
+    else
+      fail "sync: post-transition DNS query over IPv6 failed"
+    fi
   fi
 }
 
