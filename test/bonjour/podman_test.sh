@@ -314,7 +314,10 @@ setup_client() {
       openssl pkcs12 -in /tmp/vpnclient.p12 -nocerts -nodes -out /etc/swanctl/private/client.key -passin pass:
   '
 
-  # Write swanctl config on host, copy in
+  # Write swanctl config on host, copy in. We only request an IPv4 vip — the
+  # server-side IPv6 paths (dnsmasq listen, ip6tables, loopback, cache warmer)
+  # are validated through server-side assertions and the E2E AAAA lookup
+  # below (which works cross-family over the IPv4 tunnel).
   local tmp_conf="$WORKDIR/client-swanctl.conf"
   cat > "$tmp_conf" << EOF
 connections {
@@ -545,6 +548,23 @@ run_server_tests() {
     else
       fail "AAAA query for testprinter.local returned nothing"
     fi
+
+    # IPv6.8: Regression guard — modecfgdns MUST be IPv4-only. Libreswan <=5.3
+    # serializes INTERNAL_IP6_DNS with 17 bytes instead of the 16 bytes that
+    # RFC 5996 requires, and strongSwan clients reject the IKE_AUTH response
+    # with "invalid attribute length 17 for INTERNAL_IP6_DNS", breaking the
+    # tunnel entirely. If this test starts failing, it means someone added
+    # IPv6 DNS back into modecfgdns — which will silently brick strongSwan
+    # clients on dual-stack VPN servers.
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -E '^[[:space:]]*modecfgdns=' /etc/ipsec.d/ikev2.conf | grep -qE ':[0-9a-fA-F]*:'"; then
+      fail "modecfgdns contains IPv6 DNS — will break strongSwan clients (Libreswan bug)"
+      echo "       modecfgdns line:"
+      podman exec "$SERVER_NAME" grep -E '^[[:space:]]*modecfgdns=' /etc/ipsec.d/ikev2.conf 2>/dev/null \
+        | sed 's/^/         /'
+    else
+      pass "modecfgdns is IPv4-only (regression guard for Libreswan INTERNAL_IP6_DNS bug)"
+    fi
   fi
 }
 
@@ -603,6 +623,22 @@ run_e2e_tests() {
     pass "E2E upstream DNS (google.com -> $(echo "$r" | head -1))"
   else
     fail "E2E upstream DNS broken"
+  fi
+
+  # E2E Test 5 (dual-stack only): AAAA query over the IPv4 tunnel returns the
+  # IPv6 address from the cache warmer's hosts file. This proves the dnsmasq
+  # IPv6 listen+hosts pipeline works end-to-end from a VPN client's shell,
+  # even though the client itself negotiated an IPv4-only virtual IP.
+  if [ "$DUAL_STACK" = 1 ]; then
+    local e2e_aaaa
+    e2e_aaaa=$(podman exec "$CLIENT_NAME" bash -c \
+      "dig +short +time=3 @192.168.43.1 testprinter.local AAAA 2>/dev/null | grep -v '^;;'" \
+      2>/dev/null || true)
+    if [ -n "$e2e_aaaa" ]; then
+      pass "E2E AAAA lookup over tunnel (testprinter.local -> $e2e_aaaa)"
+    else
+      fail "E2E AAAA lookup over tunnel returned nothing"
+    fi
   fi
 }
 

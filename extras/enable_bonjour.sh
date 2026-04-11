@@ -645,6 +645,14 @@ EOF
 
 update_vpn_dns_config() {
   bigecho "Updating VPN DNS configuration..."
+  # NOTE: We intentionally do NOT push IPv6 DNS entries in modecfgdns. On
+  # Libreswan up through 5.3, the INTERNAL_IP6_DNS config-payload attribute
+  # is serialized with 17 bytes instead of the 16 bytes mandated by
+  # RFC 5996, and strongSwan clients reject the IKE_AUTH response with
+  # "invalid attribute length 17 for INTERNAL_IP6_DNS", breaking the tunnel
+  # completely. IPv6 mDNS proxying still works via the IPv4 DNS endpoint —
+  # VPN clients resolve AAAA records against the IPv4 VPN_SERVER_IP and get
+  # fddd:500:500:500:* answers back unchanged.
   # --- IKEv2 ---
   if [ "$HAS_IKEV2" = 1 ]; then
     echo "  Updating IKEv2 config ($IKEV2_CONF)..."
