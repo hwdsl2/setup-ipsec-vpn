@@ -501,6 +501,30 @@ run_server_tests() {
       echo "       ss -ulnp :53 output:"
       podman exec "$SERVER_NAME" bash -c "ss -ulnp 2>/dev/null | grep ':53 '" | sed 's/^/         /'
     fi
+
+    # IPv6.4: ip6tables INPUT rule for DNS from IPv6 VPN subnet
+    if podman exec "$SERVER_NAME" bash -c '
+      vpn6=$(grep rightaddresspool /etc/ipsec.d/ikev2.conf | head -1 \
+        | sed "s/.*rightaddresspool=//; s/\"//g" \
+        | awk -F, "{print \$2}" | cut -d- -f1)
+      [ -z "$vpn6" ] && exit 1
+      prefix=$(printf "%s" "$vpn6" | sed -E "s/:[0-9a-fA-F]*\$/::/; s/::+/::/")
+      prefix="${prefix%::*}::/64"
+      ip6tables -C INPUT -s "$prefix" -p udp --dport 53 -j ACCEPT 2>/dev/null
+    '; then
+      pass "ip6tables INPUT rule for IPv6 VPN subnet active"
+    else
+      fail "ip6tables INPUT rule for IPv6 VPN subnet missing"
+    fi
+
+    # IPv6.5: ip6tables NAT PREROUTING DNAT for mDNS multicast (ff02::fb)
+    if podman exec "$SERVER_NAME" bash -c "ip6tables -t nat -L PREROUTING -n 2>/dev/null | grep -qi 'ff02::fb.*dpt:5353'"; then
+      pass "ip6tables DNAT for IPv6 mDNS multicast active"
+    else
+      fail "ip6tables DNAT for IPv6 mDNS multicast missing"
+      echo "       PREROUTING chain:"
+      podman exec "$SERVER_NAME" ip6tables -t nat -L PREROUTING -n 2>/dev/null | sed 's/^/         /'
+    fi
   fi
 }
 

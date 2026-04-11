@@ -761,8 +761,11 @@ update_iptables() {
     || [ "$os_type" = "alpine" ]; then
     IPT_FILE=/etc/iptables.rules
     IPT_FILE2=/etc/iptables/rules.v4
+    IPT6_FILE=/etc/ip6tables.rules
+    IPT6_FILE2=/etc/iptables/rules.v6
   else
     IPT_FILE=/etc/sysconfig/iptables
+    IPT6_FILE=/etc/sysconfig/ip6tables
   fi
   # Add rules for IKEv2/XAuth subnet (they share the same subnet)
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
@@ -796,6 +799,33 @@ update_iptables() {
       iptables -t nat -I PREROUTING -s "$L2TP_SUBNET" -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination "${L2TP_SERVER_IP}:53"
     fi
   fi
+  # ===== IPv6 rules =====
+  # Only apply if the VPN has IPv6 enabled AND ip6tables is actually usable.
+  # Some kernels/containers lack ip6_tables or nf_nat_ipv6 — in that case
+  # we log a warning and skip the IPv6 rules rather than failing the install.
+  if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SUBNET_IPV6" ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
+    if ip6tables -t nat -L PREROUTING -n >/dev/null 2>&1; then
+      # INPUT: allow DNS from the IPv6 VPN subnet
+      if ! ip6tables -C INPUT -s "$VPN_SUBNET_IPV6" -p udp --dport 53 -j ACCEPT 2>/dev/null; then
+        ip6tables -I INPUT 1 -s "$VPN_SUBNET_IPV6" -p udp --dport 53 -j ACCEPT
+      fi
+      if ! ip6tables -C INPUT -s "$VPN_SUBNET_IPV6" -p tcp --dport 53 -j ACCEPT 2>/dev/null; then
+        ip6tables -I INPUT 1 -s "$VPN_SUBNET_IPV6" -p tcp --dport 53 -j ACCEPT
+      fi
+      if ! ip6tables -C INPUT -s "$VPN_SUBNET_IPV6" -p udp --dport 5353 -j ACCEPT 2>/dev/null; then
+        ip6tables -I INPUT 1 -s "$VPN_SUBNET_IPV6" -p udp --dport 5353 -j ACCEPT
+      fi
+      # mDNS capture: redirect multicast mDNS (ff02::fb) from VPN clients to dnsmasq.
+      # ff02::fb is the link-local mDNS multicast group (RFC 6762). IPv6 mDNS
+      # clients send queries here; our DNAT captures them and forwards to dnsmasq
+      # listening on the VPN server IPv6 address.
+      if ! ip6tables -t nat -C PREROUTING -s "$VPN_SUBNET_IPV6" -d ff02::fb -p udp --dport 5353 -j DNAT --to-destination "[${VPN_SERVER_IP_IPV6}]:53" 2>/dev/null; then
+        ip6tables -t nat -I PREROUTING -s "$VPN_SUBNET_IPV6" -d ff02::fb -p udp --dport 5353 -j DNAT --to-destination "[${VPN_SERVER_IP_IPV6}]:53"
+      fi
+    else
+      echo "  Note: ip6tables nat table not available; skipping IPv6 rules" >&2
+    fi
+  fi
   # Save iptables rules
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] \
     || [ "$os_type" = "alpine" ]; then
@@ -805,6 +835,18 @@ update_iptables() {
     fi
   else
     iptables-save > "$IPT_FILE"
+  fi
+  # Save ip6tables rules if IPv6 was configured
+  if [ "$HAS_IPV6" = 1 ] && command -v ip6tables-save >/dev/null 2>&1; then
+    if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ] \
+      || [ "$os_type" = "alpine" ]; then
+      ip6tables-save > "$IPT6_FILE" 2>/dev/null || true
+      if [ -f "$IPT6_FILE2" ]; then
+        /bin/cp -f "$IPT6_FILE" "$IPT6_FILE2" 2>/dev/null || true
+      fi
+    else
+      ip6tables-save > "$IPT6_FILE" 2>/dev/null || true
+    fi
   fi
 }
 
