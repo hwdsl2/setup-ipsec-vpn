@@ -769,6 +769,55 @@ ANSWERS
     fail "disable: ikev2.conf NOT restored"
   fi
 
+  # ===== Phase 8: IPv6 cleanup on disable (dual-stack only) =====
+  if [ "$DUAL_STACK" = 1 ]; then
+    # Disable: IPv6 sync script must be removed
+    if ! podman exec "$SERVER_NAME" test -f /usr/local/sbin/bonjour-vpn-ipv6-sync; then
+      pass "disable: bonjour-vpn-ipv6-sync removed"
+    else
+      fail "disable: bonjour-vpn-ipv6-sync still present"
+    fi
+
+    # Disable: state directory must be removed
+    if ! podman exec "$SERVER_NAME" test -d /var/lib/bonjour-vpn; then
+      pass "disable: /var/lib/bonjour-vpn directory removed"
+    else
+      fail "disable: /var/lib/bonjour-vpn still present"
+    fi
+
+    # Disable: IPv6 server address removed from loopback
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "ip -6 addr show dev lo 2>/dev/null | grep -q 'fddd:500:500:500::1/'"; then
+      pass "disable: IPv6 VPN server IP removed from loopback"
+    else
+      fail "disable: IPv6 VPN server IP still on loopback"
+    fi
+
+    # Disable: ip6tables INPUT rule removed
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null"; then
+      pass "disable: ip6tables INPUT rule removed"
+    else
+      fail "disable: ip6tables INPUT rule still active"
+    fi
+
+    # Disable: ip6tables PREROUTING DNAT removed
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "ip6tables -t nat -C PREROUTING -s fddd:500:500:500::/64 -d ff02::fb -p udp --dport 5353 -j DNAT --to-destination '[fddd:500:500:500::1]:53' 2>/dev/null"; then
+      pass "disable: ip6tables mDNS DNAT removed"
+    else
+      fail "disable: ip6tables mDNS DNAT still active"
+    fi
+
+    # Disable: rc.local IPv6 line removed (if present)
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'ip -6 addr add fddd' /etc/rc.local 2>/dev/null"; then
+      pass "disable: IPv6 rc.local entry removed"
+    else
+      fail "disable: IPv6 rc.local entry still present"
+    fi
+  fi
+
   # Re-enable
   podman exec "$SERVER_NAME" bash -c 'bash /tmp/enable_bonjour.sh <<ANSWERS >/dev/null 2>&1
 y
@@ -779,6 +828,23 @@ ANSWERS
     pass "re-enable: dnsmasq running again"
   else
     fail "re-enable: dnsmasq NOT running"
+  fi
+
+  # Dual-stack only: re-enable must re-install the IPv6 sync script and
+  # restore the state file so the sync watcher picks up from here again.
+  if [ "$DUAL_STACK" = 1 ]; then
+    if podman exec "$SERVER_NAME" test -x /usr/local/sbin/bonjour-vpn-ipv6-sync; then
+      pass "re-enable: IPv6 sync script reinstalled"
+    else
+      fail "re-enable: IPv6 sync script NOT reinstalled"
+    fi
+
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+      pass "re-enable: IPv6 state file restored to dual-stack"
+    else
+      fail "re-enable: IPv6 state file missing or not dual-stack"
+    fi
   fi
 }
 
