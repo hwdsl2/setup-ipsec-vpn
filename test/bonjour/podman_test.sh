@@ -525,6 +525,26 @@ run_server_tests() {
       echo "       PREROUTING chain:"
       podman exec "$SERVER_NAME" ip6tables -t nat -L PREROUTING -n 2>/dev/null | sed 's/^/         /'
     fi
+
+    # IPv6.6: /etc/bonjour-vpn-hosts contains IPv6 entries for the test device
+    if podman exec "$SERVER_NAME" bash -c "grep -qE '^2001:db8' /etc/bonjour-vpn-hosts 2>/dev/null"; then
+      pass "hosts file contains IPv6 entries from cache warmer"
+    else
+      fail "hosts file has NO IPv6 entries"
+      echo "       bonjour-vpn-hosts content:"
+      podman exec "$SERVER_NAME" head -20 /etc/bonjour-vpn-hosts 2>/dev/null | sed 's/^/         /'
+    fi
+
+    # IPv6.7: cross-family AAAA query over IPv4 returns the IPv6 address
+    local aaaa
+    aaaa=$(podman exec "$SERVER_NAME" bash -c \
+      "dig +short +time=3 @${VPN_DNS_IP} testprinter.local AAAA 2>/dev/null" \
+      2>/dev/null | grep -v '^;;' || true)
+    if [ -n "$aaaa" ]; then
+      pass "AAAA query returns IPv6 for testprinter.local ($aaaa)"
+    else
+      fail "AAAA query for testprinter.local returned nothing"
+    fi
   fi
 }
 

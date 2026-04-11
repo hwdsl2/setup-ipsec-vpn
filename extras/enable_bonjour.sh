@@ -884,18 +884,34 @@ if [ -z "$BROWSE_OUTPUT" ]; then
   exit 0
 fi
 
-RESOLVED=$(printf '%s\n' "$BROWSE_OUTPUT" | grep '^=;' | grep ';IPv4;' || true)
+# Keep both IPv4 and IPv6 resolved entries. avahi-browse outputs each
+# resolved service once per protocol (IPv4 or IPv6) and once per address
+# it knows about, so the same hostname can appear with both an A record
+# and an AAAA record — which is exactly what we want for dnsmasq's
+# addn-hosts (it serves A for IPv4 addresses and AAAA for IPv6).
+RESOLVED=$(printf '%s\n' "$BROWSE_OUTPUT" | grep '^=;' || true)
 [ -z "$RESOLVED" ] && exit 0
 
 # --- Generate hosts file (hostname -> IP) for addn-hosts ---
+# addn-hosts accepts both IPv4 and IPv6 entries in the same file. dnsmasq
+# automatically serves A records from IPv4 entries and AAAA records from
+# IPv6 entries. We deduplicate by (address, host) pair so a hostname that
+# has both IPv4 and IPv6 addresses yields two lines in the hosts file.
 printf '%s\n' "$RESOLVED" | awk -F';' '{
   addr=$8; host=$7
-  if (addr != "" && host != "" && addr !~ /:/) {
+  if (addr != "" && host != "") {
+    # Strip IPv6 zone suffix like "fe80::1%eth0" — dnsmasq does not accept
+    # scoped addresses in addn-hosts. Link-local addresses on the LAN are
+    # not routable to VPN clients anyway, so dropping them is safe.
+    sub(/%[^ ]*/, "", addr)
     gsub(/[ \t]+$/, "", host)
     gsub(/[ \t]+$/, "", addr)
-    if (!seen[host]++) print addr " " host
+    # Skip IPv6 link-local (fe80::/10) — not useful to VPN clients.
+    if (addr ~ /^fe80:/ || addr ~ /^fe[89ab][0-9a-f]:/) next
+    key = addr SUBSEP host
+    if (!seen[key]++) print addr " " host
   }
-}' | sort -t' ' -k2 > "$HOSTS_TMP"
+}' | sort > "$HOSTS_TMP"
 
 if [ -s "$HOSTS_TMP" ]; then
   mv -f "$HOSTS_TMP" "$HOSTS_FILE"
