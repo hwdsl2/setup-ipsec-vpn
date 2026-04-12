@@ -1219,8 +1219,10 @@ if [ "$CHANGED" = 1 ]; then
     rc-service dnsmasq restart 2>/dev/null || true
   fi
   # Save updated ip6tables rules for persistence across reboots.
-  # Use the OS-specific path, matching the convention in enable_bonjour.sh.
-  if [ "$HAS_IPV6" = 1 ] && command -v ip6tables-save >/dev/null 2>&1; then
+  # Must run on BOTH apply (HAS_IPV6=1) and teardown (HAS_IPV6=0) —
+  # teardown deletes rules from the running kernel, and the save file
+  # must reflect that deletion so stale rules don't return after reboot.
+  if command -v ip6tables-save >/dev/null 2>&1; then
     if [ "$SYNC_OS_TYPE" = "alpine" ]; then
       ip6tables-save > /etc/ip6tables.rules 2>/dev/null || true
     elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ]; then

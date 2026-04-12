@@ -637,6 +637,21 @@ run_server_tests() {
       fail "sync: ip6tables INPUT rule still present after teardown"
     fi
 
+    # After transition: the ip6tables SAVE FILE must not contain our
+    # bonjour-specific rules (INPUT dpt:53/5353, PREROUTING DNAT ff02::fb).
+    # The VPN's own FORWARD/MASQUERADE rules for the IPv6 subnet are NOT
+    # ours — they're managed by vpnsetup.sh and should persist.
+    if ! podman exec "$SERVER_NAME" bash -c \
+         "grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -qE 'dpt:53|ff02::fb'"; then
+      pass "sync: ip6tables save file has no bonjour rules after teardown (reboot-safe)"
+    else
+      fail "sync: ip6tables save file still contains stale bonjour rules"
+      echo "       Stale bonjour rules would return after reboot:"
+      podman exec "$SERVER_NAME" bash -c \
+        "grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -E 'dpt:53|ff02::fb'" \
+        | sed 's/^/         /'
+    fi
+
     # IPv6.14: now RESTORE the IPv6 pool and verify sync re-applies (off->on)
     podman exec "$SERVER_NAME" bash -c '
       /bin/cp -f /etc/ipsec.d/ikev2.conf.phase7-orig /etc/ipsec.d/ikev2.conf
