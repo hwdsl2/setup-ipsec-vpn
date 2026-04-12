@@ -131,7 +131,7 @@ detect_vpn_server_ip() {
     VPN_SERVER_IP="192.168.43.1"
   fi
   # Derive IKEv2/XAuth subnet
-  VPN_SUBNET_PREFIX=$(printf '%s' "$VPN_SERVER_IP" | grep -oP '^\d+\.\d+\.\d+')
+  VPN_SUBNET_PREFIX=$(printf '%s' "$VPN_SERVER_IP" | cut -d. -f1-3)
   VPN_SUBNET="${VPN_SUBNET_PREFIX}.0/24"
   # Pull IPv6 subnet info from the sync state file if present — this is the
   # authoritative source because the sync script may have applied an IPv6
@@ -149,26 +149,28 @@ detect_vpn_server_ip() {
   fi
   # If we have an IPv6 server IP but no subnet, derive a /64 from it.
   if [ -n "$VPN_SERVER_IP_IPV6" ] && [ -z "$VPN_SUBNET_IPV6" ]; then
-    VPN_SUBNET_IPV6=$(printf '%s' "$VPN_SERVER_IP_IPV6" \
-      | sed -E 's/:[0-9a-fA-F]*$/::/; s/::+/::/')
-    VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6%::*}::/64"
+    if printf '%s' "$VPN_SERVER_IP_IPV6" | grep -q '::'; then
+      VPN_SUBNET_IPV6="$(printf '%s' "$VPN_SERVER_IP_IPV6" | sed 's/::.*//')::/64"
+    else
+      VPN_SUBNET_IPV6="$(printf '%s' "$VPN_SERVER_IP_IPV6" | cut -d: -f1-4)::/64"
+    fi
   fi
   # Derive L2TP subnet if detected
   if [ -n "$L2TP_SERVER_IP" ]; then
-    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | grep -oP '^\d+\.\d+\.\d+')
+    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | cut -d. -f1-3)
     L2TP_SUBNET="${L2TP_SUBNET_PREFIX}.0/24"
   else
     # Try to detect from xl2tpd.conf (backed up or current)
     XL2TPD_CONF="/etc/xl2tpd/xl2tpd.conf"
     if [ -f "${XL2TPD_CONF}.bak.bonjour-vpn" ]; then
-      L2TP_SERVER_IP=$(grep -oP 'local ip\s*=\s*\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' \
-        "${XL2TPD_CONF}.bak.bonjour-vpn" | head -n 1)
+      L2TP_SERVER_IP=$(grep 'local ip' "${XL2TPD_CONF}.bak.bonjour-vpn" \
+        | head -n 1 | sed 's/.*=\s*//' | tr -d '[:space:]')
     elif [ -f "$XL2TPD_CONF" ]; then
-      L2TP_SERVER_IP=$(grep -oP 'local ip\s*=\s*\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' \
-        "$XL2TPD_CONF" | head -n 1)
+      L2TP_SERVER_IP=$(grep 'local ip' "$XL2TPD_CONF" \
+        | head -n 1 | sed 's/.*=\s*//' | tr -d '[:space:]')
     fi
     if [ -n "$L2TP_SERVER_IP" ] && [ "$L2TP_SERVER_IP" != "$VPN_SERVER_IP" ]; then
-      L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | grep -oP '^\d+\.\d+\.\d+')
+      L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | cut -d. -f1-3)
       L2TP_SUBNET="${L2TP_SUBNET_PREFIX}.0/24"
     else
       L2TP_SERVER_IP=""

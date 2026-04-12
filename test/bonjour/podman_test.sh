@@ -585,7 +585,7 @@ run_server_tests() {
 
     # IPv6.11: initial state file created at install time and reflects dual-stack
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
       pass "initial IPv6 sync state file reflects dual-stack install"
     else
       fail "initial IPv6 sync state file missing or wrong"
@@ -613,12 +613,12 @@ run_server_tests() {
       sleep 1
     ' >/dev/null 2>&1
 
-    # After transition: state file should now say HAS_IPV6_SAVED=0
+    # After transition: state file should now say HAS_IPV6_SAVED=.0.
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=0' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+         "grep -q 'HAS_IPV6_SAVED=.0.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
       pass "sync: user-removed IPv6 pool triggers state transition to off"
     else
-      fail "sync: state file still shows HAS_IPV6_SAVED=1 after removal"
+      fail "sync: state file still shows HAS_IPV6_SAVED=.1. after removal"
     fi
 
     # After transition: IPv6 address should be gone from loopback
@@ -645,10 +645,10 @@ run_server_tests() {
     ' >/dev/null 2>&1
 
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
       pass "sync: restoring IPv6 pool triggers state transition to on"
     else
-      fail "sync: state file still shows HAS_IPV6_SAVED=0 after restore"
+      fail "sync: state file still shows HAS_IPV6_SAVED=.0. after restore"
     fi
 
     if podman exec "$SERVER_NAME" bash -c \
@@ -870,7 +870,7 @@ ANSWERS
     fi
 
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=1' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
       pass "re-enable: IPv6 state file restored to dual-stack"
     else
       fail "re-enable: IPv6 state file missing or not dual-stack"

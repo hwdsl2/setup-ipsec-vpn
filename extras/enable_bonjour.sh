@@ -295,12 +295,15 @@ detect_vpn_ipv6() {
   if [ -n "$VPN_POOL_IPV6" ]; then
     VPN_POOL_IPV6_START=$(printf '%s' "$VPN_POOL_IPV6" | cut -d '-' -f 1)
     if check_ip6 "$VPN_POOL_IPV6_START"; then
-      # Derive the /64 subnet by keeping everything before the last 4 hex groups.
-      # Example: fddd:500:500:500::1000 -> fddd:500:500:500::/64
-      VPN_SUBNET_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
-        | sed -E 's/:[0-9a-fA-F]*$/::/; s/::+/::/')
-      # Build /64 from the prefix
-      VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6%::*}::/64"
+      # Derive the /64 subnet from the pool start address. For compressed
+      # form (fddd:500:500:500::1000) take everything before "::"; for
+      # expanded form (fddd:500:500:500:0:0:0:1000) take the first 4
+      # colon-separated groups. Both yield fddd:500:500:500::/64.
+      if printf '%s' "$VPN_POOL_IPV6_START" | grep -q '::'; then
+        VPN_SUBNET_IPV6="$(printf '%s' "$VPN_POOL_IPV6_START" | sed 's/::.*//')::/64"
+      else
+        VPN_SUBNET_IPV6="$(printf '%s' "$VPN_POOL_IPV6_START" | cut -d: -f1-4)::/64"
+      fi
       # Server IP is ::1 in the pool's /64 (outside the client range)
       VPN_SERVER_IP_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
         | sed -E 's/:[0-9a-fA-F]*$/:1/')
@@ -558,7 +561,7 @@ assign_vpn_server_ip() {
   # For IKEv2/XAuth: add VPN_SERVER_IP to loopback (needed as dnsmasq listen address)
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
     bigecho "Assigning VPN server IP ($VPN_SERVER_IP) to loopback..."
-    if ! ip addr show dev lo 2>/dev/null | grep -q "$VPN_SERVER_IP"; then
+    if ! ip addr show dev lo 2>/dev/null | grep -q "${VPN_SERVER_IP}/"; then
       ip addr add "${VPN_SERVER_IP}/32" dev lo || exiterr "Failed to add $VPN_SERVER_IP to loopback."
     fi
     # Make it persistent via /etc/rc.local
@@ -567,7 +570,7 @@ assign_vpn_server_ip() {
       RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
       mkdir -p /etc/local.d
 cat > "$RC_LOCAL_ALPINE" <<EOF
-#!/bin/bash
+#!/bin/sh
 # Added by enable_bonjour.sh - Bonjour/mDNS VPN support
 ip addr add ${VPN_SERVER_IP}/32 dev lo 2>/dev/null
 EOF
@@ -587,7 +590,7 @@ EOF
         fi
       else
 cat > "$RC_LOCAL" <<EOF
-#!/bin/bash
+#!/bin/sh
 
 # Added by enable_bonjour.sh - Bonjour/mDNS VPN support
 ip addr add ${VPN_SERVER_IP}/32 dev lo 2>/dev/null
@@ -601,20 +604,20 @@ EOF
   # xl2tpd only assigns this IP to ppp interfaces when clients connect.
   # dnsmasq needs it always available to bind to.
   if [ "$HAS_L2TP" = 1 ] && [ -n "$L2TP_SERVER_IP" ]; then
-    if ! ip addr show dev lo 2>/dev/null | grep -q "$L2TP_SERVER_IP"; then
+    if ! ip addr show dev lo 2>/dev/null | grep -q "${L2TP_SERVER_IP}/"; then
       bigecho "Assigning L2TP server IP ($L2TP_SERVER_IP) to loopback..."
       ip addr add "${L2TP_SERVER_IP}/32" dev lo || exiterr "Failed to add $L2TP_SERVER_IP to loopback."
     fi
     # Persist in rc.local / local.d alongside the IKEv2/XAuth IP
     if [ "$os_type" = "alpine" ]; then
       RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
-      if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "$L2TP_SERVER_IP" "$RC_LOCAL_ALPINE"; then
+      if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "${L2TP_SERVER_IP}/32" "$RC_LOCAL_ALPINE"; then
         sed -i "$ a ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL_ALPINE"
       fi
     else
       RC_LOCAL="/etc/rc.local"
-      if [ -f "$RC_LOCAL" ] && ! grep -q "$L2TP_SERVER_IP" "$RC_LOCAL"; then
-        sed --follow-symlinks -i "/exit 0/i ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL"
+      if [ -f "$RC_LOCAL" ] && ! grep -q "${L2TP_SERVER_IP}/32" "$RC_LOCAL"; then
+        sed --follow-symlinks -i "/^exit 0$/i ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL"
       fi
     fi
   fi
@@ -622,7 +625,7 @@ EOF
   # requires the address to exist before the service starts. Must match the
   # listen-address entry added by configure_dnsmasq().
   if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
-    if ! ip -6 addr show dev lo 2>/dev/null | grep -q "$VPN_SERVER_IP_IPV6"; then
+    if ! ip -6 addr show dev lo 2>/dev/null | grep -q "${VPN_SERVER_IP_IPV6}/"; then
       bigecho "Assigning VPN server IPv6 ($VPN_SERVER_IP_IPV6) to loopback..."
       ip -6 addr add "${VPN_SERVER_IP_IPV6}/128" dev lo \
         || exiterr "Failed to add $VPN_SERVER_IP_IPV6 to loopback."
@@ -630,14 +633,14 @@ EOF
     # Persist
     if [ "$os_type" = "alpine" ]; then
       RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
-      if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "$VPN_SERVER_IP_IPV6" "$RC_LOCAL_ALPINE"; then
+      if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "${VPN_SERVER_IP_IPV6}/128" "$RC_LOCAL_ALPINE"; then
         sed -i "$ a ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL_ALPINE"
       fi
     else
       RC_LOCAL="/etc/rc.local"
-      if [ -f "$RC_LOCAL" ] && ! grep -q "$VPN_SERVER_IP_IPV6" "$RC_LOCAL"; then
+      if [ -f "$RC_LOCAL" ] && ! grep -q "${VPN_SERVER_IP_IPV6}/128" "$RC_LOCAL"; then
         sed --follow-symlinks -i \
-          "/exit 0/i ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL"
+          "/^exit 0$/i ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL"
       fi
     fi
   fi
@@ -1052,9 +1055,11 @@ fi
 if [ -n "$VPN_POOL_IPV6" ]; then
   VPN_POOL_IPV6_START=$(printf '%s' "$VPN_POOL_IPV6" | cut -d '-' -f 1)
   if check_ip6 "$VPN_POOL_IPV6_START"; then
-    VPN_SUBNET_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
-      | sed -E 's/:[0-9a-fA-F]*$/::/; s/::+/::/')
-    VPN_SUBNET_IPV6="${VPN_SUBNET_IPV6%::*}::/64"
+    if printf '%s' "$VPN_POOL_IPV6_START" | grep -q '::'; then
+      VPN_SUBNET_IPV6="$(printf '%s' "$VPN_POOL_IPV6_START" | sed 's/::.*//')::/64"
+    else
+      VPN_SUBNET_IPV6="$(printf '%s' "$VPN_POOL_IPV6_START" | cut -d: -f1-4)::/64"
+    fi
     VPN_SERVER_IP_IPV6=$(printf '%s' "$VPN_POOL_IPV6_START" \
       | sed -E 's/:[0-9a-fA-F]*$/:1/')
     HAS_IPV6=1
@@ -1126,17 +1131,17 @@ apply_ipv6() {
   local new_subnet="$2"
   [ -z "$new_ip" ] || [ -z "$new_subnet" ] && return 0
   # Loopback assignment
-  if ! ip -6 addr show dev lo 2>/dev/null | grep -q "$new_ip"; then
+  if ! ip -6 addr show dev lo 2>/dev/null | grep -q "${new_ip}/"; then
     ip -6 addr add "${new_ip}/128" dev lo 2>/dev/null || return 1
   fi
   # Persistence
   if [ -f /etc/rc.local ]; then
-    if ! grep -q "$new_ip" /etc/rc.local 2>/dev/null; then
-      sed -i "/^exit 0/i ip -6 addr add ${new_ip}/128 dev lo 2>/dev/null" /etc/rc.local 2>/dev/null || true
+    if ! grep -q "${new_ip}/128" /etc/rc.local 2>/dev/null; then
+      sed -i "/^exit 0$/i ip -6 addr add ${new_ip}/128 dev lo 2>/dev/null" /etc/rc.local 2>/dev/null || true
     fi
   fi
   if [ -f /etc/local.d/bonjour-vpn.start ]; then
-    if ! grep -q "$new_ip" /etc/local.d/bonjour-vpn.start 2>/dev/null; then
+    if ! grep -q "${new_ip}/128" /etc/local.d/bonjour-vpn.start 2>/dev/null; then
       printf 'ip -6 addr add %s/128 dev lo 2>/dev/null\n' "$new_ip" \
         >> /etc/local.d/bonjour-vpn.start
     fi
@@ -1181,10 +1186,10 @@ fi
 mkdir -p /var/lib/bonjour-vpn
 cat > "$STATE_FILE" <<STATE
 # Auto-generated by bonjour-vpn-ipv6-sync - do not edit
-HAS_IPV6_SAVED=${HAS_IPV6}
-VPN_POOL_IPV6_SAVED=${VPN_POOL_IPV6}
-VPN_SERVER_IP_IPV6_SAVED=${VPN_SERVER_IP_IPV6}
-VPN_SUBNET_IPV6_SAVED=${VPN_SUBNET_IPV6}
+HAS_IPV6_SAVED='${HAS_IPV6}'
+VPN_POOL_IPV6_SAVED='${VPN_POOL_IPV6}'
+VPN_SERVER_IP_IPV6_SAVED='${VPN_SERVER_IP_IPV6}'
+VPN_SUBNET_IPV6_SAVED='${VPN_SUBNET_IPV6}'
 STATE
 chmod 600 "$STATE_FILE" 2>/dev/null || true
 
@@ -1234,36 +1239,33 @@ IDLE_TIMEOUT=60
 [ -x "$SYNC_CMD" ] && "$SYNC_CMD" 2>/dev/null || true
 "$RESOLVE_CMD"
 
-# Watch for service changes. avahi-browse without -t runs continuously,
-# outputting +/- lines as services appear and disappear.
+# Watch for service changes using a single long-running avahi-browse
+# process. Uses `read -t` for both idle timeout (IPv6 sync) and debounce,
+# avoiding the overhead of spawning a new avahi-browse per event.
 # -a = all services, -p = parseable, -k = no db lookup (raw type names)
-# NOT using -r (resolve) here — the watcher only needs to detect changes,
-# not resolve details. The full resolve script handles that.
 while true; do
-  # Re-run the IPv6 sync at the top of every loop iteration. It's
-  # idempotent and cheap (stat + compare) when nothing changed.
+  # Re-run the IPv6 sync before entering the browse loop. Idempotent and
+  # cheap (stat + compare) when nothing changed.
   [ -x "$SYNC_CMD" ] && "$SYNC_CMD" 2>/dev/null || true
 
-  # Wait for an avahi event, but bound the wait at IDLE_TIMEOUT so the
-  # sync loop above runs periodically even when the network is quiet.
-  EVENT=$(timeout "$IDLE_TIMEOUT" avahi-browse -apk 2>/dev/null | head -n 1) || true
-
-  if [ -z "$EVENT" ]; then
-    # No event within the idle window — loop back to re-sync IPv6 state.
-    continue
-  fi
-
-  # Debounce: devices announce multiple services at once (5-10 events in
-  # quick succession). Wait for the burst to settle before running resolve.
-  while true; do
-    NEXT=$(timeout "$DEBOUNCE_SEC" avahi-browse -apk 2>/dev/null | head -n 1) || true
-    if [ -z "$NEXT" ]; then
+  # Start a persistent browse. The process outputs +/- lines continuously
+  # as services appear and disappear. We read from it with timeouts.
+  avahi-browse -apk 2>/dev/null | while true; do
+    # Wait up to IDLE_TIMEOUT for an event. If none, break out to the
+    # outer loop so the IPv6 sync runs again.
+    if ! read -r -t "$IDLE_TIMEOUT" EVENT; then
       break
     fi
-  done
 
-  # Burst settled — run full resolve
-  "$RESOLVE_CMD"
+    # Got an event — debounce: keep reading until the burst settles
+    # (no new events for DEBOUNCE_SEC seconds).
+    while read -r -t "$DEBOUNCE_SEC" _NEXT; do
+      : # drain burst events
+    done
+
+    # Burst settled — run full resolve
+    "$RESOLVE_CMD"
+  done
 done
 WATCHER_EOF
   chmod +x "$WATCHER_SCRIPT"
