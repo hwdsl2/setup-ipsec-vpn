@@ -225,8 +225,9 @@ detect_vpn_subnet() {
     VPN_SUBNET="${VPN_SUBNET_PREFIX}.0/24"
     VPN_SERVER_IP="${VPN_SUBNET_PREFIX}.1"
   else
-    VPN_SUBNET="192.168.43.0/24"
-    VPN_SERVER_IP="192.168.43.1"
+    VPN_SUBNET_PREFIX="192.168.43"
+    VPN_SUBNET="${VPN_SUBNET_PREFIX}.0/24"
+    VPN_SERVER_IP="${VPN_SUBNET_PREFIX}.1"
   fi
   # If another DNS server will conflict on port 53 for this IP,
   # use .2 instead of .1 (outside the default pool range of .10-.250)
@@ -1021,17 +1022,33 @@ cat > "$SYNC_SCRIPT" <<'SYNC_EOF'
 # Idempotent: running repeatedly with no state change is a no-op. Safe to
 # call from the watcher's main loop every iteration.
 
-set -uo pipefail
-
 IKEV2_CONF="/etc/ipsec.d/ikev2.conf"
 STATE_FILE="/var/lib/bonjour-vpn/ipv6-state"
 DNSMASQ_VPN_CONF="/etc/dnsmasq.d/bonjour-vpn.conf"
 BONJOUR_MARK="# Added by enable_bonjour.sh"
 
+# Minimal OS detection — needed for sed -i and iptables-save paths.
+SYNC_OS_TYPE="linux"
+if [ -f /etc/os-release ]; then
+  case "$(. /etc/os-release && printf '%s' "$ID")" in
+    alpine) SYNC_OS_TYPE="alpine" ;;
+  esac
+fi
+
 # Only run as root
 if [ "$(id -u)" != 0 ]; then
   exit 0
 fi
+
+# Portable sed -i: use --follow-symlinks on non-Alpine (GNU sed), plain
+# -i on Alpine (BusyBox sed). Matches the project convention.
+sedi() {
+  if [ "$SYNC_OS_TYPE" = "alpine" ]; then
+    sed -i "$@"
+  else
+    sed --follow-symlinks -i "$@"
+  fi
+}
 
 check_ip6() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq '^[0-9a-fA-F:]+$' && \
@@ -1099,15 +1116,15 @@ teardown_ipv6() {
     ip -6 addr del "${old_ip}/128" dev lo 2>/dev/null || true
     # Strip persistence lines
     if [ -f /etc/rc.local ]; then
-      sed -i "\|${old_ip}/128|d" /etc/rc.local 2>/dev/null || true
+      sedi "\|${old_ip}/128|d" /etc/rc.local 2>/dev/null || true
     fi
     if [ -f /etc/local.d/bonjour-vpn.start ]; then
-      sed -i "\|${old_ip}/128|d" /etc/local.d/bonjour-vpn.start 2>/dev/null || true
+      sedi "\|${old_ip}/128|d" /etc/local.d/bonjour-vpn.start 2>/dev/null || true
     fi
     # Remove from dnsmasq listen-address line
     if [ -f "$DNSMASQ_VPN_CONF" ]; then
       # Match ",<ip>" or "<ip>," or bare "<ip>"
-      sed -i \
+      sedi \
         -e "s|,${old_ip}||g" \
         -e "s|${old_ip},||g" \
         -e "s|=${old_ip}$|=127.0.0.1|" \
@@ -1134,10 +1151,11 @@ apply_ipv6() {
   if ! ip -6 addr show dev lo 2>/dev/null | grep -q "${new_ip}/"; then
     ip -6 addr add "${new_ip}/128" dev lo 2>/dev/null || return 1
   fi
-  # Persistence
-  if [ -f /etc/rc.local ]; then
+  # Persistence — only modify rc.local if enable_bonjour.sh created it
+  # (check for sentinel marker to avoid touching unrelated rc.local files)
+  if [ -f /etc/rc.local ] && grep -qs "$BONJOUR_MARK" /etc/rc.local; then
     if ! grep -q "${new_ip}/128" /etc/rc.local 2>/dev/null; then
-      sed -i "/^exit 0$/i ip -6 addr add ${new_ip}/128 dev lo 2>/dev/null" /etc/rc.local 2>/dev/null || true
+      sedi "/^exit 0$/i ip -6 addr add ${new_ip}/128 dev lo 2>/dev/null" /etc/rc.local 2>/dev/null || true
     fi
   fi
   if [ -f /etc/local.d/bonjour-vpn.start ]; then
@@ -1148,7 +1166,7 @@ apply_ipv6() {
   fi
   # dnsmasq listen-address — append IPv6 to existing line if not present
   if [ -f "$DNSMASQ_VPN_CONF" ] && ! grep -q "$new_ip" "$DNSMASQ_VPN_CONF" 2>/dev/null; then
-    sed -i "s|^listen-address=\(.*\)$|listen-address=\1,${new_ip}|" "$DNSMASQ_VPN_CONF" 2>/dev/null || true
+    sedi "s|^listen-address=\(.*\)$|listen-address=\1,${new_ip}|" "$DNSMASQ_VPN_CONF" 2>/dev/null || true
   fi
   # ip6tables — only apply if kernel supports it
   if command -v ip6tables >/dev/null 2>&1 \
@@ -1200,11 +1218,18 @@ if [ "$CHANGED" = 1 ]; then
   elif command -v rc-service >/dev/null 2>&1; then
     rc-service dnsmasq restart 2>/dev/null || true
   fi
-  # Save updated ip6tables rules for persistence across reboots
+  # Save updated ip6tables rules for persistence across reboots.
+  # Use the OS-specific path, matching the convention in enable_bonjour.sh.
   if [ "$HAS_IPV6" = 1 ] && command -v ip6tables-save >/dev/null 2>&1; then
-    for f in /etc/ip6tables.rules /etc/iptables/rules.v6 /etc/sysconfig/ip6tables; do
-      [ -e "$(dirname "$f")" ] && ip6tables-save > "$f" 2>/dev/null || true
-    done
+    if [ "$SYNC_OS_TYPE" = "alpine" ]; then
+      ip6tables-save > /etc/ip6tables.rules 2>/dev/null || true
+    elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ]; then
+      ip6tables-save > /etc/sysconfig/ip6tables 2>/dev/null || true
+    else
+      ip6tables-save > /etc/ip6tables.rules 2>/dev/null || true
+      [ -f /etc/iptables/rules.v6 ] && \
+        /bin/cp -f /etc/ip6tables.rules /etc/iptables/rules.v6 2>/dev/null || true
+    fi
   fi
 fi
 exit 0
