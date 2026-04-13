@@ -1275,9 +1275,11 @@ while true; do
   # cheap (stat + compare) when nothing changed.
   [ -x "$SYNC_CMD" ] && "$SYNC_CMD" 2>/dev/null || true
 
-  # Start a persistent browse. The process outputs +/- lines continuously
-  # as services appear and disappear. We read from it with timeouts.
-  avahi-browse -apk 2>/dev/null | while true; do
+  # Start a persistent browse with a hard timeout slightly longer than
+  # IDLE_TIMEOUT. The timeout ensures avahi-browse is killed even on a
+  # completely silent network (no mDNS packets = no writes = no SIGPIPE),
+  # which would otherwise leave bash waiting for the pipeline to finish.
+  timeout "$((IDLE_TIMEOUT + 5))" avahi-browse -apk 2>/dev/null | while true; do
     # Wait up to IDLE_TIMEOUT for an event. If none, break out to the
     # outer loop so the IPv6 sync runs again.
     if ! read -r -t "$IDLE_TIMEOUT" EVENT; then
@@ -1328,11 +1330,12 @@ EOF
     systemctl enable bonjour-vpn-watch.service 2>/dev/null
     systemctl start bonjour-vpn-watch.service 2>/dev/null
   else
-    # Alpine / non-systemd: fall back to cron (no persistent services)
-    # Run resolve every minute as the best alternative
-    CRON_LINE="* * * * * $RESOLVE_SCRIPT"
+    # Alpine / non-systemd: fall back to cron (no persistent services).
+    # Run both the IPv6 sync and resolve every minute.
+    CRON_LINE="* * * * * $SYNC_SCRIPT 2>/dev/null; $RESOLVE_SCRIPT"
     (crontab -l 2>/dev/null | grep -v 'bonjour-vpn'; echo "$CRON_LINE") | crontab -
     # Run once now
+    "$SYNC_SCRIPT" 2>/dev/null || true
     "$RESOLVE_SCRIPT" 2>/dev/null || true
   fi
 }

@@ -163,6 +163,48 @@ assert_var "$out" "HAS_IPV6" "0" "empty config"
 assert_var "$out" "VPN_SERVER_IP_IPV6" "" "empty config"
 echo ""
 
+# --- Fixture 6: Reversed order — IPv6 first, IPv4 second ---
+cat > "$WORKDIR/fixture-reversed.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=fddd:500:500:500::1000-fddd:500:500:500::1fff,192.168.43.10-192.168.43.250
+  ikev2=insist
+EOF
+
+echo "Fixture 6: Reversed pool order (IPv6 first)"
+out=$(run_detection "$WORKDIR/fixture-reversed.conf")
+# The parser takes fields after the first comma and greps for ":".
+# With IPv6 first, the second field is IPv4 (no ":"), so HAS_IPV6=0.
+# This is a known limitation — hwdsl2 scripts always put IPv4 first.
+assert_var "$out" "HAS_IPV6" "0" "reversed pool"
+echo ""
+
+# --- Fixture 7: Expanded (non-compressed) IPv6 address ---
+cat > "$WORKDIR/fixture-expanded.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=192.168.43.10-192.168.43.250,fddd:0500:0500:0500:0000:0000:0000:1000-fddd:0500:0500:0500:0000:0000:0000:1fff
+  ikev2=insist
+EOF
+
+echo "Fixture 7: Expanded (non-compressed) IPv6 address"
+out=$(run_detection "$WORKDIR/fixture-expanded.conf")
+assert_var "$out" "HAS_IPV6" "1" "expanded IPv6"
+assert_var "$out" "VPN_SUBNET_IPV6" "fddd:0500:0500:0500::/64" "expanded IPv6"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:0500:0500:0500:0000:0000:0000:1" "expanded IPv6"
+echo ""
+
+# --- Fixture 8: Multiple comma-separated pools (IPv4, IPv4, IPv6) ---
+cat > "$WORKDIR/fixture-multi.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=192.168.43.10-192.168.43.250,10.0.0.10-10.0.0.250,fddd:500:500:500::1000-fddd:500:500:500::1fff
+  ikev2=insist
+EOF
+
+echo "Fixture 8: Three pools (IPv4, IPv4, IPv6)"
+out=$(run_detection "$WORKDIR/fixture-multi.conf")
+assert_var "$out" "HAS_IPV6" "1" "multi pool"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:500:500:500::1" "multi pool"
+echo ""
+
 # ===== Summary =====
 echo -e "${BOLD}========================================${NC}"
 echo -e "  ${GREEN}Passed${NC}: $PASS"
