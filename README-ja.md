@@ -386,6 +386,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [代替DNSサーバーの使用](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS名とサーバーIPの変更](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [IKEv2専用VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [IKEv2完全前方秘匿性を有効にする](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [内部VPN IPとトラフィック](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [VPNサーバーのパブリックIPを指定する](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [VPNサブネットのカスタマイズ](docs/advanced-usage.md#customize-vpn-subnets)

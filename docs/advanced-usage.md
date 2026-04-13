@@ -5,6 +5,7 @@
 * [Use alternative DNS servers](#use-alternative-dns-servers)
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 * [IKEv2-only VPN](#ikev2-only-vpn)
+* [Enable IKEv2 perfect forward secrecy](#enable-ikev2-perfect-forward-secrecy)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
 * [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 * [Customize VPN subnets](#customize-vpn-subnets)
@@ -72,6 +73,42 @@ Alternatively, you may manually enable IKEv2-only mode.
 
 Alternatively, you may manually enable IKEv2-only mode. First check Libreswan version using `ipsec --version`, and [update Libreswan](../README.md#upgrade-libreswan) if needed. Then edit `/etc/ipsec.conf` on the VPN server. Replace `ikev1-policy=accept` with `ikev1-policy=drop`. If the line does not exist, append `ikev1-policy=drop` to the end of the `config setup` section, indented by two spaces. Save the file and run `service ipsec restart`. When finished, you can run `ipsec status` to verify that only the `ikev2-cp` connection is enabled.
 </details>
+
+## Enable IKEv2 perfect forward secrecy
+
+By default, IKEv2 Child SAs derive keying material from the existing IKE SA without a new Diffie-Hellman exchange (`pfs=no`). Enabling perfect forward secrecy (PFS) causes each Child SA rekey to perform a fresh DH exchange, so that a future compromise of the server's private key cannot decrypt previously recorded sessions.
+
+**Note:** The IKE SA already proposes ECP-256 as its first preference (`aes_gcm_c_256-hmac_sha2_256-ecp_256`), and all modern clients negotiate it, so session keys are already independent of the server's long-term private key for those clients. Enabling PFS for Child SAs is an incremental hardening step, not a critical gap.
+
+**Client compatibility:** All modern clients support PFS. However, macOS and iOS clients require re-export and re-import of the `.mobileconfig` profile with `EnablePFS` set to `1` (see below). Windows clients require a connection update. RouterOS users must change `pfs-group=none` to `pfs-group=ecp256` in their IKEv2 profile. Android and Linux strongSwan clients require no changes. Windows 7 IKEv2 clients do not support ECP PFS groups and will fail to connect if PFS is enabled on the server.
+
+To enable PFS on the server, edit `/etc/ipsec.d/ikev2.conf` and change `pfs=no` to `pfs=yes` in the `conn ikev2-cp` section, then restart the IPsec service:
+
+```bash
+sudo sed -i 's/pfs=no/pfs=yes/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
+
+**Docker users:** Open a [Bash shell inside the container](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#bash-shell-inside-container), run the `sed` command above, then `exit` and run `docker restart ipsec-vpn-server`.
+
+After enabling PFS, the following client configurations must be updated:
+
+- **macOS / iOS:** Re-export the client `.mobileconfig` using `sudo ikev2.sh --exportclient <name>`, then edit the exported file to enable PFS:
+  ```bash
+  sed -i '/EnablePFS/{n;s/0/1/;}' <name>.mobileconfig
+  ```
+  Re-import the updated file on your device.
+- **Windows:** In an elevated PowerShell window, run `Set-VpnConnection -Name "Your VPN Name" -PfsGroup ECP256` (replace with your actual VPN connection name), then reconnect the VPN.
+- **RouterOS (MikroTik):** In the IKEv2 peer profile, change `pfs-group=none` to `pfs-group=ecp256`.
+
+Android and Linux strongSwan clients require no changes; PFS is auto-negotiated.
+
+To revert to the default (PFS disabled):
+
+```bash
+sudo sed -i 's/pfs=yes/pfs=no/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
 
 ## Internal VPN IPs and traffic
 

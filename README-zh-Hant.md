@@ -386,6 +386,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [使用其他 DNS 伺服器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [網域名稱與變更伺服器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
 - [僅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)
+- [啟用 IKEv2 前向保密](docs/advanced-usage-zh.md#启用-ikev2-前向保密)
 - [VPN 內網 IP 與流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
 - [指定 VPN 伺服器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [自訂 VPN 子網](docs/advanced-usage-zh.md#自定义-vpn-子网)

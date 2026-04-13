@@ -5,6 +5,7 @@
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
 * [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
+* [启用 IKEv2 前向保密](#启用-ikev2-前向保密)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
 * [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 * [自定义 VPN 子网](#自定义-vpn-子网)
@@ -72,6 +73,42 @@ sudo bash ikev2only.sh
 
 另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `ikev1-policy=accept` 替换为 `ikev1-policy=drop`。如果该行不存在，则在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 </details>
+
+## 启用 IKEv2 前向保密
+
+默认情况下，IKEv2 子安全关联（Child SA）从现有 IKE SA 派生密钥材料，不进行新的 Diffie-Hellman 交换（`pfs=no`）。启用前向保密（PFS）后，每次子 SA 重新生成密钥时都会执行新的 DH 交换，从而确保即使服务器私钥在将来遭到泄露，攻击者也无法解密之前录制的会话。
+
+**注：** IKE SA 已将 ECP-256（`aes_gcm_c_256-hmac_sha2_256-ecp_256`）作为首选提案，所有现代客户端均会协商使用，因此这些客户端的会话密钥已与长期密钥材料独立。为子 SA 启用 PFS 是一项渐进式安全加固措施，而非关键漏洞修复。
+
+**客户端兼容性：** 所有现代客户端均支持 PFS。但是，macOS 和 iOS 客户端需要重新导出并导入已将 `EnablePFS` 设为 `1` 的 `.mobileconfig` 配置文件（详见下文）。Windows 客户端需要更新连接配置。RouterOS 用户需将 IKEv2 配置文件中的 `pfs-group=none` 改为 `pfs-group=ecp256`。Android 和 Linux strongSwan 客户端无需更改。Windows 7 IKEv2 客户端不支持 ECP PFS 组，若服务器启用 PFS，将无法连接。
+
+要在服务器上启用 PFS，请编辑 `/etc/ipsec.d/ikev2.conf`，将 `conn ikev2-cp` 部分中的 `pfs=no` 改为 `pfs=yes`，然后重启 IPsec 服务：
+
+```bash
+sudo sed -i 's/pfs=no/pfs=yes/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
+
+**Docker 用户：** 请先[在容器内打开 Bash shell](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#在容器中运行-bash-shell)，运行上述 `sed` 命令，然后 `exit` 并运行 `docker restart ipsec-vpn-server`。
+
+启用 PFS 后，需要更新以下客户端配置：
+
+- **macOS / iOS：** 使用 `sudo ikev2.sh --exportclient <名称>` 重新导出客户端 `.mobileconfig` 文件，然后编辑导出的文件以启用 PFS：
+  ```bash
+  sed -i '/EnablePFS/{n;s/0/1/;}' <名称>.mobileconfig
+  ```
+  在设备上重新导入更新后的文件。
+- **Windows：** 在提升权限的 PowerShell 窗口中运行 `Set-VpnConnection -Name "你的VPN名称" -PfsGroup ECP256`（替换为实际的 VPN 连接名称），然后重新连接 VPN。
+- **RouterOS (MikroTik)：** 在 IKEv2 对等配置文件中，将 `pfs-group=none` 改为 `pfs-group=ecp256`。
+
+Android 和 Linux strongSwan 客户端无需更改，PFS 会自动协商。
+
+要恢复默认设置（禁用 PFS）：
+
+```bash
+sudo sed -i 's/pfs=yes/pfs=no/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
 
 ## VPN 内网 IP 和流量
 
