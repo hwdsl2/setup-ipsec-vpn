@@ -10,6 +10,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
+# Copyright (C) 2024-2026 Lin Song <linsongui@gmail.com>
 # Copyright (C) 2026 James Blain
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -201,8 +202,6 @@ restore_configs() {
   restore_config_file "/etc/ipsec.conf" || true
   # Restore options.xl2tpd (L2TP DNS settings)
   restore_config_file "/etc/ppp/options.xl2tpd" || true
-  # Restore nsswitch.conf
-  restore_config_file "/etc/nsswitch.conf" || true
   # Restore dnsmasq.conf (if we backed it up)
   restore_config_file "/etc/dnsmasq.conf" || true
   # Restore rc.local (if we backed it up)
@@ -233,11 +232,9 @@ remove_vpn_server_ip() {
     # Clean up rc.local entries added by enable_bonjour.sh
     RC_LOCAL="/etc/rc.local"
     if [ -f "$RC_LOCAL" ] && grep -qs "# Added by enable_bonjour.sh" "$RC_LOCAL"; then
-      # If we already restored from backup, the lines are gone. Otherwise remove them.
-      if grep -qs "# Added by enable_bonjour.sh" "$RC_LOCAL"; then
-        sed --follow-symlinks -i '/# Added by enable_bonjour.sh/,/^$/d' "$RC_LOCAL"
-        sed --follow-symlinks -i "/ip addr add ${VPN_SERVER_IP}/d" "$RC_LOCAL"
-      fi
+      sed --follow-symlinks -i '/# Added by enable_bonjour.sh/d' "$RC_LOCAL"
+      sed --follow-symlinks -i "\|ip addr add ${VPN_SERVER_IP}/32 dev lo|d" "$RC_LOCAL"
+      [ -n "$L2TP_SERVER_IP" ] && sed --follow-symlinks -i "\|ip addr add ${L2TP_SERVER_IP}/32 dev lo|d" "$RC_LOCAL"
     fi
     # Also strip any IPv6 loopback-add line added by Phase 3 / the sync script
     if [ -f "$RC_LOCAL" ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
@@ -381,7 +378,6 @@ The following changes were reversed:
   - Restored original ikev2.conf (IKEv2 DNS settings)
   - Restored original ipsec.conf (XAuth DNS settings)
   - Restored original options.xl2tpd (L2TP DNS settings)
-  - Restored original nsswitch.conf (if backup existed)
   - Restored original dnsmasq.conf (if backup existed)
   - Removed dnsmasq Bonjour VPN configuration and hosts file
   - Removed DNS-SD services config file
@@ -398,8 +394,8 @@ VPN clients must disconnect and reconnect to receive the updated DNS settings.
 
 Note: avahi-daemon and dnsmasq packages were NOT uninstalled.
       To remove them manually:
-        Ubuntu/Debian: apt-get remove avahi-daemon dnsmasq libnss-mdns
-        CentOS/RHEL:   yum remove avahi dnsmasq nss-mdns
+        Ubuntu/Debian: apt-get remove avahi-daemon dnsmasq
+        CentOS/RHEL:   yum remove avahi dnsmasq
         Alpine:        apk del avahi dnsmasq
 EOF
 }

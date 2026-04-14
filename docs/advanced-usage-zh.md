@@ -466,7 +466,7 @@ sudo bash extras/enable_bonjour.sh
 如果你的 VPN 服务器启用了 [IPv6 支持](#ipv6-支持) 并且 IKEv2 客户端从 `rightaddresspool` 接收 IPv6 地址，该脚本会在 IPv4 管道旁自动设置 IPv6 mDNS 代理管道：
 
 - dnsmasq 同时监听 IPv4 和 IPv6 的 VPN 服务器地址。
-- ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb:5353`）并重定向到 dnsmasq。
+- ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb` 端口 5353）并重定向到 dnsmasq。
 - 缓存预热器使用 A 和 AAAA 记录填充 `/etc/bonjour-vpn-hosts`，使得 VPN 客户端的 AAAA 查询可以解析本地设备的 IPv6 地址。
 - 后台状态同步脚本（`bonjour-vpn-ipv6-sync`，由监视器调用）会检测 VPN IPv6 配置的安装后更改，并自动协调 dnsmasq/ip6tables/环回状态。如果你在运行 `enable_bonjour.sh` *之后* 才在 VPN 上启用 IPv6，无需重新运行该脚本——监视器会在下一次循环（60 秒内）中自动识别。
 

@@ -11,6 +11,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
+# Copyright (C) 2024-2026 Lin Song <linsongui@gmail.com>
 # Copyright (C) 2026 James Blain
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -173,7 +174,7 @@ check_existing_dns() {
 detect_iface() {
   def_iface=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
   if [ "$os_type" != "alpine" ]; then
-    [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -Po '(?<=dev )(\S+)')
+    [ -z "$def_iface" ] && def_iface=$(ip -4 route list 0/0 2>/dev/null | grep -m 1 -o 'dev [^ ]*' | sed 's/dev //')
   fi
   def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
   if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
@@ -189,7 +190,7 @@ detect_iface() {
 
 detect_server_lan_ip() {
   SERVER_LAN_IP=$(ip -4 addr show dev "$NET_IFACE" 2>/dev/null \
-    | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+    | grep -oE 'inet [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | awk '{print $2}')
   if [ -z "$SERVER_LAN_IP" ] || ! check_ip "$SERVER_LAN_IP"; then
     exiterr "Could not detect server's LAN IP on interface '$NET_IFACE'."
   fi
@@ -197,7 +198,7 @@ detect_server_lan_ip() {
 
 detect_lan_subnet() {
   LAN_CIDR=$(ip -4 addr show dev "$NET_IFACE" 2>/dev/null \
-    | grep -oP '\d+(\.\d+){3}/\d+' | head -n 1)
+    | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+' | head -n 1)
   if [ -z "$LAN_CIDR" ]; then
     LAN_CIDR="${SERVER_LAN_IP}/24"
   fi
@@ -208,8 +209,8 @@ detect_vpn_subnet() {
   # Try ikev2.conf first, then fall back to ipsec.conf xauth-psk section
   VPN_POOL=""
   if [ "$HAS_IKEV2" = 1 ]; then
-    VPN_POOL=$(grep -oP 'rightaddresspool=\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' \
-      "$IKEV2_CONF" | head -n 1)
+    VPN_POOL=$(grep 'rightaddresspool=' "$IKEV2_CONF" | head -n 1 \
+      | sed 's/.*rightaddresspool=//' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
     if [ -z "$VPN_POOL" ]; then
       VPN_POOL=$(grep 'rightaddresspool=' "$IKEV2_CONF" | head -n 1 \
         | sed 's/.*rightaddresspool=//' | cut -d ',' -f 1 | tr -d '[:space:]')
@@ -221,7 +222,7 @@ detect_vpn_subnet() {
   fi
   if [ -n "$VPN_POOL" ]; then
     POOL_START=$(printf '%s' "$VPN_POOL" | cut -d '-' -f 1)
-    VPN_SUBNET_PREFIX=$(printf '%s' "$POOL_START" | grep -oP '^\d+\.\d+\.\d+')
+    VPN_SUBNET_PREFIX=$(printf '%s' "$POOL_START" | cut -d. -f1-3)
     VPN_SUBNET="${VPN_SUBNET_PREFIX}.0/24"
     VPN_SERVER_IP="${VPN_SUBNET_PREFIX}.1"
   else
@@ -245,20 +246,20 @@ detect_l2tp_subnet() {
     return
   fi
   # Parse local ip from xl2tpd.conf
-  L2TP_SERVER_IP=$(grep -oP 'local ip\s*=\s*\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' \
-    "$XL2TPD_CONF" | head -n 1)
+  L2TP_SERVER_IP=$(grep 'local ip' "$XL2TPD_CONF" | head -n 1 \
+    | sed 's/.*=\s*//' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
   if [ -z "$L2TP_SERVER_IP" ] || ! check_ip "$L2TP_SERVER_IP"; then
     L2TP_SERVER_IP="192.168.42.1"
   fi
   # Parse ip range to derive subnet
-  L2TP_POOL_LINE=$(grep -oP 'ip range\s*=\s*\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' \
-    "$XL2TPD_CONF" | head -n 1)
+  L2TP_POOL_LINE=$(grep 'ip range' "$XL2TPD_CONF" | head -n 1 \
+    | sed 's/.*=\s*//' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
   if [ -n "$L2TP_POOL_LINE" ]; then
     L2TP_POOL_START=$(printf '%s' "$L2TP_POOL_LINE" | cut -d '-' -f 1)
-    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_POOL_START" | grep -oP '^\d+\.\d+\.\d+')
+    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_POOL_START" | cut -d. -f1-3)
     L2TP_SUBNET="${L2TP_SUBNET_PREFIX}.0/24"
   else
-    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | grep -oP '^\d+\.\d+\.\d+')
+    L2TP_SUBNET_PREFIX=$(printf '%s' "$L2TP_SERVER_IP" | cut -d. -f1-3)
     L2TP_SUBNET="${L2TP_SUBNET_PREFIX}.0/24"
   fi
 }
@@ -366,7 +367,7 @@ install_packages() {
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
     export DEBIAN_FRONTEND=noninteractive
     apt-get -yqq update || apt-get -yqq update || exiterr "'apt-get update' failed."
-    apt-get -yqq install avahi-daemon avahi-utils dnsmasq libnss-mdns >/dev/null \
+    apt-get -yqq install avahi-daemon avahi-utils dnsmasq >/dev/null \
       || exiterr "'apt-get install' failed."
   elif [ "$os_type" = "alpine" ]; then
     apk update || exiterr "'apk update' failed."
@@ -374,10 +375,10 @@ install_packages() {
   else
     # CentOS/RHEL/Rocky/Alma/Amazon
     if command -v dnf >/dev/null 2>&1; then
-      dnf -y -q install avahi avahi-tools dnsmasq nss-mdns >/dev/null \
+      dnf -y -q install avahi avahi-tools dnsmasq >/dev/null \
         || exiterr "'dnf install' failed."
     else
-      yum -y -q install avahi avahi-tools dnsmasq nss-mdns >/dev/null \
+      yum -y -q install avahi avahi-tools dnsmasq >/dev/null \
         || exiterr "'yum install' failed."
     fi
   fi
@@ -388,14 +389,15 @@ configure_avahi() {
   AVAHI_CONF="/etc/avahi/avahi-daemon.conf"
   mkdir -p /etc/avahi
   conf_bk_bonjour "$AVAHI_CONF"
-  # avahi needs multicast on the LAN for service discovery; omitting
-  # allow-interfaces avoids restricting it to specific interfaces.
+  # Scope avahi to the LAN interface so it only discovers services on the
+  # physical network, not on VPN tunnels or other virtual interfaces.
 cat > "$AVAHI_CONF" <<EOF
 [server]
 use-ipv4=yes
 use-ipv6=yes
 enable-dbus=yes
 disallow-other-stacks=no
+allow-interfaces=$NET_IFACE
 
 [wide-area]
 enable-wide-area=yes
@@ -533,29 +535,6 @@ addn-hosts=/etc/bonjour-vpn-hosts
 EOF
   # Create empty hosts file so dnsmasq doesn't complain
   touch /etc/bonjour-vpn-hosts
-}
-
-configure_nss() {
-  bigecho "Configuring NSS for mDNS..."
-  NSS_CONF="/etc/nsswitch.conf"
-  if [ ! -f "$NSS_CONF" ]; then
-    return
-  fi
-  # Check if mdns is already configured
-  if grep -q 'mdns' "$NSS_CONF" 2>/dev/null; then
-    return
-  fi
-  conf_bk_bonjour "$NSS_CONF"
-  # Add mdns4_minimal and mdns4 to the hosts line
-  if [ "$os_type" = "alpine" ]; then
-    sed -i '/^hosts:/ {
-      /mdns/! s/dns/mdns4_minimal [NOTFOUND=return] dns mdns4/
-    }' "$NSS_CONF"
-  else
-    sed --follow-symlinks -i '/^hosts:/ {
-      /mdns/! s/dns/mdns4_minimal [NOTFOUND=return] dns mdns4/
-    }' "$NSS_CONF"
-  fi
 }
 
 assign_vpn_server_ip() {
@@ -886,6 +865,12 @@ HOSTS_FILE="/etc/bonjour-vpn-hosts"
 HOSTS_TMP="${HOSTS_FILE}.tmp"
 SERVICES_FILE="/etc/dnsmasq.d/bonjour-vpn-services.conf"
 SERVICES_TMP="${SERVICES_FILE}.tmp"
+# Only include AAAA records when the VPN has IPv6 enabled. On IPv4-only
+# VPNs, returning AAAA for .local names is a behavioral change the user
+# did not opt into. The marker is maintained by enable_bonjour.sh and the
+# IPv6 sync script.
+IPV6_ENABLED=0
+[ -f /var/lib/bonjour-vpn/ipv6-enabled ] && IPV6_ENABLED=1
 
 # avahi-browse flags:
 #   -a all services  -r resolve  -p parseable  -t terminate  -k no-db-lookup
@@ -909,7 +894,7 @@ RESOLVED=$(printf '%s\n' "$BROWSE_OUTPUT" | grep '^=;' || true)
 # automatically serves A records from IPv4 entries and AAAA records from
 # IPv6 entries. We deduplicate by (address, host) pair so a hostname that
 # has both IPv4 and IPv6 addresses yields two lines in the hosts file.
-printf '%s\n' "$RESOLVED" | awk -F';' '{
+printf '%s\n' "$RESOLVED" | awk -F';' -v ipv6="$IPV6_ENABLED" '{
   addr=$8; host=$7
   if (addr != "" && host != "") {
     # Strip IPv6 zone suffix like "fe80::1%eth0" — dnsmasq does not accept
@@ -920,6 +905,8 @@ printf '%s\n' "$RESOLVED" | awk -F';' '{
     gsub(/[ \t]+$/, "", addr)
     # Skip IPv6 link-local (fe80::/10) — not useful to VPN clients.
     if (addr ~ /^fe80:/ || addr ~ /^fe[89ab][0-9a-f]:/) next
+    # Skip all IPv6 addresses when the VPN does not have IPv6 enabled.
+    if (ipv6 != "1" && addr ~ /:/) next
     key = addr SUBSEP host
     if (!seen[key]++) print addr " " host
   }
@@ -1210,6 +1197,12 @@ VPN_SERVER_IP_IPV6_SAVED='${VPN_SERVER_IP_IPV6}'
 VPN_SUBNET_IPV6_SAVED='${VPN_SUBNET_IPV6}'
 STATE
 chmod 600 "$STATE_FILE" 2>/dev/null || true
+# Maintain the ipv6-enabled marker for the resolve script's AAAA gating
+if [ "$HAS_IPV6" = 1 ]; then
+  touch /var/lib/bonjour-vpn/ipv6-enabled
+else
+  rm -f /var/lib/bonjour-vpn/ipv6-enabled
+fi
 
 # ---------------- Restart dnsmasq if we changed anything ----------------
 if [ "$CHANGED" = 1 ]; then
@@ -1287,9 +1280,11 @@ while true; do
     fi
 
     # Got an event — debounce: keep reading until the burst settles
-    # (no new events for DEBOUNCE_SEC seconds).
+    # (no new events for DEBOUNCE_SEC seconds), with a 30s wall-clock cap
+    # to prevent indefinite deferral on a chatty network.
+    DEBOUNCE_START=$(date +%s)
     while read -r -t "$DEBOUNCE_SEC" _NEXT; do
-      : # drain burst events
+      [ $(( $(date +%s) - DEBOUNCE_START )) -ge 30 ] && break
     done
 
     # Burst settled — run full resolve
@@ -1320,8 +1315,6 @@ Type=simple
 ExecStart=/usr/local/bin/bonjour-vpn-watch
 Restart=always
 RestartSec=5
-# If avahi-daemon restarts, restart the watcher too
-ExecStartPre=/usr/local/bin/bonjour-vpn-resolve
 
 [Install]
 WantedBy=multi-user.target
@@ -1497,6 +1490,10 @@ print_summary() {
     [ -n "$LISTEN_DISPLAY" ] && LISTEN_DISPLAY="${LISTEN_DISPLAY}, "
     LISTEN_DISPLAY="${LISTEN_DISPLAY}${L2TP_SERVER_IP} (L2TP)"
   fi
+  if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
+    [ -n "$LISTEN_DISPLAY" ] && LISTEN_DISPLAY="${LISTEN_DISPLAY}, "
+    LISTEN_DISPLAY="${LISTEN_DISPLAY}${VPN_SERVER_IP_IPV6} (IPv6)"
+  fi
 cat <<EOF
 
 ================================================
@@ -1539,6 +1536,15 @@ cat <<EOF
     mDNS capture:         VPN client Bonjour queries redirected to dnsmasq
 EOF
   fi
+  if [ "$HAS_IPV6" = 1 ]; then
+cat <<EOF
+
+  IPv6 (IKEv2):
+    IPv6 VPN subnet:      $VPN_SUBNET_IPV6
+    IPv6 server IP:       $VPN_SERVER_IP_IPV6 (on loopback)
+    IPv6 mDNS capture:    ff02::fb port 5353 -> dnsmasq via ip6tables DNAT
+EOF
+  fi
   if [ "$HAS_L2TP" = 1 ]; then
 cat <<EOF
 
@@ -1564,6 +1570,16 @@ VPN clients can now:
   - Browse network services via DNS-SD (e.g., printers, AirPlay)
   - Use standard DNS for all other queries (via dnsmasq upstream forwarding)
 EOF
+  if [ "$HAS_IPV6" = 1 ]; then
+cat <<'EOF'
+
+Note: IPv6 DNS is NOT pushed via modecfgdns because Libreswan <= 5.3
+  encodes INTERNAL_IP6_DNS with the wrong attribute length (17 bytes
+  instead of 16), causing strongSwan clients to reject IKE_AUTH.
+  IPv6 .local resolution still works — clients query the IPv4 DNS
+  endpoint and dnsmasq returns AAAA records regardless of source AF.
+EOF
+  fi
 cat <<EOF
 
 Client notes:
@@ -1603,7 +1619,6 @@ EOF
   [ -f /etc/ipsec.d/ikev2.conf.bak.bonjour-vpn ] && echo "  /etc/ipsec.d/ikev2.conf.bak.bonjour-vpn"
   [ -f /etc/ipsec.conf.bak.bonjour-vpn ] && echo "  /etc/ipsec.conf.bak.bonjour-vpn"
   [ -f /etc/ppp/options.xl2tpd.bak.bonjour-vpn ] && echo "  /etc/ppp/options.xl2tpd.bak.bonjour-vpn"
-  [ -f /etc/nsswitch.conf.bak.bonjour-vpn ] && echo "  /etc/nsswitch.conf.bak.bonjour-vpn"
   [ -f /etc/dnsmasq.conf.bak.bonjour-vpn ] && echo "  /etc/dnsmasq.conf.bak.bonjour-vpn"
   [ -f /etc/rc.local.bak.bonjour-vpn ] && echo "  /etc/rc.local.bak.bonjour-vpn"
 cat <<'EOF'
@@ -1665,6 +1680,12 @@ cat <<EOF
   L2TP server IP:     $L2TP_SERVER_IP
 EOF
 fi
+if [ "$HAS_IPV6" = 1 ]; then
+cat <<EOF
+  IPv6 pool:          $VPN_POOL_IPV6
+  IPv6 server IP:     $VPN_SERVER_IP_IPV6
+EOF
+fi
 cat <<EOF
   Upstream DNS:       $UPSTREAM_DNS1, $UPSTREAM_DNS2
 
@@ -1681,8 +1702,15 @@ fi
 cat <<EOF
   5. Update VPN configs to push dnsmasq as primary DNS
   6. Add iptables rules for DNS access from VPN clients
-
+  7. Set modecfgdomains="local, ." to route ALL client DNS queries
+     through the VPN (replaces any existing modecfgdomains setting)
 EOF
+if [ "$HAS_IPV6" = 1 ]; then
+cat <<EOF
+  8. Set up IPv6 mDNS proxy (dnsmasq + ip6tables for $VPN_SUBNET_IPV6)
+EOF
+fi
+echo
 printf '%s' "Do you want to continue? [y/N] "
 read -r response
 case $response in
@@ -1698,7 +1726,6 @@ esac
 install_packages
 configure_avahi
 configure_dnsmasq
-configure_nss
 assign_vpn_server_ip
 update_vpn_dns_config
 update_iptables
@@ -1709,6 +1736,15 @@ create_cache_warmer
 # when state matches what's in /var/lib/bonjour-vpn/ipv6-state.
 if [ -x /usr/local/sbin/bonjour-vpn-ipv6-sync ]; then
   /usr/local/sbin/bonjour-vpn-ipv6-sync 2>/dev/null || true
+fi
+# Write the IPv6-enabled marker so the resolve script knows whether to
+# include AAAA records. On IPv4-only VPNs, returning AAAA for .local
+# names is a silent behavioral change — gate it on actual IPv6 state.
+mkdir -p /var/lib/bonjour-vpn
+if [ "$HAS_IPV6" = 1 ]; then
+  touch /var/lib/bonjour-vpn/ipv6-enabled
+else
+  rm -f /var/lib/bonjour-vpn/ipv6-enabled
 fi
 verify_setup
 print_summary

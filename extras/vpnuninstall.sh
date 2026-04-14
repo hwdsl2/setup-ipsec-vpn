@@ -140,6 +140,7 @@ Note: Bonjour/mDNS service discovery is enabled on this server.
       remove Bonjour/mDNS components before uninstalling the VPN.
 
 EOF
+    confirm_or_abort "Continue without removing Bonjour first? [y/N] "
   fi
 cat <<'EOF'
 
