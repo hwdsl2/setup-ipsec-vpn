@@ -948,6 +948,7 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     name  = $4
     stype = $5
     host  = $7
+    addr  = $8
     port  = $9
     txt   = $10
 
@@ -957,6 +958,9 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     gsub(/\\032/, " ", name)
     # Skip entries with remaining avahi escapes (\058=colon, \091=bracket, etc.)
     if (name ~ /\\/) next
+    # Strip IPv6 zone suffix from address
+    sub(/%[^ ]*/, "", addr)
+    gsub(/[ \t]+$/, "", addr)
 
     if (!type_seen[stype]++) types[++ntypes] = stype
 
@@ -976,6 +980,14 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # vpn.internal records (macOS Finder). SRV target stays .local.
     inst_ptr_w[idx] = "ptr-record=" stype "." bd "," fqdn_wa
     inst_srv_w[idx] = "srv-host=" fqdn_wa "," host "," p
+    # A record for the service instance FQDN under vpn.internal.
+    # macOS Finder constructs SMB URLs using the service instance name
+    # (e.g., smb://BAM File Server._smb._tcp.vpn.internal) instead of
+    # following the SRV target hostname. This host-record ensures that
+    # name resolves to the correct IP so the connection succeeds.
+    if (addr != "" && addr !~ /:/) {
+      inst_addr_w[idx] = "host-record=" fqdn_wa "," addr
+    }
 
     if (txt != "") {
       gsub(/" "/, ",", txt)
@@ -1011,6 +1023,7 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
       print inst_ptr_w[i]
       print inst_srv_w[i]
       if (inst_txt_w[i] != "") print inst_txt_w[i]
+      if (inst_addr_w[i] != "") print inst_addr_w[i]
     }
   }
 ' > "$SERVICES_TMP"
