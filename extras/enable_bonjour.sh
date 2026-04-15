@@ -965,6 +965,11 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     if (!type_seen[stype]++) types[++ntypes] = stype
 
     key = name SUBSEP stype
+    # Capture the IPv4 address even for duplicate entries — the first
+    # match may be IPv6, but we need the IPv4 address for the A record.
+    if (addr != "" && addr !~ /:/ && !(key in inst_ipv4)) {
+      inst_ipv4[key] = addr
+    }
     if (inst_seen[key]++) next
 
     p = (port != "" ? port : "0")
@@ -988,11 +993,11 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # vpn.internal records (macOS Finder). SRV target stays .local.
     inst_ptr_w[idx] = "ptr-record=" stype "." bd "," fqdn_wa
     inst_srv_w[idx] = "srv-host=" fqdn_wa "," host "," p
-    # A record for the vpn.internal instance FQDN so macOS can resolve
-    # the hostname it constructs in the connection URL.
-    if (addr != "" && addr !~ /:/) {
-      inst_addr_w[idx] = "address=/" fqdn_wa "/" addr
-    }
+    # Save the key and FQDN for the address= record in the END block.
+    # The IPv4 address may come from a later avahi entry (if the first
+    # match was IPv6), so we defer emission to END.
+    inst_addr_key[idx] = key
+    inst_fqdn_w[idx] = fqdn_wa
 
     if (txt != "") {
       gsub(/" "/, ",", txt)
@@ -1028,7 +1033,8 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
       print inst_ptr_w[i]
       print inst_srv_w[i]
       if (inst_txt_w[i] != "") print inst_txt_w[i]
-      if (inst_addr_w[i] != "") print inst_addr_w[i]
+      k = inst_addr_key[i]
+      if (k in inst_ipv4) print "address=/" inst_fqdn_w[i] "/" inst_ipv4[k]
     }
   }
 ' > "$SERVICES_TMP"
