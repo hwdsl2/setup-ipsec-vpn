@@ -431,7 +431,56 @@ run_server_tests() {
     fail "DNS-SD services config NOT generated"
   fi
 
-  # Test 10: DNS-SD enumeration query
+  # Test 10: Wide-Area Bonjour browse domain pointers for vpn.internal
+  if podman exec "$SERVER_NAME" bash -c \
+       "grep -q 'lb._dns-sd._udp.vpn.internal' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null"; then
+    pass "vpn.internal browse domain pointers present"
+  else
+    fail "vpn.internal browse domain pointers missing"
+  fi
+
+  # Test 11: DNS-SD service records exist under vpn.internal
+  if podman exec "$SERVER_NAME" bash -c \
+       "grep -q '_services._dns-sd._udp.vpn.internal' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null"; then
+    pass "vpn.internal service type enumeration records present"
+  else
+    fail "vpn.internal service type enumeration records missing"
+  fi
+
+  # Test 12: vpn.internal SRV records point to .local hostnames (not vpn.internal)
+  if podman exec "$SERVER_NAME" bash -c \
+       "grep 'srv-host=.*vpn.internal' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null | grep -q '\.local,'"; then
+    pass "vpn.internal SRV targets point to .local hostnames"
+  else
+    fail "vpn.internal SRV targets do NOT point to .local hostnames"
+  fi
+
+  # Test 13: dig for vpn.internal browse domain pointer returns the domain
+  local wa_browse
+  wa_browse=$(run_dig "$SERVER_NAME" "@${VPN_DNS_IP} lb._dns-sd._udp.vpn.internal PTR")
+  if [ -n "$wa_browse" ]; then
+    pass "dig lb._dns-sd._udp.vpn.internal returns browse domain"
+  else
+    fail "dig lb._dns-sd._udp.vpn.internal returned nothing"
+  fi
+
+  # Test 14: dig for vpn.internal service type returns PTR records
+  local wa_smb
+  wa_smb=$(run_dig "$SERVER_NAME" "@${VPN_DNS_IP} _ipp._tcp.vpn.internal PTR")
+  if [ -n "$wa_smb" ]; then
+    pass "dig _ipp._tcp.vpn.internal returns service instances"
+  else
+    fail "dig _ipp._tcp.vpn.internal returned nothing"
+  fi
+
+  # Test 15: modecfgdomains includes vpn.internal
+  if podman exec "$SERVER_NAME" grep -q 'vpn.internal' /etc/ipsec.d/ikev2.conf 2>/dev/null; then
+    pass "IKEv2 modecfgdomains includes vpn.internal"
+  else
+    fail "IKEv2 modecfgdomains does NOT include vpn.internal"
+  fi
+
+  # Test 16: DNS-SD enumeration query
   local sd
   sd=$(run_dig "$SERVER_NAME" "@${VPN_DNS_IP} _services._dns-sd._udp.local PTR")
   if [ -n "$sd" ]; then
