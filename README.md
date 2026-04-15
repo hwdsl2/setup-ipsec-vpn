@@ -10,7 +10,16 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
+**Features:**
+
+- Fully automated IPsec VPN server setup, no user input needed
+- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
+- Generates VPN profiles to auto-configure iOS, macOS and Android devices
+- Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
+- Includes helper scripts to manage VPN users and certificates
+
 **Also available:**
+
 - Docker VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [Headscale](https://github.com/hwdsl2/docker-headscale)
 - Docker AI/Audio: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm)
 - :book: Book: [Privacy Tools in the Age of AI](docs/vpn-book.md), [Build Your Own VPN Server](docs/vpn-book.md)
@@ -63,14 +72,6 @@ If you are unable to download, open [vpnsetup.sh](vpnsetup.sh), then click the `
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. For other options and client setup, read the sections below.
 
 \* A cloud server, virtual private server (VPS) or dedicated server.
-
-## Features
-
-- Fully automated IPsec VPN server setup, no user input needed
-- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
-- Generates VPN profiles to auto-configure iOS, macOS and Android devices
-- Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
-- Includes helper scripts to manage VPN users and certificates
 
 ## Requirements
 
