@@ -969,9 +969,15 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
 
     p = (port != "" ? port : "0")
 
-    # Build records for both domains
+    # Build records for both domains. For vpn.internal, replace spaces
+    # with hyphens in the instance name. macOS constructs SMB URLs like
+    # smb://<instance>.<type>.<domain> — spaces in the URL cause the
+    # SMB client to fail (EHOSTUNREACH after 30s timeout) because
+    # unicast DNS cannot resolve hostnames with spaces. Hyphens work.
+    wa_name = name
+    gsub(/ /, "-", wa_name)
     fqdn_local = name "." stype ".local"
-    fqdn_wa    = name "." stype "." bd
+    fqdn_wa    = wa_name "." stype "." bd
 
     idx = ++ninst
     # .local records (iOS, XAuth)
