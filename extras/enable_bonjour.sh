@@ -983,10 +983,11 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # A record for the service instance FQDN under vpn.internal.
     # macOS Finder constructs SMB URLs using the service instance name
     # (e.g., smb://BAM File Server._smb._tcp.vpn.internal) instead of
-    # following the SRV target hostname. This host-record ensures that
-    # name resolves to the correct IP so the connection succeeds.
+    # following the SRV target hostname. dnsmasq's host-record= can't
+    # handle spaces in DNS labels, but address= can (it uses / as the
+    # delimiter, so spaces are preserved in the domain name).
     if (addr != "" && addr !~ /:/) {
-      inst_addr_w[idx] = "host-record=" fqdn_wa "," addr
+      inst_addr_w[idx] = "address=/" fqdn_wa "/" addr
     }
 
     if (txt != "") {
