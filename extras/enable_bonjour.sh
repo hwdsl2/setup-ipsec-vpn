@@ -991,9 +991,12 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # .local records (iOS, XAuth)
     inst_ptr_l[idx] = "ptr-record=" stype ".local," fqdn_local
     inst_srv_l[idx] = "srv-host=" fqdn_local "," host "," p
-    # vpn.internal records (macOS Finder). SRV target stays .local.
+    # vpn.internal records (macOS Finder). SRV target uses vpn.internal
+    # hostname (not .local) so resolution goes through unicast DNS
+    # immediately. A .local SRV target triggers mDNS multicast which
+    # times out over VPN (30s) because the server isn't on the local link.
     inst_ptr_w[idx] = "ptr-record=" stype "." bd "," fqdn_wa
-    inst_srv_w[idx] = "srv-host=" fqdn_wa "," host "," p
+    inst_srv_w[idx] = "srv-host=" fqdn_wa "," wa_host "." bd "," p
     # Save the key and FQDN for the address= record in the END block.
     # The IPv4 address may come from a later avahi entry (if the first
     # match was IPv6), so we defer emission to END.
