@@ -969,15 +969,17 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
 
     p = (port != "" ? port : "0")
 
-    # Build records for both domains. For vpn.internal, replace spaces
-    # with hyphens in the instance name. macOS constructs SMB URLs like
-    # smb://<instance>.<type>.<domain> — spaces in the URL cause the
-    # SMB client to fail (EHOSTUNREACH after 30s timeout) because
-    # unicast DNS cannot resolve hostnames with spaces. Hyphens work.
-    wa_name = name
-    gsub(/ /, "-", wa_name)
+    # Build records for both domains. For vpn.internal, use the hostname
+    # (from the SRV target) as the instance name instead of the friendly
+    # display name. macOS constructs connection URLs from the instance
+    # name (e.g., smb://<instance>.<type>.<domain>). Friendly names can
+    # have spaces which unicast DNS cannot resolve (getaddrinfo rejects
+    # them — EHOSTUNREACH after 30s timeout). The hostname is always
+    # DNS-safe because it already IS a DNS name.
+    wa_host = host
+    sub(/\.local$/, "", wa_host)
     fqdn_local = name "." stype ".local"
-    fqdn_wa    = wa_name "." stype "." bd
+    fqdn_wa    = wa_host "." stype "." bd
 
     idx = ++ninst
     # .local records (iOS, XAuth)
@@ -986,12 +988,8 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # vpn.internal records (macOS Finder). SRV target stays .local.
     inst_ptr_w[idx] = "ptr-record=" stype "." bd "," fqdn_wa
     inst_srv_w[idx] = "srv-host=" fqdn_wa "," host "," p
-    # A record for the service instance FQDN under vpn.internal.
-    # macOS Finder constructs SMB URLs using the service instance name
-    # (e.g., smb://BAM File Server._smb._tcp.vpn.internal) instead of
-    # following the SRV target hostname. dnsmasq's host-record= can't
-    # handle spaces in DNS labels, but address= can (it uses / as the
-    # delimiter, so spaces are preserved in the domain name).
+    # A record for the vpn.internal instance FQDN so macOS can resolve
+    # the hostname it constructs in the connection URL.
     if (addr != "" && addr !~ /:/) {
       inst_addr_w[idx] = "address=/" fqdn_wa "/" addr
     }
