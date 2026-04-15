@@ -967,8 +967,9 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     key = name SUBSEP stype
     # Capture the IPv4 address even for duplicate entries — the first
     # match may be IPv6, but we need the IPv4 address for the A record.
-    if (addr != "" && addr !~ /:/ && !(key in inst_ipv4)) {
-      inst_ipv4[key] = addr
+    if (addr != "" && addr !~ /:/) {
+      if (!(key in inst_ipv4)) inst_ipv4[key] = addr
+      if (host != "" && !(host in host_ipv4)) host_ipv4[host] = addr
     }
     if (inst_seen[key]++) next
 
@@ -1035,6 +1036,17 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
       if (inst_txt_w[i] != "") print inst_txt_w[i]
       k = inst_addr_key[i]
       if (k in inst_ipv4) print "address=/" inst_fqdn_w[i] "/" inst_ipv4[k]
+    }
+    # Bare hostname A records under vpn.internal. Finder shows servers
+    # in the sidebar but the click-to-connect URL includes ._smb._tcp
+    # which SMB servers reject. Users can connect via Cmd+K using
+    # smb://hostname.vpn.internal — these records make that work.
+    print ""
+    print "# Bare hostname records (" bd ")"
+    for (h in host_ipv4) {
+      hname = h
+      sub(/\.local$/, "", hname)
+      if (!bare_seen[hname]++) print "address=/" hname "." bd "/" host_ipv4[h]
     }
   }
 ' > "$SERVICES_TMP"
