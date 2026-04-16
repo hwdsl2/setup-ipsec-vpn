@@ -66,6 +66,22 @@ On the local network, the same pattern works (`smb://BAM File Server._smb._tcp.l
 - **Tested with**: Both space-containing instance names and hostname-based instance names
 - **Hypothesis was**: `.local` SRV target causes mDNS timeout. Disproved — `vpn.internal` SRV target also fails.
 
+### Test 6b: Packet capture — zero packets to file server
+- **What**: `tcpdump -i any port 445` while running `open "smb://bam-file-server._smb._tcp.vpn.internal"`
+- **Result**: ZERO packets on port 445. Mac never attempts TCP connection.
+- **Key finding**: The failure is BEFORE any network activity. The SMB client never even tries to connect.
+
+### Test 6c: Full VPN interface capture
+- **What**: `tcpdump -i ipsec1` capturing ALL VPN traffic during `open "smb://..."` attempt
+- **Result**: Mac sends PTR browse query for `_smb._tcp.vpn.internal`, receives two PTR results (bam-file-server, bam-web-server), then STOPS. No SRV query follows. No A query follows. No TCP connection.
+- **Key finding**: macOS SMB client's Wide-Area Bonjour handler sends the browse query but does NOT follow through with resolve (SRV) or connect. The entire connection pipeline after PTR browse is missing/broken for non-`.local` services. This is the definitive root cause.
+- **Raw capture evidence**:
+  ```
+  21:38:08.642 PTR? _smb._tcp.vpn.internal
+  21:38:08.680 PTR response: bam-file-server, bam-web-server
+  [3 seconds of silence — no SRV, no A, no TCP]
+  ```
+
 ### Test 7: `dns-sd -P` local mDNS proxy registration
 - **What**: Ran `dns-sd -P "BAM File Server" _smb._tcp local 445 bam-file-server.local 192.168.33.213` on the Mac
 - **Result**: SERVER APPEARS IN FINDER SIDEBAR AND CLICK-TO-CONNECT WORKS PERFECTLY
@@ -176,12 +192,11 @@ Proxy-registering services via local mDNS is the ONLY approach that achieves Fin
 - Simplest, no confusion
 - **Risk**: macOS users don't know what servers are available
 
-### Path D: Investigate the `._smb._tcp` URL failure deeper
-- We know `smb://hostname.vpn.internal` works and `smb://hostname._smb._tcp.vpn.internal` fails
-- Both resolve to the same IP via `dscacheutil`
-- The failure is at the SMB protocol/client level, not DNS
-- Could use Wireshark to capture the actual SMB negotiation and see exactly where it fails
-- Might reveal a fixable issue (e.g., SMB target name, Kerberos SPN, etc.)
+### Path D: Investigate the `._smb._tcp` URL failure deeper — COMPLETED
+- **Root cause found**: macOS SMB client sends a PTR browse query for Wide-Area Bonjour but NEVER follows through with SRV resolve or TCP connect. The connection pipeline after browse is simply not implemented for non-`.local` domains.
+- Packet capture proof: PTR query sent and answered, then zero further queries or connections
+- This is a macOS limitation, not a DNS/network/SMB-protocol issue
+- Cannot be fixed from the server side
 
 ### Path E: Wide-Area Bonjour with a real registered domain
 - The afp548 guide used BIND with a real domain, not `.internal`
