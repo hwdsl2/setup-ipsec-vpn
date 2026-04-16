@@ -994,7 +994,7 @@ printf '%s\n' "$RESOLVED" | awk -F';' -v bd="$VPN_BROWSE_DOMAIN" '
     # vpn.internal records (macOS Finder). SRV target uses vpn.internal
     # hostname (not .local) so resolution goes through unicast DNS
     # immediately. A .local SRV target triggers mDNS multicast which
-    # times out over VPN (30s) because the server isn't on the local link.
+    # times out over VPN (30s) because the server is not on the local link.
     inst_ptr_w[idx] = "ptr-record=" stype "." bd "," fqdn_wa
     inst_srv_w[idx] = "srv-host=" fqdn_wa "," wa_host "." bd "," p
     # Save the key and FQDN for the address= record in the END block.
