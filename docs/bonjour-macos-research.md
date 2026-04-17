@@ -1,25 +1,25 @@
 # macOS Finder Network Discovery Over VPN — Research Notes
 
-## Date: 2026-04-15
-## Status: Unresolved — macOS Finder click-to-connect for SMB over VPN
+This document records the research and testing performed to understand why macOS Finder's Network sidebar does not automatically discover services over an IKEv2 VPN tunnel, while iOS service discovery works fully. This is original research — the specific root cause documented here has not been previously documented elsewhere.
+
+**Decision**: Ship `.local` DNS-SD records only (iOS works fully, macOS hostname resolution works). The macOS Finder sidebar limitation is a macOS bug/limitation that cannot be fixed from the server side. A future companion macOS app using `DNSServiceRegister` is the path forward for Finder sidebar integration (see [companion app research](bonjour-companion-app-research.md)).
 
 ---
 
-## The Goal
-
-Make file servers on the VPN server's LAN appear in macOS Finder's Network sidebar with working click-to-connect, purely from the server side (no client software).
-
-## What Works Today
+## What Works
 
 | Feature | Status | How |
 |---------|--------|-----|
-| iOS printer discovery | Working | `.local` unicast DNS-SD through VPN tunnel |
-| iOS AirPlay discovery | Working | `.local` unicast DNS-SD through VPN tunnel |
-| macOS hostname resolution | Working | `smb://bam-file-server.local` via Cmd+K connects |
-| macOS `smb://hostname.vpn.internal` | Working | Bare hostname address records in dnsmasq |
-| macOS Finder sidebar visibility | Working | `vpn.internal` Wide-Area Bonjour browse domain |
-| macOS Finder click-to-connect | **BROKEN** | See below |
-| All platforms: ping, nc, direct IP | Working | VPN tunnel routing |
+| iOS printer/AirPlay/service discovery | Working | `.local` unicast DNS-SD through VPN tunnel |
+| macOS `.local` hostname resolution | Working | `smb://server.local` via Cmd+K connects |
+| macOS direct IP connectivity | Working | VPN tunnel routing |
+| All platforms: ping, SSH, SMB by hostname | Working | dnsmasq serves `.local` A records via VPN DNS |
+
+## What Doesn't Work
+
+| Feature | Root Cause |
+|---------|------------|
+| macOS Finder sidebar auto-discovery | Two independent macOS limitations (see below) |
 
 ## The Core Problem
 
@@ -169,41 +169,28 @@ Proxy-registering services via local mDNS is the ONLY approach that achieves Fin
 | **Tailscale** | No | N/A | Open issue since 2020, 266 upvotes, no solution |
 | **Any L3 VPN** | No | N/A | Fundamentally blocked by mDNSResponder interface exclusion |
 
-## Possible Paths Forward
+## Decision: Ship `.local` Only
 
-### Path A: `dns-sd -P` LaunchAgent (client-side, one-time install)
-- A shell script + LaunchAgent plist installed once on the Mac
-- launchd detects VPN connect (ipsec interface appears), triggers bridge script
-- Bridge script queries dnsmasq for services, runs `dns-sd -P` for each
-- Services appear in Finder sidebar via mDNS, click-to-connect works
-- Completely invisible after install — no app, no menu bar, no user interaction
-- **Status**: Proven working (Test 7). Needs automation/packaging.
+After exhaustive testing, **Path C was chosen**: ship `.local` DNS-SD records only.
 
-### Path B: Ship discovery-only (no click-to-connect)
-- Keep `vpn.internal` browse domain for Finder sidebar visibility
-- Users see servers exist, connect via Cmd+K with `smb://hostname.vpn.internal`
-- Document the limitation
-- **Risk**: Users confused by servers they can see but can't click
+- iOS discovery works fully via `.local` unicast DNS-SD
+- macOS hostname resolution works (`smb://server.local` via Cmd+K)
+- macOS Finder sidebar auto-discovery is not possible from the server side
+- The `vpn.internal` Wide-Area Bonjour approach was explored and removed — it achieved discovery but not click-to-connect (the SMB connection pipeline is broken for non-`.local` domains)
 
-### Path C: Remove `vpn.internal`, ship `.local` only
-- iOS discovery works via `.local` unicast
-- macOS users use Cmd+K with `smb://hostname.local`
-- No Finder sidebar visibility on macOS
-- Simplest, no confusion
-- **Risk**: macOS users don't know what servers are available
+## Future: Companion macOS App
 
-### Path D: Investigate the `._smb._tcp` URL failure deeper — COMPLETED
-- **Root cause found**: macOS SMB client sends a PTR browse query for Wide-Area Bonjour but NEVER follows through with SRV resolve or TCP connect. The connection pipeline after browse is simply not implemented for non-`.local` domains.
-- Packet capture proof: PTR query sent and answered, then zero further queries or connections
-- This is a macOS limitation, not a DNS/network/SMB-protocol issue
-- Cannot be fixed from the server side
+The proven path for macOS Finder sidebar integration is a native Swift companion app using `DNSServiceRegister` (the programmatic equivalent of `dns-sd -P`). This would:
 
-### Path E: Wide-Area Bonjour with a real registered domain
-- The afp548 guide used BIND with a real domain, not `.internal`
-- Maybe macOS handles Wide-Area Bonjour differently with "real" domains vs reserved ones
-- Worth testing with the user's actual domain if they have one
+1. Observe VPN connection state via `NEVPNStatusDidChange`
+2. Query dnsmasq for `.local` service records
+3. Proxy-register them into local mDNS via `DNSServiceRegister`
+4. Services appear in Finder sidebar, click-to-connect works (proven in Test 7)
+5. Deregister on VPN disconnect
 
-## Environment Details
+See [companion app research](bonjour-companion-app-research.md) for full architecture details.
+
+## Test Environment
 
 - **VPN Server**: Ubuntu, Libreswan 5.3, IKEv2
 - **VPN Client (Mac)**: macOS with native IKEv2 client, ipsec1 interface
@@ -211,30 +198,5 @@ Proxy-registering services via local mDNS is the ONLY approach that achieves Fin
 - **File Server**: "BAM File Server" at 192.168.33.213, SMB on port 445
 - **VPN Subnet**: 192.168.43.0/24, server at 192.168.43.1
 - **LAN Subnet**: 192.168.33.0/24
-- **DNS**: dnsmasq on 192.168.43.1, serves both `.local` and `vpn.internal` records
-- **modecfgdomains**: `"local, vpn.internal, ."`
-
-## Files on the Server
-
-- `/etc/dnsmasq.d/bonjour-vpn.conf` — dnsmasq configuration (listen addresses, upstream DNS)
-- `/etc/dnsmasq.d/bonjour-vpn-services.conf` — auto-generated DNS-SD records (both `.local` and `vpn.internal`)
-- `/etc/bonjour-vpn-hosts` — hostname → IP mappings for `.local` A records
-- `/usr/local/bin/bonjour-vpn-resolve` — cache warmer script (avahi-browse → dnsmasq records)
-- `/usr/local/bin/bonjour-vpn-watch` — watcher service (event-driven, triggers resolve)
-- `/usr/local/sbin/bonjour-vpn-ipv6-sync` — IPv6 state sync script
-
-## Resolver State on Mac (with VPN connected)
-
-```
-resolver #1: search domain[0]: local, search domain[1]: vpn.internal
-  nameserver: 192.168.43.1 (ipsec1)
-
-resolver #3: domain: local (Supplemental)
-  nameserver: 192.168.43.1 (ipsec1)
-
-resolver #5: domain: vpn.internal (Supplemental)
-  nameserver: 192.168.43.1 (ipsec1)
-
-resolver #4: domain: local, options: mdns
-  reach: Not Reachable (expected — mDNS on VPN)
-```
+- **DNS**: dnsmasq on 192.168.43.1, serves `.local` DNS-SD records
+- **modecfgdomains**: `"local, ."`

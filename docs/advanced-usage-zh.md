@@ -492,7 +492,7 @@ VPN 服务器局域网上的所有 `.local` 主机名都可以从任何 VPN 客�
 
 所有 `.local` 主机名在 macOS 上仍然**可以解析** — 你可以通过在 Finder → 前往 → 连接服务器（Cmd+K）中输入主机名来连接任何服务器。限制仅在于侧边栏中的自动浏览/发现。
 
-未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。
+未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。有关此限制的详细技术研究，请参阅 [Bonjour macOS 研究笔记](bonjour-macos-research.md)。
 
 要禁用 Bonjour/mDNS 服务发现并恢复所有更改（包括 IPv6 状态）：
 

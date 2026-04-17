@@ -491,7 +491,7 @@ On macOS, the Finder Network sidebar does **not** automatically display services
 
 All `.local` hostnames still **resolve** on macOS — you can connect to any server by typing its hostname in Finder → Go → Connect to Server (Cmd+K). The limitation is only the automatic browsing/discovery in the sidebar.
 
-A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This would make remote services appear in the Finder sidebar as if they were on the local network. This is tracked as a separate project.
+A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This would make remote services appear in the Finder sidebar as if they were on the local network. This is tracked as a separate project. For detailed technical research on this limitation, see [Bonjour macOS Research Notes](bonjour-macos-research.md).
 
 To disable Bonjour/mDNS service discovery and revert all changes (including IPv6 state):
 
