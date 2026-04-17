@@ -473,14 +473,25 @@ If your VPN server has [IPv6 support](#ipv6-support) enabled and IKEv2 clients r
 
 Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. IPv6 clients resolve AAAA records by querying the IPv4 VPN DNS endpoint — dnsmasq returns IPv6 answers regardless of the source address family, so functionally there is no loss.
 
-**Client compatibility:**
+**What works on each platform:**
 
-| Platform | Notes |
-| -------- | ----- |
-| macOS/iOS | Works automatically. All DNS is routed through the VPN tunnel to dnsmasq. |
-| Windows | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) for full service discovery support. |
-| Android | `.local` hostname resolution works. Full service browsing is app-dependent. |
-| Linux | Works if systemd-resolved or avahi is configured on the client. |
+| Platform | `.local` hostname resolution | Service discovery (auto-browse) | Connect via hostname |
+| -------- | ---- | ---- | ---- |
+| iOS | Yes | Yes — printers, AirPlay, and other services appear automatically | Yes |
+| macOS | Yes | No — see note below | Yes — use Cmd+K in Finder |
+| Windows | Yes | Partial — requires [Bonjour Print Services](https://support.apple.com/kb/DL999) | Yes |
+| Android | Yes | Limited — app-dependent | Yes |
+| Linux | Yes | Yes — if avahi is configured on the client | Yes |
+
+All `.local` hostnames on the VPN server's LAN are resolvable from any VPN client. For example, if a file server is at `file-server.local`, a VPN client can connect with `smb://file-server.local` (Finder → Go → Connect to Server on macOS, or the equivalent on other platforms). Printers, Time Machine targets, and any other service reachable by hostname will work.
+
+**macOS Finder Network sidebar limitation:**
+
+On macOS, the Finder Network sidebar does **not** automatically display services from the VPN server's LAN. This is a macOS limitation: the Finder's service browser uses multicast mDNS for the `.local` domain, but multicast traffic does not cross VPN tunnels (macOS excludes point-to-point interfaces from mDNS). iOS does not have this limitation — its mDNSResponder performs unicast DNS-SD for `.local` over VPN, which is why iOS service discovery works fully.
+
+All `.local` hostnames still **resolve** on macOS — you can connect to any server by typing its hostname in Finder → Go → Connect to Server (Cmd+K). The limitation is only the automatic browsing/discovery in the sidebar.
+
+A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This would make remote services appear in the Finder sidebar as if they were on the local network. This is tracked as a separate project.
 
 To disable Bonjour/mDNS service discovery and revert all changes (including IPv6 state):
 

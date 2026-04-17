@@ -474,12 +474,25 @@ sudo bash extras/enable_bonjour.sh
 
 **客户端兼容性：**
 
-| 平台 | 说明 |
-| ---- | ---- |
-| macOS/iOS | 自动工作。所有 DNS 通过 VPN 隧道路由到 dnsmasq。 |
-| Windows | 安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) 以获得完整的服务发现支持。 |
-| Android | `.local` 主机名解析可用。完整的服务浏览取决于应用。 |
-| Linux | 如果客户端配置了 systemd-resolved 或 avahi，则可用。 |
+**各平台功能：**
+
+| 平台 | `.local` 主机名解析 | 自动服务发现（自动浏览） | 通过主机名连接 |
+| ---- | ---- | ---- | ---- |
+| iOS | 是 | 是 — 打印机、AirPlay 和其他服务自动出现 | 是 |
+| macOS | 是 | 否 — 见下方说明 | 是 — 在 Finder 中使用 Cmd+K |
+| Windows | 是 | 部分 — 需要安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) | 是 |
+| Android | 是 | 有限 — 取决于应用 | 是 |
+| Linux | 是 | 是 — 如果客户端配置了 avahi | 是 |
+
+VPN 服务器局域网上的所有 `.local` 主机名都可以从任何 VPN 客户端解析。例如，如果文件服务器位于 `file-server.local`，VPN 客户端可以通过 `smb://file-server.local`（macOS 的 Finder → 前往 → 连接服务器，或其他平台的等效方式）进行连接。通过主机名可访问的打印机、Time Machine 目标和任何其他服务都可以正常工作。
+
+**macOS Finder 网络侧边栏限制：**
+
+在 macOS 上，Finder 网络侧边栏**不会**自动显示 VPN 服务器局域网上的服务。这是 macOS 的限制：Finder 的服务浏览器对 `.local` 域使用多播 mDNS，但多播流量无法穿越 VPN 隧道（macOS 将点对点接口排除在 mDNS 之外）。iOS 没有此限制 — 其 mDNSResponder 通过 VPN 对 `.local` 执行单播 DNS-SD，这就是 iOS 服务发现完全正常工作的原因。
+
+所有 `.local` 主机名在 macOS 上仍然**可以解析** — 你可以通过在 Finder → 前往 → 连接服务器（Cmd+K）中输入主机名来连接任何服务器。限制仅在于侧边栏中的自动浏览/发现。
+
+未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。
 
 要禁用 Bonjour/mDNS 服务发现并恢复所有更改（包括 IPv6 状态）：
 
