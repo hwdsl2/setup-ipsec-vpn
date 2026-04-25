@@ -169,7 +169,8 @@ update_apt_cache() {
 
 install_pkgs() {
   p1=libcurl4-nss-dev
-  if [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
+  if [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
+    || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
     p1=libcurl4-gnutls-dev
   fi
   (
@@ -181,7 +182,8 @@ install_pkgs() {
   ) || exiterr2
   if { [ "$os_type" = "ubuntu" ] && [ -n "$ubuntu_ver" ] \
     && printf '%s\n%s' "24.10" "$ubuntu_ver" | sort -C -V; } \
-    || [ "$os_ver" = 13 ]; then
+    || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
+    || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
     (
       set -x
       apt-get -yqq install systemd-dev >/dev/null
