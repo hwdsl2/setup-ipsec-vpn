@@ -77,7 +77,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 Облачный сервер, виртуальный частный сервер (VPS) или выделенный сервер с установленной системой:
 
-- Ubuntu 24.04 или 22.04
+- Ubuntu 26.04, 24.04 или 22.04
 - Debian 13, 12 или 11
 - CentOS Stream 10 или 9
 - Rocky Linux или AlmaLinux

@@ -77,7 +77,7 @@ IPsec VPN 也提供预构建的 [Docker 镜像](https://github.com/hwdsl2/docker
 
 一个云服务器，虚拟专用服务器 (VPS) 或者专用服务器，安装以下操作系统之一：
 
-- Ubuntu 24.04 或者 22.04
+- Ubuntu 26.04、24.04 或者 22.04
 - Debian 13、12 或者 11
 - CentOS Stream 10 或者 9
 - Rocky Linux 或者 AlmaLinux
