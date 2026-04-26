@@ -177,7 +177,7 @@ install_pkgs() {
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
       libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-      $p1 libnss3-tools libevent-dev libsystemd-dev \
+      $p1 libnss3-tools libevent-dev libsystemd-dev libcrypt-dev \
       flex bison gcc make wget sed >/dev/null
   ) || exiterr2
   if { [ "$os_type" = "ubuntu" ] && [ -n "$ubuntu_ver" ] \

@@ -282,7 +282,7 @@ install_vpn_pkgs() {
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
       libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-      $p1 flex bison gcc make libnss3-tools \
+      $p1 flex bison gcc make libnss3-tools libcrypt-dev \
       libevent-dev libsystemd-dev uuid-runtime ppp xl2tpd >/dev/null
   ) || exiterr2
   if { [ "$os_type" = "ubuntu" ] && [ -n "$ubuntu_ver" ] \

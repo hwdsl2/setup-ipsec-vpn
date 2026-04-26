@@ -277,6 +277,12 @@ install_vpn_pkgs_1() {
       libcap-ng-devel libselinux-devel curl-devel nss-tools \
       flex bison gcc make util-linux ppp >/dev/null
   ) || exiterr2
+  if [ "$os_ver" != 7 ]; then
+    (
+      set -x
+      yum -y -q install libxcrypt-devel >/dev/null
+    ) || exiterr2
+  fi
 }
 
 install_vpn_pkgs_2() {

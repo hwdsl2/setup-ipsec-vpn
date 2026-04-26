@@ -171,6 +171,12 @@ install_pkgs_1() {
       libcap-ng-devel libselinux-devel curl-devel nss-tools \
       flex bison gcc make wget sed tar >/dev/null
   ) || exiterr2
+  if [ "$os_ver" != 7 ]; then
+    (
+      set -x
+      yum -y -q install libxcrypt-devel >/dev/null
+    ) || exiterr2
+  fi
 }
 
 install_pkgs_2() {
