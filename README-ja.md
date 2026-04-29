@@ -21,7 +21,7 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 **こちらも利用可能：**
 
 - Docker VPN：[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[Headscale](https://github.com/hwdsl2/docker-headscale)
-- Docker AI/音声：[Whisper (STT)](https://github.com/hwdsl2/docker-whisper)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro)、[Embeddings](https://github.com/hwdsl2/docker-embeddings)、[LiteLLM](https://github.com/hwdsl2/docker-litellm)
+- Docker AI/音声：[Whisper (STT)](https://github.com/hwdsl2/docker-whisper)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro)、[Embeddings](https://github.com/hwdsl2/docker-embeddings)、[LiteLLM](https://github.com/hwdsl2/docker-litellm)、[Ollama](https://github.com/hwdsl2/docker-ollama)
 - :book: 本：[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)、[VPNサーバーの構築方法](docs/vpn-book-ja.md)
 
 ## クイックスタート
