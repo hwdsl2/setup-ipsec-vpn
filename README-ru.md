@@ -397,6 +397,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [Раздельная маршрутизация (Split tunneling)](docs/advanced-usage.md#split-tunneling)
 - [Доступ к подсети VPN-сервера](docs/advanced-usage.md#access-vpn-servers-subnet)
 - [Доступ к клиентам VPN из подсети сервера](docs/advanced-usage.md#access-vpn-clients-from-servers-subnet)
+- [Обнаружение сервисов Bonjour/mDNS для клиентов VPN](docs/advanced-usage.md#bonjourmdns-service-discovery-for-vpn-clients)
 - [Изменение правил IPTables](docs/advanced-usage.md#modify-iptables-rules)
 - [Развёртывание алгоритма управления перегрузкой Google BBR](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
 

@@ -397,6 +397,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [访问 VPN 服务器的网段](docs/advanced-usage-zh.md#访问-vpn-服务器的网段)
 - [VPN 服务器网段访问 VPN 客户端](docs/advanced-usage-zh.md#vpn-服务器网段访问-vpn-客户端)
+- [为 VPN 客户端启用 Bonjour/mDNS 服务发现](docs/advanced-usage-zh.md#为-vpn-客户端启用-bonjourmdns-服务发现)
 - [更改 IPTables 规则](docs/advanced-usage-zh.md#更改-iptables-规则)
 - [部署 Google BBR 拥塞控制](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制)
 
