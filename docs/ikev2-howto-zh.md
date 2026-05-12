@@ -994,7 +994,7 @@ To customize IKEv2 or client options, run this script without arguments.
 
 ## 手动配置 IKEv2
 
-除了使用[辅助脚本](#使用辅助脚本配置-ikev2)之外，高级用户也可以手动在 VPN 服务器上配置 IKEv2。在继续之前，推荐[升级 Libreswan](../README-zh.md#升级libreswan) 到最新版本。
+除了使用[辅助脚本](#使用辅助脚本配置-ikev2)之外，高级用户也可以手动在 VPN 服务器上配置 IKEv2。在继续之前，推荐[升级 Libreswan](../README-zh.md#升级-libreswan) 到最新版本。
 
 下面举例说明如何手动在 Libreswan 上配置 IKEv2。以下命令必须用 `root` 账户运行。
 

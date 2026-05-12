@@ -20,7 +20,8 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 **Также доступно:**
 
-- Docker: [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md), [Стек ИИ на своём сервере](https://github.com/hwdsl2/docker-ai-stack/blob/main/README-ru.md)
+- Docker VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
+- Docker AI: [Стек ИИ на своём сервере](https://github.com/hwdsl2/docker-ai-stack/blob/main/README-ru.md)
 - :book: Книга: [Privacy Tools in the Age of AI](docs/vpn-book.md), [Build Your Own VPN Server](docs/vpn-book.md)
 
 ## Быстрый старт
@@ -94,7 +95,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - Red Hat Enterprise Linux (RHEL)
 </details>
 
-Это также включает виртуальные машины Linux в публичных облаках, таких как [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) и [Microsoft Azure](https://azure.microsoft.com). Пользователи публичных облаков также могут выполнить развёртывание с помощью [пользовательскими данными](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
+Это также включает виртуальные машины Linux в публичных облаках, таких как [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) и [Microsoft Azure](https://azure.microsoft.com). Пользователи публичных облаков также могут выполнить развёртывание с помощью [пользовательских данных](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
 Быстрое развёртывание в:
 
@@ -434,7 +435,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 ## Обратная связь и вопросы
 
 - Есть предложение по улучшению этого проекта? Создайте [Предложить улучшение](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose). [Pull request](https://github.com/hwdsl2/setup-ipsec-vpn/pulls) также приветствуются.
-- Если вы нашли воспроизводимую ошибку, создайте отчёт об ошибке для [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) или для [скрипты VPN](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
+- Если вы нашли воспроизводимую ошибку, создайте отчёт об ошибке для [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) или для [скриптов VPN](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
 - Есть вопрос? Пожалуйста, сначала выполните поиск по [существующим issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) и комментариям [в этом Gist](https://gist.github.com/hwdsl2/9030462#comments) и [в моём блоге](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Задавайте вопросы, связанные с VPN, в списках рассылки [Libreswan](https://lists.libreswan.org) или [strongSwan](https://lists.strongswan.org), либо прочитайте эти вики: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
 
