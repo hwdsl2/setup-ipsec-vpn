@@ -2,7 +2,7 @@
 
 # Скрипты автоматической настройки сервера IPsec VPN
 
-[![Статус сборки](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![Звезды GitHub](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Звезды Docker](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) [![Загрузки Docker](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md)
+[![Статус сборки](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![Звезды GitHub](https://raw.githubusercontent.com/hwdsl2/badges/main/img/github-stars-setup-ipsec-vpn.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Звезды Docker](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-stars-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) [![Загрузки Docker](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md)
 
 Разверните собственный сервер IPsec VPN всего за несколько минут с поддержкой IPsec/L2TP, Cisco IPsec и IKEv2.
 
