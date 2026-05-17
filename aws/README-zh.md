@@ -7,17 +7,20 @@
 可用的自定义参数：
 
 - Amazon EC2 实例类型
-> <details><summary><strong>注：</strong> 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。（点击查看详情）
+
+> [!NOTE] <details><summary> 在某些 AWS 区域中，此模版提供的某些实例类型可能不可用。（点击查看详情）
 > </summary>
-> 
-> 比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [https://instances.vantage.sh/](https://instances.vantage.sh/)。</details>
+>
+> 比如 `m5a.large` 可能无法在 `ap-east-1` 区域部署（仅为假设）。在此情况下，你会在部署过程中遇到此错误：`The requested configuration is currently not supported. Please check the documentation for supported configurations`。新开放的 AWS 区域更容易出现此问题，因为它们提供的实例类型较少。如需了解更多关于实例可用性的信息，请参见 [instances.vantage.sh](https://instances.vantage.sh/)。
+> </details>
 
 - VPN 服务器的操作系统（Ubuntu **24.04**/22.04, Debian 12/11, Amazon Linux 2）
 - 你的 VPN 用户名
 - 你的 VPN 密码
 - 你的 VPN IPsec PSK（预共享密钥）
 
-> **注：** 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。\*不要\* 在值中使用这些字符： `\ " '`
+> [!NOTE]
+> 一个安全的 IPsec PSK 应该至少包含 20 个随机字符。*不要* 在值中使用这些字符： `\ " '`
 
 确保使用 **AWS 账户根用户** 或者有 **管理员权限** 的 **IAM 用户** 部署此模板。
 
@@ -128,4 +131,4 @@ $ ssh -i path/to/your/new-key-file.pem instance-username@instance-ip-address
 
 ## 作者
 
-版权所有 (C) 2020-2025 [Scott X. L.](https://github.com/scottpedia) <[ge105@ncf.ca](mailto:ge105@ncf.ca)>
+版权所有 (C) 2020-2026 [Scott X. L.](https://github.com/scottpedia) <[scott@ncf.ca](mailto:scott@ncf.ca)>
