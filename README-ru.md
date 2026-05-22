@@ -325,6 +325,10 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
 
+## Сообщество
+
+- Обсуждения и примеры: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## Важные замечания
 
 **Пользователи Windows**: для режима IPsec/L2TP требуется [одноразовое изменение реестра](docs/clients.md#windows-error-809), если VPN-сервер или клиент находится за NAT (например, домашним роутером).

@@ -325,6 +325,10 @@ Get your computer or device to use the VPN. Please refer to:
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
+## Community
+
+- Discussions and showcases: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## Important notes
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).

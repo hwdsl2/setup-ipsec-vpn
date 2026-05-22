@@ -325,6 +325,10 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 自分のVPNを楽しんでください！ :sparkles::tada::rocket::sparkles:
 
+## コミュニティ
+
+- ディスカッションとショーケース：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## 重要な注意事項
 
 **Windowsユーザー**：IPsec/L2TPモードの場合、VPNサーバーまたはクライアントがNAT（例：家庭用ルーター）の背後にある場合、[一度だけレジストリを変更](docs/clients.md#windows-error-809)する必要があります。

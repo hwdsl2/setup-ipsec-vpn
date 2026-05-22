@@ -325,6 +325,10 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
+## 社区
+
+- 讨论与展示：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## 重要提示
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要[修改注册表](docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
