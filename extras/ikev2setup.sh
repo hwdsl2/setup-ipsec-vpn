@@ -169,7 +169,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2026 Lin Song   20 Mar 2026
+IKEv2 Script   Copyright (c) 2020-2026 Lin Song   22 May 2026
 
 EOF
 }
@@ -1393,8 +1393,16 @@ Next steps: Configure IKEv2 clients. See:
 $config_url
 
 ================================================
-
 EOF
+  if [ "$in_container" = 0 ]; then
+cat <<EOF
+
+Community discussions and updates:
+https://www.reddit.com/r/selfhostedstack/
+
+================================================
+EOF
+  fi
 }
 
 check_swan_update() {
