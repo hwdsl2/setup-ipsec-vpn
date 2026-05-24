@@ -327,7 +327,8 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## コミュニティ
 
-- ディスカッションとショーケース：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+- プロジェクトの更新を購読：[Self-Hosted Stack](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)
+- コミュニティのディスカッション：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
 
 ## 重要な注意事項
 
