@@ -37,6 +37,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 Your VPN login details will be randomly generated, and displayed when finished.
 
 > [!TIP]
+> [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) and get free VPN and AI deployment guides (PDF).   
 > Optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server.
 
 <details>
@@ -327,8 +328,8 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Community
 
-- Subscribe for project updates (1–2 emails/month): [Self-Hosted Stack](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)
-- Community discussions: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+- [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month)
+- Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions
 
 ## Important notes
 
