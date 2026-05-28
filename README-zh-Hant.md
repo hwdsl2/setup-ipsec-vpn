@@ -37,7 +37,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 你的 VPN 登入憑證將會自動隨機生成，並在安裝完成後顯示。
 
 > [!TIP]
-> [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)，獲取免費的 VPN 和 AI 部署指南（PDF，英文）。   
+> [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件），獲取免費的 VPN 和 AI 部署指南（PDF，英文）。
+> 
 > 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。
 
 <details>
@@ -328,7 +329,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## 社群
 
-- [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)（每月 1–2 封郵件）
+- [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件）
 - 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社群參與討論
 
 ## 重要提示

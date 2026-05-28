@@ -37,7 +37,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
 > [!TIP]
-> [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) и получить бесплатные руководства по развёртыванию VPN и AI (PDF, на английском).   
+> [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц) и получить бесплатные руководства по развёртыванию VPN и AI (PDF, на английском).
+> 
 > При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
 
 <details>
@@ -328,7 +329,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## Сообщество
 
-- [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 письма в месяц)
+- [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц)
 - Присоединяйтесь к сообществу [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) для обсуждений
 
 ## Важные замечания

@@ -37,7 +37,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
 > [!TIP]
-> [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)して、無料のVPN・AIデプロイガイド（PDF・英語）を入手してください。   
+> [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）して、無料のVPN・AIデプロイガイド（PDF・英語）を入手してください。
+> 
 > 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。
 
 <details>
@@ -328,7 +329,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 ## コミュニティ
 
-- [プロジェクトの更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)（月1〜2通のメール）
+- [プロジェクトの更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）
 - [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) コミュニティでディスカッションに参加
 
 ## 重要な注意事項
