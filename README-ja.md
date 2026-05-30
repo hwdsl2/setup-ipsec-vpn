@@ -37,8 +37,6 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
 > [!TIP]
-> [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）して、無料のVPN・AIデプロイガイド（PDF・英語）を入手してください。
-> 
 > 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。
 
 <details>
@@ -74,6 +72,12 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
 
 \* クラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー。
+
+## コミュニティ
+
+- 📬 [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）——無料のVPN・AIデプロイガイドを入手（PDF・英語）
+- 💬 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) コミュニティでディスカッションに参加
+- ⭐ このリポジトリが役に立ったらスターを付けてください
 
 ## 要件
 
@@ -326,11 +330,6 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 **:book: [VPN本](docs/vpn-book.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
 
 自分のVPNを楽しんでください！ :sparkles::tada::rocket::sparkles:
-
-## コミュニティ
-
-- [プロジェクトの更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）
-- [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) コミュニティでディスカッションに参加
 
 ## 重要な注意事項
 
