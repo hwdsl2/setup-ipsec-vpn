@@ -20,7 +20,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 **Also available:**
 
-- Docker VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [Headscale](https://github.com/hwdsl2/docker-headscale)
+- Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale)
 - Docker AI: [Self-hosted AI Stack](https://github.com/hwdsl2/docker-ai-stack)
 - :book: Book: [Privacy Tools in the Age of AI](docs/vpn-book.md), [Build Your Own VPN Server](docs/vpn-book.md)
 
