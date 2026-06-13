@@ -728,10 +728,16 @@ update_iptables() {
 fix_nss_config() {
   nss_conf="/etc/crypto-policies/back-ends/nss.config"
   if [ -s "$nss_conf" ]; then
-    if ! grep -q ":SHA1:" "$nss_conf" \
-      && ! grep -q " allow=SHA1:" "$nss_conf"; then
-      sed -i "/ALL allow=/s/ allow=/ allow=SHA1:/" "$nss_conf"
+    nss_algs="SHA1"
+    if [ "$os_ver" = 9 ] || [ "$os_ver" = 9s ] \
+      || [ "$os_ver" = 10 ] || [ "$os_ver" = 10s ]; then
+      nss_algs="$nss_algs SHA1/pkcs12-legacy des-ede3-cbc/pkcs12-legacy"
     fi
+    for alg in $nss_algs; do
+      if ! grep -q "[:=]${alg}[:\"]" "$nss_conf"; then
+        sed -i "/ALL allow=/s# allow=# allow=$alg:#" "$nss_conf"
+      fi
+    done
   fi
 }
 

@@ -127,6 +127,7 @@ Note: This script will make the following changes to your VPN configuration:
       - Fix obsolete ipsec.conf and/or ikev2.conf options
       - Optimize VPN ciphers
       - Update IKEv2 helper script
+      - Update NSS crypto policy for PKCS#12 compatibility
       Your other VPN config files will not be modified.
 
 EOF
@@ -255,6 +256,22 @@ restore_selinux() {
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
 }
 
+fix_nss_config() {
+  nss_conf="/etc/crypto-policies/back-ends/nss.config"
+  if [ -s "$nss_conf" ]; then
+    nss_algs="SHA1"
+    if [ "$os_ver" = 9 ] || [ "$os_ver" = 9s ] \
+      || [ "$os_ver" = 10 ] || [ "$os_ver" = 10s ]; then
+      nss_algs="$nss_algs SHA1/pkcs12-legacy des-ede3-cbc/pkcs12-legacy"
+    fi
+    for alg in $nss_algs; do
+      if ! grep -q "[:=]${alg}[:\"]" "$nss_conf"; then
+        sed -i "/ALL allow=/s# allow=# allow=$alg:#" "$nss_conf"
+      fi
+    done
+  fi
+}
+
 update_ikev2_script() {
   bigecho "Updating IKEv2 script..."
   cd /opt/src || exit 1
@@ -351,6 +368,7 @@ vpnupgrade() {
   restore_selinux
   update_ikev2_script
   update_config
+  fix_nss_config
   restart_ipsec
   show_setup_complete
 }
