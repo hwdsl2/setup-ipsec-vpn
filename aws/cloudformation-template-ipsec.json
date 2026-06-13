@@ -628,7 +628,7 @@
         },
         "OS": {
             "Type": "String",
-            "Description": "The OS of your VPN server. Default: Ubuntu 24.04",
+            "Description": "The OS of your VPN server. Default: Ubuntu 26.04",
             "Default": "Ubuntu2604",
             "AllowedValues": [
                 "Ubuntu2604",
