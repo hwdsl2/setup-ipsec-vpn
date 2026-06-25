@@ -374,7 +374,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 Если вы не можете скачать файл, откройте [vpnupgrade.sh](extras/vpnupgrade.sh), затем нажмите кнопку `Raw` справа. Нажмите `Ctrl/Cmd+A`, чтобы выделить всё, `Ctrl/Cmd+C`, чтобы скопировать, затем вставьте в ваш любимый редактор.
 </details>
 
-Последняя поддерживаемая версия Libreswan — `5.3`. Проверить установленную версию: `ipsec --version`.
+Последняя поддерживаемая версия Libreswan — `5.3.1`. Проверить установленную версию: `ipsec --version`.
 
 **Примечание:** `xl2tpd` можно обновить с помощью менеджера пакетов вашей системы, например `apt-get` в Ubuntu/Debian.
 
