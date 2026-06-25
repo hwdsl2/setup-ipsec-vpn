@@ -514,7 +514,7 @@ jobs:
           cp -f /opt/src/scripts/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          ver=5.2
+          ver=5.3
           sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
           bash vpnup.sh <<ANSWERS
 
@@ -528,7 +528,7 @@ jobs:
           cp -f /opt/src/scripts/extras/vpnupgrade_centos.sh ./vpnup.sh
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          ver=5.3
+          ver=5.3.1
           bash vpnup.sh <<ANSWERS
 
           ANSWERS

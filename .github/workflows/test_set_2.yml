@@ -495,7 +495,7 @@ jobs:
           cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade.sh ./vpnup.sh
           sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          ver=5.2
+          ver=5.3
           if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
             || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
             ipsec whack --shutdown || true
@@ -517,7 +517,7 @@ jobs:
           fi
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          ver=5.3
+          ver=5.3.1
           if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
             || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
             ipsec whack --shutdown || true
