@@ -23,7 +23,7 @@ jobs:
       image: ${{ matrix.os_version }}
       options: --cap-add=NET_ADMIN --device=/dev/ppp
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Test
