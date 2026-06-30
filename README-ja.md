@@ -88,7 +88,6 @@ IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2
 - CentOS Stream 10または9
 - Rocky LinuxまたはAlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>

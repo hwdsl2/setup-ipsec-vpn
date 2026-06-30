@@ -88,7 +88,6 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - CentOS Stream 10 или 9
 - Rocky Linux или AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>

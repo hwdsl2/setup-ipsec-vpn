@@ -66,7 +66,7 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
 
 `apt-get purge xl2tpd`
 
-#### CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+#### CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 
 `yum remove xl2tpd`
 
@@ -82,7 +82,7 @@ Edit `/etc/iptables.rules` and remove unneeded rules. Your original rules (if an
 
 If IPv6 support was enabled, also edit `/etc/ip6tables.rules` and `/etc/iptables/rules.v6` (if it exists) and remove unneeded rules.
 
-#### CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+#### CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 
 Edit `/etc/sysconfig/iptables` and remove unneeded rules. Your original rules (if any) are backed up as `/etc/sysconfig/iptables.old-date-time`.
 
@@ -135,7 +135,7 @@ Remove fail2ban:
 service fail2ban stop
 # Ubuntu & Debian
 apt-get purge fail2ban
-# CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+# CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 yum remove fail2ban
 # Alpine Linux
 apk del fail2ban

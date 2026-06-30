@@ -88,7 +88,6 @@ A cloud server, virtual private server (VPS) or dedicated server, with an instal
 - CentOS Stream 10 or 9
 - Rocky Linux or AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>

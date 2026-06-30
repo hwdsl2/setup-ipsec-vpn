@@ -88,7 +88,6 @@ IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/doc
 - CentOS Stream 10 或 9
 - Rocky Linux 或 AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>

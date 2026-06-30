@@ -66,7 +66,7 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
 
 `apt-get purge xl2tpd`
 
-#### CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+#### CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 
 `yum remove xl2tpd`
 
@@ -82,7 +82,7 @@ rm -f /etc/init/ipsec.conf /lib/systemd/system/ipsec.service /etc/init.d/ipsec \
 
 如果启用了 IPv6 支持，请也编辑 `/etc/ip6tables.rules` 以及 `/etc/iptables/rules.v6`（如果存在）并删除不需要的规则。
 
-#### CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+#### CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 
 编辑 `/etc/sysconfig/iptables` 并删除不需要的规则。你之前的防火墙规则（如果有）备份在 `/etc/sysconfig/iptables.old-日期-时间`。
 
@@ -135,7 +135,7 @@ rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh \
 service fail2ban stop
 # Ubuntu & Debian
 apt-get purge fail2ban
-# CentOS/RHEL, Rocky Linux, AlmaLinux, Oracle Linux & Amazon Linux 2
+# CentOS/RHEL, Rocky Linux, AlmaLinux & Oracle Linux
 yum remove fail2ban
 # Alpine Linux
 apk del fail2ban
