@@ -30,10 +30,16 @@
             "Ubuntu2404": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip\nsnap install aws-cli --classic\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
+            "Ubuntu2604": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip\nsnap install aws-cli --classic\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
+            },
             "Debian11": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "Debian12": {
+                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
+            },
+            "Debian13": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\nrm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz"
             },
             "AmazonLinux2": {
@@ -481,8 +487,10 @@
                                 "       AMIName = {",
                                 "           'Ubuntu2204': 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',",
                                 "           'Ubuntu2404': 'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*',",
+                                "           'Ubuntu2604': 'ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-amd64-server-*',",
                                 "           'Debian11': 'debian-11-amd64-*',",
                                 "           'Debian12': 'debian-12-amd64-*',",
+                                "           'Debian13': 'debian-13-amd64-*',",
                                 "           'AmazonLinux2': 'amzn2-ami-hvm-*.*-x86_64-gp2',",
                                 "       }[distribution]",
                                 "       response = ec2.describe_images(Filters=[{'Name':'name', 'Values':[AMIName]}], Owners=['099720109477', '136693071363', 'amazon'])",
@@ -620,11 +628,13 @@
         },
         "OS": {
             "Type": "String",
-            "Description": "The OS of your VPN server. Default: Ubuntu 24.04",
-            "Default": "Ubuntu2404",
+            "Description": "The OS of your VPN server. Default: Ubuntu 26.04",
+            "Default": "Ubuntu2604",
             "AllowedValues": [
+                "Ubuntu2604",
                 "Ubuntu2404",
                 "Ubuntu2204",
+                "Debian13",
                 "Debian12",
                 "Debian11",
                 "AmazonLinux2"
