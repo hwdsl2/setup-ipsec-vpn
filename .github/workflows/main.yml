@@ -19,6 +19,9 @@ on:
       - '.github/workflows/test_set_1.yml'
       - '.github/workflows/test_set_2.yml'
 
+permissions:
+  contents: read
+
 jobs:
   shellcheck:
     if: github.repository_owner == 'hwdsl2'

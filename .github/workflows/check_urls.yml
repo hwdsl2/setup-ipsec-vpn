@@ -11,6 +11,9 @@ name: check_urls
 
 on: workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   check_urls:
     runs-on: ubuntu-24.04

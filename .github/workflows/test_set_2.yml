@@ -11,6 +11,9 @@ name: test_set_2
 
 on: workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   test_set_2:
     runs-on: ubuntu-24.04

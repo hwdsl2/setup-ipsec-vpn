@@ -11,6 +11,9 @@ name: shellcheck
 
 on: workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   shellcheck:
     runs-on: ubuntu-24.04

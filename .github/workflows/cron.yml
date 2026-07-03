@@ -13,6 +13,9 @@ on:
   schedule:
     - cron: '30 3 * * 1,4'
 
+permissions:
+  contents: read
+
 jobs:
   check_urls:
     if: github.repository_owner == 'hwdsl2'
