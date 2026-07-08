@@ -505,6 +505,8 @@ grep pluto /var/log/messages
 grep xl2tpd /var/log/messages
 ```
 
+如果 Libreswan 日志中出现 `Protocol not supported (errno 93)` 或 `Adding IPsec SA failed` 等错误，请参见 [IPsec SA 错误](ikev2-howto-zh.md#ipsec-sa-错误)。
+
 检查 IPsec VPN 服务器状态：
 
 ```bash

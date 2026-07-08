@@ -576,6 +576,7 @@ sudo chmod 600 ca.cer client.cer client.key
 **另见：** [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)，[IKEv1 故障排除](clients-zh.md#ikev1-故障排除)和[高级用法](advanced-usage-zh.md)。
 
 * [无法连接到 VPN 服务器](#无法连接到-vpn-服务器)
+* [IPsec SA 错误](#ipsec-sa-错误)
 * [Ubuntu 20.04 无法导入客户端配置](#ubuntu-2004-无法导入客户端配置)
 * [macOS Sonoma 客户端重新连接](#macos-sonoma-客户端重新连接)
 * [无法连接多个 IKEv2 客户端](#无法连接多个-ikev2-客户端)
@@ -593,6 +594,12 @@ sudo chmod 600 ca.cer client.cer client.key
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
 [检查日志及 VPN 状态](clients-zh.md#检查日志及-vpn-状态)是否有错误。如果你遇到 retransmission 相关错误并且无法连接，说明 VPN 客户端和服务器之间的网络可能有问题。如果你从中国大陆进行连接，请考虑改用 IPsec VPN 以外的其他解决方案。
+
+### IPsec SA 错误
+
+如果 Libreswan 日志中出现 `Protocol not supported (errno 93)`，`Requested type not found`，`Adding IPsec SA failed` 或者 `XFRM_MSG_DELPOLICY` 等错误，服务器可能禁用了 ESP 内核支持。
+
+在基于 RHEL 10 的系统上已有相关报告，某些安全缓解措施可能会在 modprobe 配置中禁用 `esp4` 或 `esp6`，例如 `/etc/modprobe.d/dirtyfrag.conf`。IPsec VPN 需要 ESP 支持。请更新内核/安全软件包，或者遵循你的发行版文档；在更改这些设置后，重启 IPsec 或重新运行 VPN 安装脚本。
 
 ### Ubuntu 20.04 无法导入客户端配置
 
