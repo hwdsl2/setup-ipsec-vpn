@@ -126,6 +126,7 @@ jobs:
           netstat -anpu | grep xl2tpd
           if grep -qsE 'release (9|1[0-9])' /etc/redhat-release; then
             nft list ruleset
+            nft -c -f /etc/sysconfig/nftables.conf
             nft list ruleset | grep -q '192\.168\.42\.0/24'
             nft list ruleset | grep -q '192\.168\.43\.0/24'
           else
@@ -193,6 +194,7 @@ jobs:
           netstat -anpu | grep xl2tpd
           if grep -qsE 'release (9|1[0-9])' /etc/redhat-release; then
             nft list ruleset
+            nft -c -f /etc/sysconfig/nftables.conf
             nft list ruleset | grep -q '192\.168\.42\.0/24'
             nft list ruleset | grep -q '192\.168\.43\.0/24'
           else
