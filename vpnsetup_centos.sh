@@ -697,7 +697,11 @@ update_iptables() {
       $ip6tf 1 -m conntrack --ctstate INVALID -j DROP
       $ip6tf 2 -i "$NET_IFACE" -d "$IP6_NET" -m conntrack --ctstate "$res" -j ACCEPT
       $ip6tf 3 -s "$IP6_NET" -o "$NET_IFACE" -j ACCEPT
-      $ip6tp -s "$IP6_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+      if [ "$use_nft" = 1 ]; then
+        $ip6tp -s "$IP6_NET" -o "$NET_IFACE" ! -d "$IP6_NET" -j MASQUERADE
+      else
+        $ip6tp -s "$IP6_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+      fi
     fi
     echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
     if [ "$use_nft" = 1 ]; then
@@ -797,6 +801,10 @@ start_services() {
   if [ "$use_nft" = 1 ]; then
     if ! nft -c -f "$IPT_FILE" >/dev/null 2>&1; then
       sed -i '/ip6 saddr fddd:\(2c4\|1194\):/s/xt target "MASQUERADE"/masquerade/' "$IPT_FILE"
+    fi
+    if ! nft -c -f "$IPT_FILE"; then
+      echo "Warning: Failed to validate nftables rules in '$IPT_FILE'." >&2
+      echo "         VPN setup will continue, but nftables may fail to reload after reboot." >&2
     fi
     nft -f "$IPT_FILE"
   else
