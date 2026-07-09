@@ -841,9 +841,9 @@ start_services() {
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
   if [ "$use_nft" = 1 ]; then
     if ! nft -c -f "$IPT_FILE" >/dev/null 2>&1; then
-      sed -i '/ip6 saddr fddd:\(2c4\|1194\):/s/xt target "MASQUERADE"/masquerade/' "$IPT_FILE"
+      sed -i '/^[[:space:]]*ip6 saddr .*xt target "MASQUERADE"/s/xt target "MASQUERADE"/masquerade/' "$IPT_FILE"
     fi
-    if ! nft -c -f "$IPT_FILE"; then
+    if ! nft -c -f "$IPT_FILE" >/dev/null 2>&1; then
       echo "Warning: Failed to validate nftables rules in '$IPT_FILE'." >&2
       echo "         VPN setup will continue, but nftables may fail to reload after reboot." >&2
     fi
