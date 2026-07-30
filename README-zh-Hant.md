@@ -104,7 +104,7 @@ IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/doc
 
 使用以下按鈕快速部署：
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
 [**&raquo; 我想建立並使用自己的 VPN，但沒有可用的伺服器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 

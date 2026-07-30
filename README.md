@@ -104,7 +104,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 
 Quick deploy to:
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
