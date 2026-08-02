@@ -364,6 +364,79 @@ install_vpn_pkgs_3() {
   fi
 }
 
+test_netfilter_support() {
+  if ! iptables-restore --test >/dev/null 2>&1 <<'EOF'
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -p udp --dport 1701 -m policy --dir in --pol none -j DROP
+-A INPUT -m conntrack --ctstate INVALID -j DROP
+-A INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s 192.0.2.0/24 -j MASQUERADE
+COMMIT
+EOF
+  then
+    return 1
+  fi
+  if [ -n "$ip6" ] && ! ip6tables-restore --test >/dev/null 2>&1 <<'EOF'
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m conntrack --ctstate INVALID -j DROP
+-A INPUT -p udp -m multiport --dports 500,4500 -j ACCEPT
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s 2001:db8::/64 -j MASQUERADE
+COMMIT
+EOF
+  then
+    return 1
+  fi
+  return 0
+}
+
+check_netfilter_support() {
+  if [ "$os_ver" != 10 ] && [ "$os_ver" != 10s ]; then
+    return 0
+  fi
+  test_netfilter_support && return 0
+
+  case "$os_type" in
+    centos|rhel|rocky|alma)
+      # Minimal EL10 images may omit this package for the running kernel.
+      kernel_pkg="kernel-modules-extra-$(uname -r)"
+      bigecho "Installing kernel modules required for the VPN..."
+      (
+        set -x
+        yum -y -q install "$kernel_pkg" >/dev/null
+      ) || :
+      ;;
+  esac
+
+  test_netfilter_support && return 0
+
+cat 1>&2 <<EOF
+Error: Required netfilter kernel modules are unavailable for the running kernel:
+       $(uname -r)
+       Install the matching kernel modules package, or update the kernel and
+       matching modules, reboot, then re-run this script. Custom or provider-
+       specific kernels without these capabilities are not supported.
+EOF
+  exit 1
+}
+
 create_f2b_config() {
   F2B_FILE=/etc/fail2ban/jail.local
   if [ ! -f "$F2B_FILE" ]; then
@@ -942,6 +1015,7 @@ vpnsetup() {
   install_vpn_pkgs_1
   install_vpn_pkgs_2
   install_vpn_pkgs_3
+  check_netfilter_support
   install_fail2ban
   get_helper_scripts
   get_libreswan
