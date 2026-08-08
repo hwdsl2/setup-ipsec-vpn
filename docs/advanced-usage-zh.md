@@ -14,6 +14,7 @@
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [VPN 服务器网段访问 VPN 客户端](#vpn-服务器网段访问-vpn-客户端)
+* [为 VPN 客户端启用 Bonjour/mDNS 服务发现](#为-vpn-客户端启用-bonjourmdns-服务发现)
 * [更改 IPTables 规则](#更改-iptables-规则)
 * [部署 Google BBR 拥塞控制](#部署-google-bbr-拥塞控制)
 
@@ -482,6 +483,35 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
    ```
 
 在 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)小节了解 VPN 内网 IP 的更多信息。
+
+## 为 VPN 客户端启用 Bonjour/mDNS 服务发现
+
+设置 VPN 后，你可以启用 [Bonjour](https://developer.apple.com/bonjour/)/mDNS 服务发现，使 VPN 客户端能够看到服务器本地网络上的设备。这允许 VPN 客户端发现通过 mDNS/DNS-SD 广播的打印机、AirPlay 设备、文件共享和其他服务，并解析 `.local` 主机名。此功能支持 IKEv2、IPsec/XAuth（"Cisco IPsec"）和 IPsec/L2TP 模式。
+
+要启用 Bonjour/mDNS 服务发现，在 VPN 服务器上运行辅助脚本：
+
+```bash
+sudo bash extras/enable_bonjour.sh
+```
+
+该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置实时服务监视器，该监视器监控本地网络上的 Bonjour 服务变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。当设备在局域网上出现或消失时，dnsmasq 记录会在几秒内更新。所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，使所有 VPN 客户端的 DNS 查询都通过 dnsmasq。iptables DNAT 规则会捕获 VPN 客户端的 mDNS 多播（224.0.0.251:5353）并将其重定向到 dnsmasq 的 53 端口，从而在不泄漏 DNS 的情况下实现 Bonjour 发现。
+
+启用后，VPN 客户端必须断开并重新连接以接收更新的 DNS 设置。
+
+**客户端兼容性：**
+
+| 平台 | 说明 |
+| ---- | ---- |
+| macOS/iOS | 自动工作。所有 DNS 通过 VPN 隧道路由到 dnsmasq。 |
+| Windows | 安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) 以获得完整的服务发现支持。 |
+| Android | `.local` 主机名解析可用。完整的服务浏览取决于应用。 |
+| Linux | 如果客户端配置了 systemd-resolved 或 avahi，则可用。 |
+
+要禁用 Bonjour/mDNS 服务发现并恢复所有更改：
+
+```bash
+sudo bash extras/disable_bonjour.sh
+```
 
 ## 更改 IPTables 规则
 
