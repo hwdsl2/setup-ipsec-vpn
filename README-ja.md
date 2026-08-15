@@ -22,7 +22,7 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 
 - Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[Headscale](https://github.com/hwdsl2/docker-headscale)
 - AI：[セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
-- 本：[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
+- :books: **本：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
 
 ## クイックスタート
 
@@ -326,7 +326,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[IPsec/XAuth（"Cisco IPsec"）VPNクライアントの設定](docs/clients-xauth.md)**
 
-**:book: [VPN本](docs/vpn-book.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
+**:book: [VPN本](docs/vpn-book-ja.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
 
 自分のVPNを楽しんでください！ :sparkles::tada::rocket::sparkles:
 
