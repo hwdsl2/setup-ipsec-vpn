@@ -2,7 +2,7 @@
 
 # Configure IPsec/L2TP VPN Clients
 
-After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), follow these steps to configure your devices. IPsec/L2TP is natively supported by Android, iOS, OS X, and Windows. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
+After [setting up your own VPN server](https://github.com/hwdsl2/setup-ipsec-vpn), follow these steps to configure your devices. IPsec/L2TP is natively supported by iOS, OS X, and Windows. Android users should use IKEv2 as described below. There is no additional software to install. Setup should only take a few minutes. In case you are unable to connect, first check to make sure the VPN credentials were entered correctly.
 
 ---
 * Platforms
@@ -161,34 +161,7 @@ If you get an error when trying to connect, see [Troubleshooting](#ikev1-trouble
 
 ## Android
 
-**Important:** Android users should instead connect using [IKEv2 mode](ikev2-howto.md) (recommended), which is more secure. Android 12+ only supports IKEv2 mode. The native VPN client in Android uses the less secure `modp1024` (DH group 2) for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
-
-If you still want to connect using IPsec/L2TP mode, you must first edit `/etc/ipsec.conf` on the VPN server. Find the line `ike=...` and append `,aes256-sha2;modp1024,aes128-sha1;modp1024` at the end. Save the file and run `service ipsec restart`.
-
-Docker users: Add `VPN_ENABLE_MODP1024=yes` to [your env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image), then re-create the Docker container.
-
-After that, follow the steps below on your Android device:
-
-1. Launch the **Settings** application.
-1. Tap "Network & internet". Or, if using Android 7 or earlier, tap **More...** in the **Wireless & networks** section.
-1. Tap **VPN**.
-1. Tap **Add VPN Profile** or the **+** icon at top-right of screen.
-1. Enter anything you like in the **Name** field.
-1. Select **L2TP/IPSec PSK** in the **Type** drop-down menu.
-1. Enter `Your VPN Server IP` in the **Server address** field.
-1. Leave the **L2TP secret** field blank.
-1. Leave the **IPSec identifier** field blank.
-1. Enter `Your VPN IPsec PSK` in the **IPSec pre-shared key** field.
-1. Tap **Save**.
-1. Tap the new VPN connection.
-1. Enter `Your VPN Username` in the **Username** field.
-1. Enter `Your VPN Password` in the **Password** field.
-1. Check the **Save account information** checkbox.
-1. Tap **Connect**.
-
-Once connected, you will see a VPN icon in the notification bar. You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://www.google.com/search?q=my+ip). It should say "Your public IP address is `Your VPN Server IP`".
-
-If you get an error when trying to connect, see [Troubleshooting](#ikev1-troubleshooting).
+Android users should connect using [IKEv2 mode](ikev2-howto.md) (recommended), which is more secure. The native VPN client in Android uses the less secure `modp1024` (DH group 2) for the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. Libreswan builds installed by this project no longer support this DH group. Android 12+ also only supports IKEv2 mode.
 
 ## iOS
 

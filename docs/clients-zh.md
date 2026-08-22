@@ -2,7 +2,7 @@
 
 # 配置 IPsec/L2TP VPN 客户端
 
-在成功[搭建自己的 VPN 服务器](../README-zh.md)之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 Android, iOS, OS X 和 Windows 上均受支持，无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
+在成功[搭建自己的 VPN 服务器](../README-zh.md)之后，按照下面的步骤来配置你的设备。IPsec/L2TP 在 iOS、OS X 和 Windows 上均受支持。Android 用户应按照下文说明使用 IKEv2。无需安装额外的软件。设置过程通常只需要几分钟。如果无法连接,请首先检查是否输入了正确的 VPN 登录凭证。
 
 ---
 * 平台名称
@@ -162,34 +162,7 @@ Add-VpnConnection -Name 'My IPsec VPN' -ServerAddress '你的 VPN 服务器 IP' 
 
 ## Android
 
-**重要：** Android 用户应该使用更安全的 [IKEv2 模式](ikev2-howto-zh.md)连接（推荐）。Android 12+ 仅支持 IKEv2 模式。Android 系统自带的 VPN 客户端对 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式使用安全性较低的 `modp1024` (DH group 2)。
-
-如果你仍然想用 IPsec/L2TP 模式连接，你必须首先编辑 VPN 服务器上的 `/etc/ipsec.conf` 并在 `ike=...` 一行的末尾加上 `,aes256-sha2;modp1024,aes128-sha1;modp1024` 字样。保存文件并运行 `service ipsec restart`。
-
-Docker 用户：在[你的 env 文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#如何使用本镜像)中添加 `VPN_ENABLE_MODP1024=yes`，然后重新创建 Docker 容器。
-
-然后在你的 Android 设备上进行以下步骤：
-
-1. 启动 **设置** 应用程序。
-1. 单击 **网络和互联网**。或者，如果你使用 Android 7 或更早版本，在 **无线和网络** 部分单击 **更多...**。
-1. 单击 **VPN**。
-1. 单击 **添加VPN配置文件** 或窗口右上角的 **+**。
-1. 在 **名称** 字段中输入任意内容。
-1. 在 **类型** 下拉菜单选择 **L2TP/IPSec PSK**。
-1. 在 **服务器地址** 字段中输入`你的 VPN 服务器 IP`。
-1. 保持 **L2TP 密钥** 字段空白。
-1. 保持 **IPSec 标识符** 字段空白。
-1. 在 **IPSec 预共享密钥** 字段中输入`你的 VPN IPsec PSK`。
-1. 单击 **保存**。
-1. 单击新的VPN连接。
-1. 在 **用户名** 字段中输入`你的 VPN 用户名`。
-1. 在 **密码** 字段中输入`你的 VPN 密码`。
-1. 选中 **保存帐户信息** 复选框。
-1. 单击 **连接**。
-
-连接成功后，会在通知栏显示图标。最后你可以到[这里](https://www.ipchicken.com)检测你的 IP 地址，应该显示为`你的 VPN 服务器 IP`。
-
-如果在连接过程中遇到错误，请参见[故障排除](#ikev1-故障排除)。
+Android 用户应该使用更安全的 [IKEv2 模式](ikev2-howto-zh.md)连接（推荐）。Android 系统自带的 VPN 客户端对 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式使用安全性较低的 `modp1024` (DH group 2)。当前由本项目安装的 Libreswan 不再支持该 DH 组。Android 12+ 也仅支持 IKEv2 模式。
 
 ## iOS
 
