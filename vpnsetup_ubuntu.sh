@@ -409,7 +409,6 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 USE_NSS_KDF=false
 FINALNSSDIR=/etc/ipsec.d
 NSSDIR=/etc/ipsec.d

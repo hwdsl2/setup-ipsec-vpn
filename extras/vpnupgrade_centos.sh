@@ -222,7 +222,6 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 EOF
   if [ "$SWAN_VER" != "3.32" ]; then
 cat >> Makefile.inc.local <<'EOF'

@@ -341,7 +341,6 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 USE_NSS_KDF=false
 USE_LINUX_AUDIT=false
 USE_SECCOMP=false
