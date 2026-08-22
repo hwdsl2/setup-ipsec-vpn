@@ -9,7 +9,21 @@
 
 name: test_set_2
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      libreswan_version:
+        required: false
+        type: string
+        default: ''
+      upgrade_from_version:
+        required: false
+        type: string
+        default: '5.3.1'
+      upgrade_to_version:
+        required: false
+        type: string
+        default: '5.3.2'
 
 permissions:
   contents: read
@@ -18,6 +32,7 @@ jobs:
   test_set_2:
     runs-on: ubuntu-24.04
     if: github.repository_owner == 'hwdsl2'
+    timeout-minutes: 120
     strategy:
       matrix:
         os_version: ["ubuntu:26.04", "ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "debian:11", "alpine:3.23", "alpine:3.22"]
@@ -25,6 +40,10 @@ jobs:
     container:
       image: ${{ matrix.os_version }}
       options: --cap-add=NET_ADMIN --device=/dev/ppp
+    env:
+      VPN_SWAN_VER: ${{ inputs.libreswan_version }}
+      TEST_UPGRADE_FROM: ${{ inputs.upgrade_from_version }}
+      TEST_UPGRADE_TO: ${{ inputs.upgrade_to_version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -32,6 +51,38 @@ jobs:
       - name: Test
         run: |
           set -ex
+
+          version_regex='^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'
+          validate_version() {
+            if ! printf '%s' "$1" | grep -Eq "$version_regex"; then
+              echo "Error: Invalid Libreswan test version." >&2
+              exit 1
+            fi
+          }
+
+          check_swan_version() {
+            expected_version=$1
+            ipsec_ver=$(ipsec --version 2>/dev/null)
+            installed_version=$(printf '%s' "$ipsec_ver" \
+              | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
+            if [ "$installed_version" != "$expected_version" ]; then
+              echo "Error: Expected Libreswan $expected_version, found '$installed_version'." >&2
+              exit 1
+            fi
+          }
+
+          set_setup_version() {
+            [ -z "$VPN_SWAN_VER" ] && return 0
+            sed -i "s/^  SWAN_VER=.*/  SWAN_VER=$VPN_SWAN_VER/" "$1"
+          }
+
+          set_upgrade_ceiling() {
+            sed -i "s/^  swan_ver_cur=.*/  swan_ver_cur=$2/" "$1"
+          }
+
+          [ -z "$VPN_SWAN_VER" ] || validate_version "$VPN_SWAN_VER"
+          validate_version "$TEST_UPGRADE_FROM"
+          validate_version "$TEST_UPGRADE_TO"
 
           os_type=""
           [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
@@ -101,11 +152,12 @@ jobs:
 
           cp -f "$GITHUB_WORKSPACE"/vpnsetup.sh .
           cp -f "$GITHUB_WORKSPACE"/extras/vpnuninstall.sh ./vpnunst.sh
-          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"' \
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  SWAN_VER=.*/  SWAN_VER=$VPN_SWAN_VER/" "$tmpdir/vpn.sh"' \
             -e '/curl /a sed -i \x27/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh\x27 "$tmpdir/vpn.sh"' \
             vpnsetup.sh
 
           sh vpnsetup.sh
+          [ -z "$VPN_SWAN_VER" ] || check_swan_version "$VPN_SWAN_VER"
 
           if [ "$os_type" = "alpine" ]; then
             xl2tpd -c /etc/xl2tpd/xl2tpd.conf
@@ -156,11 +208,13 @@ jobs:
           else
             cp -f "$GITHUB_WORKSPACE"/vpnsetup_ubuntu.sh ./vpnsetup.sh
           fi
+          set_setup_version vpnsetup.sh
           sed -i -e '/swan_ver_latest=/s/^/#/' \
             -e '/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' \
             vpnsetup.sh
 
           bash vpnsetup.sh
+          [ -z "$VPN_SWAN_VER" ] || check_swan_version "$VPN_SWAN_VER"
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -496,9 +550,9 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade.sh ./vpnup.sh
-          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"' vpnup.sh
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  swan_ver_cur=.*/  swan_ver_cur=$TEST_UPGRADE_FROM/" "$tmpdir/vpnup.sh"' vpnup.sh
 
-          ver=5.3.1
+          ver=$TEST_UPGRADE_FROM
           if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
             || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
             ipsec whack --shutdown || true
@@ -508,7 +562,7 @@ jobs:
 
           ANSWERS
           restart_ipsec
-          ipsec --version | grep "$ver"
+          check_swan_version "$ver"
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
@@ -518,18 +572,19 @@ jobs:
           else
             cp -f "$GITHUB_WORKSPACE"/extras/vpnupgrade_ubuntu.sh ./vpnup.sh
           fi
+          set_upgrade_ceiling vpnup.sh "$TEST_UPGRADE_TO"
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
-          ver=5.3.2
+          ver=$TEST_UPGRADE_TO
           if [ "$os_type" = "alpine" ] || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
             || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
             ipsec whack --shutdown || true
           fi
-          bash vpnup.sh <<ANSWERS
+          VPN_UPDATE_SWAN_VER="$ver" bash vpnup.sh <<ANSWERS
 
           ANSWERS
           restart_ipsec
-          ipsec --version | grep "$ver"
+          check_swan_version "$ver"
           ipsec status | grep -q l2tp-psk
           ipsec status | grep -q xauth-psk
           ipsec status | grep -q ikev2-cp
