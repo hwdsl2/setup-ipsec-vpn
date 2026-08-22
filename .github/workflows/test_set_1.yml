@@ -24,6 +24,10 @@ on:
         required: false
         type: string
         default: '5.3.2'
+      show_libreswan_build_output:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -42,6 +46,7 @@ jobs:
       VPN_SWAN_VER: ${{ inputs.libreswan_version }}
       TEST_UPGRADE_FROM: ${{ inputs.upgrade_from_version }}
       TEST_UPGRADE_TO: ${{ inputs.upgrade_to_version }}
+      SHOW_LIBRESWAN_BUILD_OUTPUT: ${{ inputs.show_libreswan_build_output }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -88,9 +93,18 @@ jobs:
             sed -i "s/^  swan_ver_cur=.*/  swan_ver_cur=$2/" "$1"
           }
 
+          enable_build_output() {
+            [ "$SHOW_LIBRESWAN_BUILD_OUTPUT" = true ] || return 0
+            sed -i '/^[[:space:]]*make .* -s base .*&& make -s install-base /s# >/dev/null 2>&1##g' "$1"
+          }
+
           [ -z "$VPN_SWAN_VER" ] || validate_version "$VPN_SWAN_VER"
           validate_version "$TEST_UPGRADE_FROM"
           validate_version "$TEST_UPGRADE_TO"
+          case $SHOW_LIBRESWAN_BUILD_OUTPUT in
+            true|false) ;;
+            *) echo "Error: Invalid build output setting." >&2; exit 1 ;;
+          esac
 
           log1=/var/log/secure
           log2=/var/log/messages
@@ -156,7 +170,7 @@ jobs:
 
           cp -f /opt/src/scripts/vpnsetup.sh .
           cp -f /opt/src/scripts/extras/vpnuninstall.sh ./vpnunst.sh
-          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  SWAN_VER=.*/  SWAN_VER=$VPN_SWAN_VER/" "$tmpdir/vpn.sh"' \
+          sed -i -e '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpn.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  SWAN_VER=.*/  SWAN_VER=$VPN_SWAN_VER/" "$tmpdir/vpn.sh"; [ "$SHOW_LIBRESWAN_BUILD_OUTPUT" != true ] || sed -i "/^[[:space:]]*make .* -s base .*&& make -s install-base /s# >/dev/null 2>&1##g" "$tmpdir/vpn.sh"' \
             -e '/curl /a sed -i \x27/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh\x27 "$tmpdir/vpn.sh"' \
             vpnsetup.sh
 
@@ -226,6 +240,7 @@ jobs:
 
           cp -f /opt/src/scripts/vpnsetup_centos.sh ./vpnsetup.sh
           set_setup_version vpnsetup.sh
+          enable_build_output vpnsetup.sh
           sed -i -e '/swan_ver_latest=/s/^/#/' \
             -e '/status=0/a sed -i "/swan_ver_latest=/s/^/#/" /opt/src/ikev2.sh' \
             vpnsetup.sh
@@ -570,7 +585,7 @@ jobs:
           ipsec status | grep -q ikev2-cp
 
           cp -f /opt/src/scripts/extras/vpnupgrade.sh ./vpnup.sh
-          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  swan_ver_cur=.*/  swan_ver_cur=$TEST_UPGRADE_FROM/" "$tmpdir/vpnup.sh"' vpnup.sh
+          sed -i '/curl /a sed -i "/swan_ver_latest=/s/^/#/" "$tmpdir/vpnup.sh"; [ -z "$VPN_SWAN_VER" ] || sed -i "s/^  swan_ver_cur=.*/  swan_ver_cur=$TEST_UPGRADE_FROM/" "$tmpdir/vpnup.sh"; [ "$SHOW_LIBRESWAN_BUILD_OUTPUT" != true ] || sed -i "/^[[:space:]]*make .* -s base .*&& make -s install-base /s# >/dev/null 2>&1##g" "$tmpdir/vpnup.sh"' vpnup.sh
 
           ver=$TEST_UPGRADE_FROM
           sed -i "s/^SWAN_VER=.*/SWAN_VER=$ver/" vpnup.sh
@@ -585,6 +600,7 @@ jobs:
 
           cp -f /opt/src/scripts/extras/vpnupgrade_centos.sh ./vpnup.sh
           set_upgrade_ceiling vpnup.sh "$TEST_UPGRADE_TO"
+          enable_build_output vpnup.sh
           sed -i '/swan_ver_latest=/s/^/#/' vpnup.sh
 
           ver=$TEST_UPGRADE_TO
@@ -660,6 +676,7 @@ jobs:
           docker exec --env VPN_SWAN_VER="$VPN_SWAN_VER" \
             --env TEST_UPGRADE_FROM="$TEST_UPGRADE_FROM" \
             --env TEST_UPGRADE_TO="$TEST_UPGRADE_TO" \
+            --env SHOW_LIBRESWAN_BUILD_OUTPUT="$SHOW_LIBRESWAN_BUILD_OUTPUT" \
             "${OS_VERSION//:}-test-1" /opt/src/run.sh "${OS_VERSION::6}"
 
       - name: Clear

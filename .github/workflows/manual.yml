@@ -95,6 +95,7 @@ jobs:
       libreswan_version: ${{ inputs.libreswan_version }}
       upgrade_from_version: ${{ inputs.upgrade_from_version }}
       upgrade_to_version: ${{ inputs.upgrade_to_version }}
+      show_libreswan_build_output: true
 
   test_set_2:
     needs: validate_versions
@@ -104,3 +105,4 @@ jobs:
       libreswan_version: ${{ inputs.libreswan_version }}
       upgrade_from_version: ${{ inputs.upgrade_from_version }}
       upgrade_to_version: ${{ inputs.upgrade_to_version }}
+      show_libreswan_build_output: true
