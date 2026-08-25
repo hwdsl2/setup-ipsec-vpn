@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script to update Libreswan on Ubuntu, Debian, CentOS/RHEL, Rocky Linux,
-# AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
+# AlmaLinux, Oracle Linux and Alpine Linux
 #
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
@@ -65,8 +65,7 @@ check_os() {
       exiterr "CentOS Linux $os_ver is EOL and not supported."
     fi
   elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
-    os_type=amzn
-    os_ver=2
+    exiterr "Amazon Linux 2 has reached end of support and is no longer supported by this project. Please migrate to a currently supported operating system."
   else
     os_type=$(lsb_release -si 2>/dev/null)
     [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
@@ -84,7 +83,7 @@ check_os() {
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
        Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
-       Oracle Linux, Amazon Linux 2 or Alpine Linux
+       Oracle Linux or Alpine Linux
 EOF
         exit 1
         ;;
@@ -148,8 +147,6 @@ get_setup_url() {
   if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] \
     || [ "$os_type" = "alma" ] || [ "$os_type" = "ol" ]; then
     sh_file="vpnupgrade_centos.sh"
-  elif [ "$os_type" = "amzn" ]; then
-    sh_file="vpnupgrade_amzn.sh"
   elif [ "$os_type" = "alpine" ]; then
     sh_file="vpnupgrade_alpine.sh"
   fi

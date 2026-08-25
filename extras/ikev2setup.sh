@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Script to set up and manage IKEv2 on Ubuntu, Debian, CentOS/RHEL, Rocky Linux,
-# AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
+# AlmaLinux, Oracle Linux and Alpine Linux
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -74,8 +74,7 @@ check_os() {
       exiterr "CentOS Linux $os_ver is EOL and not supported."
     fi
   elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
-    os_type=amzn
-    os_ver=2
+    exiterr "Amazon Linux 2 has reached end of support and is no longer supported by this project. Please migrate to a currently supported operating system."
   else
     os_type=$(lsb_release -si 2>/dev/null)
     [ -z "$os_type" ] && [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
@@ -96,7 +95,7 @@ check_os() {
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
        Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
-       Oracle Linux, Amazon Linux 2 or Alpine Linux
+       Oracle Linux or Alpine Linux
 EOF
         exit 1
         ;;
@@ -169,7 +168,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2026 Lin Song   22 May 2026
+IKEv2 Script   Copyright (c) 2020-2026 Lin Song   25 Aug 2026
 
 EOF
 }
