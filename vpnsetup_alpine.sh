@@ -326,6 +326,18 @@ USE_DNSSEC=false
 FINALNSSDIR=/etc/ipsec.d
 NSSDIR=/etc/ipsec.d
 EOF
+    if printf '%s\n%s' "5.4" "$SWAN_VER" | sort -C -V; then
+      if ! grep -qs XFRM_MODE_IPTFS /usr/include/linux/xfrm.h; then
+        echo "USE_XFRM_HEADER_COPY=true" >> Makefile.inc.local
+      fi
+      if ! pkg-config --atleast-version=3.118.1 nss >/dev/null 2>&1; then
+        echo "USE_ML_KEM_768=false" >> Makefile.inc.local
+        echo "USE_ML_KEM_1024=false" >> Makefile.inc.local
+      fi
+      if ! pkg-config --atleast-version=3.99 nss >/dev/null 2>&1; then
+        echo "USE_EDDSA=false" >> Makefile.inc.local
+      fi
+    fi
     NPROCS=$(grep -c ^processor /proc/cpuinfo)
     [ -z "$NPROCS" ] && NPROCS=1
     (
