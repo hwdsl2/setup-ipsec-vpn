@@ -168,7 +168,7 @@ confirm_or_abort() {
 show_header() {
 cat <<'EOF'
 
-IKEv2 Script   Copyright (c) 2020-2026 Lin Song   25 Aug 2026
+IKEv2 Script   Copyright (c) 2020-2026 Lin Song   26 Aug 2026
 
 EOF
 }
@@ -1393,15 +1393,6 @@ $config_url
 
 ================================================
 EOF
-  if [ "$in_container" = 0 ]; then
-cat <<EOF
-
-Community discussions and updates:
-https://www.reddit.com/r/selfhostedstack/
-
-================================================
-EOF
-  fi
 }
 
 check_swan_update() {
