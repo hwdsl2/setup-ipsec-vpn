@@ -76,15 +76,22 @@ jobs:
             fi
           }
 
-          check_ipsec_init_script() {
+          check_ipsec_service_install() {
             [ "$os_type" = "alpine" ] && return 0
             ipsec_ver=$(ipsec --version 2>/dev/null)
             init_check_version=$(printf '%s' "$ipsec_ver" \
               | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
-            if printf '%s\n%s' "5.4" "$init_check_version" | sort -C -V \
-              && [ ! -x /etc/init.d/ipsec ]; then
-              echo "Error: Libreswan $init_check_version did not install an executable SysV init script." >&2
-              exit 1
+            if printf '%s\n%s' "5.4" "$init_check_version" | sort -C -V; then
+              if [ -x /lib/systemd/systemd ] && [ -d /run/systemd ]; then
+                if [ ! -r /lib/systemd/system/ipsec.service ] \
+                  && [ ! -r /usr/lib/systemd/system/ipsec.service ]; then
+                  echo "Error: Libreswan $init_check_version did not install a readable systemd service unit." >&2
+                  exit 1
+                fi
+              elif [ ! -x /etc/init.d/ipsec ]; then
+                echo "Error: Libreswan $init_check_version did not install an executable SysV init script." >&2
+                exit 1
+              fi
             fi
           }
 
@@ -184,7 +191,7 @@ jobs:
 
           sh vpnsetup.sh
           [ -z "$VPN_SWAN_VER" ] || check_swan_version "$VPN_SWAN_VER"
-          check_ipsec_init_script
+          check_ipsec_service_install
 
           if [ "$os_type" = "alpine" ]; then
             xl2tpd -c /etc/xl2tpd/xl2tpd.conf
@@ -243,7 +250,7 @@ jobs:
 
           bash vpnsetup.sh
           [ -z "$VPN_SWAN_VER" ] || check_swan_version "$VPN_SWAN_VER"
-          check_ipsec_init_script
+          check_ipsec_service_install
 
           VPN_IPSEC_PSK='your_ipsec_pre_shared_key' \
           VPN_USER='your_vpn_username' \
@@ -590,7 +597,7 @@ jobs:
           bash vpnup.sh <<ANSWERS
 
           ANSWERS
-          check_ipsec_init_script
+          check_ipsec_service_install
           restart_ipsec
           check_swan_version "$ver"
           ipsec status | grep -q l2tp-psk
@@ -614,7 +621,7 @@ jobs:
           VPN_UPDATE_SWAN_VER="$ver" bash vpnup.sh <<ANSWERS
 
           ANSWERS
-          check_ipsec_init_script
+          check_ipsec_service_install
           restart_ipsec
           check_swan_version "$ver"
           ipsec status | grep -q l2tp-psk
