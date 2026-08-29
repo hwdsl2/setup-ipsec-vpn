@@ -19,11 +19,11 @@ on:
       upgrade_from_version:
         required: false
         type: string
-        default: '5.3.1'
+        default: '5.3.2'
       upgrade_to_version:
         required: false
         type: string
-        default: '5.3.2'
+        default: '5.4'
       show_libreswan_build_output:
         required: false
         type: boolean
