@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2034,SC2329
+# shellcheck disable=SC2030,SC2031,SC2034,SC2329
 
 set -euo pipefail
 
@@ -104,6 +104,44 @@ remove_legacy_ipv6_runtime
   || fail "legacy IPv6 marker was not removed"
 [ ! -e "$BONJOUR_VPN_LEGACY_SYNC_PATH" ] \
   || fail "legacy IPv6 sync binary was not removed"
+pass_count=$((pass_count + 1))
+
+PACKAGE_TEST_DIR="$TEST_DIR/packages"
+PACKAGE_MOCK_BIN="$PACKAGE_TEST_DIR/bin"
+PACKAGE_CALL_LOG="$PACKAGE_TEST_DIR/calls.log"
+mkdir -p "$PACKAGE_MOCK_BIN"
+: > "$PACKAGE_CALL_LOG"
+cat > "$PACKAGE_MOCK_BIN/dpkg-query" <<'EOF'
+#!/bin/sh
+if [ "${MOCK_PACKAGES_READY:-0}" = 1 ]; then
+  printf 'install ok installed'
+  exit 0
+fi
+exit 1
+EOF
+cat > "$PACKAGE_MOCK_BIN/apt-get" <<'EOF'
+#!/bin/sh
+printf '%s\n' "$*" >> "$PACKAGE_CALL_LOG"
+exit 0
+EOF
+chmod +x "$PACKAGE_MOCK_BIN"/*
+os_type=ubuntu
+(
+  export PATH="$PACKAGE_MOCK_BIN:/usr/bin:/bin"
+  export PACKAGE_CALL_LOG MOCK_PACKAGES_READY=1
+  install_packages >/dev/null
+)
+[ ! -s "$PACKAGE_CALL_LOG" ] \
+  || fail "package manager ran even though all required packages were installed"
+pass_count=$((pass_count + 1))
+
+(
+  export PATH="$PACKAGE_MOCK_BIN:/usr/bin:/bin"
+  export PACKAGE_CALL_LOG MOCK_PACKAGES_READY=0
+  install_packages >/dev/null
+)
+[ "$(wc -l < "$PACKAGE_CALL_LOG" | tr -d ' ')" = 2 ] \
+  || fail "incomplete package set did not trigger package update and install"
 pass_count=$((pass_count + 1))
 
 echo "PASS: $pass_count common Bonjour configuration tests"

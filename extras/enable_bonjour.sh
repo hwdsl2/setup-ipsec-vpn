@@ -701,7 +701,36 @@ parse_upstream_dns() {
   [ -z "$UPSTREAM_DNS2" ] && UPSTREAM_DNS2="8.8.4.4"
 }
 
+required_packages_installed() {
+  local package
+  case "$os_type" in
+    ubuntu|debian)
+      command -v dpkg-query >/dev/null 2>&1 || return 1
+      for package in avahi-daemon avahi-utils dnsmasq; do
+        [ "$(dpkg-query -W -f='${Status}' "$package" 2>/dev/null)" = 'install ok installed' ] \
+          || return 1
+      done
+      ;;
+    alpine)
+      command -v apk >/dev/null 2>&1 || return 1
+      for package in avahi avahi-tools dnsmasq; do
+        apk info -e "$package" >/dev/null 2>&1 || return 1
+      done
+      ;;
+    *)
+      command -v rpm >/dev/null 2>&1 || return 1
+      for package in avahi avahi-tools dnsmasq; do
+        rpm -q --quiet "$package" >/dev/null 2>&1 || return 1
+      done
+      ;;
+  esac
+}
+
 install_packages() {
+  if required_packages_installed; then
+    bigecho "Required packages are already installed; skipping package operations."
+    return 0
+  fi
   bigecho "Installing required packages..."
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
     export DEBIAN_FRONTEND=noninteractive
