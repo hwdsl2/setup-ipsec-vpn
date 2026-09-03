@@ -495,7 +495,11 @@ To enable Bonjour/mDNS service discovery, run the helper script on the VPN serve
 sudo bash extras/enable_bonjour.sh
 ```
 
-The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a real-time service watcher that monitors the local network for Bonjour service changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. When devices appear or disappear on the LAN, dnsmasq records are updated within seconds. The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so all DNS queries from VPN clients go through dnsmasq. An iptables DNAT rule captures mDNS multicast (224.0.0.251:5353) from VPN clients and redirects it to dnsmasq on port 53, enabling Bonjour discovery without DNS leak.
+The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a persistent service watcher that monitors the local network for Bonjour changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. New, changed and partially removed records are normally published within seconds. If an otherwise successful discovery returns no records at all, the empty result must occur twice (normally within about two minutes) before it replaces the last known-good records. Unchanged data does not restart dnsmasq.
+
+The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so DNS queries from VPN clients go through dnsmasq. Firewall rules capture IPv4 mDNS multicast (224.0.0.251:5353) from VPN clients and redirect it to dnsmasq on port 53. The script derives custom VPN subnets and pools from the installed VPN configuration instead of assuming the default `/24` networks, and persists firewall changes using the backend selected by the VPN installer.
+
+This feature is a DNS/DNS-SD bridge, not a general multicast router. It makes discovered `.local` records available over unicast DNS and captures IPv4 mDNS sent through the tunnel, but an application that sends or accepts discovery only on a physical interface may still not browse remote services. Client and application behavior therefore varies.
 
 After enabling, VPN clients must disconnect and reconnect to receive the updated DNS settings.
 
@@ -503,10 +507,10 @@ After enabling, VPN clients must disconnect and reconnect to receive the updated
 
 | Platform | Notes |
 | -------- | ----- |
-| macOS/iOS | Works automatically. All DNS is routed through the VPN tunnel to dnsmasq. |
-| Windows | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) for full service discovery support. |
-| Android | `.local` hostname resolution works. Full service browsing is app-dependent. |
-| Linux | Works if systemd-resolved or avahi is configured on the client. |
+| macOS/iOS | `.local` lookup and DNS-SD work when the active VPN profile and application use the tunnel DNS. Apps that insist on link-local multicast may not browse remote services. |
+| Windows | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) for Bonjour-aware applications. Application behavior still varies. |
+| Android | `.local` hostname lookup and service browsing are app-dependent. |
+| Linux | Behavior depends on the resolver, Avahi configuration and application. Direct queries to the VPN DNS endpoint can be used for testing. |
 
 To disable Bonjour/mDNS service discovery and revert all changes:
 
