@@ -2,7 +2,7 @@
 
 # IPsec VPN 伺服器一鍵安裝腳本
 
-[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)
+[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/github-stars-setup-ipsec-vpn.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-stars-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md) [![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)
 
 使用 Linux 腳本一鍵快速架設自己的 IPsec VPN 伺服器。支援 IPsec/L2TP、Cisco IPsec 和 IKEv2 協議。
 
@@ -10,11 +10,23 @@ IPsec VPN 可以加密你的網路流量，以防止在透過網際網路傳送�
 
 我們將使用 [Libreswan](https://libreswan.org/) 作為 IPsec 伺服器，以及 [xl2tpd](https://github.com/xelerance/xl2tpd) 作為 L2TP 提供者。
 
-**[&raquo; :book: Book: Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md) &nbsp;[架設自己的 VPN 伺服器](docs/vpn-book-zh-Hant.md)**
+**功能特性：**
+
+- 全自動的 IPsec VPN 伺服器設定，無需使用者輸入
+- 支援具有強大且快速加密演算法（例如 AES-GCM）的 IKEv2 模式
+- 生成 VPN 設定檔以自動設定 iOS、macOS 和 Android 裝置
+- 支援 Windows、macOS、iOS、Android、Chrome OS 和 Linux 客戶端
+- 包含輔助腳本以管理 VPN 使用者和憑證
+
+**另提供：**
+
+- Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)、[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
+- AI：[自架 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh-Hant.md)，用於本機 LLM、聊天、RAG、語音和 AI 工具
+- :books: 書籍：[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md)
 
 ## 快速開始
 
-首先，在你的 Linux 伺服器\* 上安裝 Ubuntu、Debian 或 CentOS。
+首先，在你的 Linux 伺服器\* 上安裝[支援的作業系統](#系統需求)。
 
 使用以下命令快速架設 IPsec VPN 伺服器：
 
@@ -24,7 +36,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登入憑證將會自動隨機生成，並在安裝完成後顯示。
 
-**可選：** 在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md)。
+> [!TIP]
+> 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。
 
 <details>
 <summary>
@@ -56,28 +69,25 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 如果無法下載，打開 [vpnsetup.sh](vpnsetup.sh)，然後點擊右側的 `Raw` 按鈕。按快捷鍵 `Ctrl/Cmd+A` 全選，`Ctrl/Cmd+C` 複製，然後貼上到你喜歡的編輯器。
 </details>
 
-另外，你也可以使用預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
+IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。如需了解其他選項以及客戶端設定，請繼續閱讀以下部分。
 
 \* 一個雲端伺服器、虛擬專用伺服器 (VPS) 或專用伺服器。
 
-## 功能特性
+## 社群
 
-- 全自動的 IPsec VPN 伺服器設定，無需使用者輸入
-- 支援具有強大且快速加密演算法（例如 AES-GCM）的 IKEv2 模式
-- 生成 VPN 設定檔以自動設定 iOS、macOS 和 Android 裝置
-- 支援 Windows、macOS、iOS、Android、Chrome OS 和 Linux 客戶端
-- 包含輔助腳本以管理 VPN 使用者和憑證
+- 📬 [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件）——獲取免費的 VPN 和 AI 部署指南（PDF，英文）
+- 💬 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社群，參與討論與專案展示
+- ⭐ 如果你覺得本專案有用，請為儲存庫加星——這能幫助更多人發現它。
 
 ## 系統需求
 
 一個雲端伺服器、虛擬專用伺服器 (VPS) 或專用伺服器，安裝以下作業系統之一：
 
-- Ubuntu 24.04 或 22.04
+- Ubuntu 26.04、24.04 或 22.04
 - Debian 13、12 或 11
 - CentOS Stream 10 或 9
 - Rocky Linux 或 AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>
@@ -94,15 +104,16 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 使用以下按鈕快速部署：
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README-zh.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README-zh.md)
 
 [**&raquo; 我想建立並使用自己的 VPN，但沒有可用的伺服器**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 對於有外部防火牆的伺服器（例如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），請為 VPN 開啟 UDP 連接埠 500 和 4500。
 
-另外，你也可以使用預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **不要** 在你的 PC 或 Mac 上執行這些腳本！它們只能用在伺服器上！
+> [!WARNING]
+> **不要** 在你的 PC 或 Mac 上執行這些腳本！它們只能用在伺服器上！
 
 ## 安裝說明
 
@@ -125,7 +136,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**註：** 一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
+> [!NOTE]
+> 一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
 
 **選項 3：** 將你自己的 VPN 登入憑證定義為環境變數。
 
@@ -139,7 +151,8 @@ VPN_PASSWORD='你的VPN密碼' \
 sh vpn.sh
 ```
 
-你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md) 和/或 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
+> [!TIP]
+> 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
 
 <details>
 <summary>
@@ -174,7 +187,7 @@ wget https://get.vpnsetup.net -O vpn.sh
 sudo VPN_SWAN_VER=4.15 sh vpn.sh
 ```
 
-**註：** 如果 Libreswan 版本 5 已經安裝，你可能需要先[解除安裝 VPN](docs/uninstall-zh.md)，然後再安裝 Libreswan 版本 4。或者，你也可以下載[升級腳本](#升級libreswan)，編輯它並指定 `SWAN_VER=4.15`，然後執行腳本。
+**註：** 如果 Libreswan 版本 5 已經安裝，你可能需要先[解除安裝 VPN](docs/uninstall-zh.md)，然後再安裝 Libreswan 版本 4。或者，你也可以下載[升級腳本](#升級-libreswan)，編輯它並指定 `SWAN_VER=4.15`，然後執行腳本。
 </details>
 
 ## 自訂 VPN 選項
@@ -203,7 +216,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 如果你需要在安裝 VPN 之後更改 DNS 伺服器，請參見[進階用法](docs/advanced-usage-zh.md)。
 
-**註：** 如果伺服器上已經設定 IKEv2，以上變數對 IKEv2 模式無效。在此情況下，如需自訂 IKEv2 選項（例如 DNS 伺服器），你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
+> [!NOTE]
+> 如果伺服器上已經設定 IKEv2，以上變數對 IKEv2 模式無效。在此情況下，如需自訂 IKEv2 選項（例如 DNS 伺服器），你可以先[移除 IKEv2](docs/ikev2-howto-zh.md#移除-ikev2)，然後執行 `sudo ikev2.sh` 重新設定。
 
 ### 自訂 IKEv2 選項
 
@@ -297,7 +311,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 \*\*\* 可以在互動式設定 IKEv2 期間自訂 (`sudo ikev2.sh`)。參見上面的選項 1。   
 \*\*\*\* 使用 `VPN_CLIENT_VALIDITY` 定義客戶端憑證的有效期限（單位：月）。它必須是 1 到 120 之間的整數。
 
-除了這些參數，高級使用者還可以在安裝時[自訂 VPN 子網](docs/advanced-usage-zh.md#自定义-vpn-子网)。
+除了這些參數，進階使用者還可以在安裝時[自訂 VPN 子網](docs/advanced-usage-zh.md#自定义-vpn-子网)（簡體中文）。
 </details>
 
 ## 下一步
@@ -330,7 +344,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 這些腳本在變更現有設定檔之前會先建立備份，並使用 `.old-日期-時間` 作為檔名後綴。
 
-## 升級Libreswan
+## 升級 Libreswan
 
 使用以下命令更新你的 VPN 伺服器上的 [Libreswan](https://libreswan.org)（[更新日誌](https://github.com/libreswan/libreswan/blob/main/CHANGES) | [通知清單](https://lists.libreswan.org)）。
 
@@ -359,7 +373,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 如果無法下載，打開 [vpnupgrade.sh](extras/vpnupgrade.sh)，然後點擊右側的 `Raw` 按鈕。按快捷鍵 `Ctrl/Cmd+A` 全選，`Ctrl/Cmd+C` 複製，然後貼上到你喜歡的編輯器。
 </details>
 
-目前支援的 Libreswan 最新版本是 `5.3`。查看已安裝版本：`ipsec --version`。
+目前支援的 Libreswan 最新版本是 `5.4`。查看已安裝版本：`ipsec --version`。
 
 **註：** `xl2tpd` 可以使用系統的套件管理器進行更新，例如 Ubuntu/Debian 上的 `apt-get`。
 
@@ -379,6 +393,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [使用其他 DNS 伺服器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [網域名稱與變更伺服器 IP](docs/advanced-usage-zh.md#域名和更改服务器-ip)
 - [僅限 IKEv2 的 VPN](docs/advanced-usage-zh.md#仅限-ikev2-的-vpn)
+- [啟用 IKEv2 前向保密](docs/advanced-usage-zh.md#启用-ikev2-前向保密)
 - [VPN 內網 IP 與流量](docs/advanced-usage-zh.md#vpn-内网-ip-和流量)
 - [指定 VPN 伺服器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [自訂 VPN 子網](docs/advanced-usage-zh.md#自定义-vpn-子网)
@@ -395,7 +410,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 要移除 IPsec VPN，執行[輔助腳本](extras/vpnuninstall.sh)：
 
-**警告：** 此輔助腳本將從你的伺服器中刪除 IPsec VPN。所有 VPN 設定將被**永久刪除**，並且 Libreswan 和 xl2tpd 將被移除。此操作**無法復原**！
+> [!CAUTION]
+> 此輔助腳本將從你的伺服器中刪除 IPsec VPN。所有 VPN 設定將被**永久刪除**，並且 Libreswan 和 xl2tpd 將被移除。此操作**無法復原**！
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh

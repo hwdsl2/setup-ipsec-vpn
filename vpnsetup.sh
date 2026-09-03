@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script for automatic setup of an IPsec VPN server on Ubuntu, Debian, CentOS/RHEL,
-# Rocky Linux, AlmaLinux, Oracle Linux, Amazon Linux 2 and Alpine Linux
+# Rocky Linux, AlmaLinux, Oracle Linux and Alpine Linux
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
 #
@@ -95,8 +95,7 @@ check_os() {
       exiterr "CentOS Linux $os_ver is EOL and not supported."
     fi
   elif grep -qs "Amazon Linux release 2 " /etc/system-release; then
-    os_type=amzn
-    os_ver=2
+    exiterr "Amazon Linux 2 has reached end of support and is no longer supported by this project. Please migrate to a currently supported operating system."
   elif grep -qs "Amazon Linux release 2023" /etc/system-release; then
     exiterr "Amazon Linux 2023 is not supported."
   else
@@ -116,7 +115,7 @@ check_os() {
 cat 1>&2 <<'EOF'
 Error: This script only supports one of the following OS:
        Ubuntu, Debian, CentOS/RHEL, Rocky Linux, AlmaLinux,
-       Oracle Linux, Amazon Linux 2 or Alpine Linux
+       Oracle Linux or Alpine Linux
 EOF
         exit 1
         ;;
@@ -257,8 +256,6 @@ get_setup_url() {
   if [ "$os_type" = "centos" ] || [ "$os_type" = "rhel" ] || [ "$os_type" = "rocky" ] \
     || [ "$os_type" = "alma" ] || [ "$os_type" = "ol" ]; then
     sh_file="vpnsetup_centos.sh"
-  elif [ "$os_type" = "amzn" ]; then
-    sh_file="vpnsetup_amzn.sh"
   elif [ "$os_type" = "alpine" ]; then
     sh_file="vpnsetup_alpine.sh"
   fi

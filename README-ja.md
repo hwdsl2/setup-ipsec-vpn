@@ -2,7 +2,7 @@
 
 # IPsec VPN サーバー自動セットアップスクリプト
 
-[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/github-stars-setup-ipsec-vpn.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-stars-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 数分で自分のIPsec VPNサーバーをセットアップし、IPsec/L2TP、Cisco IPsec、IKEv2をサポートします。
 
@@ -10,11 +10,23 @@ IPsec VPNはネットワークトラフィックを暗号化し、インター�
 
 IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TPプロバイダーとして[xl2tpd](https://github.com/xelerance/xl2tpd)を使用します。
 
-**[&raquo; :book: 本：Privacy Tools in the Age of AI](docs/vpn-book-ja.md) &nbsp;[VPNサーバーの構築方法](docs/vpn-book-ja.md)**
+**機能：**
+
+- 完全自動化されたIPsec VPNサーバーのセットアップ、ユーザー入力不要
+- 強力で高速な暗号（例：AES-GCM）をサポートするIKEv2をサポート
+- iOS、macOS、Androidデバイスを自動設定するVPNプロファイルを生成
+- Windows、macOS、iOS、Android、Chrome OS、LinuxをVPNクライアントとしてサポート
+- VPNユーザーと証明書を管理するためのヘルパースクリプトを含む
+
+**こちらも利用可能：**
+
+- Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[Headscale](https://github.com/hwdsl2/docker-headscale)
+- AI：[セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
+- :books: 本：[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
 
 ## クイックスタート
 
-まず、Ubuntu、Debian、またはCentOSをインストールしたLinuxサーバー\*を準備します。
+まず、[対応OS](#要件)をインストールしたLinuxサーバー\*を準備します。
 
 このワンライナーを使用してIPsec VPNサーバーをセットアップします：
 
@@ -24,7 +36,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
-**オプション:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)および/または[OpenVPN](https://github.com/hwdsl2/openvpn-install)をインストールします。
+> [!TIP]
+> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。
 
 <details>
 <summary>
@@ -56,28 +69,25 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 ダウンロードできない場合は、[vpnsetup.sh](vpnsetup.sh)を開き、右側の`Raw`ボタンをクリックします。`Ctrl/Cmd+A`を押してすべて選択し、`Ctrl/Cmd+C`を押してコピーし、お気に入りのエディタに貼り付けます。
 </details>
 
-事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
+IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。他のオプションやクライアントのセットアップについては、以下のセクションを参照してください。
 
 \* クラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー。
 
-## 機能
+## コミュニティ
 
-- 完全自動化されたIPsec VPNサーバーのセットアップ、ユーザー入力不要
-- 強力で高速な暗号（例：AES-GCM）をサポートするIKEv2をサポート
-- iOS、macOS、Androidデバイスを自動設定するVPNプロファイルを生成
-- Windows、macOS、iOS、Android、Chrome OS、LinuxをVPNクライアントとしてサポート
-- VPNユーザーと証明書を管理するためのヘルパースクリプトを含む
+- 📬 [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）——無料のVPN・AIデプロイガイドを入手（PDF・英語）
+- 💬 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) コミュニティでディスカッションに参加
+- ⭐ このリポジトリが役に立ったらスターを付けてください。より多くの人に見つけてもらう助けになります。
 
 ## 要件
 
 以下のいずれかのインストールを備えたクラウドサーバー、仮想プライベートサーバー（VPS）、または専用サーバー：
 
-- Ubuntu 24.04または22.04
+- Ubuntu 26.04、24.04または22.04
 - Debian 13、12、または11
 - CentOS Stream 10または9
 - Rocky LinuxまたはAlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>
@@ -94,15 +104,16 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 クイックデプロイ：
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 
 [**&raquo; 自分のVPNを運用したいが、そのためのサーバーがない**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 外部ファイアウォールを持つサーバー（例：[EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)）の場合、VPNのUDPポート500および4500を開きます。
 
-事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
+> [!WARNING]
+> これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
 
 ## インストール
 
@@ -125,7 +136,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**注:** 安全なIPsec PSKは少なくとも20のランダムな文字で構成されるべきです。
+> [!NOTE]
+> 安全なIPsec PSKは少なくとも20のランダムな文字で構成されるべきです。
 
 **オプション3:** 環境変数として自分のVPN資格情報を定義する。
 
@@ -139,7 +151,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)および/または[OpenVPN](https://github.com/hwdsl2/openvpn-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
+> [!TIP]
+> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
 
 <details>
 <summary>
@@ -203,7 +216,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 VPNセットアップ後にDNSサーバーを変更する必要がある場合は、[高度な使用法](docs/advanced-usage.md)を参照してください。
 
-**注:** サーバーにIKEv2がすでに設定されている場合、上記の変数はIKEv2モードには影響しません。その場合、DNSサーバーなどのIKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
+> [!NOTE]
+> サーバーにIKEv2がすでに設定されている場合、上記の変数はIKEv2モードには影響しません。その場合、DNSサーバーなどのIKEv2オプションをカスタマイズするには、まず[IKEv2を削除](docs/ikev2-howto.md#remove-ikev2)し、`sudo ikev2.sh`を使用して再設定します。
 
 ### IKEv2オプションのカスタマイズ
 
@@ -312,7 +326,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[IPsec/XAuth（"Cisco IPsec"）VPNクライアントの設定](docs/clients-xauth.md)**
 
-**:book: [VPN本](docs/vpn-book.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
+**:book: [VPN本](docs/vpn-book-ja.md)を読んで[追加コンテンツ](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J)にアクセスしてください。**
 
 自分のVPNを楽しんでください！ :sparkles::tada::rocket::sparkles:
 
@@ -359,7 +373,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 ダウンロードできない場合は、[vpnupgrade.sh](extras/vpnupgrade.sh)を開き、右側の`Raw`ボタンをクリックします。`Ctrl/Cmd+A`を押してすべて選択し、`Ctrl/Cmd+C`を押してコピーし、お気に入りのエディタに貼り付けます。
 </details>
 
-最新のサポートされているLibreswanバージョンは`5.2`です。インストールされているバージョンを確認します：`ipsec --version`。
+最新のサポートされているLibreswanバージョンは`5.4`です。インストールされているバージョンを確認します：`ipsec --version`。
 
 **注:** `xl2tpd`は、Ubuntu/Debianの`apt-get`などのシステムのパッケージマネージャーを使用して更新できます。
 
@@ -379,6 +393,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [代替DNSサーバーの使用](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS名とサーバーIPの変更](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [IKEv2専用VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [IKEv2完全前方秘匿性を有効にする](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [内部VPN IPとトラフィック](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [VPNサーバーのパブリックIPを指定する](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [VPNサブネットのカスタマイズ](docs/advanced-usage.md#customize-vpn-subnets)
@@ -395,7 +410,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 IPsec VPNをアンインストールするには、[ヘルパースクリプト](extras/vpnuninstall.sh)を実行します：
 
-**警告:** このヘルパースクリプトは、サーバーからIPsec VPNを削除します。すべてのVPN構成は**永久に削除**され、Libreswanおよびxl2tpdは削除されます。これは**元に戻すことはできません**！
+> [!CAUTION]
+> このヘルパースクリプトは、サーバーからIPsec VPNを削除します。すべてのVPN構成は**永久に削除**され、Libreswanおよびxl2tpdは削除されます。これは**元に戻すことはできません**！
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh

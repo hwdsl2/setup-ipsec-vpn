@@ -1,0 +1,108 @@
+#
+# Copyright (C) 2020-2026 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: test Libreswan version
+run-name: Test Libreswan ${{ inputs.libreswan_version }} (${{ inputs.test_scope }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      libreswan_version:
+        description: 'Setup test version, without a leading v (for example: 5.4)'
+        required: true
+        type: string
+      upgrade_from_version:
+        description: 'First upgrade test version (for example: 5.3.2)'
+        required: true
+        type: string
+      upgrade_to_version:
+        description: 'Second upgrade test version (for example: 5.4)'
+        required: true
+        type: string
+      test_scope:
+        description: 'Operating system groups to test'
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - redhat
+          - debian-alpine
+
+permissions:
+  contents: read
+
+jobs:
+  validate_versions:
+    runs-on: ubuntu-24.04
+    if: github.repository_owner == 'hwdsl2'
+    timeout-minutes: 10
+    env:
+      LIBRESWAN_VERSION: ${{ inputs.libreswan_version }}
+      UPGRADE_FROM_VERSION: ${{ inputs.upgrade_from_version }}
+      UPGRADE_TO_VERSION: ${{ inputs.upgrade_to_version }}
+    steps:
+      - name: Validate versions and downloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LC_ALL=C
+
+          version_regex='^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'
+          validate_version() {
+            if ! printf '%s' "$1" | grep -Eq "$version_regex"; then
+              echo "Error: Invalid Libreswan version. Use a numeric version such as 5.4 or 5.4.1." >&2
+              exit 1
+            fi
+          }
+
+          validate_version "$LIBRESWAN_VERSION"
+          validate_version "$UPGRADE_FROM_VERSION"
+          validate_version "$UPGRADE_TO_VERSION"
+
+          if [ "$UPGRADE_FROM_VERSION" = "$UPGRADE_TO_VERSION" ] \
+            || ! printf '%s\n%s\n' "$UPGRADE_FROM_VERSION" "$UPGRADE_TO_VERSION" | sort -C -V; then
+            echo "Error: The first upgrade version must be lower than the second upgrade version." >&2
+            exit 1
+          fi
+
+          printf '%s\n' "$LIBRESWAN_VERSION" "$UPGRADE_FROM_VERSION" "$UPGRADE_TO_VERSION" \
+            | sort -uV | while IFS= read -r version; do
+              github_url="https://github.com/libreswan/libreswan/archive/v$version.tar.gz"
+              download_url="https://download.libreswan.org/libreswan-$version.tar.gz"
+              curl_args=(--fail --silent --show-error --location --head --retry 2 \
+                --retry-all-errors --connect-timeout 10 --max-time 30 \
+                --proto '=https' --proto-redir '=https')
+              if ! curl "${curl_args[@]}" "$github_url" >/dev/null \
+                && ! curl "${curl_args[@]}" "$download_url" >/dev/null; then
+                echo "Error: Libreswan $version was not found at either supported download source." >&2
+                exit 1
+              fi
+              echo "Libreswan $version is available."
+            done
+
+  test_set_1:
+    needs: validate_versions
+    if: inputs.test_scope == 'all' || inputs.test_scope == 'redhat'
+    uses: ./.github/workflows/test_set_1.yml
+    with:
+      libreswan_version: ${{ inputs.libreswan_version }}
+      upgrade_from_version: ${{ inputs.upgrade_from_version }}
+      upgrade_to_version: ${{ inputs.upgrade_to_version }}
+      show_libreswan_build_output: true
+
+  test_set_2:
+    needs: validate_versions
+    if: inputs.test_scope == 'all' || inputs.test_scope == 'debian-alpine'
+    uses: ./.github/workflows/test_set_2.yml
+    with:
+      libreswan_version: ${{ inputs.libreswan_version }}
+      upgrade_from_version: ${{ inputs.upgrade_from_version }}
+      upgrade_to_version: ${{ inputs.upgrade_to_version }}
+      show_libreswan_build_output: true

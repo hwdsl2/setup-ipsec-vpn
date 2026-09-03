@@ -12,28 +12,7 @@ Google BBR已经被内置于Linux内核4.9及更高版本中，但是需要手�
 
 可以通过命令 `uname -r` 来查看当前Linux内核版本。版本大于等于4.9时，可以直接参照[下方的说明](#部署-google-bbr)部署BBR。
 
-通常而言，Ubuntu 18.04+, Debian 10+，CentOS 8+及RHEL 8+的内核版本都大于4.9。但是对于Amazon Linux 2，需要通过以下的方式更新内核之后才能部署Google BBR。
-
-### Amazon Linux 2
-
-Amazon Linux 2提供过经过验证的新版Linux内核，并可以通过启用预置的Extras库安装。
-
-1. 从Extras库安装 `kernel-ng`
-   ```bash
-   sudo amazon-linux-extras install kernel-ng
-   ```
-2. 更新包
-   ```bash
-   sudo yum update
-   ```
-3. 重启系统
-   ```bash
-   sudo reboot
-   ```
-4. 检查Linux内核版本
-   ```bash
-   uname -r
-   ```
+通常而言，Ubuntu 18.04+, Debian 10+，CentOS 8+及RHEL 8+的内核版本都大于4.9。
 
 ## 部署 Google BBR
 

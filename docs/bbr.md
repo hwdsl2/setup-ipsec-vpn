@@ -12,28 +12,7 @@ To learn more about the Google BBR algorithm, see this [official blog](https://c
 
 You can check the current Linux kernel version with the command `uname -r`. When the version is greater than or equal to 4.9, you can deploy BBR directly by referring to the [instructions below](#deploy-google-bbr).
 
-Generally speaking, the kernel versions of Ubuntu 18.04+, Debian 10+, CentOS 8+ and RHEL 8+ are greater than 4.9. But for Amazon Linux 2, you need to update the kernel in the following ways before deploying Google BBR.
-
-### Amazon Linux 2
-
-Amazon Linux 2 provides newer versions of the verified Linux kernel, which can be installed from the Extras repository.
-
-1. Install `kernel-ng` from the Extras repository
-   ```bash
-   sudo amazon-linux-extras install kernel-ng
-   ```
-2. Update packages
-   ```bash
-   sudo yum update
-   ```
-3. Restart the system
-   ```bash
-   sudo reboot
-   ```
-4. Check the Linux kernel version
-   ```bash
-   uname -r
-   ```
+Generally speaking, the kernel versions of Ubuntu 18.04+, Debian 10+, CentOS 8+ and RHEL 8+ are greater than 4.9.
 
 ## Deploy Google BBR
 
