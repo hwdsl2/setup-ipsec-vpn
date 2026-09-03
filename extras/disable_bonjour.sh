@@ -133,7 +133,7 @@ check_restore_drift() {
   [ -f "$BONJOUR_CONFIG_STATE" ] || return 0
   for file in /etc/avahi/avahi-daemon.conf /etc/ipsec.d/ikev2.conf \
     /etc/ipsec.conf /etc/ppp/options.xl2tpd /etc/nsswitch.conf \
-    /etc/dnsmasq.conf /etc/rc.local; do
+    /etc/dnsmasq.conf /etc/rc.local /etc/network/if-pre-up.d/iptablesload; do
     [ -f "$file.bak.bonjour-vpn" ] || continue
     key=$(printf '%s' "$file" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]')
     eval "expected=\${${key}_MANAGED_HASH:-}"
@@ -304,6 +304,8 @@ restore_configs() {
   restore_config_file "/etc/dnsmasq.conf" || true
   # Restore rc.local (if we backed it up)
   restore_config_file "/etc/rc.local" || true
+  # Restore an older hwdsl2 loader if Bonjour added IPv6 persistence to it.
+  restore_config_file "/etc/network/if-pre-up.d/iptablesload" || true
 }
 
 remove_vpn_server_ip() {

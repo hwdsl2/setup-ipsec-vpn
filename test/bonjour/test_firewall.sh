@@ -154,4 +154,55 @@ grep -q '^old IPv6 firewall$' "$FIREWALL_PERSIST6_FILE" \
 grep -q '^ip6tables-restore live$' "$CALL_LOG" \
   || fail "rollback did not restore the live IPv6 firewall"
 
+LOADER="$TEST_DIR/iptablesload"
+cat > "$LOADER" <<'EOF'
+#!/bin/sh
+iptables-restore < /etc/iptables.rules
+exit 0
+EOF
+chmod 755 "$LOADER"
+os_type=ubuntu
+FIREWALL_BACKEND=iptables
+FIREWALL_PERSIST6_FILE2=""
+HAS_IPV6=1
+SAVED_HAS_IPV6=0
+BONJOUR_VPN_IPTABLES_LOADER="$LOADER"
+BONJOUR_VPN_NETFILTER_IP6_PLUGIN="$TEST_DIR/no-netfilter-plugin"
+check_ipv6_firewall_loader
+[ "$IPV6_FIREWALL_LOADER_NEEDS_UPDATE" = 1 ] \
+  || fail "legacy hwdsl2 loader was not marked for IPv6 persistence update"
+configure_ipv6_firewall_loader \
+  || fail "legacy hwdsl2 loader could not be updated"
+grep -Fxq '[ -f /etc/ip6tables.rules ] && ip6tables-restore < /etc/ip6tables.rules' "$LOADER" \
+  || fail "IPv6 restore command was not installed in the hwdsl2 loader"
+[ -f "$LOADER.bak.bonjour-vpn" ] \
+  || fail "hwdsl2 loader backup was not created"
+check_ipv6_firewall_loader
+[ "$IPV6_FIREWALL_LOADER_NEEDS_UPDATE" = 0 ] \
+  || fail "IPv6-capable hwdsl2 loader was not idempotent"
+
+NETFILTER_PLUGIN="$TEST_DIR/25-ip6tables"
+: > "$NETFILTER_PLUGIN"
+chmod 755 "$NETFILTER_PLUGIN"
+FIREWALL_PERSIST6_FILE2=/etc/iptables/rules.v6
+BONJOUR_VPN_NETFILTER_IP6_PLUGIN="$NETFILTER_PLUGIN"
+BONJOUR_VPN_IPTABLES_LOADER="$TEST_DIR/no-custom-loader"
+check_ipv6_firewall_loader
+[ -z "$IPV6_FIREWALL_LOADER" ] && [ "$IPV6_FIREWALL_LOADER_NEEDS_UPDATE" = 0 ] \
+  || fail "netfilter-persistent IPv6 ownership was not preserved"
+
+cat > "$LOADER" <<'EOF'
+#!/bin/sh
+iptables-restore < /etc/iptables.rules
+custom-firewall-command
+exit 0
+EOF
+chmod 755 "$LOADER"
+FIREWALL_PERSIST6_FILE2=""
+BONJOUR_VPN_NETFILTER_IP6_PLUGIN="$TEST_DIR/no-netfilter-plugin"
+BONJOUR_VPN_IPTABLES_LOADER="$LOADER"
+if ( check_ipv6_firewall_loader ) >/dev/null 2>&1; then
+  fail "custom hwdsl2 loader was accepted for modification"
+fi
+
 echo "PASS: validated firewall persistence and rollback"

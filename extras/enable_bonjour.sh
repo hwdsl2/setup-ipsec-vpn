@@ -34,6 +34,9 @@ FIREWALL_PERSIST_FILE2=""
 FIREWALL_PERSIST6_FILE=""
 FIREWALL_PERSIST6_FILE2=""
 FIREWALL_BACKEND="iptables"
+IPV6_FIREWALL_LOADER=""
+IPV6_FIREWALL_LOADER_NEEDS_UPDATE=0
+IPV6_FIREWALL_LOADER_CANDIDATE=""
 DNSMASQ_INSTALL_TEST_DIR=""
 DNSMASQ_VPN_CANDIDATE=""
 
@@ -251,6 +254,8 @@ cleanup_bonjour_operation() {
   fi
   [ -n "$DNSMASQ_INSTALL_TEST_DIR" ] && /bin/rm -rf "$DNSMASQ_INSTALL_TEST_DIR"
   [ -n "$DNSMASQ_VPN_CANDIDATE" ] && /bin/rm -f "$DNSMASQ_VPN_CANDIDATE"
+  [ -n "$IPV6_FIREWALL_LOADER_CANDIDATE" ] \
+    && /bin/rm -f "$IPV6_FIREWALL_LOADER_CANDIDATE"
   /bin/rm -f "$BONJOUR_STATE_DIR/.config.candidate"
   release_bonjour_lock
 }
@@ -339,7 +344,7 @@ save_config_state() {
     printf "SERVICE_STATE_VERSION_SAVED='2'\n"
     for managed_file in /etc/avahi/avahi-daemon.conf /etc/ipsec.d/ikev2.conf \
       /etc/ipsec.conf /etc/ppp/options.xl2tpd /etc/nsswitch.conf \
-      /etc/dnsmasq.conf /etc/rc.local; do
+      /etc/dnsmasq.conf /etc/rc.local /etc/network/if-pre-up.d/iptablesload; do
       [ -f "$managed_file.bak.bonjour-vpn" ] || continue
       managed_key=$(printf '%s' "$managed_file" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]')
       managed_hash=$(sha256sum "$managed_file" | awk '{print $1}')
@@ -1259,6 +1264,72 @@ uses_ipv6_firewall() {
     || [ -n "${SAVED_VPN_SUBNET_IPV6:-}" ]
 }
 
+check_ipv6_firewall_loader() {
+  local loader normalized netfilter_ip6_plugin
+  IPV6_FIREWALL_LOADER=""
+  IPV6_FIREWALL_LOADER_NEEDS_UPDATE=0
+  [ "$FIREWALL_BACKEND" = iptables ] && uses_ipv6_firewall || return 0
+  case "$os_type" in
+    ubuntu|debian)
+      netfilter_ip6_plugin=${BONJOUR_VPN_NETFILTER_IP6_PLUGIN:-/usr/share/netfilter-persistent/plugins.d/25-ip6tables}
+      if [ "$FIREWALL_PERSIST6_FILE2" = /etc/iptables/rules.v6 ] \
+        && [ -x "$netfilter_ip6_plugin" ]; then
+        return 0
+      fi
+      ;;
+    alpine) ;;
+    *) return 0 ;;
+  esac
+
+  loader=${BONJOUR_VPN_IPTABLES_LOADER:-/etc/network/if-pre-up.d/iptablesload}
+  [ -f "$loader" ] && [ ! -L "$loader" ] && [ -x "$loader" ] \
+    || exiterr "IPv6 Bonjour requires a regular executable hwdsl2 firewall loader at $loader."
+  normalized=$(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' "$loader")
+  case "$normalized" in
+    'iptables-restore < /etc/iptables.rules
+[ -f /etc/ip6tables.rules ] && ip6tables-restore < /etc/ip6tables.rules
+exit 0')
+      IPV6_FIREWALL_LOADER="$loader"
+      ;;
+    'iptables-restore < /etc/iptables.rules
+exit 0')
+      IPV6_FIREWALL_LOADER="$loader"
+      IPV6_FIREWALL_LOADER_NEEDS_UPDATE=1
+      ;;
+    *)
+      exiterr "The hwdsl2 firewall loader has custom commands. Refusing to alter IPv6 persistence."
+      ;;
+  esac
+}
+
+configure_ipv6_firewall_loader() {
+  local candidate loader_mode
+  [ "$IPV6_FIREWALL_LOADER_NEEDS_UPDATE" = 1 ] || return 0
+  [ -n "$IPV6_FIREWALL_LOADER" ] || return 1
+  candidate="${IPV6_FIREWALL_LOADER}.bonjour-vpn.candidate"
+  IPV6_FIREWALL_LOADER_CANDIDATE="$candidate"
+  awk '
+    /^exit 0[[:space:]]*$/ && !inserted {
+      print "[ -f /etc/ip6tables.rules ] && ip6tables-restore < /etc/ip6tables.rules"
+      inserted=1
+    }
+    { print }
+    END { if (!inserted) exit 42 }
+  ' "$IPV6_FIREWALL_LOADER" > "$candidate" \
+    || { /bin/rm -f "$candidate"; return 1; }
+  loader_mode=$(stat -c '%a' "$IPV6_FIREWALL_LOADER" 2>/dev/null \
+    || stat -f '%Lp' "$IPV6_FIREWALL_LOADER" 2>/dev/null) \
+    || { /bin/rm -f "$candidate"; return 1; }
+  chmod "$loader_mode" "$candidate" || { /bin/rm -f "$candidate"; return 1; }
+  /bin/sh -n "$candidate" || { /bin/rm -f "$candidate"; return 1; }
+  conf_bk_bonjour "$IPV6_FIREWALL_LOADER" \
+    || { /bin/rm -f "$candidate"; return 1; }
+  mv -f "$candidate" "$IPV6_FIREWALL_LOADER" \
+    || { /bin/rm -f "$candidate"; return 1; }
+  IPV6_FIREWALL_LOADER_CANDIDATE=""
+  IPV6_FIREWALL_LOADER_NEEDS_UPDATE=0
+}
+
 start_firewall_transaction() {
   local tx_dir
   install -d -m 700 "$BONJOUR_STATE_DIR"
@@ -1542,6 +1613,8 @@ update_iptables() {
   fi
   persist_firewall \
     || { rollback_firewall_transaction; exiterr "Could not validate and persist the updated firewall."; }
+  configure_ipv6_firewall_loader \
+    || { rollback_firewall_transaction; exiterr "Could not install IPv6 firewall persistence in the hwdsl2 loader."; }
   finish_firewall_transaction
 }
 
@@ -2276,6 +2349,8 @@ main() {
   detect_vpn_ipv6
   check_existing_dns
   parse_upstream_dns
+  detect_firewall_backend
+  check_ipv6_firewall_loader
 
 # Build VPN modes display for confirmation prompt
 VPN_MODES_DISPLAY=""

@@ -510,7 +510,7 @@ If your VPN server has [IPv6 support](#ipv6-support) enabled and IKEv2 clients r
 - dnsmasq listens on both the IPv4 and IPv6 VPN server addresses.
 - An ip6tables DNAT rule captures IPv6 mDNS multicast (`ff02::fb` port 5353) from IPv6 VPN clients and redirects it to dnsmasq.
 - The cache warmer populates `/etc/bonjour-vpn-hosts` with both A and AAAA records so AAAA queries from VPN clients resolve IPv6 addresses for local devices.
-- IPv6 loopback and firewall changes use the same validation, persistence and rollback path as IPv4. If the VPN's IPv6 pool is later enabled, disabled or changed, re-run `enable_bonjour.sh` to review and apply the new state explicitly.
+- IPv6 loopback and firewall changes use the same validation, persistence and rollback path as IPv4. On an older hwdsl2 installation whose standard firewall loader restores only `/etc/iptables.rules`, the script adds the matching conditional `/etc/ip6tables.rules` restore only when the loader contains no custom commands; otherwise it stops before making changes. If the VPN's IPv6 pool is later enabled, disabled or changed, re-run `enable_bonjour.sh` to review and apply the new state explicitly.
 
 Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. Compatible clients can still resolve AAAA records by querying the IPv4 VPN DNS endpoint because dnsmasq can return IPv6 answers to an IPv4 DNS query.
 
