@@ -676,6 +676,7 @@ for the entire network, or use `192.168.0.10` for just one device, and so on.
 **See also:** [Check logs and VPN status](clients.md#check-logs-and-vpn-status), [IKEv1 troubleshooting](clients.md#ikev1-troubleshooting) and [Advanced usage](advanced-usage.md).
 
 * [Cannot connect to the VPN server](#cannot-connect-to-the-vpn-server)
+* [IPsec SA errors](#ipsec-sa-errors)
 * [Ubuntu 20.04 cannot import client config](#ubuntu-2004-cannot-import-client-config)
 * [macOS Sonoma clients reconnect](#macos-sonoma-clients-reconnect)
 * [Unable to connect multiple IKEv2 clients](#unable-to-connect-multiple-ikev2-clients)
@@ -693,6 +694,12 @@ First, make sure that the VPN server address specified on your VPN client device
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
 [Check logs and VPN status](clients.md#check-logs-and-vpn-status) for errors. If you encounter retransmission related errors and are unable to connect, there may be network issues between the VPN client and server. If you are connecting from mainland China, consider switching to alternative solutions other than IPsec VPN.
+
+### IPsec SA errors
+
+If Libreswan logs errors such as `Protocol not supported (errno 93)`, `Requested type not found`, `Adding IPsec SA failed`, or `XFRM_MSG_DELPOLICY`, the server may have ESP kernel support disabled.
+
+This has been reported on RHEL 10-based systems where a security mitigation disables `esp4` or `esp6` in modprobe configuration, for example `/etc/modprobe.d/dirtyfrag.conf`. IPsec VPN requires ESP support. Update your kernel/security packages or follow your distribution's guidance before changing these settings, then restart IPsec or re-run the VPN setup script.
 
 ### Ubuntu 20.04 cannot import client config
 

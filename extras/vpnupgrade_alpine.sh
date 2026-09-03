@@ -66,7 +66,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=5.3
+  swan_ver_cur=5.4
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -172,13 +172,24 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 FINALNSSDIR=/etc/ipsec.d
 NSSDIR=/etc/ipsec.d
 EOF
   if [ "$SWAN_VER" = "4.5" ] || [ "$SWAN_VER" = "4.6" ] \
     || [ "$SWAN_VER" = "4.7" ]; then
     echo "USE_GLIBC_KERN_FLIP_HEADERS=true" >> Makefile.inc.local
+  fi
+  if printf '%s\n%s' "5.4" "$SWAN_VER" | sort -C -V; then
+    if ! grep -qs XFRM_MODE_IPTFS /usr/include/linux/xfrm.h; then
+      echo "USE_XFRM_HEADER_COPY=true" >> Makefile.inc.local
+    fi
+    if ! pkg-config --atleast-version=3.118.1 nss >/dev/null 2>&1; then
+      echo "USE_ML_KEM_768=false" >> Makefile.inc.local
+      echo "USE_ML_KEM_1024=false" >> Makefile.inc.local
+    fi
+    if ! pkg-config --atleast-version=3.99 nss >/dev/null 2>&1; then
+      echo "USE_EDDSA=false" >> Makefile.inc.local
+    fi
   fi
   NPROCS=$(grep -c ^processor /proc/cpuinfo)
   [ -z "$NPROCS" ] && NPROCS=1

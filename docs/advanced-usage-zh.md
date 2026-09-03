@@ -5,6 +5,7 @@
 * [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 * [域名和更改服务器 IP](#域名和更改服务器-ip)
 * [仅限 IKEv2 的 VPN](#仅限-ikev2-的-vpn)
+* [启用 IKEv2 前向保密](#启用-ikev2-前向保密)
 * [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)
 * [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 * [自定义 VPN 子网](#自定义-vpn-子网)
@@ -71,8 +72,44 @@ sudo bash ikev2only.sh
 另外，你也可以手动启用仅限 IKEv2 模式。
 </summary>
 
-另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `ikev1-policy=accept` 替换为 `ikev1-policy=drop`。如果该行不存在，则在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
+另外，你也可以手动启用仅限 IKEv2 模式。首先使用 `ipsec --version` 命令检查 Libreswan 版本，并[更新 Libreswan](../README-zh.md#升级-libreswan)（如果需要）。然后编辑 VPN 服务器上的 `/etc/ipsec.conf`。将 `ikev1-policy=accept` 替换为 `ikev1-policy=drop`。如果该行不存在，则在 `config setup` 小节的末尾添加 `ikev1-policy=drop`，开头必须空两格。保存文件并运行 `service ipsec restart`。在完成后，你可以使用 `ipsec status` 命令来验证仅启用了 `ikev2-cp` 连接。
 </details>
+
+## 启用 IKEv2 前向保密
+
+默认情况下，IKEv2 子安全关联（Child SA）从现有 IKE SA 派生密钥材料，不进行新的 Diffie-Hellman 交换（`pfs=no`）。启用前向保密（PFS）后，每次子 SA 重新生成密钥时都会执行新的 DH 交换，从而确保即使服务器私钥在将来遭到泄露，攻击者也无法解密之前录制的会话。
+
+**注：** IKE SA 已将 ECP-256（`aes_gcm_c_256-hmac_sha2_256-ecp_256`）作为首选提案，所有现代客户端均会协商使用，因此这些客户端的会话密钥已与长期密钥材料独立。为子 SA 启用 PFS 是一项渐进式安全加固措施，而非关键漏洞修复。
+
+**客户端兼容性：** 所有现代客户端均支持 PFS。但是，macOS 和 iOS 客户端需要重新导出并导入已将 `EnablePFS` 设为 `1` 的 `.mobileconfig` 配置文件（详见下文）。Windows 客户端需要更新连接配置。RouterOS 用户需将 IKEv2 配置文件中的 `pfs-group=none` 改为 `pfs-group=ecp256`。Android 和 Linux strongSwan 客户端无需更改。Windows 7 IKEv2 客户端不支持 ECP PFS 组，若服务器启用 PFS，将无法连接。
+
+要在服务器上启用 PFS，请编辑 `/etc/ipsec.d/ikev2.conf`，将 `conn ikev2-cp` 部分中的 `pfs=no` 改为 `pfs=yes`，然后重启 IPsec 服务：
+
+```bash
+sudo sed -i 's/pfs=no/pfs=yes/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
+
+**Docker 用户：** 请先[在容器内打开 Bash shell](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#在容器中运行-bash-shell)，运行上述 `sed` 命令，然后 `exit` 并运行 `docker restart ipsec-vpn-server`。
+
+启用 PFS 后，需要更新以下客户端配置：
+
+- **macOS / iOS：** 使用 `sudo ikev2.sh --exportclient <名称>` 重新导出客户端 `.mobileconfig` 文件，然后编辑导出的文件以启用 PFS：
+  ```bash
+  sed -i '/EnablePFS/{n;s/0/1/;}' <名称>.mobileconfig
+  ```
+  在设备上重新导入更新后的文件。
+- **Windows：** 在提升权限的 PowerShell 窗口中运行 `Set-VpnConnection -Name "你的VPN名称" -PfsGroup ECP256`（替换为实际的 VPN 连接名称），然后重新连接 VPN。
+- **RouterOS (MikroTik)：** 在 IKEv2 对等配置文件中，将 `pfs-group=none` 改为 `pfs-group=ecp256`。
+
+Android 和 Linux strongSwan 客户端无需更改，PFS 会自动协商。
+
+要恢复默认设置（禁用 PFS）：
+
+```bash
+sudo sed -i 's/pfs=yes/pfs=no/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
 
 ## VPN 内网 IP 和流量
 
@@ -457,7 +494,11 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
 sudo bash extras/enable_bonjour.sh
 ```
 
-该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置实时服务监视器，该监视器监控本地网络上的 Bonjour 服务变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。当设备在局域网上出现或消失时，dnsmasq 记录会在几秒内更新。所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，使所有 VPN 客户端的 DNS 查询都通过 dnsmasq。iptables DNAT 规则会捕获 VPN 客户端的 mDNS 多播（224.0.0.251:5353）并将其重定向到 dnsmasq 的 53 端口，从而在不泄漏 DNS 的情况下实现 Bonjour 发现。
+该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置持久运行的服务监视器，监控本地网络上的 Bonjour 变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。新增、更改和部分删除的记录通常会在几秒内发布。如果一次正常完成的发现完全没有返回记录，则必须连续出现两次空结果（通常在约两分钟内），才会替换上一次有效记录。数据未变化时不会重启 dnsmasq。
+
+所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，使 VPN 客户端的 DNS 查询通过 dnsmasq。防火墙规则会捕获 VPN 客户端的 IPv4 mDNS 多播（224.0.0.251:5353）并将其重定向到 dnsmasq 的 53 端口。脚本会从已安装的 VPN 配置中推导自定义 VPN 子网和地址池，而不是假定使用默认的 `/24` 网络，并使用 VPN 安装程序选择的防火墙后端来持久保存规则。
+
+此功能是 DNS/DNS-SD 桥接，而不是通用的多播路由器。它通过单播 DNS 提供已发现的 `.local` 记录，并捕获通过隧道发送的 IPv4 mDNS；但是，只在物理接口上发送或接收发现流量的应用仍可能无法浏览远程服务。因此，实际兼容性取决于客户端和应用。
 
 启用后，VPN 客户端必须断开并重新连接以接收更新的 DNS 设置。
 
@@ -468,31 +509,29 @@ sudo bash extras/enable_bonjour.sh
 - dnsmasq 同时监听 IPv4 和 IPv6 的 VPN 服务器地址。
 - ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb` 端口 5353）并重定向到 dnsmasq。
 - 缓存预热器使用 A 和 AAAA 记录填充 `/etc/bonjour-vpn-hosts`，使得 VPN 客户端的 AAAA 查询可以解析本地设备的 IPv6 地址。
-- 后台状态同步脚本（`bonjour-vpn-ipv6-sync`，由监视器调用）会检测 VPN IPv6 配置的安装后更改，并自动协调 dnsmasq/ip6tables/环回状态。如果你在运行 `enable_bonjour.sh` *之后* 才在 VPN 上启用 IPv6，无需重新运行该脚本——监视器会在下一次循环（60 秒内）中自动识别。
+- IPv6 环回和防火墙更改使用与 IPv4 相同的验证、持久化和回滚流程。如果之后启用、禁用或更改 VPN 的 IPv6 地址池，请重新运行 `enable_bonjour.sh`，以便明确审查并应用新状态。
 
-注意：该脚本不会在 IKEv2 `modecfgdns` 配置负载中推送 IPv6 DNS 服务器，因为 Libreswan 5.3（及更早版本）对 `INTERNAL_IP6_DNS` 的属性长度编码错误，strongSwan 客户端会拒绝格式错误的 IKE_AUTH 响应。IPv6 客户端通过查询 IPv4 VPN DNS 端点来解析 AAAA 记录——dnsmasq 无论请求来源的地址族如何都会返回 IPv6 答案，因此功能上没有损失。
-
-**客户端兼容性：**
+注意：该脚本不会在 IKEv2 `modecfgdns` 配置负载中推送 IPv6 DNS 服务器，因为 Libreswan 5.3（及更早版本）对 `INTERNAL_IP6_DNS` 的属性长度编码错误，strongSwan 客户端会拒绝格式错误的 IKE_AUTH 响应。兼容的客户端仍可查询 IPv4 VPN DNS 端点来解析 AAAA 记录，因为 dnsmasq 可以对 IPv4 DNS 查询返回 IPv6 答案。
 
 **各平台功能：**
 
 | 平台 | `.local` 主机名解析 | 自动服务发现（自动浏览） | 通过主机名连接 |
 | ---- | ---- | ---- | ---- |
-| iOS | 是 | 是 — 打印机、AirPlay 和其他服务自动出现 | 是 |
-| macOS | 是 | 否 — 见下方说明 | 是 — 在 Finder 中使用 Cmd+K |
-| Windows | 是 | 部分 — 需要安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) | 是 |
-| Android | 是 | 有限 — 取决于应用 | 是 |
-| Linux | 是 | 是 — 如果客户端配置了 avahi | 是 |
+| iOS | 当活动 VPN 配置和应用使用隧道 DNS 时可用 | 取决于应用；仅使用链路本地多播的应用可能无法浏览远程服务 | 查询成功时可用 |
+| macOS | 当活动 VPN 配置和应用使用隧道 DNS 时可用 | Finder 的“网络”侧边栏可能不会填充 — 见下方说明 | 查询成功时可在 Finder 中使用 Cmd+K |
+| Windows | 取决于应用 | 部分支持 — 支持 Bonjour 的应用可能需要安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) | 取决于应用 |
+| Android | 取决于应用 | 取决于应用 | 取决于应用 |
+| Linux | 取决于解析器和 Avahi 配置 | 取决于解析器、Avahi 配置和应用 | 查询成功时可用 |
 
-VPN 服务器局域网上的所有 `.local` 主机名都可以从任何 VPN 客户端解析。例如，如果文件服务器位于 `file-server.local`，VPN 客户端可以通过 `smb://file-server.local`（macOS 的 Finder → 前往 → 连接服务器，或其他平台的等效方式）进行连接。通过主机名可访问的打印机、Time Machine 目标和任何其他服务都可以正常工作。
+从有效的局域网 Bonjour 记录中发现的主机名会通过隧道 DNS 提供给 VPN 客户端。例如，当发现 `file-server.local` 且可通过 VPN 访问时，兼容的客户端可以使用 `smb://file-server.local` 进行连接（macOS 的 Finder → 前往 → 连接服务器，或其他平台的等效方式）。
 
 **macOS Finder 网络侧边栏限制：**
 
-在 macOS 上，Finder 网络侧边栏**不会**自动显示 VPN 服务器局域网上的服务。这是 macOS 的限制：Finder 的服务浏览器对 `.local` 域使用多播 mDNS，但多播流量无法穿越 VPN 隧道（macOS 将点对点接口排除在 mDNS 之外）。iOS 没有此限制 — 其 mDNSResponder 通过 VPN 对 `.local` 执行单播 DNS-SD，这就是 iOS 服务发现完全正常工作的原因。
+在 macOS 上，Finder 网络侧边栏可能不会自动显示 VPN 服务器局域网上的服务。Finder 和其他应用可能使用链路本地多播进行浏览，而这种流量并不能保证穿越 VPN 隧道。iOS 和其他客户端可能通过隧道 DNS 执行部分 `.local` 和 DNS-SD 查询，但实际结果仍取决于应用和 VPN 配置。
 
-所有 `.local` 主机名在 macOS 上仍然**可以解析** — 你可以通过在 Finder → 前往 → 连接服务器（Cmd+K）中输入主机名来连接任何服务器。限制仅在于侧边栏中的自动浏览/发现。
+当活动 VPN 配置和应用使用隧道 DNS 时，已发现的 `.local` 主机名仍可在 macOS 上解析。在这种情况下，即使自动浏览未填充侧边栏，你仍可以在 Finder → 前往 → 连接服务器（Cmd+K）中输入主机名进行连接。
 
-未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。有关此限制的详细技术研究，请参阅 [Bonjour macOS 研究笔记](bonjour-macos-research.md)。
+未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。
 
 要禁用 Bonjour/mDNS 服务发现并恢复所有更改（包括 IPv6 状态）：
 

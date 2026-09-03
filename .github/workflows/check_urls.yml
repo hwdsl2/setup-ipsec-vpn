@@ -11,12 +11,15 @@ name: check_urls
 
 on: workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   check_urls:
     runs-on: ubuntu-24.04
     if: github.repository_owner == 'hwdsl2'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Check

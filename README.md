@@ -2,7 +2,7 @@
 
 # IPsec VPN Server Auto Setup Scripts
 
-[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
+[![Build Status](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![GitHub Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/github-stars-setup-ipsec-vpn.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Docker Stars](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-stars-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server) [![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 Set up your own IPsec VPN server in just a few minutes, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
@@ -10,11 +10,23 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd](https://github.com/xelerance/xl2tpd) as the L2TP provider.
 
-**[&raquo; :book: Book: Privacy Tools in the Age of AI](docs/vpn-book.md) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
+**Features:**
+
+- Fully automated IPsec VPN server setup, no user input needed
+- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
+- Generates VPN profiles to auto-configure iOS, macOS and Android devices
+- Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
+- Includes helper scripts to manage VPN users and certificates
+
+**Also available:**
+
+- Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale)
+- AI: [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) for local LLMs, chat, RAG, voice and AI tools
+- :books: Books: [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon), [Privacy Tools in the Age of AI](docs/vpn-book.md)
 
 ## Quick start
 
-First, prepare your Linux server\* with an install of Ubuntu, Debian or CentOS.
+First, prepare your Linux server\* with an install of a [supported OS](#requirements).
 
 Use this one-liner to set up an IPsec VPN server:
 
@@ -24,7 +36,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Your VPN login details will be randomly generated, and displayed when finished.
 
-**Optional:** Install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server.
+> [!TIP]
+> Optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server.
 
 <details>
 <summary>
@@ -60,24 +73,21 @@ A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is
 
 \* A cloud server, virtual private server (VPS) or dedicated server.
 
-## Features
+## Community
 
-- Fully automated IPsec VPN server setup, no user input needed
-- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
-- Generates VPN profiles to auto-configure iOS, macOS and Android devices
-- Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
-- Includes helper scripts to manage VPN users and certificates
+- 📬 [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month) — get free VPN and AI deployment guides (PDF)
+- 💬 Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions
+- ⭐ Star the repository if you find it useful — it helps others discover it
 
 ## Requirements
 
 A cloud server, virtual private server (VPS) or dedicated server, with an install of:
 
-- Ubuntu 24.04 or 22.04
+- Ubuntu 26.04, 24.04 or 22.04
 - Debian 13, 12 or 11
 - CentOS Stream 10 or 9
 - Rocky Linux or AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>
@@ -94,7 +104,7 @@ This also includes Linux VMs in public clouds, such as [DigitalOcean](https://bl
 
 Quick deploy to:
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 
 [**&raquo; I want to run my own VPN but don't have a server for that**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
@@ -102,7 +112,8 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 A pre-built [Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server) is also available. Advanced users can install on a [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
+> [!WARNING]
+> **DO NOT** run these scripts on your PC or Mac! They should only be used on a server!
 
 ## Installation
 
@@ -125,7 +136,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**Note:** A secure IPsec PSK should consist of at least 20 random characters.
+> [!NOTE]
+> A secure IPsec PSK should consist of at least 20 random characters.
 
 **Option 3:** Define your VPN credentials as environment variables.
 
@@ -139,7 +151,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-You may optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install) and/or [OpenVPN](https://github.com/hwdsl2/openvpn-install) on the same server. If your server runs CentOS Stream, Rocky Linux or AlmaLinux, first install OpenVPN/WireGuard, then install the IPsec VPN.
+> [!TIP]
+> Optionally install [WireGuard](https://github.com/hwdsl2/wireguard-install), [OpenVPN](https://github.com/hwdsl2/openvpn-install) and/or [Headscale](https://github.com/hwdsl2/headscale-install) on the same server. If your server runs CentOS Stream, Rocky Linux or AlmaLinux, first install OpenVPN/WireGuard, then install the IPsec VPN.
 
 <details>
 <summary>
@@ -203,7 +216,8 @@ Below is a list of some popular public DNS providers for your reference.
 
 If you need to change DNS servers after VPN setup, see [Advanced usage](docs/advanced-usage.md).
 
-**Note:** If IKEv2 is already set up on the server, the variables above have no effect for IKEv2 mode. In that case, to customize IKEv2 options such as DNS servers, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
+> [!NOTE]
+> If IKEv2 is already set up on the server, the variables above have no effect for IKEv2 mode. In that case, to customize IKEv2 options such as DNS servers, you can first [remove IKEv2](docs/ikev2-howto.md#remove-ikev2), then set it up again using `sudo ikev2.sh`.
 
 ### Customize IKEv2 options
 
@@ -359,7 +373,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 If you are unable to download, open [vpnupgrade.sh](extras/vpnupgrade.sh), then click the `Raw` button on the right. Press `Ctrl/Cmd+A` to select all, `Ctrl/Cmd+C` to copy, then paste into your favorite editor.
 </details>
 
-The latest supported Libreswan version is `5.3`. Check installed version: `ipsec --version`.
+The latest supported Libreswan version is `5.4`. Check installed version: `ipsec --version`.
 
 **Note:** `xl2tpd` can be updated using your system's package manager, such as `apt-get` on Ubuntu/Debian.
 
@@ -379,6 +393,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [DNS name and server IP changes](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [IKEv2-only VPN](docs/advanced-usage.md#ikev2-only-vpn)
+- [Enable IKEv2 perfect forward secrecy](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [Internal VPN IPs and traffic](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
@@ -395,7 +410,8 @@ See [Advanced usage](docs/advanced-usage.md).
 
 To uninstall IPsec VPN, run the [helper script](extras/vpnuninstall.sh):
 
-**Warning:** This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
+> [!CAUTION]
+> This helper script will remove IPsec VPN from your server. All VPN configuration will be **permanently deleted**, and Libreswan and xl2tpd will be removed. This **cannot be undone**!
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh

@@ -20,37 +20,22 @@ fail() { echo -e "  ${RED}FAIL${NC}: $1 — $2"; FAIL=$((FAIL+1)); }
 WORKDIR=$(mktemp -d -t bonjour-detect.XXXXXX) || { echo "mktemp failed"; exit 2; }
 trap 'rm -rf "$WORKDIR"' EXIT
 
-# Extract just the helper functions we need (check_ip, check_ip6, detect_vpn_ipv6)
-# by sourcing the enable_bonjour.sh up to the point where main execution begins.
-# Use a subshell with a stub main() and intercept before it runs.
-#
-# We source into a fresh shell that sets up the minimal state and only calls
-# detect_vpn_ipv6 after setting HAS_IKEV2 and IKEV2_CONF.
-
 run_detection() {
   local fixture="$1"
-  local ikev2_conf_path="$fixture"
-
-  # Extract just the functions we need from enable_bonjour.sh.
-  # The "Main" section is marked by "# Main" between two "# ====" lines.
-  # We copy everything up to the first "# Main" marker — that gives us all
-  # the function definitions without any main-execution code.
-  local script_body
-  script_body=$(awk '/^# Main$/ {exit} 1' "$REPO_DIR/extras/enable_bonjour.sh")
-
-  # Source the functions in a clean subshell and run detect_vpn_ipv6 against
-  # the given fixture. Print results as key=value so we can parse them.
-  bash -c '
-    '"$script_body"'
+  BONJOUR_VPN_LIBRARY_ONLY=1 bash -c '
+    source "$1"
+    BONJOUR_STATE_DIR="$3/state"
+    BONJOUR_CONFIG_STATE="$BONJOUR_STATE_DIR/config"
     HAS_IKEV2=1
-    IKEV2_CONF="'"$ikev2_conf_path"'"
+    IKEV2_CONF="$2"
+    IPSEC_CONF="$3/ipsec.conf"
     detect_vpn_ipv6
     printf "HAS_IPV6=%s\n" "${HAS_IPV6}"
     printf "VPN_POOL_IPV6=%s\n" "${VPN_POOL_IPV6}"
     printf "VPN_POOL_IPV6_START=%s\n" "${VPN_POOL_IPV6_START}"
     printf "VPN_SUBNET_IPV6=%s\n" "${VPN_SUBNET_IPV6}"
     printf "VPN_SERVER_IP_IPV6=%s\n" "${VPN_SERVER_IP_IPV6}"
-  '
+  ' _ "$REPO_DIR/extras/enable_bonjour.sh" "$fixture" "$WORKDIR"
 }
 
 assert_var() {
@@ -172,10 +157,8 @@ EOF
 
 echo "Fixture 6: Reversed pool order (IPv6 first)"
 out=$(run_detection "$WORKDIR/fixture-reversed.conf")
-# The parser takes fields after the first comma and greps for ":".
-# With IPv6 first, the second field is IPv4 (no ":"), so HAS_IPV6=0.
-# This is a known limitation — hwdsl2 scripts always put IPv4 first.
-assert_var "$out" "HAS_IPV6" "0" "reversed pool"
+assert_var "$out" "HAS_IPV6" "1" "reversed pool"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:500:500:500::1" "reversed pool"
 echo ""
 
 # --- Fixture 7: Expanded (non-compressed) IPv6 address ---
@@ -189,7 +172,7 @@ echo "Fixture 7: Expanded (non-compressed) IPv6 address"
 out=$(run_detection "$WORKDIR/fixture-expanded.conf")
 assert_var "$out" "HAS_IPV6" "1" "expanded IPv6"
 assert_var "$out" "VPN_SUBNET_IPV6" "fddd:0500:0500:0500::/64" "expanded IPv6"
-assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:0500:0500:0500:0000:0000:0000:1" "expanded IPv6"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:0500:0500:0500::1" "expanded IPv6"
 echo ""
 
 # --- Fixture 8: Multiple comma-separated pools (IPv4, IPv4, IPv6) ---
@@ -203,6 +186,19 @@ echo "Fixture 8: Three pools (IPv4, IPv4, IPv6)"
 out=$(run_detection "$WORKDIR/fixture-multi.conf")
 assert_var "$out" "HAS_IPV6" "1" "multi pool"
 assert_var "$out" "VPN_SERVER_IP_IPV6" "fddd:500:500:500::1" "multi pool"
+echo ""
+
+# --- Fixture 9: Invalid IPv6 pool must be rejected ---
+cat > "$WORKDIR/fixture-invalid.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=192.168.43.10-192.168.43.250,fddd:500:::1000-fddd:500:::1fff
+  ikev2=insist
+EOF
+
+echo "Fixture 9: Invalid IPv6 pool"
+out=$(run_detection "$WORKDIR/fixture-invalid.conf")
+assert_var "$out" "HAS_IPV6" "0" "invalid IPv6"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "" "invalid IPv6"
 echo ""
 
 # ===== Summary =====

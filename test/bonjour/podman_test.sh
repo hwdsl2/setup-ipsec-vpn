@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034,SC2329
 #
 # Podman-based test harness for enable_bonjour.sh / disable_bonjour.sh
 # Runs 3 containers: bonjour-device, bonjour-server, bonjour-client
@@ -295,7 +296,7 @@ setup_client() {
   # so we don't depend on GNU grep being present on the host (macOS has BSD grep)
   local server_id
   server_id=$(podman exec "$SERVER_NAME" bash -c \
-    "grep -oP '(?<=leftid=).*' /etc/ipsec.d/ikev2.conf | head -1 | tr -d '[:space:]'" \
+    "sed -n 's/.*leftid=//p' /etc/ipsec.d/ikev2.conf | head -1 | tr -d '[:space:]'" \
     2>/dev/null)
 
   podman exec "$CLIENT_NAME" bash -c '
@@ -364,7 +365,7 @@ run_server_tests() {
 
   VPN_DNS_IP=$(podman exec "$SERVER_NAME" bash -c \
     'grep "listen-address=" /etc/dnsmasq.d/bonjour-vpn.conf 2>/dev/null \
-       | grep -oP "\d+\.\d+\.\d+\.\d+" | grep -v 127.0.0.1 | head -1' 2>/dev/null || true)
+       | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | grep -v 127.0.0.1 | head -1' 2>/dev/null || true)
   [ -z "$VPN_DNS_IP" ] && VPN_DNS_IP="192.168.43.1"
 
   # Test 1: avahi-daemon running
@@ -494,20 +495,16 @@ run_server_tests() {
       pass "IPv4-only: $v6_in_hosts IPv6 entries in hosts file (AAAA records from LAN)"
     fi
 
-    # Test 16: On IPv4-only, the sync script must exist but state file shows HAS_IPV6=0
-    if podman exec "$SERVER_NAME" test -x /usr/local/sbin/bonjour-vpn-ipv6-sync; then
-      local ipv4_state
-      ipv4_state=$(podman exec "$SERVER_NAME" bash -c \
-        "grep 'HAS_IPV6_SAVED' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null" 2>/dev/null || true)
-      if printf '%s' "$ipv4_state" | grep -q "'0'"; then
-        pass "IPv4-only: sync state file correctly shows HAS_IPV6=0"
-      elif [ -z "$ipv4_state" ]; then
-        pass "IPv4-only: no sync state file (sync was no-op)"
-      else
-        fail "IPv4-only: sync state file has unexpected content: $ipv4_state"
-      fi
+    # Test 16: Consolidated state records IPv4-only mode and no legacy
+    # minute-by-minute firewall mutator remains installed.
+    if podman exec "$SERVER_NAME" bash -c \
+         "grep -q 'HAS_IPV6_SAVED=.0.' /var/lib/bonjour-vpn/config \
+          && test ! -e /var/lib/bonjour-vpn/ipv6-state \
+          && test ! -e /var/lib/bonjour-vpn/ipv6-enabled \
+          && test ! -e /usr/local/sbin/bonjour-vpn-ipv6-sync"; then
+      pass "IPv4-only: consolidated state is IPv4-only and legacy mutator is absent"
     else
-      pass "IPv4-only: sync script installed"
+      fail "IPv4-only: state or legacy IPv6 cleanup is incorrect"
     fi
   fi
 
@@ -602,158 +599,88 @@ run_server_tests() {
       pass "modecfgdns is IPv4-only (regression guard for Libreswan INTERNAL_IP6_DNS bug)"
     fi
 
-    # ===== Phase 7: Adaptive IPv6 sync =====
+    # ===== Explicit IPv6 reconfiguration =====
 
-    # IPv6.9: sync script is installed and executable
-    if podman exec "$SERVER_NAME" test -x /usr/local/sbin/bonjour-vpn-ipv6-sync; then
-      pass "bonjour-vpn-ipv6-sync installed and executable"
-    else
-      fail "bonjour-vpn-ipv6-sync missing or not executable"
-    fi
-
-    # IPv6.10: watcher invokes the sync script
+    # IPv6.9: no independent background process may mutate VPN firewall or
+    # loopback state. All transitions require an explicit script re-run.
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'bonjour-vpn-ipv6-sync' /usr/local/bin/bonjour-vpn-watch 2>/dev/null"; then
-      pass "watcher references the IPv6 sync script"
+         "test ! -e /usr/local/sbin/bonjour-vpn-ipv6-sync \
+          && test ! -e /var/lib/bonjour-vpn/ipv6-state \
+          && test ! -e /var/lib/bonjour-vpn/ipv6-enabled \
+          && ! grep -q 'bonjour-vpn-ipv6-sync' /usr/local/bin/bonjour-vpn-watch"; then
+      pass "IPv6 state has one owner and no background firewall mutator"
     else
-      fail "watcher does not reference the IPv6 sync script"
+      fail "legacy IPv6 sync runtime is still installed or referenced"
     fi
 
-    # IPv6.11: initial state file created at install time and reflects dual-stack
+    # IPv6.10: consolidated state reflects the dual-stack installation.
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
-      pass "initial IPv6 sync state file reflects dual-stack install"
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/config \
+          && grep -q 'VPN_SUBNET_IPV6_SAVED=.fddd:500:500:500::/64.' /var/lib/bonjour-vpn/config"; then
+      pass "consolidated state records the dual-stack configuration"
     else
-      fail "initial IPv6 sync state file missing or wrong"
-      echo "       state file content:"
-      podman exec "$SERVER_NAME" cat /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | sed 's/^/         /'
+      fail "consolidated IPv6 state is missing or incorrect"
     fi
 
-    # IPv6.12: running sync again is a no-op (idempotent) — state file unchanged
-    local state_before state_after
-    state_before=$(podman exec "$SERVER_NAME" sha256sum /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | awk '{print $1}')
-    podman exec "$SERVER_NAME" /usr/local/sbin/bonjour-vpn-ipv6-sync 2>/dev/null || true
-    state_after=$(podman exec "$SERVER_NAME" sha256sum /var/lib/bonjour-vpn/ipv6-state 2>/dev/null | awk '{print $1}')
-    if [ -n "$state_before" ] && [ "$state_before" = "$state_after" ]; then
-      pass "sync script is idempotent (state file unchanged on re-run)"
-    else
-      fail "sync script is not idempotent"
-    fi
-
-    # IPv6.13: simulate a user DISABLING IPv6 after install (transition on->off).
-    # Remove the IPv6 range from rightaddresspool, run sync, verify teardown.
-    podman exec "$SERVER_NAME" bash -c '
-      /bin/cp -f /etc/ipsec.d/ikev2.conf /etc/ipsec.d/ikev2.conf.phase7-orig
+    # IPv6.11: simulate disabling IPv6, then explicitly re-run the setup.
+    if podman exec "$SERVER_NAME" bash -c '
+      set -e
+      /bin/cp -f /etc/ipsec.d/ikev2.conf /etc/ipsec.d/ikev2.conf.explicit-v6-orig
       sed -i "s|rightaddresspool=192.168.43.10-192.168.43.250,fddd:500:500:500::1000-fddd:500:500:500::1fff|rightaddresspool=192.168.43.10-192.168.43.250|" /etc/ipsec.d/ikev2.conf
-      /usr/local/sbin/bonjour-vpn-ipv6-sync
-      sleep 1
-    ' >/dev/null 2>&1
-
-    # After transition: state file should now say HAS_IPV6_SAVED=.0.
-    if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=.0.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
-      pass "sync: user-removed IPv6 pool triggers state transition to off"
+      bash /tmp/enable_bonjour.sh <<ANSWERS >/dev/null 2>&1
+y
+y
+ANSWERS
+    '; then
+      pass "explicit reconfiguration accepted the IPv6 on-to-off transition"
     else
-      fail "sync: state file still shows HAS_IPV6_SAVED=.1. after removal"
-    fi
-
-    # After transition: IPv6 address should be gone from loopback
-    if ! podman exec "$SERVER_NAME" bash -c \
-         "ip -6 addr show dev lo 2>/dev/null | grep -q 'fddd:500:500:500::1/'"; then
-      pass "sync: IPv6 loopback address removed on teardown"
-    else
-      fail "sync: IPv6 loopback address still present after teardown"
-    fi
-
-    # After transition: ip6tables INPUT rule should be gone
-    if ! podman exec "$SERVER_NAME" bash -c \
-         "ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null"; then
-      pass "sync: ip6tables INPUT rule removed on teardown"
-    else
-      fail "sync: ip6tables INPUT rule still present after teardown"
-    fi
-
-    # After transition: the ip6tables SAVE FILE must not contain our
-    # bonjour-specific rules (INPUT dpt:53/5353, PREROUTING DNAT ff02::fb).
-    # The VPN's own FORWARD/MASQUERADE rules for the IPv6 subnet are NOT
-    # ours — they're managed by vpnsetup.sh and should persist.
-    if ! podman exec "$SERVER_NAME" bash -c \
-         "grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -qE '\-\-dport 53|ff02::fb'"; then
-      pass "sync: ip6tables save file has no bonjour rules after teardown (reboot-safe)"
-    else
-      fail "sync: ip6tables save file still contains stale bonjour rules"
-      echo "       Stale bonjour rules would return after reboot:"
-      podman exec "$SERVER_NAME" bash -c \
-        "grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -E '\-\-dport 53|ff02::fb'" \
-        | sed 's/^/         /'
-    fi
-
-    # IPv6.14: now RESTORE the IPv6 pool and verify sync re-applies (off->on)
-    podman exec "$SERVER_NAME" bash -c '
-      /bin/cp -f /etc/ipsec.d/ikev2.conf.phase7-orig /etc/ipsec.d/ikev2.conf
-      /usr/local/sbin/bonjour-vpn-ipv6-sync
-      sleep 1
-    ' >/dev/null 2>&1
-
-    if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
-      pass "sync: restoring IPv6 pool triggers state transition to on"
-    else
-      fail "sync: state file still shows HAS_IPV6_SAVED=.0. after restore"
+      fail "explicit IPv6 on-to-off reconfiguration failed"
     fi
 
     if podman exec "$SERVER_NAME" bash -c \
-         "ip -6 addr show dev lo 2>/dev/null | grep -q 'fddd:500:500:500::1/'"; then
-      pass "sync: IPv6 loopback address re-added on apply"
+         "grep -q 'HAS_IPV6_SAVED=.0.' /var/lib/bonjour-vpn/config \
+          && ! ip -6 addr show dev lo | grep -q 'fddd:500:500:500::1/' \
+          && ! ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null \
+          && ! grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -qE '\-\-dport 53|ff02::fb'"; then
+      pass "explicit IPv6 teardown updated state, loopback, live rules and persistence"
     else
-      fail "sync: IPv6 loopback address not re-added after apply"
+      fail "explicit IPv6 teardown left stale state or firewall configuration"
+    fi
+
+    # IPv6.12: restore the pool and explicitly re-run setup to turn IPv6 on.
+    if podman exec "$SERVER_NAME" bash -c '
+      set -e
+      /bin/cp -f /etc/ipsec.d/ikev2.conf.explicit-v6-orig /etc/ipsec.d/ikev2.conf
+      bash /tmp/enable_bonjour.sh <<ANSWERS >/dev/null 2>&1
+y
+y
+ANSWERS
+      sleep 2
+    '; then
+      pass "explicit reconfiguration accepted the IPv6 off-to-on transition"
+    else
+      fail "explicit IPv6 off-to-on reconfiguration failed"
     fi
 
     if podman exec "$SERVER_NAME" bash -c \
-         "ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null"; then
-      pass "sync: ip6tables INPUT rule re-added on apply"
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/config \
+          && ip -6 addr show dev lo | grep -q 'fddd:500:500:500::1/' \
+          && ip6tables -C INPUT -s fddd:500:500:500::/64 -p udp --dport 53 -j ACCEPT 2>/dev/null \
+          && grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -qE '\-\-dport 53' \
+          && ss -ulnp 2>/dev/null | grep -E ':53 ' | grep -qE '\[fddd:500:500:500::1\]'"; then
+      pass "explicit IPv6 apply updated state, loopback, live rules, persistence and dnsmasq"
     else
-      fail "sync: ip6tables INPUT rule not re-added after apply"
+      fail "explicit IPv6 apply did not restore the complete runtime state"
     fi
 
-    # IPv6.15: after sync off->on, dnsmasq is actually listening on the
-    # restored IPv6 address (validates that the listen-address rewrite in
-    # /etc/dnsmasq.d/bonjour-vpn.conf + dnsmasq restart worked end-to-end,
-    # not just that the config file was touched). This is the most
-    # important Phase 7 test — it's the one that would have caught the
-    # "bind-interfaces requires the IP to exist first" bug from Phase 2+3.
-    sleep 2  # give dnsmasq restart a moment to settle
-    if podman exec "$SERVER_NAME" bash -c \
-         "ss -ulnp 2>/dev/null | grep -E ':53 ' | grep -qE '\[fddd:500:500:500::1\]'"; then
-      pass "sync: dnsmasq is actually listening on the restored IPv6 address"
-    else
-      fail "sync: dnsmasq NOT listening on restored IPv6 address"
-      echo "       ss -ulnp :53 output:"
-      podman exec "$SERVER_NAME" bash -c "ss -ulnp 2>/dev/null | grep ':53 '" | sed 's/^/         /'
-    fi
-
-    # IPv6.16: a real DNS query to the restored IPv6 address returns an
-    # answer for testprinter.local. This proves the full pipeline works
-    # after a sync transition: dnsmasq listens on the IPv6 address AND
-    # the ip6tables INPUT rule allows the query to reach it.
-    local post_sync_aaaa
-    post_sync_aaaa=$(podman exec "$SERVER_NAME" bash -c \
+    local post_transition_aaaa
+    post_transition_aaaa=$(podman exec "$SERVER_NAME" bash -c \
       "dig +short +time=3 @fddd:500:500:500::1 testprinter.local AAAA 2>/dev/null | grep -v '^;;'" \
       2>/dev/null || true)
-    if [ -n "$post_sync_aaaa" ]; then
-      pass "sync: post-transition DNS query over IPv6 returns $post_sync_aaaa"
+    if [ -n "$post_transition_aaaa" ]; then
+      pass "post-transition DNS query over IPv6 returns $post_transition_aaaa"
     else
-      fail "sync: post-transition DNS query over IPv6 failed"
-    fi
-
-    # IPv6.17: after sync apply, the ip6tables save file contains our rules
-    # (complement of the teardown save-file test — proves apply also persists).
-    # ip6tables-save uses "--dport 53" format, not "dpt:53" (-L format).
-    if podman exec "$SERVER_NAME" bash -c \
-         "grep 'fddd:500:500:500' /etc/ip6tables.rules 2>/dev/null | grep -qE '\-\-dport 53'"; then
-      pass "sync: ip6tables save file has bonjour rules after apply (reboot-safe)"
-    else
-      fail "sync: ip6tables save file missing bonjour rules after apply"
+      fail "post-transition DNS query over IPv6 failed"
     fi
   fi
 }
@@ -767,16 +694,17 @@ run_idempotency_test() {
   echo ""
 
   # Snapshot current state
-  local rules_before hosts_before conf_before
+  local rules_before v6rules_before conf_before
   rules_before=$(podman exec "$SERVER_NAME" iptables -S INPUT 2>/dev/null | grep -c 'dport 53' || echo 0)
-  hosts_before=$(podman exec "$SERVER_NAME" wc -l < /etc/bonjour-vpn-hosts 2>/dev/null || echo 0)
+  v6rules_before=$(podman exec "$SERVER_NAME" ip6tables -S INPUT 2>/dev/null | grep -c 'dport 53' || echo 0)
   conf_before=$(podman exec "$SERVER_NAME" cat /etc/dnsmasq.d/bonjour-vpn.conf 2>/dev/null)
 
   # Re-run enable_bonjour.sh
   podman exec "$SERVER_NAME" bash -c 'bash /tmp/enable_bonjour.sh <<ANSWERS >/dev/null 2>&1
 y
+y
 ANSWERS
-' || true
+' || fail "idempotent: enable_bonjour.sh re-run failed"
 
   # Compare: no duplicate iptables rules
   local rules_after
@@ -788,15 +716,12 @@ ANSWERS
   fi
 
   # Compare: no duplicate ip6tables rules
-  local v6rules_before v6rules_after
-  v6rules_before=$(podman exec "$SERVER_NAME" ip6tables -S INPUT 2>/dev/null | grep -c 'dport 53' || echo 0)
-  # Already re-ran above, just check current state is same as what was there
-  # (since we snapshot before re-run but the re-run already happened, check
-  # the count is reasonable — should be exactly 3: UDP 53, TCP 53, UDP 5353)
-  if [ "$v6rules_before" -le 4 ]; then
-    pass "idempotent: no duplicate ip6tables rules ($v6rules_before INPUT rules for port 53)"
+  local v6rules_after
+  v6rules_after=$(podman exec "$SERVER_NAME" ip6tables -S INPUT 2>/dev/null | grep -c 'dport 53' || echo 0)
+  if [ "$v6rules_before" = "$v6rules_after" ]; then
+    pass "idempotent: no duplicate ip6tables rules after re-run ($v6rules_before → $v6rules_after)"
   else
-    fail "idempotent: ip6tables rules duplicated ($v6rules_before INPUT rules for port 53)"
+    fail "idempotent: ip6tables rules changed ($v6rules_before → $v6rules_after)"
   fi
 
   # Compare: dnsmasq config unchanged
@@ -828,7 +753,7 @@ run_e2e_tests() {
 
   local vpn_ip
   vpn_ip=$(podman exec "$CLIENT_NAME" bash -c \
-    "ip addr show 2>/dev/null | grep -oP '192\.168\.43\.\d+' | head -1" \
+    "ip addr show 2>/dev/null | grep -oE '192\.168\.43\.[0-9]+' | head -1" \
     2>/dev/null || true)
 
   if [ -n "$vpn_ip" ]; then
@@ -979,20 +904,16 @@ ANSWERS
     fail "re-enable: dnsmasq NOT running"
   fi
 
-  # Dual-stack only: re-enable must re-install the IPv6 sync script and
-  # restore the state file so the sync watcher picks up from here again.
+  # Dual-stack only: re-enable must restore consolidated IPv6 state without
+  # reinstalling the retired background firewall mutator.
   if [ "$DUAL_STACK" = 1 ]; then
-    if podman exec "$SERVER_NAME" test -x /usr/local/sbin/bonjour-vpn-ipv6-sync; then
-      pass "re-enable: IPv6 sync script reinstalled"
-    else
-      fail "re-enable: IPv6 sync script NOT reinstalled"
-    fi
-
     if podman exec "$SERVER_NAME" bash -c \
-         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/ipv6-state 2>/dev/null"; then
-      pass "re-enable: IPv6 state file restored to dual-stack"
+         "grep -q 'HAS_IPV6_SAVED=.1.' /var/lib/bonjour-vpn/config \
+          && test ! -e /usr/local/sbin/bonjour-vpn-ipv6-sync \
+          && test ! -e /var/lib/bonjour-vpn/ipv6-state"; then
+      pass "re-enable: consolidated IPv6 state restored without legacy mutator"
     else
-      fail "re-enable: IPv6 state file missing or not dual-stack"
+      fail "re-enable: IPv6 state or legacy cleanup is incorrect"
     fi
   fi
 }

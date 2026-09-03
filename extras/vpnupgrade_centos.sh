@@ -89,7 +89,7 @@ EOF
 }
 
 get_swan_ver() {
-  swan_ver_cur=5.3
+  swan_ver_cur=5.4
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/upg-v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -127,6 +127,7 @@ Note: This script will make the following changes to your VPN configuration:
       - Fix obsolete ipsec.conf and/or ikev2.conf options
       - Optimize VPN ciphers
       - Update IKEv2 helper script
+      - Update NSS crypto policy for PKCS#12 compatibility
       Your other VPN config files will not be modified.
 
 EOF
@@ -171,6 +172,12 @@ install_pkgs_1() {
       libcap-ng-devel libselinux-devel curl-devel nss-tools \
       flex bison gcc make wget sed tar >/dev/null
   ) || exiterr2
+  if [ "$os_ver" != 7 ]; then
+    (
+      set -x
+      yum -y -q install libxcrypt-devel >/dev/null
+    ) || exiterr2
+  fi
 }
 
 install_pkgs_2() {
@@ -215,7 +222,6 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 EOF
   if [ "$SWAN_VER" != "3.32" ]; then
 cat >> Makefile.inc.local <<'EOF'
@@ -228,6 +234,18 @@ EOF
   fi
   if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
     echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+  fi
+  if printf '%s\n%s' "5.4" "$SWAN_VER" | sort -C -V; then
+    if ! grep -qs XFRM_MODE_IPTFS /usr/include/linux/xfrm.h; then
+      echo "USE_XFRM_HEADER_COPY=true" >> Makefile.inc.local
+    fi
+    if ! pkg-config --atleast-version=3.118.1 nss >/dev/null 2>&1; then
+      echo "USE_ML_KEM_768=false" >> Makefile.inc.local
+      echo "USE_ML_KEM_1024=false" >> Makefile.inc.local
+    fi
+    if ! pkg-config --atleast-version=3.99 nss >/dev/null 2>&1; then
+      echo "USE_EDDSA=false" >> Makefile.inc.local
+    fi
   fi
   NPROCS=$(grep -c ^processor /proc/cpuinfo)
   [ -z "$NPROCS" ] && NPROCS=1
@@ -247,6 +265,22 @@ restore_selinux() {
   restorecon /etc/ipsec.d/*db 2>/dev/null
   restorecon /usr/local/sbin -Rv 2>/dev/null
   restorecon /usr/local/libexec/ipsec -Rv 2>/dev/null
+}
+
+fix_nss_config() {
+  nss_conf="/etc/crypto-policies/back-ends/nss.config"
+  if [ -s "$nss_conf" ]; then
+    nss_algs="SHA1"
+    if [ "$os_ver" = 9 ] || [ "$os_ver" = 9s ] \
+      || [ "$os_ver" = 10 ] || [ "$os_ver" = 10s ]; then
+      nss_algs="$nss_algs SHA1/pkcs12-legacy des-ede3-cbc/pkcs12-legacy"
+    fi
+    for alg in $nss_algs; do
+      if ! grep -q "[:=]${alg}[:\"]" "$nss_conf"; then
+        sed -i "/ALL allow=/s# allow=# allow=$alg:#" "$nss_conf"
+      fi
+    done
+  fi
 }
 
 update_ikev2_script() {
@@ -345,6 +379,7 @@ vpnupgrade() {
   restore_selinux
   update_ikev2_script
   update_config
+  fix_nss_config
   restart_ipsec
   show_setup_complete
 }

@@ -2,7 +2,7 @@
 
 # Скрипты автоматической настройки сервера IPsec VPN
 
-[![Статус сборки](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![Звезды GitHub](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Звезды Docker](docs/images/badges/docker-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) [![Загрузки Docker](docs/images/badges/docker-pulls.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md)
+[![Статус сборки](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/actions/workflows/main.yml) [![Звезды GitHub](https://raw.githubusercontent.com/hwdsl2/badges/main/img/github-stars-setup-ipsec-vpn.svg)](https://github.com/hwdsl2/setup-ipsec-vpn/stargazers) [![Звезды Docker](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-stars-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) [![Загрузки Docker](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ipsec-vpn-server.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md)
 
 Разверните собственный сервер IPsec VPN всего за несколько минут с поддержкой IPsec/L2TP, Cisco IPsec и IKEv2.
 
@@ -10,11 +10,23 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 Мы будем использовать [Libreswan](https://libreswan.org/) в качестве сервера IPsec и [xl2tpd](https://github.com/xelerance/xl2tpd) в качестве поставщика L2TP.
 
-**[&raquo; :book: Книга: Privacy Tools in the Age of AI](docs/vpn-book.md) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
+**Возможности:**
+
+- Полностью автоматическая настройка сервера IPsec VPN, ввод пользователя не требуется
+- Поддержка IKEv2 с мощными и быстрыми шифрами (например, AES-GCM)
+- Генерация профилей VPN для автоматической настройки устройств iOS, macOS и Android
+- Поддержка Windows, macOS, iOS, Android, Chrome OS и Linux в качестве VPN-клиентов
+- Включает вспомогательные скрипты для управления пользователями VPN и сертификатами
+
+**Также доступно:**
+
+- Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
+- AI: [Стек ИИ на своём сервере](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md) для локальных LLM, чата, RAG, голосовых функций и инструментов ИИ
+- :books: Книги: [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon), [Privacy Tools in the Age of AI](docs/vpn-book.md)
 
 ## Быстрый старт
 
-Сначала подготовьте ваш Linux-сервер\* с установленной системой Ubuntu, Debian или CentOS.
+Сначала подготовьте ваш Linux-сервер\* с установленной [поддерживаемой ОС](#требования).
 
 Используйте эту однострочную команду для настройки сервера IPsec VPN:
 
@@ -24,7 +36,8 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
-**Дополнительно:** Установите [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md) и/или [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) на тот же сервер.
+> [!TIP]
+> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
 
 <details>
 <summary>
@@ -56,28 +69,25 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 Если вы не можете скачать файл, откройте [vpnsetup.sh](vpnsetup.sh), затем нажмите кнопку `Raw` справа. Нажмите `Ctrl/Cmd+A`, чтобы выделить всё, `Ctrl/Cmd+C`, чтобы скопировать, затем вставьте в ваш любимый редактор.
 </details>
 
-Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md). Для других вариантов и настройки клиентов прочитайте разделы ниже.
+Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Для других вариантов и настройки клиентов прочитайте разделы ниже.
 
 \* Облачный сервер, виртуальный частный сервер (VPS) или выделенный сервер.
 
-## Возможности
+## Сообщество
 
-- Полностью автоматическая настройка сервера IPsec VPN, ввод пользователя не требуется
-- Поддержка IKEv2 с мощными и быстрыми шифрами (например, AES-GCM)
-- Генерация профилей VPN для автоматической настройки устройств iOS, macOS и Android
-- Поддержка Windows, macOS, iOS, Android, Chrome OS и Linux в качестве VPN-клиентов
-- Включает вспомогательные скрипты для управления пользователями VPN и сертификатами
+- 📬 [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц) — получить бесплатные руководства по развёртыванию VPN и AI (PDF, на английском)
+- 💬 Присоединяйтесь к сообществу [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) для обсуждений и демонстрации проектов
+- ⭐ Поставьте звезду репозиторию, если он оказался вам полезен — это поможет другим пользователям его найти.
 
 ## Требования
 
 Облачный сервер, виртуальный частный сервер (VPS) или выделенный сервер с установленной системой:
 
-- Ubuntu 24.04 или 22.04
+- Ubuntu 26.04, 24.04 или 22.04
 - Debian 13, 12 или 11
 - CentOS Stream 10 или 9
 - Rocky Linux или AlmaLinux
 - Oracle Linux
-- Amazon Linux 2
 
 <details>
 <summary>
@@ -90,19 +100,20 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 - Red Hat Enterprise Linux (RHEL)
 </details>
 
-Это также включает виртуальные машины Linux в публичных облаках, таких как [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) и [Microsoft Azure](https://azure.microsoft.com). Пользователи публичных облаков также могут выполнить развёртывание с помощью [пользовательскими данными](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
+Это также включает виртуальные машины Linux в публичных облаках, таких как [DigitalOcean](https://blog.ls20.com/digitalocean), [Vultr](https://blog.ls20.com/vultr), [Linode](https://blog.ls20.com/linode), [OVH](https://www.ovhcloud.com/en/vps/) и [Microsoft Azure](https://azure.microsoft.com). Пользователи публичных облаков также могут выполнить развёртывание с помощью [пользовательских данных](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#vpnsetup).
 
 Быстрое развёртывание в:
 
-[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to AWS](docs/images/aws-deploy-button.png)](aws/README.md) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
+[![Deploy to Linode](docs/images/linode-deploy-button.png)](https://cloud.linode.com/stackscripts/37239) &nbsp;[![Deploy to Azure](docs/images/azure-deploy-button.png)](azure/README.md)
 
 [**&raquo; Я хочу запустить собственный VPN, но у меня нет сервера для этого**](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#gettingavps)
 
 Для серверов с внешним файрволом (например, [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)) откройте UDP-порты 500 и 4500 для VPN.
 
-Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md). Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
-:warning: **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
+> [!WARNING]
+> **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
 
 ## Установка
 
@@ -125,7 +136,8 @@ nano -w vpn.sh
 sudo sh vpn.sh
 ```
 
-**Примечание:** Безопасный IPsec PSK должен состоять как минимум из 20 случайных символов.
+> [!NOTE]
+> Безопасный IPsec PSK должен состоять как минимум из 20 случайных символов.
 
 **Вариант 3:** Определите учетные данные VPN как переменные окружения.
 
@@ -139,7 +151,8 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md) и/или [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
+> [!TIP]
+> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
 
 <details>
 <summary>
@@ -203,7 +216,8 @@ sudo VPN_DNS_SRV1=1.1.1.1 VPN_DNS_SRV2=1.0.0.1 sh vpn.sh
 
 Если вам нужно изменить DNS-серверы после настройки VPN, см. раздел [Расширенное использование](docs/advanced-usage.md).
 
-**Примечание:** Если IKEv2 уже настроен на сервере, переменные выше не влияют на режим IKEv2. В этом случае для настройки параметров IKEv2, таких как DNS-серверы, вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
+> [!NOTE]
+> Если IKEv2 уже настроен на сервере, переменные выше не влияют на режим IKEv2. В этом случае для настройки параметров IKEv2, таких как DNS-серверы, вы можете сначала [удалить IKEv2](docs/ikev2-howto.md#remove-ikev2), а затем снова настроить его с помощью `sudo ikev2.sh`.
 
 ### Настройка параметров IKEv2
 
@@ -359,7 +373,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 Если вы не можете скачать файл, откройте [vpnupgrade.sh](extras/vpnupgrade.sh), затем нажмите кнопку `Raw` справа. Нажмите `Ctrl/Cmd+A`, чтобы выделить всё, `Ctrl/Cmd+C`, чтобы скопировать, затем вставьте в ваш любимый редактор.
 </details>
 
-Последняя поддерживаемая версия Libreswan — `5.3`. Проверить установленную версию: `ipsec --version`.
+Последняя поддерживаемая версия Libreswan — `5.4`. Проверить установленную версию: `ipsec --version`.
 
 **Примечание:** `xl2tpd` можно обновить с помощью менеджера пакетов вашей системы, например `apt-get` в Ubuntu/Debian.
 
@@ -379,6 +393,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 - [Использование альтернативных DNS-серверов](docs/advanced-usage.md#use-alternative-dns-servers)
 - [Изменения DNS-имени и IP-адреса сервера](docs/advanced-usage.md#dns-name-and-server-ip-changes)
 - [VPN только с IKEv2](docs/advanced-usage.md#ikev2-only-vpn)
+- [Включить совершенную прямую секретность IKEv2](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [Внутренние IP-адреса VPN и трафик](docs/advanced-usage.md#internal-vpn-ips-and-traffic)
 - [Указание публичного IP-адреса VPN-сервера](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Настройка подсетей VPN](docs/advanced-usage.md#customize-vpn-subnets)
@@ -395,7 +410,8 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnupgrade.sh
 
 Чтобы удалить IPsec VPN, запустите [вспомогательный скрипт](extras/vpnuninstall.sh):
 
-**Предупреждение:** Этот вспомогательный скрипт удалит IPsec VPN с вашего сервера. Вся конфигурация VPN будет **безвозвратно удалена**, а Libreswan и xl2tpd будут удалены. Это **нельзя отменить**!
+> [!CAUTION]
+> Этот вспомогательный скрипт удалит IPsec VPN с вашего сервера. Вся конфигурация VPN будет **безвозвратно удалена**, а Libreswan и xl2tpd будут удалены. Это **нельзя отменить**!
 
 ```bash
 wget https://get.vpnsetup.net/unst -O unst.sh && sudo bash unst.sh
@@ -425,7 +441,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/extras/vpnuninstall.sh
 ## Обратная связь и вопросы
 
 - Есть предложение по улучшению этого проекта? Создайте [Предложить улучшение](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose). [Pull request](https://github.com/hwdsl2/setup-ipsec-vpn/pulls) также приветствуются.
-- Если вы нашли воспроизводимую ошибку, создайте отчёт об ошибке для [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) или для [скрипты VPN](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
+- Если вы нашли воспроизводимую ошибку, создайте отчёт об ошибке для [IPsec VPN](https://github.com/libreswan/libreswan/issues?q=is%3Aissue) или для [скриптов VPN](https://github.com/hwdsl2/setup-ipsec-vpn/issues/new/choose).
 - Есть вопрос? Пожалуйста, сначала выполните поиск по [существующим issues](https://github.com/hwdsl2/setup-ipsec-vpn/issues?q=is%3Aissue) и комментариям [в этом Gist](https://gist.github.com/hwdsl2/9030462#comments) и [в моём блоге](https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/#disqus_thread).
 - Задавайте вопросы, связанные с VPN, в списках рассылки [Libreswan](https://lists.libreswan.org) или [strongSwan](https://lists.strongswan.org), либо прочитайте эти вики: [[1]](https://libreswan.org/wiki/Main_Page) [[2]](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-securing_virtual_private_networks) [[3]](https://wiki.strongswan.org/projects/strongswan/wiki/UserDocumentation) [[4]](https://wiki.gentoo.org/wiki/IPsec_L2TP_VPN_server) [[5]](https://wiki.archlinux.org/index.php/Openswan_L2TP/IPsec_VPN_client_setup).
 

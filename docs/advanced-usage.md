@@ -5,6 +5,7 @@
 * [Use alternative DNS servers](#use-alternative-dns-servers)
 * [DNS name and server IP changes](#dns-name-and-server-ip-changes)
 * [IKEv2-only VPN](#ikev2-only-vpn)
+* [Enable IKEv2 perfect forward secrecy](#enable-ikev2-perfect-forward-secrecy)
 * [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic)
 * [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 * [Customize VPN subnets](#customize-vpn-subnets)
@@ -73,6 +74,42 @@ Alternatively, you may manually enable IKEv2-only mode.
 
 Alternatively, you may manually enable IKEv2-only mode. First check Libreswan version using `ipsec --version`, and [update Libreswan](../README.md#upgrade-libreswan) if needed. Then edit `/etc/ipsec.conf` on the VPN server. Replace `ikev1-policy=accept` with `ikev1-policy=drop`. If the line does not exist, append `ikev1-policy=drop` to the end of the `config setup` section, indented by two spaces. Save the file and run `service ipsec restart`. When finished, you can run `ipsec status` to verify that only the `ikev2-cp` connection is enabled.
 </details>
+
+## Enable IKEv2 perfect forward secrecy
+
+By default, IKEv2 Child SAs derive keying material from the existing IKE SA without a new Diffie-Hellman exchange (`pfs=no`). Enabling perfect forward secrecy (PFS) causes each Child SA rekey to perform a fresh DH exchange, so that a future compromise of the server's private key cannot decrypt previously recorded sessions.
+
+**Note:** The IKE SA already proposes ECP-256 as its first preference (`aes_gcm_c_256-hmac_sha2_256-ecp_256`), and all modern clients negotiate it, so session keys are already independent of the server's long-term private key for those clients. Enabling PFS for Child SAs is an incremental hardening step, not a critical gap.
+
+**Client compatibility:** All modern clients support PFS. However, macOS and iOS clients require re-export and re-import of the `.mobileconfig` profile with `EnablePFS` set to `1` (see below). Windows clients require a connection update. RouterOS users must change `pfs-group=none` to `pfs-group=ecp256` in their IKEv2 profile. Android and Linux strongSwan clients require no changes. Windows 7 IKEv2 clients do not support ECP PFS groups and will fail to connect if PFS is enabled on the server.
+
+To enable PFS on the server, edit `/etc/ipsec.d/ikev2.conf` and change `pfs=no` to `pfs=yes` in the `conn ikev2-cp` section, then restart the IPsec service:
+
+```bash
+sudo sed -i 's/pfs=no/pfs=yes/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
+
+**Docker users:** Open a [Bash shell inside the container](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#bash-shell-inside-container), run the `sed` command above, then `exit` and run `docker restart ipsec-vpn-server`.
+
+After enabling PFS, the following client configurations must be updated:
+
+- **macOS / iOS:** Re-export the client `.mobileconfig` using `sudo ikev2.sh --exportclient <name>`, then edit the exported file to enable PFS:
+  ```bash
+  sed -i '/EnablePFS/{n;s/0/1/;}' <name>.mobileconfig
+  ```
+  Re-import the updated file on your device.
+- **Windows:** In an elevated PowerShell window, run `Set-VpnConnection -Name "Your VPN Name" -PfsGroup ECP256` (replace with your actual VPN connection name), then reconnect the VPN.
+- **RouterOS (MikroTik):** In the IKEv2 peer profile, change `pfs-group=none` to `pfs-group=ecp256`.
+
+Android and Linux strongSwan clients require no changes; PFS is auto-negotiated.
+
+To revert to the default (PFS disabled):
+
+```bash
+sudo sed -i 's/pfs=yes/pfs=no/' /etc/ipsec.d/ikev2.conf
+sudo service ipsec restart
+```
 
 ## Internal VPN IPs and traffic
 
@@ -458,7 +495,11 @@ To enable Bonjour/mDNS service discovery, run the helper script on the VPN serve
 sudo bash extras/enable_bonjour.sh
 ```
 
-The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a real-time service watcher that monitors the local network for Bonjour service changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. When devices appear or disappear on the LAN, dnsmasq records are updated within seconds. The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so all DNS queries from VPN clients go through dnsmasq. An iptables DNAT rule captures mDNS multicast (224.0.0.251:5353) from VPN clients and redirects it to dnsmasq on port 53, enabling Bonjour discovery without DNS leak.
+The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a persistent service watcher that monitors the local network for Bonjour changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. New, changed and partially removed records are normally published within seconds. If an otherwise successful discovery returns no records at all, the empty result must occur twice (normally within about two minutes) before it replaces the last known-good records. Unchanged data does not restart dnsmasq.
+
+The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so DNS queries from VPN clients go through dnsmasq. Firewall rules capture IPv4 mDNS multicast (224.0.0.251:5353) from VPN clients and redirect it to dnsmasq on port 53. The script derives custom VPN subnets and pools from the installed VPN configuration instead of assuming the default `/24` networks, and persists firewall changes using the backend selected by the VPN installer.
+
+This feature is a DNS/DNS-SD bridge, not a general multicast router. It makes discovered `.local` records available over unicast DNS and captures IPv4 mDNS sent through the tunnel, but an application that sends or accepts discovery only on a physical interface may still not browse remote services. Client and application behavior therefore varies.
 
 After enabling, VPN clients must disconnect and reconnect to receive the updated DNS settings.
 
@@ -469,29 +510,29 @@ If your VPN server has [IPv6 support](#ipv6-support) enabled and IKEv2 clients r
 - dnsmasq listens on both the IPv4 and IPv6 VPN server addresses.
 - An ip6tables DNAT rule captures IPv6 mDNS multicast (`ff02::fb` port 5353) from IPv6 VPN clients and redirects it to dnsmasq.
 - The cache warmer populates `/etc/bonjour-vpn-hosts` with both A and AAAA records so AAAA queries from VPN clients resolve IPv6 addresses for local devices.
-- A background state-sync script (`bonjour-vpn-ipv6-sync`, called from the watcher) detects post-install changes to the VPN's IPv6 configuration and reconciles the dnsmasq/ip6tables/loopback state automatically. If you enable IPv6 on the VPN *after* running `enable_bonjour.sh`, you do not need to re-run the script — the watcher will pick it up on its next tick (within 60 seconds).
+- IPv6 loopback and firewall changes use the same validation, persistence and rollback path as IPv4. If the VPN's IPv6 pool is later enabled, disabled or changed, re-run `enable_bonjour.sh` to review and apply the new state explicitly.
 
-Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. IPv6 clients resolve AAAA records by querying the IPv4 VPN DNS endpoint — dnsmasq returns IPv6 answers regardless of the source address family, so functionally there is no loss.
+Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. Compatible clients can still resolve AAAA records by querying the IPv4 VPN DNS endpoint because dnsmasq can return IPv6 answers to an IPv4 DNS query.
 
-**What works on each platform:**
+**Client compatibility:**
 
 | Platform | `.local` hostname resolution | Service discovery (auto-browse) | Connect via hostname |
 | -------- | ---- | ---- | ---- |
-| iOS | Yes | Yes — printers, AirPlay, and other services appear automatically | Yes |
-| macOS | Yes | No — see note below | Yes — use Cmd+K in Finder |
-| Windows | Yes | Partial — requires [Bonjour Print Services](https://support.apple.com/kb/DL999) | Yes |
-| Android | Yes | Limited — app-dependent | Yes |
-| Linux | Yes | Yes — if avahi is configured on the client | Yes |
+| iOS | Works when the active VPN profile and app use tunnel DNS | App-dependent; apps that insist on link-local multicast may not browse remote services | Yes, when lookup succeeds |
+| macOS | Works when the active VPN profile and app use tunnel DNS | Finder's Network sidebar may not populate — see note below | Yes — use Cmd+K in Finder when lookup succeeds |
+| Windows | App-dependent | Partial — Bonjour-aware apps may require [Bonjour Print Services](https://support.apple.com/kb/DL999) | App-dependent |
+| Android | App-dependent | App-dependent | App-dependent |
+| Linux | Depends on the resolver and Avahi configuration | Depends on the resolver, Avahi configuration and app | Yes, when lookup succeeds |
 
-All `.local` hostnames on the VPN server's LAN are resolvable from any VPN client. For example, if a file server is at `file-server.local`, a VPN client can connect with `smb://file-server.local` (Finder → Go → Connect to Server on macOS, or the equivalent on other platforms). Printers, Time Machine targets, and any other service reachable by hostname will work.
+Hostnames discovered from valid LAN Bonjour records are made available to VPN clients through tunnel DNS. For example, when `file-server.local` is discovered and reachable through the VPN, a compatible client can connect with `smb://file-server.local` (Finder → Go → Connect to Server on macOS, or the equivalent on other platforms).
 
 **macOS Finder Network sidebar limitation:**
 
-On macOS, the Finder Network sidebar does **not** automatically display services from the VPN server's LAN. This is a macOS limitation: the Finder's service browser uses multicast mDNS for the `.local` domain, but multicast traffic does not cross VPN tunnels (macOS excludes point-to-point interfaces from mDNS). iOS does not have this limitation — its mDNSResponder performs unicast DNS-SD for `.local` over VPN, which is why iOS service discovery works fully.
+On macOS, the Finder Network sidebar may not automatically display services from the VPN server's LAN. Finder and other applications can use link-local multicast for browsing, which is not guaranteed to traverse a VPN tunnel. iOS and other clients may use tunnel DNS for some `.local` and DNS-SD lookups, but the result remains application- and profile-dependent.
 
-All `.local` hostnames still **resolve** on macOS — you can connect to any server by typing its hostname in Finder → Go → Connect to Server (Cmd+K). The limitation is only the automatic browsing/discovery in the sidebar.
+Discovered `.local` hostnames can still resolve on macOS when the active profile and application use tunnel DNS. In that case, you can connect by typing the hostname in Finder → Go → Connect to Server (Cmd+K), even when automatic browsing does not populate the sidebar.
 
-A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This would make remote services appear in the Finder sidebar as if they were on the local network. This is tracked as a separate project. For detailed technical research on this limitation, see [Bonjour macOS Research Notes](bonjour-macos-research.md).
+A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This is tracked as a separate project.
 
 To disable Bonjour/mDNS service discovery and revert all changes (including IPv6 state):
 

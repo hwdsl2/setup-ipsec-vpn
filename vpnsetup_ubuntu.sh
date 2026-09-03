@@ -274,19 +274,21 @@ detect_ipv6() {
 install_vpn_pkgs() {
   bigecho "Installing packages required for the VPN..."
   p1=libcurl4-nss-dev
-  if [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ]; then
+  if [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
+    || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
     p1=libcurl4-gnutls-dev
   fi
   (
     set -x
     apt-get -yqq install libnss3-dev libnspr4-dev pkg-config \
       libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
-      $p1 flex bison gcc make libnss3-tools \
+      $p1 flex bison gcc make libnss3-tools libcrypt-dev \
       libevent-dev libsystemd-dev uuid-runtime ppp xl2tpd >/dev/null
   ) || exiterr2
   if { [ "$os_type" = "ubuntu" ] && [ -n "$ubuntu_ver" ] \
     && printf '%s\n%s' "24.10" "$ubuntu_ver" | sort -C -V; } \
-    || [ "$os_ver" = 13 ]; then
+    || [ "$os_ver" = "trixiesid" ] || [ "$os_ver" = 13 ] \
+    || [ "$os_ver" = "forkysid" ] || [ "$os_ver" = 14 ]; then
     (
       set -x
       apt-get -yqq install systemd-dev >/dev/null
@@ -342,7 +344,7 @@ get_helper_scripts() {
 }
 
 get_swan_ver() {
-  SWAN_VER=5.3
+  SWAN_VER=5.4
   base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
   swan_ver_url="$base_url/v1-$os_type-$os_ver-swanver"
   swan_ver_latest=$(wget -t 2 -T 10 -qO- "$swan_ver_url" | head -n 1)
@@ -407,13 +409,29 @@ install_libreswan() {
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS=-w -s
 USE_DNSSEC=false
-USE_DH2=true
 USE_NSS_KDF=false
 FINALNSSDIR=/etc/ipsec.d
 NSSDIR=/etc/ipsec.d
 EOF
     if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
       echo "USE_XFRM_INTERFACE_IFLA_HEADER=true" >> Makefile.inc.local
+    fi
+    if printf '%s\n%s' "5.4" "$SWAN_VER" | sort -C -V; then
+      if ! grep -qs XFRM_MODE_IPTFS /usr/include/linux/xfrm.h; then
+        echo "USE_XFRM_HEADER_COPY=true" >> Makefile.inc.local
+      fi
+      if ! pkg-config --atleast-version=3.118.1 nss >/dev/null 2>&1; then
+        echo "USE_ML_KEM_768=false" >> Makefile.inc.local
+        echo "USE_ML_KEM_1024=false" >> Makefile.inc.local
+      fi
+      if ! pkg-config --atleast-version=3.99 nss >/dev/null 2>&1; then
+        echo "USE_EDDSA=false" >> Makefile.inc.local
+      fi
+      if [ -x /lib/systemd/systemd ] && [ -d /run/systemd ]; then
+        echo "INITSYSTEM=systemd" >> Makefile.inc.local
+      else
+        echo "INITSYSTEM=sysvinit" >> Makefile.inc.local
+      fi
     fi
     NPROCS=$(grep -c ^processor /proc/cpuinfo)
     [ -z "$NPROCS" ] && NPROCS=1
