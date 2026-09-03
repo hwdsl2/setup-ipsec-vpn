@@ -267,19 +267,24 @@ release_bonjour_lock() {
 
 capture_service_state() {
   if [ -f "$BONJOUR_CONFIG_STATE" ]; then
-    # Preserve the pre-feature state across reconfiguration and upgrades.
+    # Preserve a complete pre-feature state across reconfiguration. Older
+    # state files did not record service ownership, so missing fields must not
+    # be interpreted as "originally disabled" during an upgrade.
     # shellcheck disable=SC1090
     . "$BONJOUR_CONFIG_STATE"
-    DNSMASQ_WAS_INSTALLED=${DNSMASQ_WAS_INSTALLED_SAVED:-0}
-    DNSMASQ_WAS_ENABLED=${DNSMASQ_WAS_ENABLED_SAVED:-0}
-    DNSMASQ_WAS_ACTIVE=${DNSMASQ_WAS_ACTIVE_SAVED:-0}
-    AVAHI_WAS_ENABLED=${AVAHI_WAS_ENABLED_SAVED:-0}
-    AVAHI_WAS_ACTIVE=${AVAHI_WAS_ACTIVE_SAVED:-0}
-    DBUS_WAS_ENABLED=${DBUS_WAS_ENABLED_SAVED:-0}
-    DBUS_WAS_ACTIVE=${DBUS_WAS_ACTIVE_SAVED:-0}
-    AVAHI_SOCKET_WAS_ENABLED=${AVAHI_SOCKET_WAS_ENABLED_SAVED:-0}
-    AVAHI_SOCKET_WAS_ACTIVE=${AVAHI_SOCKET_WAS_ACTIVE_SAVED:-0}
-    return
+    if [ "${SERVICE_STATE_VERSION_SAVED:-0}" = 2 ]; then
+      DNSMASQ_WAS_INSTALLED=${DNSMASQ_WAS_INSTALLED_SAVED:-0}
+      DNSMASQ_WAS_ENABLED=${DNSMASQ_WAS_ENABLED_SAVED:-0}
+      DNSMASQ_WAS_ACTIVE=${DNSMASQ_WAS_ACTIVE_SAVED:-0}
+      AVAHI_WAS_ENABLED=${AVAHI_WAS_ENABLED_SAVED:-0}
+      AVAHI_WAS_ACTIVE=${AVAHI_WAS_ACTIVE_SAVED:-0}
+      DBUS_WAS_ENABLED=${DBUS_WAS_ENABLED_SAVED:-0}
+      DBUS_WAS_ACTIVE=${DBUS_WAS_ACTIVE_SAVED:-0}
+      AVAHI_SOCKET_WAS_ENABLED=${AVAHI_SOCKET_WAS_ENABLED_SAVED:-0}
+      AVAHI_SOCKET_WAS_ACTIVE=${AVAHI_SOCKET_WAS_ACTIVE_SAVED:-0}
+      return
+    fi
+    echo "Note: legacy Bonjour state has no complete service-ownership record; preserving current service state."
   fi
   DNSMASQ_WAS_INSTALLED=0
   DNSMASQ_WAS_ENABLED=0

@@ -106,6 +106,46 @@ remove_legacy_ipv6_runtime
   || fail "legacy IPv6 sync binary was not removed"
 pass_count=$((pass_count + 1))
 
+SERVICE_STATE_DIR="$TEST_DIR/service-state"
+mkdir -p "$SERVICE_STATE_DIR"
+(
+  BONJOUR_CONFIG_STATE="$SERVICE_STATE_DIR/config"
+  printf "VPN_SUBNET_SAVED='10.2.0.0/16'\n" > "$BONJOUR_CONFIG_STATE"
+  dnsmasq() { :; }
+  systemctl() {
+    case "$1" in
+      is-enabled|is-active) return 0 ;;
+    esac
+    return 1
+  }
+  capture_service_state >/dev/null
+  for captured in DNSMASQ_WAS_INSTALLED DNSMASQ_WAS_ENABLED DNSMASQ_WAS_ACTIVE \
+    AVAHI_WAS_ENABLED AVAHI_WAS_ACTIVE DBUS_WAS_ENABLED DBUS_WAS_ACTIVE \
+    AVAHI_SOCKET_WAS_ENABLED AVAHI_SOCKET_WAS_ACTIVE; do
+    [ "${!captured}" = 1 ] || fail "legacy state did not capture current service ownership: $captured"
+  done
+
+  cat > "$BONJOUR_CONFIG_STATE" <<'EOF'
+SERVICE_STATE_VERSION_SAVED='2'
+DNSMASQ_WAS_INSTALLED_SAVED='0'
+DNSMASQ_WAS_ENABLED_SAVED='0'
+DNSMASQ_WAS_ACTIVE_SAVED='0'
+AVAHI_WAS_ENABLED_SAVED='0'
+AVAHI_WAS_ACTIVE_SAVED='0'
+DBUS_WAS_ENABLED_SAVED='0'
+DBUS_WAS_ACTIVE_SAVED='0'
+AVAHI_SOCKET_WAS_ENABLED_SAVED='0'
+AVAHI_SOCKET_WAS_ACTIVE_SAVED='0'
+EOF
+  capture_service_state
+  for captured in DNSMASQ_WAS_INSTALLED DNSMASQ_WAS_ENABLED DNSMASQ_WAS_ACTIVE \
+    AVAHI_WAS_ENABLED AVAHI_WAS_ACTIVE DBUS_WAS_ENABLED DBUS_WAS_ACTIVE \
+    AVAHI_SOCKET_WAS_ENABLED AVAHI_SOCKET_WAS_ACTIVE; do
+    [ "${!captured}" = 0 ] || fail "versioned state was not preserved: $captured"
+  done
+)
+pass_count=$((pass_count + 2))
+
 PACKAGE_TEST_DIR="$TEST_DIR/packages"
 PACKAGE_MOCK_BIN="$PACKAGE_TEST_DIR/bin"
 PACKAGE_CALL_LOG="$PACKAGE_TEST_DIR/calls.log"
