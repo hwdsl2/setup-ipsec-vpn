@@ -76,21 +76,64 @@ EOF
     printf '%s\n' \
       '1: lo    inet 127.0.0.1/8 scope host lo' \
       '1: lo    inet 10.2.0.1/32 scope global lo' \
+      '1: lo    inet 10.2.0.2/32 scope global lo' \
+      '1: lo    inet 10.2.0.10/32 scope global lo' \
       '1: lo    inet 10.1.0.1/32 scope global lo'
   }
   iptables() {
-    [ "$*" = '-t nat -C PREROUTING -s 10.2.0.0/16 -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination 10.2.0.1:53' ]
+    case "$*" in
+      '-t nat -C PREROUTING -s 10.2.0.0/16 -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination 10.2.0.1:53') return 0 ;;
+      '-t nat -C PREROUTING -s 10.2.0.0/16 -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination 10.2.0.2:53') [ "${MOCK_SECOND_DNAT:-0}" = 1 ]; return ;;
+      *) return 1 ;;
+    esac
   }
   assert_eq "$(discover_legacy_vpn_dns_ip '10.2.0.0/16' \
     '10.2.0.10-10.2.254.254')" '10.2.0.1' \
     'unversioned legacy endpoint safely reused'
+  printf '%s\n' 'listen-address=10.2.0.1' \
+    >> "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  assert_eq "$(discover_legacy_vpn_dns_ip '10.2.0.0/16' \
+    '10.2.0.10-10.2.254.254')" '10.2.0.1' \
+    'duplicate legacy listener safely deduplicated'
   sed -i.bonjour-test '/# Added by enable_bonjour.sh/d' \
     "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
   rm -f "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf.bonjour-test"
   assert_fails 'unmarked legacy endpoint rejected' discover_legacy_vpn_dns_ip \
     '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  printf '%s\n' '# Added by enable_bonjour.sh' 'listen-address=10.2.0.1' \
+    > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  mkdir -p "$(dirname "$BONJOUR_CONFIG_STATE")"
+  : > "$BONJOUR_CONFIG_STATE"
+  assert_fails 'versioned state bypasses legacy discovery' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  rm -f "$BONJOUR_CONFIG_STATE"
+  mv "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf" \
+    "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf.real"
+  ln -s bonjour-vpn.conf.real "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  assert_fails 'symlinked legacy config rejected' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  rm -f "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  mv "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf.real" \
+    "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  printf '%s\n' '# Added by enable_bonjour.sh' 'listen-address=10.2.0.10' \
+    > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  assert_fails 'pool member rejected as legacy endpoint' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  printf '%s\n' '# Added by enable_bonjour.sh' 'listen-address=10.2.0.3' \
+    > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  assert_fails 'non-loopback legacy endpoint rejected' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  printf '%s\n' '# Added by enable_bonjour.sh' 'listen-address=10.2.0.2' \
+    > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  assert_fails 'DNAT mismatch rejected as legacy endpoint' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+  printf '%s\n' '# Added by enable_bonjour.sh' 'listen-address=10.2.0.1,10.2.0.2' \
+    > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  MOCK_SECOND_DNAT=1
+  assert_fails 'ambiguous legacy endpoints rejected' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
 )
-pass_count=$((pass_count + 2))
+pass_count=$((pass_count + 9))
 
 assert_eq "$(canonical_ipv6 'fd12:3456::1')" \
   'fd12:3456:0000:0000:0000:0000:0000:0001' "IPv6 canonical expansion"

@@ -411,6 +411,7 @@ discover_legacy_vpn_dns_ip() {
     iptables -t nat -C PREROUTING -s "$cidr" -d 224.0.0.251 \
       -p udp --dport 5353 -j DNAT --to-destination "${candidate}:53" \
       2>/dev/null || continue
+    [ "$candidate" = "$selected" ] && continue
     selected=$candidate
     matches=$((matches + 1))
   done <<EOF
