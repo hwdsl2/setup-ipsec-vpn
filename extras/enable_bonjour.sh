@@ -21,12 +21,14 @@
 # know how you have improved it!
 
 export PATH="${BONJOUR_VPN_PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}"
+BONJOUR_VPN_ROOT="${BONJOUR_VPN_ROOT:-}"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 bigecho()  { echo "## $1"; }
 
 BONJOUR_STATE_DIR="/var/lib/bonjour-vpn"
 BONJOUR_CONFIG_STATE="${BONJOUR_STATE_DIR}/config"
+BONJOUR_INCOMPLETE_STATE="${BONJOUR_STATE_DIR}/incomplete"
 BONJOUR_LOCK_FILE="/run/bonjour-vpn.lock"
 FIREWALL_TX_DIR=""
 FIREWALL_PERSIST_FILE=""
@@ -39,11 +41,68 @@ IPV6_FIREWALL_LOADER_NEEDS_UPDATE=0
 IPV6_FIREWALL_LOADER_CANDIDATE=""
 DNSMASQ_INSTALL_TEST_DIR=""
 DNSMASQ_VPN_CANDIDATE=""
+RESOLVE_SCRIPT_CANDIDATE=""
+WATCHER_SCRIPT_CANDIDATE=""
+RECONFIGURE_CONFIRMED=0
+FIREWALL_PERSIST6_FILE_WAS_PRESENT=""
+FIREWALL_PERSIST6_FILE2_WAS_PRESENT=""
 
 conf_bk_bonjour() {
   if [ -f "$1" ] && [ ! -f "$1.bak.bonjour-vpn" ]; then
-    /bin/cp -f "$1" "$1.bak.bonjour-vpn"
+    /bin/cp -p "$1" "$1.bak.bonjour-vpn" \
+      || exiterr "Could not back up $1."
   fi
+}
+
+append_before_terminal_exit() {
+  # Append one managed rc.local line immediately before only the final,
+  # effective "exit 0". Earlier exits may be deliberate control flow and
+  # must never be deleted or duplicated.
+  local target="$1" managed_line="$2" candidate
+  candidate=$(mktemp) || exiterr "Could not create an rc.local candidate."
+  awk -v managed_line="$managed_line" '
+    { content[NR]=$0 }
+    END {
+      last=NR
+      while (last > 0 && content[last] ~ /^[[:space:]]*(#.*)?$/) last--
+      terminal=(last > 0 && content[last] ~ /^[[:space:]]*exit[[:space:]]+0([[:space:]]*(#.*)?)?$/)
+      for (line=1; line<=NR; line++) {
+        if (terminal && line == last) print managed_line
+        print content[line]
+      }
+      if (!terminal) print managed_line
+    }
+  ' "$target" > "$candidate" \
+    || { /bin/rm -f "$candidate"; exiterr "Could not prepare the rc.local update."; }
+  /bin/cp "$candidate" "$target" \
+    || { /bin/rm -f "$candidate"; exiterr "Could not update $target."; }
+  /bin/rm -f "$candidate"
+}
+
+ensure_rc_local_managed_line() {
+  local target="$1" managed_line="$2"
+  [ -f "$target" ] || return 1
+  if ! grep -qs "# Added by enable_bonjour.sh" "$target"; then
+    conf_bk_bonjour "$target"
+    append_before_terminal_exit "$target" \
+      "# Added by enable_bonjour.sh - Bonjour/mDNS VPN support"
+  fi
+  if ! grep -Fxq "$managed_line" "$target"; then
+    append_before_terminal_exit "$target" "$managed_line"
+  fi
+}
+
+install_cache_warmer_cron() {
+  local cron_line="$1" legacy_line="* * * * * /usr/local/bin/bonjour-vpn-resolve" current
+  current=$(crontab -l 2>/dev/null || true)
+  {
+    if [ -n "$current" ]; then
+      printf '%s\n' "$current" \
+        | awk -v wanted="$cron_line" -v legacy="$legacy_line" \
+          '$0 != wanted && $0 != legacy'
+    fi
+    printf '%s\n' "$cron_line"
+  } | crontab -
 }
 
 check_ip() {
@@ -68,6 +127,125 @@ check_ip6() {
       if ((compressed == 0 && used != 8) || (compressed == 1 && used >= 8)) exit 1
     }
   '
+}
+
+canonical_ipv6() {
+  local input
+  input=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+  check_ip6 "$input" || return 1
+  printf '%s\n' "$input" | awk '
+    function padded(value) { return substr("0000" value, length(value) + 1) }
+    {
+      compressed=index($0, "::")
+      if (compressed) {
+        left=substr($0, 1, compressed - 1)
+        right=substr($0, compressed + 2)
+        left_count=(left == "" ? 0 : split(left, left_part, ":"))
+        right_count=(right == "" ? 0 : split(right, right_part, ":"))
+        zeros=8-left_count-right_count
+        output=""
+        for (i=1; i<=left_count; i++) output=output (output == "" ? "" : ":") padded(left_part[i])
+        for (i=1; i<=zeros; i++) output=output (output == "" ? "" : ":") "0000"
+        for (i=1; i<=right_count; i++) output=output (output == "" ? "" : ":") padded(right_part[i])
+      } else {
+        count=split($0, part, ":")
+        output=""
+        for (i=1; i<=count; i++) output=output (output == "" ? "" : ":") padded(part[i])
+      }
+      print output
+    }
+  '
+}
+
+ipv6_in_pool() {
+  local pool="$1" address="$2" start end candidate prefix
+  start=$(canonical_ipv6 "${pool%-*}") || return 1
+  end=$(canonical_ipv6 "${pool#*-}") || return 1
+  candidate=$(canonical_ipv6 "$address") || return 1
+  prefix=${start%:*:*:*:*}
+  [ "${end%:*:*:*:*}" = "$prefix" ] \
+    && [ "${candidate%:*:*:*:*}" = "$prefix" ] || return 1
+  [[ "$start" > "$end" ]] && return 1
+  [[ "$candidate" < "$start" || "$candidate" > "$end" ]] && return 1
+  return 0
+}
+
+ipv6_in_subnet64() {
+  local address subnet_address canonical_address canonical_subnet
+  address="$1"
+  subnet_address=${2%/64}
+  canonical_address=$(canonical_ipv6 "$address") || return 1
+  canonical_subnet=$(canonical_ipv6 "$subnet_address") || return 1
+  [ "${canonical_address%:*:*:*:*}" = "${canonical_subnet%:*:*:*:*}" ]
+}
+
+select_vpn_dns_ipv6() {
+  local subnet="$1" pool="$2" previous="${3:-}" subnet_base value candidate
+  local pool_start pool_end pool_end_suffix pool_end_value
+  pool_start=$(canonical_ipv6 "${pool%-*}") || return 1
+  pool_end=$(canonical_ipv6 "${pool#*-}") || return 1
+  [[ "$pool_start" > "$pool_end" ]] && return 1
+  ipv6_in_subnet64 "${pool%-*}" "$subnet" \
+    && ipv6_in_subnet64 "${pool#*-}" "$subnet" || return 1
+  if [ -n "$previous" ] && ipv6_in_subnet64 "$previous" "$subnet" \
+    && ! ipv6_in_pool "$pool" "$previous"; then
+    printf '%s\n' "$previous"
+    return 0
+  fi
+  subnet_base=${subnet%/64}
+  printf '%s' "$subnet_base" | grep -q '::$' || return 1
+  # Prefer ::1. If a custom pool includes it and ends in the first 16-bit
+  # host word, try the first address after that pool. Finally try the top of
+  # the /64, which avoids an expensive or lossy 64-bit shell counter.
+  candidate="${subnet_base}1"
+  if ipv6_dns_candidate_available "$pool" "$candidate"; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+  pool_end_suffix=${pool_end#*:*:*:*:}
+  if [[ "$pool_end_suffix" == 0000:0000:0000:* ]]; then
+    pool_end_value=$((16#${pool_end##*:}))
+    if [ "$pool_end_value" -lt 65535 ]; then
+      value=$((pool_end_value + 1))
+      printf -v candidate '%s%x' "$subnet_base" "$value"
+      if ipv6_dns_candidate_available "$pool" "$candidate"; then
+        printf '%s\n' "$candidate"
+        return 0
+      fi
+    fi
+  fi
+  candidate="${subnet_base}ffff:ffff:ffff:ffff"
+  if ipv6_dns_candidate_available "$pool" "$candidate"; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+  return 1
+}
+
+ipv6_dns_candidate_available() {
+  local pool="$1" candidate="$2"
+  ! ipv6_in_pool "$pool" "$candidate" \
+    && ! ipv6_address_exists "$candidate"
+}
+
+ipv6_address_exists() {
+  local address="$1" device="${2:-}" wanted assigned assigned_canonical addresses
+  wanted=$(canonical_ipv6 "$address") || return 1
+  if [ -n "$device" ]; then
+    addresses=$(ip -6 -o addr show dev "$device" 2>/dev/null \
+      | awk '$3 == "inet6" { split($4, value, "/"); print value[1] }')
+  else
+    addresses=$(ip -6 -o addr show 2>/dev/null \
+      | awk '$3 == "inet6" { split($4, value, "/"); print value[1] }')
+  fi
+  while IFS= read -r assigned; do
+    [ -n "$assigned" ] || continue
+    assigned_canonical=$(canonical_ipv6 "$assigned") || continue
+    [ "$assigned_canonical" = "$wanted" ] && return 0
+  done <<EOF
+$addresses
+EOF
+  return 1
 }
 
 check_cidr() {
@@ -210,18 +388,38 @@ select_vpn_dns_ip() {
 load_saved_config() {
   SAVED_VPN_SUBNET=""
   SAVED_VPN_SERVER_IP=""
+  SAVED_L2TP_SUBNET=""
+  SAVED_L2TP_SERVER_IP=""
   SAVED_HAS_IPV6=0
   SAVED_VPN_SUBNET_IPV6=""
   SAVED_VPN_SERVER_IP_IPV6=""
+  SAVED_VPN_SERVER_IP_WAS_PRESENT=""
+  SAVED_L2TP_SERVER_IP_WAS_PRESENT=""
+  SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT=""
+  SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=""
+  SAVED_UPSTREAM_DNS1=""
+  SAVED_UPSTREAM_DNS2=""
+  SAVED_FIREWALL_PERSIST6_FILE_WAS_PRESENT=""
+  SAVED_FIREWALL_PERSIST6_FILE2_WAS_PRESENT=""
   if [ -f "$BONJOUR_CONFIG_STATE" ]; then
     # This file is created root-only by this script and contains no credentials.
     # shellcheck disable=SC1090
     . "$BONJOUR_CONFIG_STATE"
     SAVED_VPN_SUBNET=${VPN_SUBNET_SAVED:-}
     SAVED_VPN_SERVER_IP=${VPN_SERVER_IP_SAVED:-}
+    SAVED_L2TP_SUBNET=${L2TP_SUBNET_SAVED:-}
+    SAVED_L2TP_SERVER_IP=${L2TP_SERVER_IP_SAVED:-}
     SAVED_HAS_IPV6=${HAS_IPV6_SAVED:-0}
     SAVED_VPN_SUBNET_IPV6=${VPN_SUBNET_IPV6_SAVED:-}
     SAVED_VPN_SERVER_IP_IPV6=${VPN_SERVER_IP_IPV6_SAVED:-}
+    SAVED_VPN_SERVER_IP_WAS_PRESENT=${VPN_SERVER_IP_WAS_PRESENT_SAVED:-}
+    SAVED_L2TP_SERVER_IP_WAS_PRESENT=${L2TP_SERVER_IP_WAS_PRESENT_SAVED:-}
+    SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT=${VPN_SERVER_IP_IPV6_WAS_PRESENT_SAVED:-}
+    SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=${VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT_SAVED:-}
+    SAVED_UPSTREAM_DNS1=${UPSTREAM_DNS1_SAVED:-}
+    SAVED_UPSTREAM_DNS2=${UPSTREAM_DNS2_SAVED:-}
+    SAVED_FIREWALL_PERSIST6_FILE_WAS_PRESENT=${FIREWALL_PERSIST6_FILE_WAS_PRESENT_SAVED:-}
+    SAVED_FIREWALL_PERSIST6_FILE2_WAS_PRESENT=${FIREWALL_PERSIST6_FILE2_WAS_PRESENT_SAVED:-}
   fi
   if [ "$SAVED_HAS_IPV6" != 1 ] \
     && [ -f "$BONJOUR_STATE_DIR/ipv6-state" ]; then
@@ -235,6 +433,80 @@ load_saved_config() {
   fi
 }
 
+loopback_has_ipv4() {
+  local address="$1"
+  [ -n "$address" ] || return 1
+  ip -4 -o addr show dev lo 2>/dev/null \
+    | awk -v wanted="$address" '$3 == "inet" { split($4, value, "/"); if (value[1] == wanted) found=1 } END { exit !found }'
+}
+
+loopback_has_ipv6() {
+  local address="$1"
+  [ -n "$address" ] || return 1
+  ipv6_address_exists "$address" lo
+}
+
+ipv6_subnet_route_exists() {
+  local subnet="$1"
+  [ -n "$subnet" ] || return 1
+  [ -n "$(ip -6 route show exact "$subnet" 2>/dev/null)" ]
+}
+
+normalize_saved_address_ownership() {
+  # Older state did not prove whether a live address or route pre-dated this
+  # feature. Preserve runtime objects conservatively. Exact feature boot lines
+  # remain separately identifiable and removable during disable.
+  if [ -n "$SAVED_VPN_SERVER_IP" ] && [ -z "$SAVED_VPN_SERVER_IP_WAS_PRESENT" ]; then
+    SAVED_VPN_SERVER_IP_WAS_PRESENT=1
+  fi
+  if [ -n "$SAVED_L2TP_SERVER_IP" ] && [ -z "$SAVED_L2TP_SERVER_IP_WAS_PRESENT" ]; then
+    SAVED_L2TP_SERVER_IP_WAS_PRESENT=1
+  fi
+  if [ -n "$SAVED_VPN_SERVER_IP_IPV6" ] \
+    && [ -z "$SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT" ]; then
+    SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT=1
+  fi
+  if [ -n "$SAVED_VPN_SUBNET_IPV6" ] \
+    && [ -z "$SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT" ]; then
+    SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=1
+  fi
+}
+
+capture_address_ownership() {
+  normalize_saved_address_ownership
+  if [ -n "$VPN_SERVER_IP" ] && [ "$VPN_SERVER_IP" = "$SAVED_VPN_SERVER_IP" ]; then
+    VPN_SERVER_IP_WAS_PRESENT=${SAVED_VPN_SERVER_IP_WAS_PRESENT:-1}
+  elif loopback_has_ipv4 "$VPN_SERVER_IP"; then
+    VPN_SERVER_IP_WAS_PRESENT=1
+  else
+    VPN_SERVER_IP_WAS_PRESENT=0
+  fi
+  if [ -n "$L2TP_SERVER_IP" ] && [ "$L2TP_SERVER_IP" = "$SAVED_L2TP_SERVER_IP" ]; then
+    L2TP_SERVER_IP_WAS_PRESENT=${SAVED_L2TP_SERVER_IP_WAS_PRESENT:-1}
+  elif loopback_has_ipv4 "$L2TP_SERVER_IP"; then
+    L2TP_SERVER_IP_WAS_PRESENT=1
+  else
+    L2TP_SERVER_IP_WAS_PRESENT=0
+  fi
+  if [ -n "$VPN_SERVER_IP_IPV6" ] \
+    && [ "$VPN_SERVER_IP_IPV6" = "$SAVED_VPN_SERVER_IP_IPV6" ]; then
+    VPN_SERVER_IP_IPV6_WAS_PRESENT=${SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT:-1}
+  elif loopback_has_ipv6 "$VPN_SERVER_IP_IPV6"; then
+    VPN_SERVER_IP_IPV6_WAS_PRESENT=1
+  else
+    VPN_SERVER_IP_IPV6_WAS_PRESENT=0
+  fi
+  if [ -n "$VPN_SUBNET_IPV6" ] \
+    && [ "$VPN_SUBNET_IPV6" = "$SAVED_VPN_SUBNET_IPV6" ] \
+    && [ -n "$SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT" ]; then
+    VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=$SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT
+  elif ipv6_subnet_route_exists "$VPN_SUBNET_IPV6"; then
+    VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=1
+  else
+    VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT=0
+  fi
+}
+
 acquire_bonjour_lock() {
   local old_umask
   command -v flock >/dev/null 2>&1 \
@@ -244,6 +516,7 @@ acquire_bonjour_lock() {
   exec 9>"$BONJOUR_LOCK_FILE"
   umask "$old_umask"
   flock -w 30 9 || exiterr "Timed out waiting for another Bonjour VPN operation."
+  LOCK_ACQUIRED=1
   trap cleanup_bonjour_operation EXIT
   trap 'cleanup_bonjour_operation; exit 1' HUP INT TERM
 }
@@ -254,15 +527,21 @@ cleanup_bonjour_operation() {
   fi
   [ -n "$DNSMASQ_INSTALL_TEST_DIR" ] && /bin/rm -rf "$DNSMASQ_INSTALL_TEST_DIR"
   [ -n "$DNSMASQ_VPN_CANDIDATE" ] && /bin/rm -f "$DNSMASQ_VPN_CANDIDATE"
+  [ -n "$RESOLVE_SCRIPT_CANDIDATE" ] && /bin/rm -f "$RESOLVE_SCRIPT_CANDIDATE"
+  [ -n "$WATCHER_SCRIPT_CANDIDATE" ] && /bin/rm -f "$WATCHER_SCRIPT_CANDIDATE"
   [ -n "$IPV6_FIREWALL_LOADER_CANDIDATE" ] \
     && /bin/rm -f "$IPV6_FIREWALL_LOADER_CANDIDATE"
-  /bin/rm -f "$BONJOUR_STATE_DIR/.config.candidate"
+  /bin/rm -f "$BONJOUR_STATE_DIR/.config.candidate" \
+    "$BONJOUR_STATE_DIR/.incomplete.candidate"
   release_bonjour_lock
 }
 
 release_bonjour_lock() {
-  flock -u 9 2>/dev/null || true
+  if [ "${LOCK_ACQUIRED:-0}" = 1 ]; then
+    flock -u 9 2>/dev/null || true
+  fi
   exec 9>&- 2>/dev/null || true
+  LOCK_ACQUIRED=0
 }
 
 capture_service_state() {
@@ -272,7 +551,8 @@ capture_service_state() {
     # be interpreted as "originally disabled" during an upgrade.
     # shellcheck disable=SC1090
     . "$BONJOUR_CONFIG_STATE"
-    if [ "${SERVICE_STATE_VERSION_SAVED:-0}" = 2 ]; then
+    if [ "${SERVICE_STATE_VERSION_SAVED:-0}" = 2 ] \
+      || [ "${SERVICE_STATE_VERSION_SAVED:-0}" = 3 ]; then
       DNSMASQ_WAS_INSTALLED=${DNSMASQ_WAS_INSTALLED_SAVED:-0}
       DNSMASQ_WAS_ENABLED=${DNSMASQ_WAS_ENABLED_SAVED:-0}
       DNSMASQ_WAS_ACTIVE=${DNSMASQ_WAS_ACTIVE_SAVED:-0}
@@ -296,7 +576,7 @@ capture_service_state() {
   AVAHI_SOCKET_WAS_ENABLED=0
   AVAHI_SOCKET_WAS_ACTIVE=0
   command -v dnsmasq >/dev/null 2>&1 && DNSMASQ_WAS_INSTALLED=1
-  if command -v systemctl >/dev/null 2>&1; then
+  if [ "${os_type:-}" != alpine ] && command -v systemctl >/dev/null 2>&1; then
     systemctl is-enabled --quiet dnsmasq.service 2>/dev/null && DNSMASQ_WAS_ENABLED=1
     systemctl is-active --quiet dnsmasq.service 2>/dev/null && DNSMASQ_WAS_ACTIVE=1
     systemctl is-enabled --quiet avahi-daemon.service 2>/dev/null && AVAHI_WAS_ENABLED=1
@@ -317,41 +597,74 @@ capture_service_state() {
   fi
 }
 
+write_recovery_state_fields() {
+  printf "VPN_SUBNET_SAVED='%s'\n" "${VPN_SUBNET:-}"
+  printf "VPN_POOL_SAVED='%s'\n" "${VPN_POOL:-}"
+  printf "VPN_SERVER_IP_SAVED='%s'\n" "${VPN_SERVER_IP:-}"
+  printf "VPN_SERVER_IP_WAS_PRESENT_SAVED='%s'\n" "${VPN_SERVER_IP_WAS_PRESENT:-1}"
+  printf "L2TP_SUBNET_SAVED='%s'\n" "${L2TP_SUBNET:-}"
+  printf "L2TP_POOL_SAVED='%s'\n" "${L2TP_POOL_LINE:-}"
+  printf "L2TP_SERVER_IP_SAVED='%s'\n" "${L2TP_SERVER_IP:-}"
+  printf "L2TP_SERVER_IP_WAS_PRESENT_SAVED='%s'\n" "${L2TP_SERVER_IP_WAS_PRESENT:-1}"
+  printf "HAS_IKEV2_SAVED='%s'\n" "${HAS_IKEV2:-0}"
+  printf "HAS_XAUTH_SAVED='%s'\n" "${HAS_XAUTH:-0}"
+  printf "HAS_L2TP_SAVED='%s'\n" "${HAS_L2TP:-0}"
+  printf "HAS_IPV6_SAVED='%s'\n" "${HAS_IPV6:-0}"
+  printf "VPN_POOL_IPV6_SAVED='%s'\n" "${VPN_POOL_IPV6:-}"
+  printf "VPN_SUBNET_IPV6_SAVED='%s'\n" "${VPN_SUBNET_IPV6:-}"
+  printf "VPN_SERVER_IP_IPV6_SAVED='%s'\n" "${VPN_SERVER_IP_IPV6:-}"
+  printf "VPN_SERVER_IP_IPV6_WAS_PRESENT_SAVED='%s'\n" "${VPN_SERVER_IP_IPV6_WAS_PRESENT:-1}"
+  printf "VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT_SAVED='%s'\n" "${VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT:-1}"
+  printf "UPSTREAM_DNS1_SAVED='%s'\n" "${UPSTREAM_DNS1:-}"
+  printf "UPSTREAM_DNS2_SAVED='%s'\n" "${UPSTREAM_DNS2:-}"
+  printf "DNSMASQ_WAS_INSTALLED_SAVED='%s'\n" "$DNSMASQ_WAS_INSTALLED"
+  printf "DNSMASQ_WAS_ENABLED_SAVED='%s'\n" "$DNSMASQ_WAS_ENABLED"
+  printf "DNSMASQ_WAS_ACTIVE_SAVED='%s'\n" "$DNSMASQ_WAS_ACTIVE"
+  printf "AVAHI_WAS_ENABLED_SAVED='%s'\n" "$AVAHI_WAS_ENABLED"
+  printf "AVAHI_WAS_ACTIVE_SAVED='%s'\n" "$AVAHI_WAS_ACTIVE"
+  printf "DBUS_WAS_ENABLED_SAVED='%s'\n" "$DBUS_WAS_ENABLED"
+  printf "DBUS_WAS_ACTIVE_SAVED='%s'\n" "$DBUS_WAS_ACTIVE"
+  printf "AVAHI_SOCKET_WAS_ENABLED_SAVED='%s'\n" "$AVAHI_SOCKET_WAS_ENABLED"
+  printf "AVAHI_SOCKET_WAS_ACTIVE_SAVED='%s'\n" "$AVAHI_SOCKET_WAS_ACTIVE"
+  printf "SERVICE_STATE_VERSION_SAVED='3'\n"
+  printf "FIREWALL_PERSIST6_FILE_WAS_PRESENT_SAVED='%s'\n" \
+    "${FIREWALL_PERSIST6_FILE_WAS_PRESENT:-1}"
+  printf "FIREWALL_PERSIST6_FILE2_WAS_PRESENT_SAVED='%s'\n" \
+    "${FIREWALL_PERSIST6_FILE2_WAS_PRESENT:-1}"
+}
+
+save_incomplete_state() {
+  local candidate="${BONJOUR_STATE_DIR}/.incomplete.candidate" old_umask
+  install -d -m 700 "$BONJOUR_STATE_DIR" \
+    || exiterr "Could not create the Bonjour VPN state directory."
+  old_umask=$(umask)
+  umask 077
+  {
+    echo "# Incomplete enable operation; contains no credentials."
+    write_recovery_state_fields
+  } > "$candidate" \
+    || { umask "$old_umask"; exiterr "Could not write the Bonjour VPN recovery state."; }
+  chmod 600 "$candidate" \
+    || { umask "$old_umask"; exiterr "Could not secure the Bonjour VPN recovery state."; }
+  mv -f "$candidate" "$BONJOUR_INCOMPLETE_STATE" \
+    || { umask "$old_umask"; exiterr "Could not install the Bonjour VPN recovery state."; }
+  umask "$old_umask"
+}
+
 save_config_state() {
-  local candidate="${BONJOUR_STATE_DIR}/.config.candidate" managed_file managed_key managed_hash old_umask
+  local candidate="${BONJOUR_STATE_DIR}/.config.candidate" managed_path managed_file managed_key managed_hash old_umask
   install -d -m 700 "$BONJOUR_STATE_DIR"
   old_umask=$(umask)
   umask 077
   {
     echo "# Generated by enable_bonjour.sh; contains no credentials."
-    printf "VPN_SUBNET_SAVED='%s'\n" "$VPN_SUBNET"
-    printf "VPN_POOL_SAVED='%s'\n" "$VPN_POOL"
-    printf "VPN_SERVER_IP_SAVED='%s'\n" "$VPN_SERVER_IP"
-    printf "L2TP_SUBNET_SAVED='%s'\n" "${L2TP_SUBNET:-}"
-    printf "L2TP_POOL_SAVED='%s'\n" "${L2TP_POOL_LINE:-}"
-    printf "L2TP_SERVER_IP_SAVED='%s'\n" "${L2TP_SERVER_IP:-}"
-    printf "HAS_IKEV2_SAVED='%s'\n" "$HAS_IKEV2"
-    printf "HAS_XAUTH_SAVED='%s'\n" "$HAS_XAUTH"
-    printf "HAS_L2TP_SAVED='%s'\n" "$HAS_L2TP"
-    printf "HAS_IPV6_SAVED='%s'\n" "$HAS_IPV6"
-    printf "VPN_POOL_IPV6_SAVED='%s'\n" "$VPN_POOL_IPV6"
-    printf "VPN_SUBNET_IPV6_SAVED='%s'\n" "$VPN_SUBNET_IPV6"
-    printf "VPN_SERVER_IP_IPV6_SAVED='%s'\n" "$VPN_SERVER_IP_IPV6"
-    printf "DNSMASQ_WAS_INSTALLED_SAVED='%s'\n" "$DNSMASQ_WAS_INSTALLED"
-    printf "DNSMASQ_WAS_ENABLED_SAVED='%s'\n" "$DNSMASQ_WAS_ENABLED"
-    printf "DNSMASQ_WAS_ACTIVE_SAVED='%s'\n" "$DNSMASQ_WAS_ACTIVE"
-    printf "AVAHI_WAS_ENABLED_SAVED='%s'\n" "$AVAHI_WAS_ENABLED"
-    printf "AVAHI_WAS_ACTIVE_SAVED='%s'\n" "$AVAHI_WAS_ACTIVE"
-    printf "DBUS_WAS_ENABLED_SAVED='%s'\n" "$DBUS_WAS_ENABLED"
-    printf "DBUS_WAS_ACTIVE_SAVED='%s'\n" "$DBUS_WAS_ACTIVE"
-    printf "AVAHI_SOCKET_WAS_ENABLED_SAVED='%s'\n" "$AVAHI_SOCKET_WAS_ENABLED"
-    printf "AVAHI_SOCKET_WAS_ACTIVE_SAVED='%s'\n" "$AVAHI_SOCKET_WAS_ACTIVE"
-    printf "SERVICE_STATE_VERSION_SAVED='2'\n"
-    for managed_file in /etc/avahi/avahi-daemon.conf /etc/ipsec.d/ikev2.conf \
+    write_recovery_state_fields
+    for managed_path in /etc/avahi/avahi-daemon.conf /etc/ipsec.d/ikev2.conf \
       /etc/ipsec.conf /etc/ppp/options.xl2tpd /etc/nsswitch.conf \
       /etc/dnsmasq.conf /etc/rc.local /etc/network/if-pre-up.d/iptablesload; do
+      managed_file="${BONJOUR_VPN_ROOT}${managed_path}"
       [ -f "$managed_file.bak.bonjour-vpn" ] || continue
-      managed_key=$(printf '%s' "$managed_file" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]')
+      managed_key=$(printf '%s' "$managed_path" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]')
       managed_hash=$(sha256sum "$managed_file" | awk '{print $1}')
       printf "%s_MANAGED_HASH='%s'\n" "$managed_key" "$managed_hash"
     done
@@ -361,6 +674,8 @@ save_config_state() {
     || { umask "$old_umask"; exiterr "Could not secure the Bonjour VPN state candidate."; }
   mv -f "$candidate" "$BONJOUR_CONFIG_STATE" \
     || { umask "$old_umask"; exiterr "Could not install the Bonjour VPN state file."; }
+  /bin/rm -f "$BONJOUR_INCOMPLETE_STATE" \
+    || { umask "$old_umask"; exiterr "Could not retire the Bonjour VPN recovery state."; }
   umask "$old_umask"
 }
 
@@ -419,10 +734,10 @@ EOF
 }
 
 check_vpn_modes() {
-  IKEV2_CONF="/etc/ipsec.d/ikev2.conf"
-  IPSEC_CONF="/etc/ipsec.conf"
-  XL2TPD_CONF="/etc/xl2tpd/xl2tpd.conf"
-  PPP_OPTIONS="/etc/ppp/options.xl2tpd"
+  IKEV2_CONF="${BONJOUR_VPN_ROOT}/etc/ipsec.d/ikev2.conf"
+  IPSEC_CONF="${BONJOUR_VPN_ROOT}/etc/ipsec.conf"
+  XL2TPD_CONF="${BONJOUR_VPN_ROOT}/etc/xl2tpd/xl2tpd.conf"
+  PPP_OPTIONS="${BONJOUR_VPN_ROOT}/etc/ppp/options.xl2tpd"
   HAS_IKEV2=0
   HAS_XAUTH=0
   HAS_L2TP=0
@@ -455,12 +770,16 @@ check_ipsec_running() {
 }
 
 check_already_configured() {
+  if [ -f "$BONJOUR_INCOMPLETE_STATE" ]; then
+    exiterr "A previous Bonjour VPN enable did not complete. Run disable_bonjour.sh to recover before trying again."
+  fi
   if [ -f /etc/dnsmasq.d/bonjour-vpn.conf ]; then
     echo "Bonjour/mDNS for VPN is already configured on this server."
     printf '%s' "Do you want to reconfigure? [y/N] "
     read -r response
     case $response in
       [yY][eE][sS]|[yY])
+        RECONFIGURE_CONFIRMED=1
         echo
         ;;
       *)
@@ -469,6 +788,106 @@ check_already_configured() {
         ;;
     esac
   fi
+}
+
+configuration_fingerprint() {
+  local fingerprint_file
+  for fingerprint_file in "$IKEV2_CONF" "$IPSEC_CONF" "$XL2TPD_CONF" \
+    "$PPP_OPTIONS" "${BONJOUR_VPN_ROOT}/etc/avahi/avahi-daemon.conf" \
+    "${BONJOUR_VPN_ROOT}/etc/dnsmasq.conf" \
+    "${BONJOUR_VPN_ROOT}/etc/rc.local" \
+    "${BONJOUR_VPN_ROOT}/etc/network/if-pre-up.d/iptablesload"; do
+    if [ -f "$fingerprint_file" ]; then
+      sha256sum "$fingerprint_file"
+    else
+      printf 'absent  %s\n' "$fingerprint_file"
+    fi
+  done | sha256sum | awk '{print $1}'
+}
+
+revalidate_after_lock() {
+  local current_fingerprint
+  [ ! -f "$BONJOUR_INCOMPLETE_STATE" ] \
+    || exiterr "Another Bonjour VPN operation left an incomplete recovery marker. Run disable_bonjour.sh before trying again."
+  if [ -f "${BONJOUR_VPN_ROOT}/etc/dnsmasq.d/bonjour-vpn.conf" ] \
+    && [ "$RECONFIGURE_CONFIRMED" != 1 ]; then
+    exiterr "Bonjour VPN was configured by another operation while this run was waiting. Re-run the script to review it explicitly."
+  fi
+  current_fingerprint=$(configuration_fingerprint) \
+    || exiterr "Could not revalidate the preflight configuration."
+  [ "$current_fingerprint" = "$PREFLIGHT_CONFIG_FINGERPRINT" ] \
+    || exiterr "VPN or network configuration changed while waiting for the Bonjour VPN lock. Re-run the script to review the new state."
+  load_saved_config
+  check_reconfigure_drift
+  check_existing_dns
+  capture_firewall_persistence_ownership
+}
+
+rebase_ikev2_pool_backup() {
+  # A VPN administrator must be able to change the IKEv2 address pool and
+  # explicitly re-run this script. Prove that the pool is the only
+  # administrator-owned difference, then carry that line into the original
+  # backup so a later disable preserves the new VPN configuration.
+  local current="$1" backup="${1}.bak.bonjour-vpn"
+  local current_normalized backup_normalized candidate pool_line
+  [ -f "$current" ] && [ -f "$backup" ] || return 1
+  current_normalized=$(mktemp) || return 1
+  backup_normalized=$(mktemp) || { /bin/rm -f "$current_normalized"; return 1; }
+  sed -E \
+    -e '/^[[:space:]]*modecfgdns=/d' \
+    -e '/^[[:space:]]*modecfgdomains=/d' \
+    -e 's|^([[:space:]]*rightaddresspool=).*|\1<vpn-pool>|' \
+    "$current" > "$current_normalized" \
+    && sed -E \
+      -e '/^[[:space:]]*modecfgdns=/d' \
+      -e '/^[[:space:]]*modecfgdomains=/d' \
+      -e 's|^([[:space:]]*rightaddresspool=).*|\1<vpn-pool>|' \
+      "$backup" > "$backup_normalized" \
+    || { /bin/rm -f "$current_normalized" "$backup_normalized"; return 1; }
+  if ! cmp -s "$current_normalized" "$backup_normalized"; then
+    /bin/rm -f "$current_normalized" "$backup_normalized"
+    return 1
+  fi
+  /bin/rm -f "$current_normalized" "$backup_normalized"
+  pool_line=$(grep -m 1 '^[[:space:]]*rightaddresspool=' "$current")
+  [ -n "$pool_line" ] || return 1
+  candidate=$(mktemp) || return 1
+  awk -v replacement="$pool_line" '
+    !done && /^[[:space:]]*rightaddresspool=/ { print replacement; done=1; next }
+    { print }
+    END { if (!done) exit 1 }
+  ' "$backup" > "$candidate" \
+    || { /bin/rm -f "$candidate"; return 1; }
+  chmod --reference="$backup" "$candidate" 2>/dev/null || true
+  chown --reference="$backup" "$candidate" 2>/dev/null || true
+  /bin/cp "$candidate" "$backup" \
+    || { /bin/rm -f "$candidate"; return 1; }
+  /bin/rm -f "$candidate"
+  echo "Note: accepted an explicit IKEv2 address-pool change and updated the uninstall baseline."
+  return 0
+}
+
+check_reconfigure_drift() {
+  local managed_path file key expected actual root_dir="${BONJOUR_VPN_ROOT:-}"
+  [ -f "$BONJOUR_CONFIG_STATE" ] || return 0
+  for managed_path in /etc/avahi/avahi-daemon.conf /etc/ipsec.d/ikev2.conf \
+    /etc/ipsec.conf /etc/ppp/options.xl2tpd /etc/nsswitch.conf \
+    /etc/dnsmasq.conf /etc/rc.local /etc/network/if-pre-up.d/iptablesload; do
+    file="${root_dir}${managed_path}"
+    [ -f "$file.bak.bonjour-vpn" ] || continue
+    key=$(printf '%s' "$managed_path" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]')
+    expected=$(sed -n "s/^${key}_MANAGED_HASH='\([^']*\)'$/\1/p" \
+      "$BONJOUR_CONFIG_STATE" | head -n 1)
+    [ -n "$expected" ] || continue
+    actual=$(sha256sum "$file" 2>/dev/null | awk '{print $1}')
+    if [ "$actual" != "$expected" ]; then
+      if [ "$managed_path" = /etc/ipsec.d/ikev2.conf ] \
+        && rebase_ikev2_pool_backup "$file"; then
+        continue
+      fi
+      exiterr "Refusing to reconfigure because $file changed after Bonjour VPN was enabled. Disable Bonjour VPN before editing managed files, or reconcile the changes manually."
+    fi
+  done
 }
 
 check_existing_dns() {
@@ -490,16 +909,31 @@ check_existing_dns() {
     | grep -Eq '^(0\.0\.0\.0|\*):53$|^\[(::|\*)\]:53$|^:::53$'; then
     exiterr "A wildcard DNS listener is already using port 53. Configure it to use specific addresses before enabling Bonjour VPN."
   fi
-  for address in "$VPN_SERVER_IP" "$L2TP_SERVER_IP"; do
+  for address in "${VPN_SERVER_IP:-}" "${L2TP_SERVER_IP:-}"; do
     [ -n "$address" ] || continue
     if printf '%s\n' "$listeners" | grep -Fqx "${address}:53"; then
       exiterr "A DNS listener is already using the selected VPN DNS endpoint $address."
     fi
   done
   if [ -n "${VPN_SERVER_IP_IPV6:-}" ] \
-    && { printf '%s\n' "$listeners" | grep -Fqx "[${VPN_SERVER_IP_IPV6}]:53" \
-      || printf '%s\n' "$listeners" | grep -Fqx "${VPN_SERVER_IP_IPV6}:53"; }; then
-    exiterr "A DNS listener is already using the selected IPv6 VPN DNS endpoint $VPN_SERVER_IP_IPV6."
+    ; then
+    local listener_endpoint listener_address wanted_ipv6 listener_ipv6
+    wanted_ipv6=$(canonical_ipv6 "$VPN_SERVER_IP_IPV6") \
+      || exiterr "The selected IPv6 VPN DNS endpoint is invalid."
+    while IFS= read -r listener_endpoint; do
+      listener_address=${listener_endpoint%:53}
+      listener_address=${listener_address#\[}
+      listener_address=${listener_address%\]}
+      case "$listener_address" in
+        *:*)
+          listener_ipv6=$(canonical_ipv6 "$listener_address" 2>/dev/null || true)
+          [ -n "$listener_ipv6" ] && [ "$listener_ipv6" = "$wanted_ipv6" ] \
+            && exiterr "A DNS listener is already using the selected IPv6 VPN DNS endpoint $VPN_SERVER_IP_IPV6."
+          ;;
+      esac
+    done <<EOF
+$listeners
+EOF
   fi
   check_systemd_resolved
   if [ "$RESOLVED_ACTIVE" = 0 ] \
@@ -609,7 +1043,7 @@ detect_vpn_ipv6() {
   #   VPN_POOL_IPV6          - the raw IPv6 range (start-end)
   #   VPN_POOL_IPV6_START    - the first IP in the pool
   #   VPN_SUBNET_IPV6        - the /64 subnet (derived from pool prefix)
-  #   VPN_SERVER_IP_IPV6     - the server's IPv6 address (first ::1 in the subnet)
+  #   VPN_SERVER_IP_IPV6     - an unused server address outside the client pool
   #
   # Sets HAS_IPV6=1 if a valid IPv6 pool is found, otherwise HAS_IPV6=0.
   HAS_IPV6=0
@@ -648,14 +1082,56 @@ detect_vpn_ipv6() {
       if ! check_ip6 "$subnet_base"; then
         exiterr "The detected IPv6 VPN subnet is not a valid /64."
       fi
-      if printf '%s' "$subnet_base" | grep -q '::$'; then
-        VPN_SERVER_IP_IPV6="${subnet_base}1"
-      else
+      if ! printf '%s' "$subnet_base" | grep -q '::$'; then
         exiterr "The configured IPv6 VPN /64 must use the canonical ::/64 form."
       fi
+      PREVIOUS_DNS_IP_IPV6=""
+      [ "$SAVED_VPN_SUBNET_IPV6" = "$VPN_SUBNET_IPV6" ] \
+        && PREVIOUS_DNS_IP_IPV6="$SAVED_VPN_SERVER_IP_IPV6"
+      VPN_SERVER_IP_IPV6=$(select_vpn_dns_ipv6 "$VPN_SUBNET_IPV6" \
+        "$VPN_POOL_IPV6" "$PREVIOUS_DNS_IP_IPV6") \
+        || exiterr "Could not select an unused IPv6 DNS endpoint inside $VPN_SUBNET_IPV6 and outside the client pool."
       HAS_IPV6=1
     fi
   fi
+}
+
+is_managed_dns_endpoint() {
+  local candidate="${1:-}" endpoint
+  [ -n "$candidate" ] || return 1
+  for endpoint in "${VPN_SERVER_IP:-}" "${L2TP_SERVER_IP:-}" \
+    "${SAVED_VPN_SERVER_IP:-}" "${SAVED_L2TP_SERVER_IP:-}"; do
+    [ -n "$endpoint" ] && [ "$candidate" = "$endpoint" ] && return 0
+  done
+  return 1
+}
+
+filter_upstream_dns_list() {
+  local dns_entry filtered="" raw="${1:-}"
+  for dns_entry in $raw; do
+    if ! is_managed_dns_endpoint "$dns_entry" && check_ip "$dns_entry"; then
+      filtered="${filtered}${filtered:+ }${dns_entry}"
+    fi
+  done
+  printf '%s\n' "$filtered"
+}
+
+select_upstream_dns_pair() {
+  local detected1="${1:-}" detected2="${2:-}"
+  # A managed IKEv2 line retains only our endpoint plus the primary upstream.
+  # If that exact primary still matches our root-owned state and no secondary
+  # is present, recover the original pair. A complete changed pair is treated
+  # as an administrator override and used as-is.
+  if [ -n "$detected1" ] && [ -z "$detected2" ] \
+    && [ "$detected1" = "${SAVED_UPSTREAM_DNS1:-}" ] \
+    && check_ip "${SAVED_UPSTREAM_DNS1:-}" \
+    && check_ip "${SAVED_UPSTREAM_DNS2:-}"; then
+    UPSTREAM_DNS1=$SAVED_UPSTREAM_DNS1
+    UPSTREAM_DNS2=$SAVED_UPSTREAM_DNS2
+    return
+  fi
+  UPSTREAM_DNS1=${detected1:-8.8.8.8}
+  UPSTREAM_DNS2=${detected2:-8.8.4.4}
 }
 
 parse_upstream_dns() {
@@ -673,14 +1149,10 @@ parse_upstream_dns() {
     MS_DNS1=$(grep -m 1 '^ms-dns ' "$PPP_OPTIONS" | awk '{print $2}')
     MS_DNS2=$(grep '^ms-dns ' "$PPP_OPTIONS" | sed -n '2p' | awk '{print $2}')
     if [ -n "$MS_DNS1" ]; then
-      UPSTREAM_DNS1="$MS_DNS1"
-      UPSTREAM_DNS2="${MS_DNS2:-8.8.4.4}"
-      # Filter out our own IPs from previous runs
-      if [ "$UPSTREAM_DNS1" = "$VPN_SERVER_IP" ] || [ "$UPSTREAM_DNS1" = "$L2TP_SERVER_IP" ]; then
-        UPSTREAM_DNS1="$UPSTREAM_DNS2"
-        UPSTREAM_DNS2="8.8.4.4"
-      fi
-      [ -z "$UPSTREAM_DNS1" ] && UPSTREAM_DNS1="8.8.8.8"
+      DNS_RAW_CLEANED=$(filter_upstream_dns_list "$MS_DNS1 $MS_DNS2")
+      DETECTED_DNS1=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $1}')
+      DETECTED_DNS2=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $2}')
+      select_upstream_dns_pair "$DETECTED_DNS1" "$DETECTED_DNS2"
       return
     fi
   fi
@@ -693,17 +1165,10 @@ parse_upstream_dns() {
   # Formats: modecfgdns=8.8.8.8  or  modecfgdns="8.8.8.8 8.8.4.4"
   DNS_RAW=$(printf '%s' "$DNS_LINE" | sed 's/.*modecfgdns=//' | tr -d '"' | tr -d "'" | tr -s ' ')
   # If it already contains our VPN_SERVER_IP (from a previous run), skip it
-  DNS_RAW_CLEANED=""
-  for dns_entry in $DNS_RAW; do
-    if [ "$dns_entry" != "$VPN_SERVER_IP" ] && [ "$dns_entry" != "$L2TP_SERVER_IP" ] && check_ip "$dns_entry"; then
-      DNS_RAW_CLEANED="$DNS_RAW_CLEANED $dns_entry"
-    fi
-  done
-  DNS_RAW_CLEANED=$(printf '%s' "$DNS_RAW_CLEANED" | sed 's/^ //')
-  UPSTREAM_DNS1=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $1}')
-  UPSTREAM_DNS2=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $2}')
-  [ -z "$UPSTREAM_DNS1" ] && UPSTREAM_DNS1="8.8.8.8"
-  [ -z "$UPSTREAM_DNS2" ] && UPSTREAM_DNS2="8.8.4.4"
+  DNS_RAW_CLEANED=$(filter_upstream_dns_list "$DNS_RAW")
+  DETECTED_DNS1=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $1}')
+  DETECTED_DNS2=$(printf '%s' "$DNS_RAW_CLEANED" | awk '{print $2}')
+  select_upstream_dns_pair "$DETECTED_DNS1" "$DETECTED_DNS2"
 }
 
 required_packages_installed() {
@@ -739,19 +1204,19 @@ install_packages() {
   bigecho "Installing required packages..."
   if [ "$os_type" = "ubuntu" ] || [ "$os_type" = "debian" ]; then
     export DEBIAN_FRONTEND=noninteractive
-    apt-get -yqq update || apt-get -yqq update || exiterr "'apt-get update' failed."
-    apt-get -yqq install avahi-daemon avahi-utils dnsmasq >/dev/null \
+    apt-get -yqq update 9>&- || apt-get -yqq update 9>&- || exiterr "'apt-get update' failed."
+    apt-get -yqq install avahi-daemon avahi-utils dnsmasq 9>&- >/dev/null \
       || exiterr "'apt-get install' failed."
   elif [ "$os_type" = "alpine" ]; then
-    apk update || exiterr "'apk update' failed."
-    apk add avahi avahi-tools dnsmasq || exiterr "'apk add' failed."
+    apk update 9>&- || exiterr "'apk update' failed."
+    apk add avahi avahi-tools dnsmasq 9>&- || exiterr "'apk add' failed."
   else
     # CentOS/RHEL/Rocky/Alma/Oracle Linux
     if command -v dnf >/dev/null 2>&1; then
-      dnf -y -q install avahi avahi-tools dnsmasq >/dev/null \
+      dnf -y -q install avahi avahi-tools dnsmasq 9>&- >/dev/null \
         || exiterr "'dnf install' failed."
     else
-      yum -y -q install avahi avahi-tools dnsmasq >/dev/null \
+      yum -y -q install avahi avahi-tools dnsmasq 9>&- >/dev/null \
         || exiterr "'yum install' failed."
     fi
   fi
@@ -920,7 +1385,16 @@ configure_dnsmasq() {
   # Build listen-address directive with all applicable VPN server IPs
   LISTEN_IPS=""
   check_systemd_resolved
-  if [ "$RESOLVED_ACTIVE" = 0 ]; then
+  if [ -f "$DNSMASQ_VPN_CONF" ]; then
+    # Keep the managed loopback-listener choice stable across reconfiguration.
+    # Starting D-Bus/Avahi/dnsmasq can change systemd-resolved's active state
+    # after the first candidate was built, but both services can coexist when
+    # bound to their distinct loopback addresses.
+    if grep -Eq '^listen-address=([^,]*,)*127\.0\.0\.1(,|$)' \
+      "$DNSMASQ_VPN_CONF"; then
+      LISTEN_IPS="127.0.0.1"
+    fi
+  elif [ "$RESOLVED_ACTIVE" = 0 ]; then
     LISTEN_IPS="127.0.0.1"
   fi
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
@@ -1046,36 +1520,90 @@ configure_nss() {
   fi
 }
 
-assign_vpn_server_ip() {
-  # Explicit reconfiguration owns IPv6 transitions. Remove a previously
-  # managed endpoint before installing a changed endpoint or disabling IPv6.
-  if [ -n "$SAVED_VPN_SERVER_IP_IPV6" ] \
-    && [ "$SAVED_VPN_SERVER_IP_IPV6" != "$VPN_SERVER_IP_IPV6" ]; then
-    ip -6 addr del "${SAVED_VPN_SERVER_IP_IPV6}/128" dev lo 2>/dev/null || true
-    if [ -f /etc/rc.local ]; then
-      if [ "$os_type" = "alpine" ]; then
-        sed -i "\|ip -6 addr add ${SAVED_VPN_SERVER_IP_IPV6}/128 dev lo|d" /etc/rc.local
-      else
-        sed --follow-symlinks -i \
-          "\|ip -6 addr add ${SAVED_VPN_SERVER_IP_IPV6}/128 dev lo|d" /etc/rc.local
-      fi
+remove_managed_boot_address() {
+  local family="$1" address="$2" file root_dir="${BONJOUR_VPN_ROOT:-}"
+  [ -n "$address" ] || return 0
+  for file in "$root_dir/etc/rc.local" "$root_dir/etc/local.d/bonjour-vpn.start"; do
+    [ -f "$file" ] || continue
+    if [ "$family" = 6 ]; then
+      sed --follow-symlinks -i \
+        "\|ip -6 addr add ${address}/128 dev lo|d" "$file" 2>/dev/null \
+        || sed -i "\|ip -6 addr add ${address}/128 dev lo|d" "$file" \
+        || exiterr "Could not remove the obsolete IPv6 loopback boot entry."
+    else
+      sed --follow-symlinks -i \
+        "\|ip addr add ${address}/32 dev lo|d" "$file" 2>/dev/null \
+        || sed -i "\|ip addr add ${address}/32 dev lo|d" "$file" \
+        || exiterr "Could not remove the obsolete IPv4 loopback boot entry."
     fi
-    if [ -f /etc/local.d/bonjour-vpn.start ]; then
-      sed -i "\|ip -6 addr add ${SAVED_VPN_SERVER_IP_IPV6}/128 dev lo|d" \
-        /etc/local.d/bonjour-vpn.start
+  done
+}
+
+remove_managed_boot_ipv6_route() {
+  local subnet="$1" file root_dir="${BONJOUR_VPN_ROOT:-}"
+  [ -n "$subnet" ] || return 0
+  for file in "$root_dir/etc/rc.local" "$root_dir/etc/local.d/bonjour-vpn.start"; do
+    [ -f "$file" ] || continue
+    sed --follow-symlinks -i \
+      "\|ip -6 route add ${subnet} dev lo|d" "$file" 2>/dev/null \
+      || sed -i "\|ip -6 route add ${subnet} dev lo|d" "$file" \
+      || exiterr "Could not remove the obsolete IPv6 VPN route boot entry."
+  done
+}
+
+remove_stale_owned_loopback_addresses() {
+  if [ -n "$SAVED_VPN_SERVER_IP" ] && [ "$SAVED_VPN_SERVER_IP" != "$VPN_SERVER_IP" ] \
+    && [ "${SAVED_VPN_SERVER_IP_WAS_PRESENT:-1}" = 0 ]; then
+    if loopback_has_ipv4 "$SAVED_VPN_SERVER_IP"; then
+      ip -4 addr del "${SAVED_VPN_SERVER_IP}/32" dev lo \
+        || exiterr "Could not remove the obsolete VPN DNS endpoint."
     fi
+    remove_managed_boot_address 4 "$SAVED_VPN_SERVER_IP"
   fi
+  if [ -n "$SAVED_L2TP_SERVER_IP" ] && [ "$SAVED_L2TP_SERVER_IP" != "$L2TP_SERVER_IP" ] \
+    && [ "${SAVED_L2TP_SERVER_IP_WAS_PRESENT:-1}" = 0 ]; then
+    if loopback_has_ipv4 "$SAVED_L2TP_SERVER_IP"; then
+      ip -4 addr del "${SAVED_L2TP_SERVER_IP}/32" dev lo \
+        || exiterr "Could not remove the obsolete L2TP DNS endpoint."
+    fi
+    remove_managed_boot_address 4 "$SAVED_L2TP_SERVER_IP"
+  fi
+  if [ -n "$SAVED_VPN_SERVER_IP_IPV6" ] \
+    && [ "$SAVED_VPN_SERVER_IP_IPV6" != "$VPN_SERVER_IP_IPV6" ] \
+    && [ "${SAVED_VPN_SERVER_IP_IPV6_WAS_PRESENT:-1}" = 0 ]; then
+    if loopback_has_ipv6 "$SAVED_VPN_SERVER_IP_IPV6"; then
+      ip -6 addr del "${SAVED_VPN_SERVER_IP_IPV6}/128" dev lo \
+        || exiterr "Could not remove the obsolete IPv6 VPN DNS endpoint."
+    fi
+    remove_managed_boot_address 6 "$SAVED_VPN_SERVER_IP_IPV6"
+  fi
+  if [ -n "$SAVED_VPN_SUBNET_IPV6" ] \
+    && [ "$SAVED_VPN_SUBNET_IPV6" != "$VPN_SUBNET_IPV6" ] \
+    && [ "${SAVED_VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT:-1}" = 0 ]; then
+    if ipv6_subnet_route_exists "$SAVED_VPN_SUBNET_IPV6"; then
+      ip -6 route del "$SAVED_VPN_SUBNET_IPV6" dev lo \
+        || exiterr "Could not remove the obsolete IPv6 VPN route."
+    fi
+    remove_managed_boot_ipv6_route "$SAVED_VPN_SUBNET_IPV6"
+  fi
+}
+
+assign_vpn_server_ip() {
+  local root_dir="${BONJOUR_VPN_ROOT:-}"
+  # Reconfiguration removes only endpoints that a previous run created.
+  # Addresses which pre-dated Bonjour VPN are always preserved.
+  remove_stale_owned_loopback_addresses
   # For IKEv2/XAuth: add VPN_SERVER_IP to loopback (needed as dnsmasq listen address)
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
     bigecho "Assigning VPN server IP ($VPN_SERVER_IP) to loopback..."
-    if ! ip addr show dev lo 2>/dev/null | grep -q "${VPN_SERVER_IP}/"; then
+    if ! loopback_has_ipv4 "$VPN_SERVER_IP"; then
       ip addr add "${VPN_SERVER_IP}/32" dev lo || exiterr "Failed to add $VPN_SERVER_IP to loopback."
     fi
     # Make it persistent via /etc/rc.local
-    RC_LOCAL="/etc/rc.local"
+    RC_LOCAL="${root_dir}/etc/rc.local"
     if [ "$os_type" = "alpine" ]; then
-      RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
-      mkdir -p /etc/local.d
+      RC_LOCAL_ALPINE="${root_dir}/etc/local.d/bonjour-vpn.start"
+      mkdir -p "${root_dir}/etc/local.d"
 cat > "$RC_LOCAL_ALPINE" <<EOF
 #!/bin/sh
 # Added by enable_bonjour.sh - Bonjour/mDNS VPN support
@@ -1085,16 +1613,8 @@ EOF
       rc-update add local default 2>/dev/null
     else
       if [ -f "$RC_LOCAL" ]; then
-        if ! grep -qs "# Added by enable_bonjour.sh" "$RC_LOCAL"; then
-          conf_bk_bonjour "$RC_LOCAL"
-          sed --follow-symlinks -i '/^exit 0$/d' "$RC_LOCAL"
-cat >> "$RC_LOCAL" <<EOF
-
-# Added by enable_bonjour.sh - Bonjour/mDNS VPN support
-ip addr add ${VPN_SERVER_IP}/32 dev lo 2>/dev/null
-exit 0
-EOF
-        fi
+        ensure_rc_local_managed_line "$RC_LOCAL" \
+          "ip addr add ${VPN_SERVER_IP}/32 dev lo 2>/dev/null"
       else
 cat > "$RC_LOCAL" <<EOF
 #!/bin/sh
@@ -1111,20 +1631,22 @@ EOF
   # xl2tpd only assigns this IP to ppp interfaces when clients connect.
   # dnsmasq needs it always available to bind to.
   if [ "$HAS_L2TP" = 1 ] && [ -n "$L2TP_SERVER_IP" ]; then
-    if ! ip addr show dev lo 2>/dev/null | grep -q "${L2TP_SERVER_IP}/"; then
+    if ! loopback_has_ipv4 "$L2TP_SERVER_IP"; then
       bigecho "Assigning L2TP server IP ($L2TP_SERVER_IP) to loopback..."
       ip addr add "${L2TP_SERVER_IP}/32" dev lo || exiterr "Failed to add $L2TP_SERVER_IP to loopback."
     fi
     # Persist in rc.local / local.d alongside the IKEv2/XAuth IP
     if [ "$os_type" = "alpine" ]; then
-      RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
+      RC_LOCAL_ALPINE="${root_dir}/etc/local.d/bonjour-vpn.start"
       if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "${L2TP_SERVER_IP}/32" "$RC_LOCAL_ALPINE"; then
-        sed -i "$ a ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL_ALPINE"
+        printf '%s\n' "ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" \
+          >> "$RC_LOCAL_ALPINE"
       fi
     else
-      RC_LOCAL="/etc/rc.local"
-      if [ -f "$RC_LOCAL" ] && ! grep -q "${L2TP_SERVER_IP}/32" "$RC_LOCAL"; then
-        sed --follow-symlinks -i "/^exit 0$/i ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null" "$RC_LOCAL"
+      RC_LOCAL="${root_dir}/etc/rc.local"
+      if [ -f "$RC_LOCAL" ]; then
+        ensure_rc_local_managed_line "$RC_LOCAL" \
+          "ip addr add ${L2TP_SERVER_IP}/32 dev lo 2>/dev/null"
       fi
     fi
   fi
@@ -1132,22 +1654,38 @@ EOF
   # requires the address to exist before the service starts. Must match the
   # listen-address entry added by configure_dnsmasq().
   if [ "$HAS_IPV6" = 1 ] && [ -n "$VPN_SERVER_IP_IPV6" ]; then
-    if ! ip -6 addr show dev lo 2>/dev/null | grep -q "${VPN_SERVER_IP_IPV6}/"; then
+    if ! loopback_has_ipv6 "$VPN_SERVER_IP_IPV6"; then
       bigecho "Assigning VPN server IPv6 ($VPN_SERVER_IP_IPV6) to loopback..."
       ip -6 addr add "${VPN_SERVER_IP_IPV6}/128" dev lo \
         || exiterr "Failed to add $VPN_SERVER_IP_IPV6 to loopback."
     fi
+    if ! ipv6_subnet_route_exists "$VPN_SUBNET_IPV6"; then
+      ip -6 route add "$VPN_SUBNET_IPV6" dev lo \
+        || exiterr "Failed to add the route for IPv6 VPN clients."
+    fi
     # Persist
     if [ "$os_type" = "alpine" ]; then
-      RC_LOCAL_ALPINE="/etc/local.d/bonjour-vpn.start"
+      RC_LOCAL_ALPINE="${root_dir}/etc/local.d/bonjour-vpn.start"
       if [ -f "$RC_LOCAL_ALPINE" ] && ! grep -q "${VPN_SERVER_IP_IPV6}/128" "$RC_LOCAL_ALPINE"; then
-        sed -i "$ a ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL_ALPINE"
+        printf '%s\n' "ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" \
+          >> "$RC_LOCAL_ALPINE"
+      fi
+      if [ "${VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT:-1}" = 0 ] \
+        && [ -f "$RC_LOCAL_ALPINE" ] \
+        && ! grep -Fq "ip -6 route add ${VPN_SUBNET_IPV6} dev lo" "$RC_LOCAL_ALPINE"; then
+        printf '%s\n' "ip -6 route add ${VPN_SUBNET_IPV6} dev lo 2>/dev/null" \
+          >> "$RC_LOCAL_ALPINE"
       fi
     else
-      RC_LOCAL="/etc/rc.local"
-      if [ -f "$RC_LOCAL" ] && ! grep -q "${VPN_SERVER_IP_IPV6}/128" "$RC_LOCAL"; then
-        sed --follow-symlinks -i \
-          "/^exit 0$/i ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null" "$RC_LOCAL"
+      RC_LOCAL="${root_dir}/etc/rc.local"
+      if [ -f "$RC_LOCAL" ]; then
+        ensure_rc_local_managed_line "$RC_LOCAL" \
+          "ip -6 addr add ${VPN_SERVER_IP_IPV6}/128 dev lo 2>/dev/null"
+      fi
+      if [ "${VPN_SUBNET_IPV6_ROUTE_WAS_PRESENT:-1}" = 0 ] \
+        && [ -f "$RC_LOCAL" ]; then
+        ensure_rc_local_managed_line "$RC_LOCAL" \
+          "ip -6 route add ${VPN_SUBNET_IPV6} dev lo 2>/dev/null"
       fi
     fi
   fi
@@ -1291,6 +1829,54 @@ detect_firewall_backend() {
     FIREWALL_PERSIST_FILE=/etc/sysconfig/iptables
     FIREWALL_PERSIST6_FILE=/etc/sysconfig/ip6tables
   fi
+}
+
+capture_firewall_persistence_ownership() {
+  if [ -n "$SAVED_FIREWALL_PERSIST6_FILE_WAS_PRESENT" ]; then
+    FIREWALL_PERSIST6_FILE_WAS_PRESENT=$SAVED_FIREWALL_PERSIST6_FILE_WAS_PRESENT
+  elif [ -f "$BONJOUR_CONFIG_STATE" ]; then
+    # Older state did not record ownership; preserve conservatively.
+    FIREWALL_PERSIST6_FILE_WAS_PRESENT=1
+  elif [ -n "$FIREWALL_PERSIST6_FILE" ] && [ -f "$FIREWALL_PERSIST6_FILE" ]; then
+    FIREWALL_PERSIST6_FILE_WAS_PRESENT=1
+  else
+    FIREWALL_PERSIST6_FILE_WAS_PRESENT=0
+  fi
+  if [ -n "$SAVED_FIREWALL_PERSIST6_FILE2_WAS_PRESENT" ]; then
+    FIREWALL_PERSIST6_FILE2_WAS_PRESENT=$SAVED_FIREWALL_PERSIST6_FILE2_WAS_PRESENT
+  elif [ -f "$BONJOUR_CONFIG_STATE" ]; then
+    FIREWALL_PERSIST6_FILE2_WAS_PRESENT=1
+  elif [ -n "$FIREWALL_PERSIST6_FILE2" ] && [ -f "$FIREWALL_PERSIST6_FILE2" ]; then
+    FIREWALL_PERSIST6_FILE2_WAS_PRESENT=1
+  else
+    FIREWALL_PERSIST6_FILE2_WAS_PRESENT=0
+  fi
+}
+
+ipv6_persistence_is_empty() {
+  awk '
+    /^\*/ { table=1 }
+    /^-A[[:space:]]/ { unsafe=1 }
+    /^:/ && $2 != "ACCEPT" { unsafe=1 }
+    END { exit !(table && !unsafe) }
+  ' "$1"
+}
+
+remove_empty_owned_ipv6_persistence() {
+  local file ownership
+  [ "$FIREWALL_BACKEND" = iptables ] || return 0
+  for file in "$FIREWALL_PERSIST6_FILE" "$FIREWALL_PERSIST6_FILE2"; do
+    [ -n "$file" ] || continue
+    if [ "$file" = "$FIREWALL_PERSIST6_FILE" ]; then
+      ownership=${FIREWALL_PERSIST6_FILE_WAS_PRESENT:-1}
+    else
+      ownership=${FIREWALL_PERSIST6_FILE2_WAS_PRESENT:-1}
+    fi
+    if [ "$ownership" = 0 ] && [ -f "$file" ] \
+      && ipv6_persistence_is_empty "$file"; then
+      /bin/rm -f "$file" || return 1
+    fi
+  done
 }
 
 uses_ipv6_firewall() {
@@ -1468,14 +2054,14 @@ add_nft_allow_rules() {
     chains_found=$((chains_found + 1))
     for port in 53 5353; do
       if ! nft list chain inet "$table" "$chain" 2>/dev/null \
-        | grep -Fq "comment \"${marker}:udp:${port}\""; then
+        | grep -F "comment \"${marker}:udp:${port}\"" >/dev/null; then
         nft insert rule inet "$table" "$chain" "$family" saddr "$subnet" \
           udp dport "$port" accept comment "\"${marker}:udp:${port}\"" \
           || return 1
       fi
     done
     if ! nft list chain inet "$table" "$chain" 2>/dev/null \
-      | grep -Fq "comment \"${marker}:tcp:53\""; then
+      | grep -F "comment \"${marker}:tcp:53\"" >/dev/null; then
       nft insert rule inet "$table" "$chain" "$family" saddr "$subnet" \
         tcp dport 53 accept comment "\"${marker}:tcp:53\"" \
         || return 1
@@ -1513,16 +2099,21 @@ persist_firewall() {
       nft list ruleset
     } > "$candidate" || return 1
     if ! nft -c -f "$candidate" >/dev/null 2>&1; then
-      sed -i '/xt target "MASQUERADE"/s/xt target "MASQUERADE"/masquerade/' "$candidate"
+      sed -i.bonjour-vpn-sed \
+        '/xt target "MASQUERADE"/s/xt target "MASQUERADE"/masquerade/' "$candidate" \
+        || return 1
+      /bin/rm -f "${candidate}.bonjour-vpn-sed"
     fi
-    nft -c -f "$candidate" >/dev/null 2>&1 || return 1
+    nft -c -f "$candidate" >/dev/null 2>&1 \
+      || { /bin/rm -f "$candidate"; return 1; }
   else
     {
       echo "# Modified by hwdsl2 VPN script"
       iptables-save
     } > "$candidate" || return 1
     if iptables-restore --help 2>&1 | grep -q -- '--test'; then
-      iptables-restore --test < "$candidate" >/dev/null 2>&1 || return 1
+      iptables-restore --test < "$candidate" >/dev/null 2>&1 \
+        || { /bin/rm -f "$candidate"; return 1; }
     fi
   fi
   chmod 600 "$candidate" || return 1
@@ -1539,7 +2130,8 @@ persist_firewall() {
       ip6tables-save
     } > "$candidate6" || return 1
     if ip6tables-restore --help 2>&1 | grep -q -- '--test'; then
-      ip6tables-restore --test < "$candidate6" >/dev/null 2>&1 || return 1
+      ip6tables-restore --test < "$candidate6" >/dev/null 2>&1 \
+        || { /bin/rm -f "$candidate6"; return 1; }
     fi
     chmod 600 "$candidate6" || return 1
     mv -f "$candidate6" "$FIREWALL_PERSIST6_FILE" || return 1
@@ -1561,9 +2153,38 @@ remove_ipv6_bonjour_rules() {
     -p udp --dport 5353 -j DNAT --to-destination "[${endpoint}]:53" 2>/dev/null; do :; done
 }
 
+remove_ipv4_bonjour_rules() {
+  local subnet="$1" endpoint="$2"
+  [ -n "$subnet" ] && [ -n "$endpoint" ] || return 0
+  while iptables -D INPUT -s "$subnet" -p udp --dport 53 -j ACCEPT 2>/dev/null; do :; done
+  while iptables -D INPUT -s "$subnet" -p tcp --dport 53 -j ACCEPT 2>/dev/null; do :; done
+  while iptables -D INPUT -s "$subnet" -p udp --dport 5353 -j ACCEPT 2>/dev/null; do :; done
+  while iptables -t nat -D PREROUTING -s "$subnet" -d 224.0.0.251 \
+    -p udp --dport 5353 -j DNAT --to-destination "${endpoint}:53" 2>/dev/null; do :; done
+}
+
 update_iptables() {
   bigecho "Updating IPTables rules..."
   start_firewall_transaction
+  if [ -n "$SAVED_VPN_SUBNET" ] \
+    && { [ "$SAVED_VPN_SUBNET" != "$VPN_SUBNET" ] \
+      || [ "$SAVED_VPN_SERVER_IP" != "$VPN_SERVER_IP" ]; }; then
+    remove_ipv4_bonjour_rules "$SAVED_VPN_SUBNET" "$SAVED_VPN_SERVER_IP"
+    if [ "$FIREWALL_BACKEND" = nftables ]; then
+      remove_nft_allow_rules_for_subnet "$SAVED_VPN_SUBNET" \
+        || { rollback_firewall_transaction; exiterr "Could not remove obsolete native nftables VPN DNS rules."; }
+    fi
+  fi
+  if [ -n "$SAVED_L2TP_SUBNET" ] \
+    && { [ "$SAVED_L2TP_SUBNET" != "$L2TP_SUBNET" ] \
+      || [ "$SAVED_L2TP_SERVER_IP" != "$L2TP_SERVER_IP" ]; }; then
+    remove_ipv4_bonjour_rules "$SAVED_L2TP_SUBNET" "$SAVED_L2TP_SERVER_IP"
+    if [ "$FIREWALL_BACKEND" = nftables ] \
+      && [ "$SAVED_L2TP_SUBNET" != "$SAVED_VPN_SUBNET" ]; then
+      remove_nft_allow_rules_for_subnet "$SAVED_L2TP_SUBNET" \
+        || { rollback_firewall_transaction; exiterr "Could not remove obsolete native nftables L2TP DNS rules."; }
+    fi
+  fi
   # Add rules for IKEv2/XAuth subnet (they share the same subnet)
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
     if ! iptables -C INPUT -s "$VPN_SUBNET" -p udp --dport 53 -j ACCEPT 2>/dev/null; then
@@ -1647,6 +2268,10 @@ update_iptables() {
   fi
   persist_firewall \
     || { rollback_firewall_transaction; exiterr "Could not validate and persist the updated firewall."; }
+  if [ "$HAS_IPV6" != 1 ]; then
+    remove_empty_owned_ipv6_persistence \
+      || { rollback_firewall_transaction; exiterr "Could not remove empty Bonjour-owned IPv6 firewall persistence."; }
+  fi
   configure_ipv6_firewall_loader \
     || { rollback_firewall_transaction; exiterr "Could not install IPv6 firewall persistence in the hwdsl2 loader."; }
   finish_firewall_transaction
@@ -1656,7 +2281,9 @@ create_cache_warmer() {
   bigecho "Installing the mDNS resolver and service monitor..."
 
   RESOLVE_SCRIPT="/usr/local/bin/bonjour-vpn-resolve"
-cat > "$RESOLVE_SCRIPT" <<'RESOLVE_EOF'
+  RESOLVE_SCRIPT_CANDIDATE=$(mktemp "${RESOLVE_SCRIPT}.candidate.XXXXXX") \
+    || exiterr "Could not create the Bonjour VPN resolver candidate."
+cat > "$RESOLVE_SCRIPT_CANDIDATE" <<'RESOLVE_EOF'
 #!/bin/bash
 # Reconcile LAN Bonjour records into the package-managed dnsmasq instance.
 
@@ -1665,6 +2292,7 @@ export PATH="${BONJOUR_VPN_PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/b
 ROOT_DIR=${BONJOUR_VPN_ROOT:-}
 STATE_DIR="$ROOT_DIR/var/lib/bonjour-vpn"
 CONFIG_STATE="$STATE_DIR/config"
+INCOMPLETE_STATE="$STATE_DIR/incomplete"
 LOCK_FILE="$ROOT_DIR/run/bonjour-vpn.lock"
 HOSTS_FILE="$ROOT_DIR/etc/bonjour-vpn-hosts"
 HOSTS_CANDIDATE="$ROOT_DIR/etc/.bonjour-vpn-hosts.candidate"
@@ -1684,7 +2312,9 @@ cleanup() {
   if [ -n "$DNSMASQ_TEST_DIR" ]; then
     rm -rf "$DNSMASQ_TEST_DIR"
   fi
-  flock -u 9 2>/dev/null || true
+  if [ "${LOCK_ACQUIRED:-0}" = 1 ]; then
+    flock -u 9 2>/dev/null || true
+  fi
   exec 9>&- 2>/dev/null || true
 }
 trap cleanup EXIT
@@ -1697,14 +2327,15 @@ acquire_lock() {
   umask 077
   exec 9>"$LOCK_FILE"
   umask "$old_umask"
-  flock -w 30 9
+  flock -w 30 9 || return 1
+  LOCK_ACQUIRED=1
 }
 
 dnsmasq_active() {
   if command -v systemctl >/dev/null 2>&1; then
     systemctl is-active --quiet dnsmasq.service
   else
-    rc-service dnsmasq status >/dev/null 2>&1
+    rc-service dnsmasq status 9>&- >/dev/null 2>&1
   fi
 }
 
@@ -1713,7 +2344,7 @@ start_dnsmasq() {
     systemctl reset-failed dnsmasq.service 2>/dev/null || true
     systemctl start dnsmasq.service >/dev/null 2>&1
   else
-    rc-service dnsmasq start >/dev/null 2>&1
+    rc-service dnsmasq start 9>&- >/dev/null 2>&1
   fi
   dnsmasq_active
 }
@@ -1723,27 +2354,36 @@ restart_dnsmasq() {
     systemctl reset-failed dnsmasq.service 2>/dev/null || true
     systemctl restart dnsmasq.service >/dev/null 2>&1
   else
-    rc-service dnsmasq restart >/dev/null 2>&1
+    rc-service dnsmasq restart 9>&- >/dev/null 2>&1
   fi
   dnsmasq_active
 }
 
 reload_dnsmasq_hosts() {
   dnsmasq_active || return 1
-  if command -v systemctl >/dev/null 2>&1 \
-    && systemctl reload dnsmasq.service >/dev/null 2>&1; then
-    :
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl reload dnsmasq.service >/dev/null 2>&1 \
+      || restart_dnsmasq \
+      || return 1
   else
-    pkill -HUP -x dnsmasq >/dev/null 2>&1 || return 1
+    rc-service dnsmasq reload 9>&- >/dev/null 2>&1 \
+      || rc-service dnsmasq restart 9>&- >/dev/null 2>&1 \
+      || return 1
   fi
   dnsmasq_active
 }
 
 ensure_loopback_addresses() {
-  [ -f "$CONFIG_STATE" ] || return 1
+  local state_file="$INCOMPLETE_STATE"
+  [ -f "$state_file" ] || state_file="$CONFIG_STATE"
+  [ -f "$state_file" ] || return 1
   # Root-owned state created by enable_bonjour.sh; contains no credentials.
+  # During a transaction the recovery state is authoritative, including a
+  # reconfiguration where the previous completed state still exists. The
+  # completed state becomes authoritative after verification removes the
+  # recovery marker.
   # shellcheck disable=SC1090
-  . "$CONFIG_STATE"
+  . "$state_file"
   for address in "${VPN_SERVER_IP_SAVED:-}" "${L2TP_SERVER_IP_SAVED:-}"; do
     [ -n "$address" ] || continue
     if ! ip -4 addr show dev lo 2>/dev/null | grep -Eq "inet ${address}/"; then
@@ -1752,9 +2392,15 @@ ensure_loopback_addresses() {
   done
   if [ "${HAS_IPV6_SAVED:-0}" = 1 ] \
     && [ -n "${VPN_SERVER_IP_IPV6_SAVED:-}" ] \
-    && ! ip -6 addr show dev lo 2>/dev/null \
-      | grep -Fq "${VPN_SERVER_IP_IPV6_SAVED}/"; then
+    && ! ip -6 -o addr show dev lo to "${VPN_SERVER_IP_IPV6_SAVED}/128" 2>/dev/null \
+      | grep -q '[[:space:]]inet6[[:space:]]'; then
     ip -6 addr add "${VPN_SERVER_IP_IPV6_SAVED}/128" dev lo >/dev/null 2>&1 \
+      || return 1
+  fi
+  if [ "${HAS_IPV6_SAVED:-0}" = 1 ] \
+    && [ -n "${VPN_SUBNET_IPV6_SAVED:-}" ] \
+    && [ -z "$(ip -6 route show exact "$VPN_SUBNET_IPV6_SAVED" 2>/dev/null)" ]; then
+    ip -6 route add "$VPN_SUBNET_IPV6_SAVED" dev lo >/dev/null 2>&1 \
       || return 1
   fi
 }
@@ -1828,13 +2474,20 @@ publish_candidates() {
   fi
 }
 
-acquire_lock || exit 1
 install -d -m 700 "$STATE_DIR"
-ensure_loopback_addresses || exit 1
 
 if [ "${1:-}" = "--prepare" ]; then
+  # The enable transaction already holds this lock when systemd starts the
+  # oneshot prepare unit. Preparation only restores endpoints recorded in a
+  # root-owned state file; it does not reconcile or publish DNS records.
+  ensure_loopback_addresses || exit 1
   exit 0
 fi
+
+if [ "${1:-}" != "--initial-under-parent-lock" ]; then
+  acquire_lock || exit 1
+fi
+ensure_loopback_addresses || exit 1
 
 command -v avahi-browse >/dev/null 2>&1 || exit 1
 pgrep -x avahi-daemon >/dev/null 2>&1 || exit 1
@@ -1894,10 +2547,17 @@ printf '%s\n' "$RESOLVED" | awk -F';' '{
       print "ptr-record=" stype ".local," fqdn
       print "srv-host=" fqdn "," host "," (port != "" ? port : "0")
       if (txt != "") {
-        gsub(/" "/, ",", txt)
-        sub(/^"/, "", txt)
-        sub(/"$/, "", txt)
-        print "txt-record=" fqdn "," txt
+        # avahi-browse separates TXT strings as quoted values. Keep each
+        # value quoted in dnsmasq so a literal comma remains part of that
+        # value instead of being silently split into two TXT strings.
+        count=split(txt, txt_part, /" "/)
+        txt_out=""
+        for (i=1; i<=count; i++) {
+          sub(/^"/, "", txt_part[i])
+          sub(/"$/, "", txt_part[i])
+          txt_out=txt_out (i > 1 ? "," : "") "\"" txt_part[i] "\""
+        }
+        print "txt-record=" fqdn "," txt_out
       }
     }
   ' | LC_ALL=C sort -u
@@ -1906,10 +2566,16 @@ printf '%s\n' "$RESOLVED" | awk -F';' '{
 validate_candidates || exit 1
 publish_candidates
 RESOLVE_EOF
-  chmod 755 "$RESOLVE_SCRIPT"
+  chmod 755 "$RESOLVE_SCRIPT_CANDIDATE" \
+    || exiterr "Could not secure the Bonjour VPN resolver candidate."
+  mv -f "$RESOLVE_SCRIPT_CANDIDATE" "$RESOLVE_SCRIPT" \
+    || exiterr "Could not atomically install the Bonjour VPN resolver."
+  RESOLVE_SCRIPT_CANDIDATE=""
 
   WATCHER_SCRIPT="/usr/local/bin/bonjour-vpn-watch"
-cat > "$WATCHER_SCRIPT" <<'WATCHER_EOF'
+  WATCHER_SCRIPT_CANDIDATE=$(mktemp "${WATCHER_SCRIPT}.candidate.XXXXXX") \
+    || exiterr "Could not create the Bonjour VPN watcher candidate."
+cat > "$WATCHER_SCRIPT_CANDIDATE" <<'WATCHER_EOF'
 #!/bin/bash
 # Persistent event notification plus bounded periodic reconciliation.
 
@@ -1966,7 +2632,11 @@ while true; do
   [ "$backoff" -le 30 ] || backoff=30
 done
 WATCHER_EOF
-  chmod 755 "$WATCHER_SCRIPT"
+  chmod 755 "$WATCHER_SCRIPT_CANDIDATE" \
+    || exiterr "Could not secure the Bonjour VPN watcher candidate."
+  mv -f "$WATCHER_SCRIPT_CANDIDATE" "$WATCHER_SCRIPT" \
+    || exiterr "Could not atomically install the Bonjour VPN watcher."
+  WATCHER_SCRIPT_CANDIDATE=""
 
   if command -v systemctl >/dev/null 2>&1; then
     systemctl stop bonjour-vpn-watch.service 2>/dev/null || true
@@ -2030,17 +2700,22 @@ EOF
     chmod 755 /etc/init.d/bonjour-vpn-prepare
     rc-update add bonjour-vpn-prepare default >/dev/null 2>&1
     CRON_LINE="* * * * * $RESOLVE_SCRIPT >/dev/null 2>&1"
-    (crontab -l 2>/dev/null | grep -v 'bonjour-vpn'; echo "$CRON_LINE") | crontab -
+    install_cache_warmer_cron "$CRON_LINE" \
+      || exiterr "Could not install the Bonjour VPN cache-warmer cron entry."
   fi
 }
 
 start_cache_warmer() {
   if command -v systemctl >/dev/null 2>&1; then
-    systemctl restart bonjour-vpn-prepare.service >/dev/null 2>&1
-    systemctl restart bonjour-vpn-watch.service >/dev/null 2>&1
+    systemctl restart bonjour-vpn-prepare.service >/dev/null 2>&1 \
+      || exiterr "Could not prepare the Bonjour VPN DNS endpoints."
+    systemctl restart bonjour-vpn-watch.service >/dev/null 2>&1 \
+      || exiterr "Could not start the Bonjour VPN service watcher."
   else
-    rc-service bonjour-vpn-prepare start >/dev/null 2>&1 || true
-    /usr/local/bin/bonjour-vpn-resolve >/dev/null 2>&1 || true
+    rc-service bonjour-vpn-prepare start 9>&- >/dev/null 2>&1 \
+      || exiterr "Could not prepare the Bonjour VPN DNS endpoints."
+    /usr/local/bin/bonjour-vpn-resolve --initial-under-parent-lock 9>&- >/dev/null 2>&1 \
+      || exiterr "Could not populate the Bonjour VPN DNS cache."
   fi
 }
 verify_setup() {
@@ -2065,7 +2740,7 @@ verify_setup() {
 
   # Check VPN server IP is on loopback (IKEv2/XAuth only)
   if [ "$HAS_IKEV2" = 1 ] || [ "$HAS_XAUTH" = 1 ]; then
-    if ip addr show dev lo 2>/dev/null | grep -q "$VPN_SERVER_IP"; then
+    if loopback_has_ipv4 "$VPN_SERVER_IP"; then
       echo "  OK: $VPN_SERVER_IP is assigned to loopback"
     else
       echo "  WARNING: $VPN_SERVER_IP not found on loopback"
@@ -2104,10 +2779,16 @@ verify_setup() {
   fi
 
   if [ "$HAS_IPV6" = 1 ]; then
-    if ip -6 addr show dev lo 2>/dev/null | grep -Fq "${VPN_SERVER_IP_IPV6}/"; then
+    if loopback_has_ipv6 "$VPN_SERVER_IP_IPV6"; then
       echo "  OK: $VPN_SERVER_IP_IPV6 is assigned to loopback"
     else
       echo "  WARNING: $VPN_SERVER_IP_IPV6 not found on loopback"
+      VERIFY_PASS=0
+    fi
+    if ipv6_subnet_route_exists "$VPN_SUBNET_IPV6"; then
+      echo "  OK: IPv6 VPN client route active for $VPN_SUBNET_IPV6"
+    else
+      echo "  WARNING: IPv6 VPN client route missing for $VPN_SUBNET_IPV6"
       VERIFY_PASS=0
     fi
     if ip6tables -t nat -C PREROUTING -s "$VPN_SUBNET_IPV6" -d ff02::fb \
@@ -2139,8 +2820,10 @@ verify_setup() {
 
   # Check if DNS-SD services config was generated
   if [ -s /etc/dnsmasq.d/bonjour-vpn-services.conf ]; then
-    SVC_COUNT=$(grep -c '^ptr-record=_services' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null || echo 0)
-    INST_COUNT=$(grep -c '^srv-host=' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null || echo 0)
+    SVC_COUNT=$(grep -c '^ptr-record=_services' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null || true)
+    INST_COUNT=$(grep -c '^srv-host=' /etc/dnsmasq.d/bonjour-vpn-services.conf 2>/dev/null || true)
+    SVC_COUNT=${SVC_COUNT:-0}
+    INST_COUNT=${INST_COUNT:-0}
     echo "  OK: DNS-SD config generated ($SVC_COUNT service types, $INST_COUNT instances)"
   else
     echo "  NOTE: DNS-SD services config not yet generated"
@@ -2162,29 +2845,31 @@ verify_setup() {
   if [ "$VERIFY_PASS" = 0 ]; then
     echo
     echo "  Some checks failed. Review the warnings above and check service logs."
+    return 1
   fi
+  return 0
 }
 
 enable_services() {
   bigecho "Enabling and starting services..."
   if [ "$os_type" = "alpine" ]; then
     # Ensure D-Bus is running (required by avahi)
-    rc-update add dbus default >/dev/null 2>&1 \
+    rc-update add dbus default 9>&- >/dev/null 2>&1 \
       || exiterr "Could not enable D-Bus."
-    rc-service dbus start >/dev/null 2>&1 \
+    rc-service dbus start 9>&- >/dev/null 2>&1 \
       || exiterr "Could not start D-Bus."
-    rc-update add avahi-daemon default >/dev/null 2>&1 \
+    rc-update add avahi-daemon default 9>&- >/dev/null 2>&1 \
       || exiterr "Could not enable avahi-daemon."
-    rc-service avahi-daemon restart >/dev/null 2>&1 \
+    rc-service avahi-daemon restart 9>&- >/dev/null 2>&1 \
       || exiterr "Could not restart avahi-daemon."
-    rc-update add dnsmasq default >/dev/null 2>&1 \
+    rc-update add dnsmasq default 9>&- >/dev/null 2>&1 \
       || exiterr "Could not enable dnsmasq."
-    rc-service dnsmasq restart >/dev/null 2>&1 \
+    rc-service dnsmasq restart 9>&- >/dev/null 2>&1 \
       || exiterr "Could not restart dnsmasq."
-    rc-service ipsec restart >/dev/null 2>&1 \
+    rc-service ipsec restart 9>&- >/dev/null 2>&1 \
       || exiterr "Could not restart IPsec."
     if [ "$HAS_L2TP" = 1 ]; then
-      rc-service xl2tpd restart >/dev/null 2>&1 \
+      rc-service xl2tpd restart 9>&- >/dev/null 2>&1 \
         || exiterr "Could not restart xl2tpd."
     fi
   else
@@ -2384,7 +3069,10 @@ main() {
   check_existing_dns
   parse_upstream_dns
   detect_firewall_backend
+  capture_firewall_persistence_ownership
   check_ipv6_firewall_loader
+  PREFLIGHT_CONFIG_FINGERPRINT=$(configuration_fingerprint) \
+    || exiterr "Could not fingerprint the reviewed preflight configuration."
 
 # Build VPN modes display for confirmation prompt
 VPN_MODES_DISPLAY=""
@@ -2465,7 +3153,10 @@ case $response in
 esac
 
   acquire_bonjour_lock
+  revalidate_after_lock
   capture_service_state
+  capture_address_ownership
+  save_incomplete_state
   install_packages
   verify_runtime_providers
   configure_avahi
@@ -2475,15 +3166,18 @@ esac
   install_dnsmasq_config
   update_vpn_dns_config
   update_iptables
-  save_config_state
-  remove_legacy_ipv6_runtime
   create_cache_warmer
   configure_dnsmasq_resolver_hook
   enable_services
+  start_cache_warmer
+  verify_setup || exiterr "Bonjour VPN setup verification failed."
+  # Promote the recovery marker only after every runtime mutation and
+  # verification succeeds. Any earlier failure remains explicitly recoverable
+  # by disable_bonjour.sh and blocks a blind second enable attempt.
+  save_config_state
+  remove_legacy_ipv6_runtime
   release_bonjour_lock
   trap - EXIT HUP INT TERM
-  start_cache_warmer
-  verify_setup
   print_summary
 }
 

@@ -507,9 +507,10 @@ sudo bash extras/enable_bonjour.sh
 如果你的 VPN 服务器启用了 [IPv6 支持](#ipv6-支持) 并且 IKEv2 客户端从 `rightaddresspool` 接收 IPv6 地址，该脚本会在 IPv4 管道旁自动设置 IPv6 mDNS 代理管道：
 
 - dnsmasq 同时监听 IPv4 和 IPv6 的 VPN 服务器地址。
+- 脚本会在环回接口上安装一条带所有权记录的 IPv6 VPN 客户端地址池路由，使服务器能够通过 IPsec 策略返回 IPv6 DNS 响应；该路由会在启动时恢复，并且仅当此辅助脚本创建了它时才会在禁用功能时删除。
 - ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb` 端口 5353）并重定向到 dnsmasq。
 - 缓存预热器使用 A 和 AAAA 记录填充 `/etc/bonjour-vpn-hosts`，使得 VPN 客户端的 AAAA 查询可以解析本地设备的 IPv6 地址。
-- IPv6 环回和防火墙更改使用与 IPv4 相同的验证、持久化和回滚流程。对于标准防火墙加载器只恢复 `/etc/iptables.rules` 的旧版 hwdsl2 安装，脚本仅在该加载器不含自定义命令时，添加对应的条件式 `/etc/ip6tables.rules` 恢复命令；否则脚本会在进行任何更改之前停止。如果之后启用、禁用或更改 VPN 的 IPv6 地址池，请重新运行 `enable_bonjour.sh`，以便明确审查并应用新状态。
+- IPv6 环回、返回路由和防火墙更改使用与 IPv4 相同的验证、持久化、所有权记录和回滚流程。对于标准防火墙加载器只恢复 `/etc/iptables.rules` 的旧版 hwdsl2 安装，脚本仅在该加载器不含自定义命令时，添加对应的条件式 `/etc/ip6tables.rules` 恢复命令；否则脚本会在进行任何更改之前停止。如果之后启用、禁用或更改 VPN 的 IPv6 地址池，请重新运行 `enable_bonjour.sh`，以便明确审查并应用新状态。
 
 注意：该脚本不会在 IKEv2 `modecfgdns` 配置负载中推送 IPv6 DNS 服务器，因为 Libreswan 5.3（及更早版本）对 `INTERNAL_IP6_DNS` 的属性长度编码错误，strongSwan 客户端会拒绝格式错误的 IKE_AUTH 响应。兼容的客户端仍可查询 IPv4 VPN DNS 端点来解析 AAAA 记录，因为 dnsmasq 可以对 IPv4 DNS 查询返回 IPv6 答案。
 

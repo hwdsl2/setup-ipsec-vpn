@@ -21,7 +21,7 @@ trap cleanup EXIT
 trap 'cleanup; exit 1' HUP INT TERM
 
 mkdir -p "$MOCK_BIN"
-awk '/^cat > "\$WATCHER_SCRIPT" <<'\''WATCHER_EOF'\''/{copy=1;next} \
+awk '/^cat > "\$WATCHER_SCRIPT(_CANDIDATE)?" <<'\''WATCHER_EOF'\''/{copy=1;next} \
      /^WATCHER_EOF$/{copy=0} copy{print}' \
   "$REPO_DIR/extras/enable_bonjour.sh" > "$WATCHER"
 chmod +x "$WATCHER"
@@ -35,6 +35,11 @@ cat > "$MOCK_BIN/avahi-browse" <<'EOF'
 echo launch >> "$MOCK_LAUNCH_LOG"
 echo $$ > "$MOCK_CHILD_PID_FILE"
 echo '+;eth0;IPv4;Printer;_ipp._tcp;local'
+if [ "${MOCK_EXIT_FIRST_BROWSER:-0}" = 1 ] \
+  && [ ! -e "$MOCK_BROWSER_EXIT_MARKER" ]; then
+  : > "$MOCK_BROWSER_EXIT_MARKER"
+  exit 0
+fi
 sleep 30 &
 sleeper=$!
 trap 'kill "$sleeper" 2>/dev/null || true; exit 0' TERM INT
@@ -51,6 +56,7 @@ export BONJOUR_VPN_RUN_DIR="$TEST_DIR"
 export MOCK_LAUNCH_LOG="$LAUNCH_LOG"
 export MOCK_RESOLVE_LOG="$RESOLVE_LOG"
 export MOCK_CHILD_PID_FILE="$CHILD_PID_FILE"
+export MOCK_BROWSER_EXIT_MARKER="$TEST_DIR/browser-exited-once"
 : > "$LAUNCH_LOG"
 : > "$RESOLVE_LOG"
 
@@ -79,4 +85,33 @@ if kill -0 "$child_pid" 2>/dev/null; then
   exit 1
 fi
 
-echo "PASS: persistent watcher, periodic reconcile, and child cleanup"
+# A dead avahi-browse child must be reaped and relaunched with bounded
+# backoff. This exercises the failure branch independently of periodic idle
+# reconciliation.
+: > "$LAUNCH_LOG"
+: > "$RESOLVE_LOG"
+rm -f "$MOCK_BROWSER_EXIT_MARKER"
+export MOCK_EXIT_FIRST_BROWSER=1
+"$WATCHER" &
+WATCHER_PID=$!
+attempt=0
+while [ "$attempt" -lt 50 ]; do
+  launch_count=$(wc -l < "$LAUNCH_LOG" 2>/dev/null | tr -d ' ' || echo 0)
+  [ "${launch_count:-0}" -ge 2 ] 2>/dev/null && break
+  attempt=$((attempt + 1))
+  sleep 0.2
+done
+kill "$WATCHER_PID"
+wait "$WATCHER_PID" 2>/dev/null || true
+WATCHER_PID=""
+unset MOCK_EXIT_FIRST_BROWSER
+
+[ "$(wc -l < "$LAUNCH_LOG" | tr -d ' ')" -ge 2 ] \
+  || { echo "FAIL: watcher did not relaunch a dead avahi-browse child" >&2; exit 1; }
+child_pid=$(cat "$CHILD_PID_FILE")
+if kill -0 "$child_pid" 2>/dev/null; then
+  echo "FAIL: relaunched browser remained after watcher shutdown" >&2
+  exit 1
+fi
+
+echo "PASS: persistent watcher, periodic reconcile, browser relaunch, and child cleanup"

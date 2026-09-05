@@ -15,6 +15,7 @@ mkdir -p "$MOCK_BIN"
 cat > "$MOCK_BIN/systemctl" <<'EOF'
 #!/bin/bash
 echo "$*" >> "$MOCK_CALL_LOG"
+[ "${1:-}" = cat ] && [ "${MOCK_UNITS_ABSENT:-0}" = 1 ] && exit 1
 exit 0
 EOF
 cat > "$MOCK_BIN/nft" <<'EOF'
@@ -84,11 +85,18 @@ grep -q '^enable avahi-daemon.socket$' "$CALL_LOG" \
   || fail "Avahi socket enablement was not restored"
 grep -q '^start avahi-daemon.socket$' "$CALL_LOG" \
   || fail "Avahi socket activity was not restored"
-grep -q '^start dbus.service$' "$CALL_LOG" \
-  || fail "D-Bus activity was not restored"
-if grep -Eq '^(enable|disable) dbus.service$' "$CALL_LOG"; then
-  fail "systemd D-Bus enablement was modified"
+if grep -Eq '^(start|stop|restart|enable|disable) dbus.service$' "$CALL_LOG"; then
+  fail "shared systemd D-Bus state was modified"
 fi
+
+: > "$CALL_LOG"
+export MOCK_UNITS_ABSENT=1
+restore_service_states >/dev/null
+if grep -Eq '^(start|stop|restart|enable|disable|reset-failed) (dnsmasq|avahi-daemon)' \
+  "$CALL_LOG"; then
+  fail "recovery tried to restore service state for packages not yet installed"
+fi
+unset MOCK_UNITS_ABSENT
 
 : > "$MOCK_NFT_RULE_STATE"
 : > "$MOCK_NFT_CALL_LOG"

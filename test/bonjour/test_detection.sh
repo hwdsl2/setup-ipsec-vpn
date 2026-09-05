@@ -201,6 +201,37 @@ assert_var "$out" "HAS_IPV6" "0" "invalid IPv6"
 assert_var "$out" "VPN_SERVER_IP_IPV6" "" "invalid IPv6"
 echo ""
 
+# --- Fixture 10: IPv6 client pool occupies ::1 through ::ff ---
+cat > "$WORKDIR/fixture-low-v6-pool.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=192.168.43.10-192.168.43.250,fd44:55:66:77::1-fd44:55:66:77::ff
+  ikev2=insist
+EOF
+
+echo "Fixture 10: IPv6 pool includes the traditional ::1 endpoint"
+out=$(run_detection "$WORKDIR/fixture-low-v6-pool.conf")
+assert_var "$out" "HAS_IPV6" "1" "low IPv6 pool"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fd44:55:66:77::100" "low IPv6 pool"
+echo ""
+
+# --- Fixture 11: project virtual-private override is authoritative ---
+cat > "$WORKDIR/fixture-virtual-private.conf" << 'EOF'
+conn ikev2-cp
+  rightaddresspool=192.168.43.10-192.168.43.250,fd66:77:88:99::1000-fd66:77:88:99::1fff
+  ikev2=insist
+EOF
+cat > "$WORKDIR/ipsec.conf" << 'EOF'
+config setup
+  virtual-private=%v4:10.0.0.0/8,%v6:!fd66:77:88:99::/64,%v6:fd00::/8
+EOF
+
+echo "Fixture 11: %v6:! virtual-private override"
+out=$(run_detection "$WORKDIR/fixture-virtual-private.conf")
+assert_var "$out" "HAS_IPV6" "1" "virtual-private override"
+assert_var "$out" "VPN_SUBNET_IPV6" "fd66:77:88:99::/64" "virtual-private override"
+assert_var "$out" "VPN_SERVER_IP_IPV6" "fd66:77:88:99::1" "virtual-private override"
+echo ""
+
 # ===== Summary =====
 echo -e "${BOLD}========================================${NC}"
 echo -e "  ${GREEN}Passed${NC}: $PASS"

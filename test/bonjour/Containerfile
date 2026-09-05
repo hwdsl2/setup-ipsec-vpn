@@ -1,7 +1,8 @@
-# Ubuntu 24.04 with systemd pre-installed, for podman-based testing of
+# Ubuntu with systemd pre-installed, for podman-based testing of
 # enable_bonjour.sh / disable_bonjour.sh. Matches the systemd environment
 # that real users will have on their VPN servers.
-FROM docker.io/library/ubuntu:24.04
+ARG UBUNTU_IMAGE=docker.io/library/ubuntu:24.04
+FROM ${UBUNTU_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV container=podman
@@ -13,6 +14,7 @@ RUN apt-get update -qq && \
       iproute2 iputils-ping iptables \
       wget curl ca-certificates \
       dnsutils openssl \
+      python3-minimal \
       procps psmisc net-tools \
       >/dev/null 2>&1 && \
     apt-get clean && \
