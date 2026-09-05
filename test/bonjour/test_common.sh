@@ -61,6 +61,37 @@ assert_fails "pool endpoint rejected" pool_contains_ip \
   "10.2.0.10-10.2.254.254" "10.2.0.2"
 assert_fails "reversed pool rejected" select_vpn_dns_ip \
   "10.2.0.0/16" "10.2.0.254-10.2.0.10"
+
+(
+  legacy_root="$TEST_DIR/legacy-endpoint-root"
+  mkdir -p "$legacy_root/etc/dnsmasq.d"
+  cat > "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf" <<'EOF'
+# Bonjour/mDNS proxy for VPN clients (IKEv2, XAuth, L2TP)
+# Added by enable_bonjour.sh
+listen-address=127.0.0.1,10.2.0.1,10.1.0.1
+EOF
+  BONJOUR_VPN_ROOT="$legacy_root"
+  BONJOUR_CONFIG_STATE="$legacy_root/var/lib/bonjour-vpn/config"
+  ip() {
+    printf '%s\n' \
+      '1: lo    inet 127.0.0.1/8 scope host lo' \
+      '1: lo    inet 10.2.0.1/32 scope global lo' \
+      '1: lo    inet 10.1.0.1/32 scope global lo'
+  }
+  iptables() {
+    [ "$*" = '-t nat -C PREROUTING -s 10.2.0.0/16 -d 224.0.0.251 -p udp --dport 5353 -j DNAT --to-destination 10.2.0.1:53' ]
+  }
+  assert_eq "$(discover_legacy_vpn_dns_ip '10.2.0.0/16' \
+    '10.2.0.10-10.2.254.254')" '10.2.0.1' \
+    'unversioned legacy endpoint safely reused'
+  sed -i.bonjour-test '/# Added by enable_bonjour.sh/d' \
+    "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf"
+  rm -f "$legacy_root/etc/dnsmasq.d/bonjour-vpn.conf.bonjour-test"
+  assert_fails 'unmarked legacy endpoint rejected' discover_legacy_vpn_dns_ip \
+    '10.2.0.0/16' '10.2.0.10-10.2.254.254'
+)
+pass_count=$((pass_count + 2))
+
 assert_eq "$(canonical_ipv6 'fd12:3456::1')" \
   'fd12:3456:0000:0000:0000:0000:0000:0001' "IPv6 canonical expansion"
 assert_eq "$(select_vpn_dns_ipv6 'fd12:3456:789a:bcde::/64' \

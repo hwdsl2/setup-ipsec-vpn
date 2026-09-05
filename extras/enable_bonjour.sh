@@ -385,6 +385,43 @@ select_vpn_dns_ip() {
   return 1
 }
 
+discover_legacy_vpn_dns_ip() {
+  local cidr="$1" pool="$2" root_dir="${BONJOUR_VPN_ROOT:-}"
+  local config marker candidate selected="" matches=0
+  config="${root_dir}/etc/dnsmasq.d/bonjour-vpn.conf"
+  marker='# Added by enable_bonjour.sh'
+
+  # Early Bonjour releases did not persist a consolidated state file. During
+  # an explicit reconfigure, reuse their endpoint only when three independent
+  # ownership signals agree: the package marker, a matching dnsmasq listener,
+  # and the exact mDNS DNAT rule. This avoids selecting a new endpoint and
+  # leaving the legacy rule behind, without adopting arbitrary administrator
+  # firewall or DNS configuration.
+  [ ! -f "$BONJOUR_CONFIG_STATE" ] || return 1
+  [ -f "$config" ] && [ ! -L "$config" ] || return 1
+  grep -Fxq "$marker" "$config" || return 1
+
+  while IFS= read -r candidate; do
+    candidate=$(printf '%s' "$candidate" | tr -d '[:space:]')
+    [ -n "$candidate" ] || continue
+    check_ip "$candidate" || continue
+    ipv4_in_cidr "$candidate" "$cidr" || continue
+    pool_contains_ip "$pool" "$candidate" && continue
+    loopback_has_ipv4 "$candidate" || continue
+    iptables -t nat -C PREROUTING -s "$cidr" -d 224.0.0.251 \
+      -p udp --dport 5353 -j DNAT --to-destination "${candidate}:53" \
+      2>/dev/null || continue
+    selected=$candidate
+    matches=$((matches + 1))
+  done <<EOF
+$(sed -n 's/^[[:space:]]*listen-address[[:space:]]*=[[:space:]]*//p' "$config" \
+  | tr ',' '\n')
+EOF
+
+  [ "$matches" -eq 1 ] || return 1
+  printf '%s\n' "$selected"
+}
+
 load_saved_config() {
   SAVED_VPN_SUBNET=""
   SAVED_VPN_SERVER_IP=""
@@ -1003,6 +1040,9 @@ detect_vpn_subnet() {
   load_saved_config
   PREVIOUS_DNS_IP=""
   [ "$SAVED_VPN_SUBNET" = "$VPN_SUBNET" ] && PREVIOUS_DNS_IP="$SAVED_VPN_SERVER_IP"
+  if [ -z "$PREVIOUS_DNS_IP" ]; then
+    PREVIOUS_DNS_IP=$(discover_legacy_vpn_dns_ip "$VPN_SUBNET" "$VPN_POOL" || true)
+  fi
   VPN_SERVER_IP=$(select_vpn_dns_ip "$VPN_SUBNET" "$VPN_POOL" "$PREVIOUS_DNS_IP") \
     || exiterr "Could not select an unused DNS endpoint inside $VPN_SUBNET and outside the client pool."
   XAUTH_SERVER_IP="$VPN_SERVER_IP"
