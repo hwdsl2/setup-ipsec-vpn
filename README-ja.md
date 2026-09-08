@@ -22,7 +22,9 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 
 - Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[Headscale](https://github.com/hwdsl2/docker-headscale)
 - AI：[セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
-- :books: 本：[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
+- 📚 関連書籍：[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
+
+> 📘 **新刊：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)。自分専用のプライベート AI スタックを構築し、安全に保護・運用するための実践ガイドです。
 
 ## クイックスタート
 
@@ -75,7 +77,7 @@ IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2
 
 ## コミュニティ
 
-- 📬 [プロジェクト更新を購読](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通のメール）——無料のVPN・AIデプロイガイドを入手（PDF・英語）
+- 📬 [プロジェクトの更新情報と無料のデプロイガイドを受け取る](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ja)（月1〜2通、ガイドは英語のPDF）
 - 💬 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) コミュニティでディスカッションに参加
 - ⭐ このリポジトリが役に立ったらスターを付けてください。より多くの人に見つけてもらう助けになります。
 

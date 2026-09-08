@@ -22,7 +22,9 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 
 - Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)、[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh.md)
 - AI：[自托管 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh.md)，用于本地 LLM、聊天、RAG、语音和 AI 工具
-- :books: 图书：[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)、[Privacy Tools in the Age of AI](docs/vpn-book-zh.md)
+- 📚 延伸阅读：[Privacy Tools in the Age of AI](docs/vpn-book-zh.md)
+
+> 📘 **新书：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)。一本关于构建、保护和运维自己的私有 AI 技术栈的实用指南。
 
 ## 快速开始
 
@@ -75,7 +77,7 @@ IPsec VPN 也提供预构建的 [Docker 镜像](https://github.com/hwdsl2/docker
 
 ## 社区
 
-- 📬 [订阅项目更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh)（每月 1–2 封邮件）——获取免费的 VPN 和 AI 部署指南（PDF，英文）
+- 📬 [获取项目更新和免费部署指南](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh)（每月 1–2 封邮件；指南为英文 PDF）
 - 💬 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社区参与讨论
 - ⭐ 如果你觉得本项目有用，请为仓库加星——这有助于让更多人发现它。
 
