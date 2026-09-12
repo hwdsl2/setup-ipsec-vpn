@@ -17,6 +17,6 @@ wget -t 3 -T 30 -nv --max-redirect=0 -O "$tmp_file" "$VPN_SETUP_URL" || exit 1
 
 printf '%s  %s\n' "$VPN_SETUP_SHA256" "$tmp_file" | sha256sum -c - || exit 1
 
-/bin/sh "$tmp_file"
+/bin/sh "$tmp_file" >/dev/null
 status=$?
 exit "$status"
