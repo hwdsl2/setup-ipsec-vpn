@@ -1,0 +1,99 @@
+name: bonjour-tests
+
+on:
+  pull_request:
+    paths:
+      - 'extras/enable_bonjour.sh'
+      - 'extras/disable_bonjour.sh'
+      - 'test/bonjour/**'
+      - '.github/workflows/bonjour.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'extras/enable_bonjour.sh'
+      - 'extras/disable_bonjour.sh'
+      - 'test/bonjour/**'
+      - '.github/workflows/bonjour.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Run Bonjour unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_script in \
+            test/bonjour/test_common.sh \
+            test/bonjour/test_detection.sh \
+            test/bonjour/test_disable.sh \
+            test/bonjour/test_firewall.sh \
+            test/bonjour/test_legacy_upgrade.sh \
+            test/bonjour/test_legacy_disable.sh \
+            test/bonjour/test_modes.sh \
+            test/bonjour/test_openrc.sh \
+            test/bonjour/test_recovery.sh \
+            test/bonjour/test_resolver_hook.sh \
+            test/bonjour/test_runtime.sh \
+            test/bonjour/test_watcher.sh; do
+            bash "$test_script"
+          done
+
+  platform-unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ubuntu:22.04
+            install: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yqq bash coreutils gawk grep sed util-linux
+          - image: debian:12
+            install: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yqq bash coreutils gawk grep sed util-linux
+          - image: alpine:3.21
+            install: apk add --no-cache bash coreutils gawk grep sed util-linux
+          - image: rockylinux:9
+            install: dnf install -y bash diffutils gawk grep sed util-linux
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Run unit tests in ${{ matrix.image }}
+        shell: bash
+        env:
+          TEST_IMAGE: ${{ matrix.image }}
+          INSTALL_COMMAND: ${{ matrix.install }}
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -e INSTALL_COMMAND \
+            -v "$GITHUB_WORKSPACE:/src:ro" \
+            -w /src \
+            "$TEST_IMAGE" \
+            sh -c '
+              set -e
+              eval "$INSTALL_COMMAND"
+              for test_script in \
+                test/bonjour/test_common.sh \
+                test/bonjour/test_detection.sh \
+                test/bonjour/test_disable.sh \
+                test/bonjour/test_firewall.sh \
+                test/bonjour/test_legacy_upgrade.sh \
+                test/bonjour/test_legacy_disable.sh \
+                test/bonjour/test_modes.sh \
+                test/bonjour/test_openrc.sh \
+                test/bonjour/test_recovery.sh \
+                test/bonjour/test_resolver_hook.sh \
+                test/bonjour/test_runtime.sh \
+                test/bonjour/test_watcher.sh; do
+                bash "$test_script"
+              done
+            '

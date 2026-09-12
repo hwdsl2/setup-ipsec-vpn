@@ -1,0 +1,49 @@
+# Ubuntu with systemd pre-installed, for podman-based testing of
+# enable_bonjour.sh / disable_bonjour.sh. Matches the systemd environment
+# that real users will have on their VPN servers.
+ARG UBUNTU_IMAGE=docker.io/library/ubuntu:24.04
+FROM ${UBUNTU_IMAGE}
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV container=podman
+
+# Install systemd + everything we need for the test harness + VPN build
+RUN apt-get update -qq && \
+    apt-get install -yqq \
+      systemd systemd-sysv dbus \
+      iproute2 iputils-ping iptables \
+      wget curl ca-certificates \
+      dnsutils openssl \
+      python3-minimal \
+      procps psmisc net-tools \
+      >/dev/null 2>&1 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Mask services that don't work in containers
+RUN systemctl mask \
+      systemd-firstboot.service \
+      systemd-udevd.service \
+      systemd-udev-trigger.service \
+      systemd-udev-settle.service \
+      sys-kernel-config.mount \
+      sys-kernel-debug.mount \
+      sys-kernel-tracing.mount \
+      dev-mqueue.mount \
+      dev-hugepages.mount \
+      2>/dev/null || true
+
+# Cleanup for smaller image
+RUN find /etc/systemd/system /lib/systemd/system \
+      -path '*.wants/*' \
+      \( -name '*swap*' \
+      -or -name 'systemd-firstboot*' \
+      -or -name 'systemd-sysctl*' \
+      -or -name 'systemd-networkd*' \
+      -or -name 'systemd-resolved*' \
+      -or -name 'systemd-timesyncd*' \) \
+      -exec rm -f {} \; 2>/dev/null || true
+
+VOLUME [ "/sys/fs/cgroup" ]
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]
