@@ -204,7 +204,9 @@
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "fileUris": [ "[variables('installScriptURL')]" ],
+          "fileUris": [ "[variables('installScriptURL')]" ]
+        },
+        "protectedSettings": {
           "commandToExecute": "[variables('installCommand')]"
         }
       }
