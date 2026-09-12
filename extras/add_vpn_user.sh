@@ -2,7 +2,7 @@
 #
 # Script to add/update a VPN user for both IPsec/L2TP and Cisco IPsec
 #
-# Copyright (C) 2018-2024 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2018-2026 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -15,6 +15,34 @@ SYS_DT=$(date +%F-%T | tr ':' '_')
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
+
+VPN_TMP_FILE=
+cleanup_tmp() {
+  [ -z "$VPN_TMP_FILE" ] || rm -f -- "$VPN_TMP_FILE"
+}
+trap cleanup_tmp EXIT
+trap 'exit 1' HUP INT TERM
+
+remove_records() {
+  local file=$1
+  local record_prefix=$2
+  umask 077
+  VPN_TMP_FILE=$(mktemp "${file}.tmp.XXXXXX") || return 1
+  if ! VPN_RECORD_PREFIX="$record_prefix" awk \
+    'index($0, ENVIRON["VPN_RECORD_PREFIX"]) != 1' \
+    "$file" > "$VPN_TMP_FILE"; then
+    cleanup_tmp
+    VPN_TMP_FILE=
+    return 1
+  fi
+  if ! chown root:root "$VPN_TMP_FILE" || ! chmod 600 "$VPN_TMP_FILE" \
+    || ! mv -f -- "$VPN_TMP_FILE" "$file"; then
+    cleanup_tmp
+    VPN_TMP_FILE=
+    return 1
+  fi
+  VPN_TMP_FILE=
+}
 
 show_intro() {
 cat <<'EOF'
@@ -68,6 +96,14 @@ EOF
       exit 1
     fi
   fi
+  case "$VPN_USER" in
+    *:*)
+      exiterr "VPN username must not contain a colon."
+      ;;
+    *$'\r'*|*$'\n'*)
+      exiterr "VPN username must not contain line breaks."
+      ;;
+  esac
   if printf '%s' "$VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
     exiterr "VPN credentials must not contain non-ASCII characters."
   fi
@@ -112,12 +148,13 @@ EOF
   conf_bk "/etc/ppp/chap-secrets"
   conf_bk "/etc/ipsec.d/passwd"
   # Add or update VPN user
-  sed -i "/^\"$VPN_USER\" /d" /etc/ppp/chap-secrets
+  remove_records "/etc/ppp/chap-secrets" "\"$VPN_USER\" " \
+    || exiterr "Could not update /etc/ppp/chap-secrets."
 cat >> /etc/ppp/chap-secrets <<EOF
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
-  # shellcheck disable=SC2016
-  sed -i '/^'"$VPN_USER"':\$1\$/d' /etc/ipsec.d/passwd
+  remove_records "/etc/ipsec.d/passwd" "$VPN_USER:" \
+    || exiterr "Could not update /etc/ipsec.d/passwd."
   VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 cat >> /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
