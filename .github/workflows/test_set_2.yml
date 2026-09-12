@@ -296,6 +296,118 @@ jobs:
           ls -l /opt/src/addvpnuser.sh
           ls -l /opt/src/delvpnuser.sh
 
+          cp -f "$GITHUB_WORKSPACE"/extras/add_vpn_user.sh ./addvpnuser.sh
+          cp -f "$GITHUB_WORKSPACE"/extras/del_vpn_user.sh ./delvpnuser.sh
+          chmod 755 /opt/src/addvpnuser.sh /opt/src/delvpnuser.sh
+
+          chap_file=/etc/ppp/chap-secrets
+          passwd_file=/etc/ipsec.d/passwd
+          chap_saved=$(mktemp)
+          passwd_saved=$(mktemp)
+          cp -p "$chap_file" "$chap_saved"
+          cp -p "$passwd_file" "$passwd_saved"
+
+          record_count() {
+            VPN_RECORD_PREFIX=$1 awk '
+              index($0, ENVIRON["VPN_RECORD_PREFIX"]) == 1 { count++ }
+              END { print count + 0 }
+            ' "$2"
+          }
+
+          chap_sum=$(cksum "$chap_file")
+          passwd_sum=$(cksum "$passwd_file")
+          if bash /opt/src/addvpnuser.sh 'invalid:user' 'test-password'; then
+            exit 1
+          fi
+          invalid_user=$(printf 'invalid\nuser')
+          if bash /opt/src/addvpnuser.sh "$invalid_user" 'test-password'; then
+            exit 1
+          fi
+          if bash /opt/src/delvpnuser.sh 'invalid:user'; then
+            exit 1
+          fi
+          if bash /opt/src/delvpnuser.sh "$invalid_user"; then
+            exit 1
+          fi
+          invalid_user=$(printf 'invalid\ruser')
+          if bash /opt/src/addvpnuser.sh "$invalid_user" 'test-password'; then
+            exit 1
+          fi
+          if bash /opt/src/delvpnuser.sh "$invalid_user"; then
+            exit 1
+          fi
+          [ "$chap_sum" = "$(cksum "$chap_file")" ]
+          [ "$passwd_sum" = "$(cksum "$passwd_file")" ]
+
+          printf '\n# VPN user regression marker\n\n' >> "$chap_file"
+          printf '\n# VPN user regression marker\n\n' >> "$passwd_file"
+
+          printf '\n' | bash /opt/src/addvpnuser.sh 'test/user' 'first-pass'
+          [ "$(record_count '"test/user" ' "$chap_file")" = 1 ]
+          [ "$(record_count 'test/user:' "$passwd_file")" = 1 ]
+          printf '\n' | bash /opt/src/addvpnuser.sh 'test/user' 'second-pass'
+          grep -Fqx '"test/user" l2tpd "second-pass" *' "$chap_file"
+          [ "$(record_count '"test/user" ' "$chap_file")" = 1 ]
+          [ "$(record_count 'test/user:' "$passwd_file")" = 1 ]
+          printf '\n' | bash /opt/src/delvpnuser.sh 'test/user'
+          [ "$(record_count '"test/user" ' "$chap_file")" = 0 ]
+          [ "$(record_count 'test/user:' "$passwd_file")" = 0 ]
+
+          regex_user='regex/.*[x]$^+?()@ user'
+          printf '\n' | bash /opt/src/addvpnuser.sh "$regex_user" 'regex-pass'
+          [ "$(record_count "\"$regex_user\" " "$chap_file")" = 1 ]
+          [ "$(record_count "$regex_user:" "$passwd_file")" = 1 ]
+          printf '\n' | bash /opt/src/delvpnuser.sh "$regex_user"
+          [ "$(record_count "\"$regex_user\" " "$chap_file")" = 0 ]
+          [ "$(record_count "$regex_user:" "$passwd_file")" = 0 ]
+
+          printf '\n' | bash /opt/src/addvpnuser.sh 'test123' 'first-pass'
+          printf '\n' | bash /opt/src/addvpnuser.sh 'test.*' 'first-pass'
+          printf '\n' | bash /opt/src/addvpnuser.sh 'test.*' 'second-pass'
+          grep -Fqx '"test123" l2tpd "first-pass" *' "$chap_file"
+          grep -Fqx '"test.*" l2tpd "second-pass" *' "$chap_file"
+          [ "$(record_count 'test123:' "$passwd_file")" = 1 ]
+          [ "$(record_count 'test.*:' "$passwd_file")" = 1 ]
+          printf '\n' | bash /opt/src/delvpnuser.sh 'test.*'
+          [ "$(record_count '"test.*" ' "$chap_file")" = 0 ]
+          [ "$(record_count 'test.*:' "$passwd_file")" = 0 ]
+          grep -Fqx '"test123" l2tpd "first-pass" *' "$chap_file"
+          [ "$(record_count 'test123:' "$passwd_file")" = 1 ]
+
+          chap_sum=$(cksum "$chap_file")
+          passwd_sum=$(cksum "$passwd_file")
+          if bash /opt/src/delvpnuser.sh 'nonexistent/user'; then
+            exit 1
+          fi
+          [ "$chap_sum" = "$(cksum "$chap_file")" ]
+          [ "$passwd_sum" = "$(cksum "$passwd_file")" ]
+          grep -Fqx '# VPN user regression marker' "$chap_file"
+          grep -Fqx '# VPN user regression marker' "$passwd_file"
+          grep -qx '' "$chap_file"
+          grep -qx '' "$passwd_file"
+          [ "$(stat -c %a "$chap_file")" = 600 ]
+          [ "$(stat -c %a "$passwd_file")" = 600 ]
+          [ "$(stat -c %u:%g "$chap_file")" = 0:0 ]
+          [ "$(stat -c %u:%g "$passwd_file")" = 0:0 ]
+          for tmp_file in /etc/ppp/chap-secrets.tmp.* /etc/ipsec.d/passwd.tmp.*; do
+            [ ! -e "$tmp_file" ] || exit 1
+          done
+
+          printf '"only/user" l2tpd "only-pass" *\n' > "$chap_file"
+          printf "only/user:\$6\$only-hash:xauth-psk\n" > "$passwd_file"
+          chmod 600 "$chap_file" "$passwd_file"
+          chap_sum=$(cksum "$chap_file")
+          passwd_sum=$(cksum "$passwd_file")
+          if bash /opt/src/delvpnuser.sh 'only/user'; then
+            exit 1
+          fi
+          [ "$chap_sum" = "$(cksum "$chap_file")" ]
+          [ "$passwd_sum" = "$(cksum "$passwd_file")" ]
+
+          cp -pf "$chap_saved" "$chap_file"
+          cp -pf "$passwd_saved" "$passwd_file"
+          rm -f "$chap_saved" "$passwd_saved"
+
           rm -f /usr/bin/ikev2.sh /opt/src/ikev2.sh
           rm -f /etc/ipsec.d/vpnclient*
 
