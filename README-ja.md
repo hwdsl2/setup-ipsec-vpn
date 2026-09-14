@@ -24,7 +24,7 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 - AI：[セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
 - 📚 関連書籍：[Privacy Tools in the Age of AI](docs/vpn-book-ja.md)
 
-> 📘 **新刊：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)。自分専用のプライベート AI スタックを構築し、安全に保護・運用するための実践ガイドです。
+> 📘 **Kindle Countdown Deal：$0.99／£0.99（米国・英国限定）。**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)は、自分専用のプライベート AI スタックを構築し、安全性を確保しながら運用するための実践ガイドです。
 
 ## クイックスタート
 

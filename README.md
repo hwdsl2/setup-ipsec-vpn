@@ -24,7 +24,7 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 - AI: [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) for local LLMs, chat, RAG, voice and AI tools
 - 📚 Related reading: [Privacy Tools in the Age of AI](docs/vpn-book.md)
 
-> 📘 **New book:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon). A practical guide to building, securing, and operating your own private AI stack.
+> 📘 **Kindle Countdown Deal: $0.99/£0.99 (US & UK).** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to building, securing, and operating your own private AI stack.
 
 ## Quick start
 

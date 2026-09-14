@@ -24,7 +24,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - AI：[自托管 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh.md)，用于本地 LLM、聊天、RAG、语音和 AI 工具
 - 📚 延伸阅读：[Privacy Tools in the Age of AI](docs/vpn-book-zh.md)
 
-> 📘 **新书：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)。一本关于构建、保护和运维自己的私有 AI 技术栈的实用指南。
+> 📘 **Kindle 限时优惠：$0.99/£0.99（仅限美国和英国）。**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) 是一本关于构建、保护和运维自己的私有 AI 技术栈的实用指南。
 
 ## 快速开始
 
