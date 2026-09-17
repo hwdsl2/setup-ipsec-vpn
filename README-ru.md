@@ -22,9 +22,9 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 - Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
 - AI: [Стек ИИ на своём сервере](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md) для локальных LLM, чата, RAG, голосовых функций и инструментов ИИ
-- 📚 Дополнительное чтение: [Privacy Tools in the Age of AI](docs/vpn-book.md)
+- 📚 [Книги о конфиденциальности и VPN](docs/vpn-book.md)
 
-> 📘 **Kindle Countdown Deal: $0.99/£0.99 (только в США и Великобритании).** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) — практическое руководство по созданию, защите и эксплуатации собственного приватного AI-стека.
+> 📘 Хотите развернуть ИИ на собственном сервере? [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) представляет собой практическое руководство по локальным большим языковым моделям, RAG, голосовому ИИ и безопасному развёртыванию с Docker. **Электронная книга: $0.99/£0.99 до 20 сентября включительно** (США/Великобритания).
 
 ## Быстрый старт
 
@@ -328,7 +328,7 @@ sudo VPN_PROTECT_CONFIG=yes sh vpn.sh
 
 **[Настройка клиентов IPsec/XAuth («Cisco IPsec»)](docs/clients-xauth.md)**
 
-**Прочитайте [:book: книгу о VPN](docs/vpn-book.md), чтобы получить доступ к [дополнительному контенту](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
+**Прочитайте [📘 книгу о VPN](docs/vpn-book.md), чтобы получить доступ к [дополнительному контенту](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
 

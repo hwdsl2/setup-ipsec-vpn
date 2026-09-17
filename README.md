@@ -22,9 +22,9 @@ We will use [Libreswan](https://libreswan.org/) as the IPsec server, and [xl2tpd
 
 - Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale)
 - AI: [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) for local LLMs, chat, RAG, voice and AI tools
-- 📚 Related reading: [Privacy Tools in the Age of AI](docs/vpn-book.md)
+- 📚 [Books on privacy and VPNs](docs/vpn-book.md)
 
-> 📘 **Kindle Countdown Deal: $0.99/£0.99 (US & UK).** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to building, securing, and operating your own private AI stack.
+> 📘 Interested in self-hosted AI? [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to local LLMs, RAG, voice, and secure deployment with Docker. **Ebook: $0.99/£0.99 through Sept. 20** (US/UK).
 
 ## Quick start
 
@@ -328,7 +328,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](docs/clients-xauth.md)**
 
-**Read [:book: VPN book](docs/vpn-book.md) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
+**Read [📘 VPN book](docs/vpn-book.md) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
