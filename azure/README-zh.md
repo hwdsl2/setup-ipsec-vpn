@@ -12,7 +12,8 @@
  - Operating System Image （操作系统镜像，Ubuntu 24.04 或 22.04）
  - Virtual Machine Size （虚拟机大小，默认值： Standard_B1s）
 
-**注：** \*不要\* 在值中使用这些字符： `\ " '`
+> [!IMPORTANT]
+> 值中不能包含 `\`、`"` 或 `'`。
 
 请单击以下按钮开始：
 

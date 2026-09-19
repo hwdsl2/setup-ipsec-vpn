@@ -12,7 +12,8 @@ Customizable with the following options:
  - Operating System Image (Ubuntu 24.04 or 22.04)
  - Virtual Machine Size (Default: Standard_B1s)
 
-**Note:** DO NOT use these special characters within values: `\ " '`
+> [!IMPORTANT]
+> Values must not contain `\`, `"`, or `'`.
 
 Press this button to start:
 

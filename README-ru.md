@@ -27,7 +27,7 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 ## Быстрый старт
 
-Сначала подготовьте ваш Linux-сервер\* с установленной [поддерживаемой ОС](#требования).
+Начните с Linux-сервера\*, на котором работает [поддерживаемая операционная система](#требования).
 
 Используйте эту однострочную команду для настройки сервера IPsec VPN:
 
@@ -37,8 +37,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
-> [!TIP]
-> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
+**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
 
 <details>
 <summary>
@@ -114,7 +113,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
-> **НЕ** запускайте эти скрипты на вашем ПК или Mac! Их следует использовать только на сервере!
+> Запускайте эти скрипты на Linux-сервере, на котором будет работать ваш VPN. Не запускайте их на личном ПК или Mac.
 
 ## Установка
 
@@ -152,8 +151,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-> [!TIP]
-> При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
+**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
 
 <details>
 <summary>

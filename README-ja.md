@@ -27,7 +27,7 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 
 ## クイックスタート
 
-まず、[対応OS](#要件)をインストールしたLinuxサーバー\*を準備します。
+まず、[対応OS](#要件)が稼働している Linux サーバー\*を用意します。
 
 このワンライナーを使用してIPsec VPNサーバーをセットアップします：
 
@@ -37,8 +37,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 VPNログイン情報はランダムに生成され、完了時に表示されます。
 
-> [!TIP]
-> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。
+**ヒント:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。
 
 <details>
 <summary>
@@ -114,7 +113,7 @@ IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2
 IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
-> これらのスクリプトをPCやMacで実行しないでください！これらはサーバーでのみ使用する必要があります！
+> これらのスクリプトは、VPN を稼働させる Linux サーバー上で実行してください。個人用の PC や Mac では実行しないでください。
 
 ## インストール
 
@@ -152,8 +151,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-> [!TIP]
-> 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
+**ヒント:** 同じサーバーに[WireGuard](https://github.com/hwdsl2/wireguard-install)、[OpenVPN](https://github.com/hwdsl2/openvpn-install)、および/または[Headscale](https://github.com/hwdsl2/headscale-install)をインストールすることもできます。サーバーがCentOS Stream、Rocky Linux、またはAlmaLinuxを実行している場合、最初にOpenVPN/WireGuardをインストールし、その後IPsec VPNをインストールします。
 
 <details>
 <summary>
