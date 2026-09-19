@@ -132,6 +132,16 @@ confirm_or_abort() {
 }
 
 confirm_remove() {
+  if [ -f /etc/dnsmasq.d/bonjour-vpn.conf ]; then
+cat <<'EOF'
+
+Note: Bonjour/mDNS service discovery is enabled on this server.
+      Please run "sudo bash disable_bonjour.sh" first to cleanly
+      remove Bonjour/mDNS components before uninstalling the VPN.
+
+EOF
+    confirm_or_abort "Continue without removing Bonjour first? [y/N] "
+  fi
 cat <<'EOF'
 
 WARNING: This script will remove IPsec VPN from this server. All VPN configuration
