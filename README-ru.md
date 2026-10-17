@@ -20,8 +20,8 @@ IPsec VPN шифрует сетевой трафик, поэтому никто 
 
 **Также доступно:**
 
-- Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
-- AI: [Стек ИИ на своём сервере](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md) для локальных LLM, чата, RAG, голосовых функций и инструментов ИИ
+- Docker VPN: [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/docs/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/docs/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/docs/README-ru.md)
+- AI: [Стек ИИ на своём сервере](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/docs/README-ru.md) для локальных LLM, чата, RAG, голосовых функций и инструментов ИИ
 
 > 📘 Хотите развернуть ИИ на собственном сервере? [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon): практическое руководство по созданию, защите и эксплуатации собственного приватного ИИ-стека.
 
@@ -37,7 +37,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 Данные для входа в VPN будут сгенерированы случайным образом и показаны после завершения установки.
 
-**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на тот же сервер.
+**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/docs/README-ru.md) на тот же сервер.
 
 <details>
 <summary>
@@ -151,7 +151,7 @@ VPN_PASSWORD='your_vpn_password' \
 sh vpn.sh
 ```
 
-**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
+**Совет:** При желании вы можете установить [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-ru.md), [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-ru.md) и/или [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/docs/README-ru.md) на том же сервере. Если ваш сервер работает на CentOS Stream, Rocky Linux или AlmaLinux, сначала установите OpenVPN/WireGuard, а затем установите IPsec VPN.
 
 <details>
 <summary>

@@ -20,8 +20,8 @@ IPsec VPN 可以加密你的網路流量，以防止在透過網際網路傳送�
 
 **另提供：**
 
-- Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)、[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
-- AI：[自架 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh-Hant.md)，用於本機 LLM、聊天、RAG、語音和 AI 工具
+- Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)、[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/docs/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/docs/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/docs/README-zh-Hant.md)
+- AI：[自架 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/docs/README-zh-Hant.md)，用於本機 LLM、聊天、RAG、語音和 AI 工具
 
 > 📘 對自架 AI 有興趣嗎？[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) 是一本關於建置、保護和維運自己的私有 AI 技術堆疊的實用指南。
 
@@ -37,7 +37,7 @@ wget https://get.vpnsetup.net -O vpn.sh && sudo sh vpn.sh
 
 你的 VPN 登入憑證將會自動隨機生成，並在安裝完成後顯示。
 
-**提示：** 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。
+**提示：** 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/docs/README-zh-Hant.md)。
 
 <details>
 <summary>
@@ -151,7 +151,7 @@ VPN_PASSWORD='你的VPN密碼' \
 sh vpn.sh
 ```
 
-**提示：** 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
+**提示：** 你可以選擇在同一台伺服器上安裝 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh-Hant.md) 和/或 [Headscale](https://github.com/hwdsl2/headscale-install/blob/main/docs/README-zh-Hant.md)。如果你的伺服器執行 CentOS Stream、Rocky Linux 或 AlmaLinux，請先安裝 OpenVPN/WireGuard，然後再安裝 IPsec VPN。
 
 <details>
 <summary>
