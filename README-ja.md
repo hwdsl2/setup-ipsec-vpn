@@ -20,8 +20,8 @@ IPsecサーバーとして[Libreswan](https://libreswan.org/)を使用し、L2TP
 
 **こちらも利用可能：**
 
-- Docker VPN：[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[Headscale](https://github.com/hwdsl2/docker-headscale)
-- AI：[セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
+- **Docker VPN：** [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server)、[WireGuard](https://github.com/hwdsl2/docker-wireguard)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn)、[Headscale](https://github.com/hwdsl2/docker-headscale)
+- **AI：** [セルフホストAIスタック](https://github.com/hwdsl2/self-hosted-ai-stack)：ローカルLLM、チャット、RAG、音声、AIツール向け
 
 > 📘 セルフホストAIに興味がありますか？[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)は、自分専用のプライベートAIスタックを構築し、セキュリティを確保して運用するための実践ガイドです。
 
