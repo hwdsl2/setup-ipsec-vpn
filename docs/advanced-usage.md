@@ -14,6 +14,7 @@
 * [Split tunneling](#split-tunneling)
 * [Access VPN server's subnet](#access-vpn-servers-subnet)
 * [Access VPN clients from server's subnet](#access-vpn-clients-from-servers-subnet)
+* [Bonjour/mDNS service discovery for VPN clients](#bonjourmdns-service-discovery-for-vpn-clients)
 * [Modify IPTables rules](#modify-iptables-rules)
 * [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
@@ -483,6 +484,62 @@ Assume that the VPN server IP is `10.1.0.2`, and the IP of the device from which
    ```
 
 Learn more about internal VPN IPs in [Internal VPN IPs and traffic](#internal-vpn-ips-and-traffic).
+
+## Bonjour/mDNS service discovery for VPN clients
+
+After setting up the VPN, you can enable [Bonjour](https://developer.apple.com/bonjour/)/mDNS service discovery so that VPN clients can see devices on the server's local network. This allows VPN clients to discover printers, AirPlay devices, file shares and other services that advertise via mDNS/DNS-SD, and to resolve `.local` hostnames. This works with IKEv2, IPsec/XAuth ("Cisco IPsec"), and IPsec/L2TP modes.
+
+To enable Bonjour/mDNS service discovery, run the helper script on the VPN server:
+
+```bash
+sudo bash extras/enable_bonjour.sh
+```
+
+The script installs [avahi-daemon](https://www.avahi.org/) and [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html), then sets up a persistent service watcher that monitors the local network for Bonjour changes and generates DNS-SD records (PTR, SRV, TXT) for dnsmasq. New, changed and partially removed records are normally published within seconds. If an otherwise successful discovery returns no records at all, the empty result must occur twice (normally within about two minutes) before it replaces the last known-good records. Unchanged data does not restart dnsmasq.
+
+The VPN configuration for all detected modes (IKEv2, XAuth, L2TP) is updated to push the VPN server as the primary DNS server, so DNS queries from VPN clients go through dnsmasq. Firewall rules capture IPv4 mDNS multicast (224.0.0.251:5353) from VPN clients and redirect it to dnsmasq on port 53. The script derives custom VPN subnets and pools from the installed VPN configuration instead of assuming the default `/24` networks, and persists firewall changes using the backend selected by the VPN installer.
+
+This feature is a DNS/DNS-SD bridge, not a general multicast router. It makes discovered `.local` records available over unicast DNS and captures IPv4 mDNS sent through the tunnel, but an application that sends or accepts discovery only on a physical interface may still not browse remote services. Client and application behavior therefore varies.
+
+After enabling, VPN clients must disconnect and reconnect to receive the updated DNS settings.
+
+**IPv6 / dual-stack support:**
+
+If your VPN server has [IPv6 support](#ipv6-support) enabled and IKEv2 clients receive IPv6 addresses from `rightaddresspool`, the script automatically sets up the IPv6 mDNS proxy pipeline alongside the IPv4 one:
+
+- dnsmasq listens on both the IPv4 and IPv6 VPN server addresses.
+- An ownership-tracked route to the IPv6 VPN client pool is installed on loopback so the server can return IPv6 DNS responses through the IPsec policy; the route is restored at boot and removed on disable only when this helper created it.
+- An ip6tables DNAT rule captures IPv6 mDNS multicast (`ff02::fb` port 5353) from IPv6 VPN clients and redirects it to dnsmasq.
+- The cache warmer populates `/etc/bonjour-vpn-hosts` with both A and AAAA records so AAAA queries from VPN clients resolve IPv6 addresses for local devices.
+- IPv6 loopback, return-route and firewall changes use the same validation, persistence, ownership and rollback path as IPv4. On an older hwdsl2 installation whose standard firewall loader restores only `/etc/iptables.rules`, the script adds the matching conditional `/etc/ip6tables.rules` restore only when the loader contains no custom commands; otherwise it stops before making changes. If the VPN's IPv6 pool is later enabled, disabled or changed, re-run `enable_bonjour.sh` to review and apply the new state explicitly.
+
+Note: the script does not push an IPv6 DNS server in the IKEv2 `modecfgdns` config payload, because Libreswan 5.3 (and earlier) encodes `INTERNAL_IP6_DNS` with the wrong attribute length and strongSwan clients reject the malformed IKE_AUTH response. Compatible clients can still resolve AAAA records by querying the IPv4 VPN DNS endpoint because dnsmasq can return IPv6 answers to an IPv4 DNS query.
+
+**Client compatibility:**
+
+| Platform | `.local` hostname resolution | Service discovery (auto-browse) | Connect via hostname |
+| -------- | ---- | ---- | ---- |
+| iOS | Works when the active VPN profile and app use tunnel DNS | App-dependent; apps that insist on link-local multicast may not browse remote services | Yes, when lookup succeeds |
+| macOS | Works when the active VPN profile and app use tunnel DNS | Finder's Network sidebar may not populate — see note below | Yes — use Cmd+K in Finder when lookup succeeds |
+| Windows | App-dependent | Partial — Bonjour-aware apps may require [Bonjour Print Services](https://support.apple.com/kb/DL999) | App-dependent |
+| Android | App-dependent | App-dependent | App-dependent |
+| Linux | Depends on the resolver and Avahi configuration | Depends on the resolver, Avahi configuration and app | Yes, when lookup succeeds |
+
+Hostnames discovered from valid LAN Bonjour records are made available to VPN clients through tunnel DNS. For example, when `file-server.local` is discovered and reachable through the VPN, a compatible client can connect with `smb://file-server.local` (Finder → Go → Connect to Server on macOS, or the equivalent on other platforms).
+
+**macOS Finder Network sidebar limitation:**
+
+On macOS, the Finder Network sidebar may not automatically display services from the VPN server's LAN. Finder and other applications can use link-local multicast for browsing, which is not guaranteed to traverse a VPN tunnel. iOS and other clients may use tunnel DNS for some `.local` and DNS-SD lookups, but the result remains application- and profile-dependent.
+
+Discovered `.local` hostnames can still resolve on macOS when the active profile and application use tunnel DNS. In that case, you can connect by typing the hostname in Finder → Go → Connect to Server (Cmd+K), even when automatic browsing does not populate the sidebar.
+
+A future companion macOS app using Apple's `DNSServiceRegister` API could bridge this gap by proxy-registering VPN services into the local mDNS domain. This is tracked as a separate project.
+
+To disable Bonjour/mDNS service discovery and revert all changes (including IPv6 state):
+
+```bash
+sudo bash extras/disable_bonjour.sh
+```
 
 ## Modify IPTables rules
 
