@@ -169,6 +169,9 @@ jobs:
 
           if [ "$os_type" = "alpine" ]; then
             apk add -U wget rsyslog sed bash
+            # Keep the test auth log consistent across Alpine versions.
+            mkdir -p /etc/rsyslog.d
+            printf '%s\n' 'authpriv.* /var/log/auth.log' '& stop' > /etc/rsyslog.d/vpn-test.conf
             rsyslogd
           else
             export DEBIAN_FRONTEND=noninteractive
