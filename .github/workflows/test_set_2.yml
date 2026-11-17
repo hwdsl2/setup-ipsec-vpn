@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        os_version: ["ubuntu:26.04", "ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "alpine:3.23", "alpine:3.22"]
+        os_version: ["ubuntu:26.04", "ubuntu:24.04", "ubuntu:22.04", "debian:13", "debian:12", "alpine:3.24", "alpine:3.23"]
       fail-fast: false
     container:
       image: ${{ matrix.os_version }}
