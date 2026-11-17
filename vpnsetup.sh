@@ -122,8 +122,8 @@ EOF
     esac
     if [ "$os_type" = "alpine" ]; then
       os_ver=$(. /etc/os-release && printf '%s' "$VERSION_ID" | cut -d '.' -f 1,2)
-      if [ "$os_ver" != "3.22" ] && [ "$os_ver" != "3.23" ]; then
-        exiterr "This script only supports Alpine Linux 3.22/3.23."
+      if [ "$os_ver" != "3.23" ] && [ "$os_ver" != "3.24" ]; then
+        exiterr "This script only supports Alpine Linux 3.23/3.24."
       fi
     else
       os_ver=$(sed 's/\..*//' /etc/debian_version | tr -dc 'A-Za-z0-9')
