@@ -14,15 +14,15 @@ on:
   workflow_dispatch:
     inputs:
       libreswan_version:
-        description: 'Setup test version, without a leading v (for example: 5.4.1)'
+        description: 'Setup test version, without a leading v (for example: 5.4.2)'
         required: true
         type: string
       upgrade_from_version:
-        description: 'First upgrade test version (for example: 5.4)'
+        description: 'First upgrade test version (for example: 5.4.1)'
         required: true
         type: string
       upgrade_to_version:
-        description: 'Second upgrade test version (for example: 5.4.1)'
+        description: 'Second upgrade test version (for example: 5.4.2)'
         required: true
         type: string
       test_scope:
@@ -57,7 +57,7 @@ jobs:
           version_regex='^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$'
           validate_version() {
             if ! printf '%s' "$1" | grep -Eq "$version_regex"; then
-              echo "Error: Invalid Libreswan version. Use a numeric version such as 5.4 or 5.4.1." >&2
+              echo "Error: Invalid Libreswan version. Use a numeric version such as 5.4 or 5.4.2." >&2
               exit 1
             fi
           }
