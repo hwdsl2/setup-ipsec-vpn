@@ -109,7 +109,7 @@ https://gitlab.com/hwdsl2/setup-ipsec-vpn/-/raw/master/vpnsetup.sh
 
 Для серверов с внешним файрволом (например, [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)) откройте UDP-порты 500 и 4500 для VPN.
 
-Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+Также доступен готовый [образ Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md) для IPsec VPN. Продвинутые пользователи могут установить его на [Raspberry Pi](https://www.raspberrypi.com). [[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi) [[2]](https://www.stewright.me/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
 > Запускайте эти скрипты на Linux-сервере, на котором будет работать ваш VPN. Не запускайте их на личном ПК или Mac.

@@ -109,7 +109,7 @@ IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2
 
 外部ファイアウォールを持つサーバー（例：[EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)）の場合、VPNのUDPポート500および4500を開きます。
 
-IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+IPsec VPN の事前構築された[Dockerイメージ](https://github.com/hwdsl2/docker-ipsec-vpn-server)も利用可能です。上級ユーザーは[Raspberry Pi](https://www.raspberrypi.com)にインストールできます。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi) [[2]](https://www.stewright.me/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
 > これらのスクリプトは、VPN を稼働させる Linux サーバー上で実行してください。個人用の PC や Mac では実行しないでください。

@@ -109,7 +109,7 @@ IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/doc
 
 對於有外部防火牆的伺服器（例如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），請為 VPN 開啟 UDP 連接埠 500 和 4500。
 
-IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi/) [[2]](https://www.stewright.me/2018/07/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
+IPsec VPN 也提供預先建構的 [Docker 映像](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)。進階使用者可以在 [Raspberry Pi](https://www.raspberrypi.com) 上安裝。[[1]](https://elasticbyte.net/posts/setting-up-a-native-cisco-ipsec-vpn-server-using-a-raspberry-pi) [[2]](https://www.stewright.me/create-a-raspberry-pi-vpn-server-using-l2tpipsec/)
 
 > [!WARNING]
 > 請在用來提供 VPN 服務的 Linux 伺服器上執行這些腳本。不要在個人 PC 或 Mac 上執行。
