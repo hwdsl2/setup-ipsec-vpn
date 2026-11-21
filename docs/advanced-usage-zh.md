@@ -14,6 +14,7 @@
 * [VPN 分流](#vpn-分流)
 * [访问 VPN 服务器的网段](#访问-vpn-服务器的网段)
 * [VPN 服务器网段访问 VPN 客户端](#vpn-服务器网段访问-vpn-客户端)
+* [为 VPN 客户端启用 Bonjour/mDNS 服务发现](#为-vpn-客户端启用-bonjourmdns-服务发现)
 * [更改 IPTables 规则](#更改-iptables-规则)
 * [部署 Google BBR 拥塞控制](#部署-google-bbr-拥塞控制)
 
@@ -482,6 +483,62 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o "$netif" -j MASQUERADE
    ```
 
 在 [VPN 内网 IP 和流量](#vpn-内网-ip-和流量)小节了解 VPN 内网 IP 的更多信息。
+
+## 为 VPN 客户端启用 Bonjour/mDNS 服务发现
+
+设置 VPN 后，你可以启用 [Bonjour](https://developer.apple.com/bonjour/)/mDNS 服务发现，使 VPN 客户端能够看到服务器本地网络上的设备。这允许 VPN 客户端发现通过 mDNS/DNS-SD 广播的打印机、AirPlay 设备、文件共享和其他服务，并解析 `.local` 主机名。此功能支持 IKEv2、IPsec/XAuth（"Cisco IPsec"）和 IPsec/L2TP 模式。
+
+要启用 Bonjour/mDNS 服务发现，在 VPN 服务器上运行辅助脚本：
+
+```bash
+sudo bash extras/enable_bonjour.sh
+```
+
+该脚本安装 [avahi-daemon](https://www.avahi.org/) 和 [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)，然后设置持久运行的服务监视器，监控本地网络上的 Bonjour 变化并为 dnsmasq 生成 DNS-SD 记录（PTR、SRV、TXT）。新增、更改和部分删除的记录通常会在几秒内发布。如果一次正常完成的发现完全没有返回记录，则必须连续出现两次空结果（通常在约两分钟内），才会替换上一次有效记录。数据未变化时不会重启 dnsmasq。
+
+所有检测到的 VPN 模式（IKEv2、XAuth、L2TP）的配置将更新为将 VPN 服务器作为主 DNS 服务器，使 VPN 客户端的 DNS 查询通过 dnsmasq。防火墙规则会捕获 VPN 客户端的 IPv4 mDNS 多播（224.0.0.251:5353）并将其重定向到 dnsmasq 的 53 端口。脚本会从已安装的 VPN 配置中推导自定义 VPN 子网和地址池，而不是假定使用默认的 `/24` 网络，并使用 VPN 安装程序选择的防火墙后端来持久保存规则。
+
+此功能是 DNS/DNS-SD 桥接，而不是通用的多播路由器。它通过单播 DNS 提供已发现的 `.local` 记录，并捕获通过隧道发送的 IPv4 mDNS；但是，只在物理接口上发送或接收发现流量的应用仍可能无法浏览远程服务。因此，实际兼容性取决于客户端和应用。
+
+启用后，VPN 客户端必须断开并重新连接以接收更新的 DNS 设置。
+
+**IPv6 / 双栈支持：**
+
+如果你的 VPN 服务器启用了 [IPv6 支持](#ipv6-支持) 并且 IKEv2 客户端从 `rightaddresspool` 接收 IPv6 地址，该脚本会在 IPv4 管道旁自动设置 IPv6 mDNS 代理管道：
+
+- dnsmasq 同时监听 IPv4 和 IPv6 的 VPN 服务器地址。
+- 脚本会在环回接口上安装一条带所有权记录的 IPv6 VPN 客户端地址池路由，使服务器能够通过 IPsec 策略返回 IPv6 DNS 响应；该路由会在启动时恢复，并且仅当此辅助脚本创建了它时才会在禁用功能时删除。
+- ip6tables DNAT 规则捕获来自 IPv6 VPN 客户端的 IPv6 mDNS 多播（`ff02::fb` 端口 5353）并重定向到 dnsmasq。
+- 缓存预热器使用 A 和 AAAA 记录填充 `/etc/bonjour-vpn-hosts`，使得 VPN 客户端的 AAAA 查询可以解析本地设备的 IPv6 地址。
+- IPv6 环回、返回路由和防火墙更改使用与 IPv4 相同的验证、持久化、所有权记录和回滚流程。对于标准防火墙加载器只恢复 `/etc/iptables.rules` 的旧版 hwdsl2 安装，脚本仅在该加载器不含自定义命令时，添加对应的条件式 `/etc/ip6tables.rules` 恢复命令；否则脚本会在进行任何更改之前停止。如果之后启用、禁用或更改 VPN 的 IPv6 地址池，请重新运行 `enable_bonjour.sh`，以便明确审查并应用新状态。
+
+注意：该脚本不会在 IKEv2 `modecfgdns` 配置负载中推送 IPv6 DNS 服务器，因为 Libreswan 5.3（及更早版本）对 `INTERNAL_IP6_DNS` 的属性长度编码错误，strongSwan 客户端会拒绝格式错误的 IKE_AUTH 响应。兼容的客户端仍可查询 IPv4 VPN DNS 端点来解析 AAAA 记录，因为 dnsmasq 可以对 IPv4 DNS 查询返回 IPv6 答案。
+
+**各平台功能：**
+
+| 平台 | `.local` 主机名解析 | 自动服务发现（自动浏览） | 通过主机名连接 |
+| ---- | ---- | ---- | ---- |
+| iOS | 当活动 VPN 配置和应用使用隧道 DNS 时可用 | 取决于应用；仅使用链路本地多播的应用可能无法浏览远程服务 | 查询成功时可用 |
+| macOS | 当活动 VPN 配置和应用使用隧道 DNS 时可用 | Finder 的“网络”侧边栏可能不会填充 — 见下方说明 | 查询成功时可在 Finder 中使用 Cmd+K |
+| Windows | 取决于应用 | 部分支持 — 支持 Bonjour 的应用可能需要安装 [Bonjour Print Services](https://support.apple.com/kb/DL999) | 取决于应用 |
+| Android | 取决于应用 | 取决于应用 | 取决于应用 |
+| Linux | 取决于解析器和 Avahi 配置 | 取决于解析器、Avahi 配置和应用 | 查询成功时可用 |
+
+从有效的局域网 Bonjour 记录中发现的主机名会通过隧道 DNS 提供给 VPN 客户端。例如，当发现 `file-server.local` 且可通过 VPN 访问时，兼容的客户端可以使用 `smb://file-server.local` 进行连接（macOS 的 Finder → 前往 → 连接服务器，或其他平台的等效方式）。
+
+**macOS Finder 网络侧边栏限制：**
+
+在 macOS 上，Finder 网络侧边栏可能不会自动显示 VPN 服务器局域网上的服务。Finder 和其他应用可能使用链路本地多播进行浏览，而这种流量并不能保证穿越 VPN 隧道。iOS 和其他客户端可能通过隧道 DNS 执行部分 `.local` 和 DNS-SD 查询，但实际结果仍取决于应用和 VPN 配置。
+
+当活动 VPN 配置和应用使用隧道 DNS 时，已发现的 `.local` 主机名仍可在 macOS 上解析。在这种情况下，即使自动浏览未填充侧边栏，你仍可以在 Finder → 前往 → 连接服务器（Cmd+K）中输入主机名进行连接。
+
+未来的 macOS 配套应用可以使用 Apple 的 `DNSServiceRegister` API 将 VPN 服务代理注册到本地 mDNS 域，从而弥补这一差距。这将作为单独的项目进行跟踪。
+
+要禁用 Bonjour/mDNS 服务发现并恢复所有更改（包括 IPv6 状态）：
+
+```bash
+sudo bash extras/disable_bonjour.sh
+```
 
 ## 更改 IPTables 规则
 
